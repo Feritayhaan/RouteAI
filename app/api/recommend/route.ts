@@ -1,13 +1,13 @@
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
-import { getAllTools } from "@/lib/tools";
+import { getTools } from "@/lib/toolsService";
 import { detectCategory } from "@/lib/keywords";
 import { findBestTool } from "@/lib/utils/toolMatcher";
 
 // Fallback recommendation without LLM (uses local matching)
-function getFallbackRecommendation(prompt: string) {
+async function getFallbackRecommendation(prompt: string) {
   const category = detectCategory(prompt);
-  const bestTool = findBestTool(prompt, category ?? null);
+  const bestTool = await findBestTool(prompt, category ?? null);
 
   if (!bestTool) {
     return {
@@ -29,7 +29,7 @@ function getFallbackRecommendation(prompt: string) {
 }
 
 // System prompt with dynamic tool injection
-function buildSystemPrompt(tools: any[]) {
+function buildSystemPrompt(tools: Awaited<ReturnType<typeof getTools>>) {
   const toolList = tools.map((tool, idx) =>
     `${idx + 1}. **${tool.name}** (${tool.category}): ${tool.description} (Ücretsiz: ${tool.free ? 'Evet' : 'Hayır'}, Güç: ${tool.strength}/10)`
   ).join('\n');
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     // Try LLM approach with timeout fallback
     if (process.env.OPENAI_API_KEY) {
       try {
-        const tools = getAllTools();
+        const tools = await getTools();
         const systemPrompt = buildSystemPrompt(tools);
         const client = new OpenAI({
           apiKey: process.env.OPENAI_API_KEY,
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     // Fallback: Use local tool matching
     console.log("Using fallback recommendation");
-    const fallbackResponse = getFallbackRecommendation(prompt);
+    const fallbackResponse = await getFallbackRecommendation(prompt);
     return NextResponse.json(fallbackResponse);
 
   } catch (error) {

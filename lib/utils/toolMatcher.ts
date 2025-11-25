@@ -1,20 +1,21 @@
 // Tool matching and filtering utilities
 
-import { getAllTools, Tool } from '../tools';
+import { getTools, Tool } from '../toolsService';
 import { Category } from '../keywords';
 
 /**
  * Filter tools by category
  */
-export function filterByCategory(category: Category): Tool[] {
-    return getAllTools().filter(tool => tool.category === category);
+export async function filterByCategory(category: Category): Promise<Tool[]> {
+    const tools = await getTools();
+    return tools.filter(tool => tool.category === category);
 }
 
 /**
  * Find best tool for query based on bestFor matching and strength
  */
-export function findBestTool(query: string, category: Category | null = null): Tool | null {
-    const tools = category ? filterByCategory(category) : getAllTools();
+export async function findBestTool(query: string, category: Category | null = null): Promise<Tool | null> {
+    const tools = category ? await filterByCategory(category) : await getTools();
     const lowerQuery = query.toLowerCase();
 
     // Score each tool
@@ -39,8 +40,8 @@ export function findBestTool(query: string, category: Category | null = null): T
 /**
  * Get top N alternatives (excluding primary tool)
  */
-export function getAlternatives(primaryTool: Tool, category: Category | null, limit: number = 2): Tool[] {
-    const tools = category ? filterByCategory(category) : getAllTools();
+export async function getAlternatives(primaryTool: Tool, category: Category | null, limit: number = 2): Promise<Tool[]> {
+    const tools = category ? await filterByCategory(category) : await getTools();
 
     return tools
         .filter(tool => tool.name !== primaryTool.name)
@@ -51,6 +52,7 @@ export function getAlternatives(primaryTool: Tool, category: Category | null, li
 /**
  * Get tool by name
  */
-export function getToolByName(name: string): Tool | undefined {
-    return getAllTools().find(tool => tool.name === name);
+export async function getToolByName(name: string): Promise<Tool | undefined> {
+    const tools = await getTools();
+    return tools.find(tool => tool.name === name);
 }

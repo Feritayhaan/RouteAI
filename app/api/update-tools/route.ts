@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllTools } from "@/lib/tools";
+import { getTools, updateTools } from "@/lib/toolsService";
 
 /**
  * Dynamic tool update endpoint
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         const mockNewTools = [
             {
                 name: "New AI Tool Example",
-                category: "metin",
+                category: "metin" as const,
                 description: "Örnek yeni araç (simülasyon)",
                 url: "https://example.com",
                 free: true,
@@ -22,15 +22,22 @@ export async function POST(req: NextRequest) {
             }
         ];
 
-        // Return current tools + simulated new tools
-        const currentTools = getAllTools();
+        // Get current tools from KV
+        const currentTools = await getTools();
+
+        // Merge with new tools (example logic: add if strength > 8.0)
+        const toolsToAdd = mockNewTools.filter(t => t.strength > 8.0);
+        const updatedTools = [...currentTools, ...toolsToAdd];
+
+        // Save back to KV
+        await updateTools(updatedTools);
 
         return NextResponse.json({
             success: true,
             message: "Tool update sistemi aktif (simülasyon modu)",
-            currentToolCount: currentTools.length,
-            newToolsFound: mockNewTools.length,
-            newTools: mockNewTools,
+            currentToolCount: updatedTools.length,
+            newToolsFound: toolsToAdd.length,
+            newTools: toolsToAdd,
             note: "Gerçek entegrasyon için HuggingFace API veya web scraping eklenebilir"
         });
 
@@ -46,7 +53,7 @@ export async function POST(req: NextRequest) {
 // GET endpoint for checking current tool status
 export async function GET() {
     try {
-        const tools = getAllTools();
+        const tools = await getTools();
         const categories = [...new Set(tools.map(t => t.category))];
 
         return NextResponse.json({

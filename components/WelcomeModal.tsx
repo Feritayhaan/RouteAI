@@ -49,35 +49,40 @@ export default function WelcomeModal() {
                     <div className="text-center space-y-2">
                         <h2 className="text-3xl md:text-4xl font-black tracking-tight">
                             <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                                Hoş Geldin!
+                                RouteAI&apos;ye Hoş Geldin
                             </span>
                         </h2>
                         <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                            RouteAI ile 2025'in en iyi AI araçlarını tek tıkla keşfet.
+                            Ne yapmak istediğini yaz, RouteAI seni saniyeler içinde en doğru yapay zeka aracına
+                            yönlendirsin. Tek ekranda: önerilen araç, sebebi ve hazır prompt.
+                        </p>
+                        <p className="text-xs md:text-sm text-muted-foreground/80">
+                            Bu pencereyi kapattıktan sonra tek yapman gereken ihtiyacını yazmak. Geri kalanını
+                            RouteAI senin yerine düşünüyor.
                         </p>
                     </div>
 
                     {/* Features Coming Soon */}
                     <div className="bg-muted/30 border border-border/50 rounded-xl p-4 space-y-2">
                         <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                            Yakında
+                            Yakında RouteAI&apos;de
                         </p>
                         <ul className="text-sm text-card-foreground space-y-1.5">
                             <li className="flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                Favori araçlarını kaydet
+                                Favori AI araçlarını ve akışlarını (workflow) kaydet
                             </li>
                             <li className="flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                Prompt kütüphanesi
+                                Hazır, test edilmiş prompt kütüphanesinden direkt kopyala
                             </li>
                             <li className="flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                Haftanın AI aracı
+                                Sana özel seçilen &quot;haftanın AI aracı&quot;nı keşfet
                             </li>
                             <li className="flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                Gerçek zamanlı skorlar
+                                Topluluk skorlarına göre gerçek zamanlı araç performansını gör
                             </li>
                         </ul>
                     </div>
@@ -87,7 +92,7 @@ export default function WelcomeModal() {
                         onClick={handleClose}
                         className="w-full py-3.5 px-6 text-base font-semibold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                        Hemen Başla
+                        Başla, ihtiyacını yaz 🎯
                     </button>
                 </div>
             </div>
