@@ -1,39 +1,61 @@
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
+import { getAllTools } from "@/lib/tools";
+import { detectCategory } from "@/lib/keywords";
+import { findBestTool } from "@/lib/utils/toolMatcher";
 
-// Anahtarı senin oluşturduğun .env.local dosyasından çeker
-// AI için "Veritabanı" ve "Rol" Tanımı
-const systemMessage = `
-Sen RouteAI adında bir yönlendirme asistanısın. 
-Görevin: Kullanıcının isteğini analiz et ve aşağıdaki ARAÇ LİSTESİNDEN en uygun olanı seç.
+// Fallback recommendation without LLM (uses local matching)
+function getFallbackRecommendation(prompt: string) {
+  const category = detectCategory(prompt);
+  const bestTool = findBestTool(prompt, category ?? null);
 
-ARAÇ LİSTESİ (Sadece bunlardan birini öner):
-1.  **ChatGPT (GPT-5.1)**: Genel sohbet, metin düzenleme, basit çeviri ve günlük işler için joker eleman.
-2.  **Claude 4.5 Sonnet**: İnsani ve doğal yazı yazma, uzun makale, senaryo ve ileri seviye kodlama (ChatGPT'den daha iyi kod yazar).
-3.  **Gemini 3**: Çok uzun PDF'leri, kitapları veya yüzlerce satır veriyi analiz etmek için (Devasa hafıza).
-4.  **Midjourney**: Sanatsal, hiper-gerçekçi görseller ve logolar (En yüksek görsel kalite).
-5.  **Ideogram**: İçinde "yazı" geçen görseller ve logolar için (Midjourney yazıda kötüdür, bu iyidir).
-6.  **Perplexity**: Güncel haberler, kaynaklı araştırma ve "Bana X hakkında bilgi bul" soruları (Google yerine geçer).
-7.  **Consensus**: Sadece bilimsel ve akademik makalelerden cevap verir (Öğrenciler ve tez yazanlar için).
-8.  **NotebookLM**: Ders notlarını ve PDF'leri yükleyip onlarla sohbet etmek veya "Podcast" formatında dinlemek için.
-9.  **Gamma**: Saniyeler içinde PowerPoint sunumu ve web sayfası taslağı hazırlamak için.
-10. **DeepSeek Coder**: Karmaşık matematik, mantık soruları ve zorlu yazılım hatalarını çözmek için (Açık kaynak kralı).
-11. **Runway Gen-3**: Metinden video oluşturma (Text-to-Video) ve video düzenleme.
-12. **Suno AI**: Metinden şarkı ve müzik besteleme.
-13. **ElevenLabs**: Metni insan sesine çevirme (Dublaj ve seslendirme).
-14. **Canva Magic Studio**: Sosyal medya postu, afiş ve basit görsel tasarımlar (Profesyonel olmayanlar için).
+  if (!bestTool) {
+    return {
+      toolName: "Perplexity Deep Research",
+      description: "Kaynaklı araştırma için en iyi araç",
+      reason: "Bu isteğe uygun spesifik araç bulunamadı",
+      suggestedPrompt: `"${prompt}" hakkında detaylı bilgi bul`,
+      url: "https://perplexity.ai"
+    };
+  }
+
+  return {
+    toolName: bestTool.name,
+    description: bestTool.description,
+    reason: `${bestTool.category} kategorisinde en uygun araç (Güç: ${bestTool.strength}/10)`,
+    suggestedPrompt: `${prompt} için ${bestTool.name} kullan`,
+    url: bestTool.url
+  };
+}
+
+// System prompt with dynamic tool injection
+function buildSystemPrompt(tools: any[]) {
+  const toolList = tools.map((tool, idx) =>
+    `${idx + 1}. **${tool.name}** (${tool.category}): ${tool.description} (Ücretsiz: ${tool.free ? 'Evet' : 'Hayır'}, Güç: ${tool.strength}/10)`
+  ).join('\n');
+
+  return `Sen RouteAI'sın. Kullanıcı isteğini analiz et ve en uygun AI aracını öner.
+
+MEVCUT ARAÇLAR:
+${toolList}
+
+ANALİZ YÖNTEMİ:
+1. Kullanıcı isteğindeki alanı belirle (görsel, metin, ses, video, veri, araştırma)
+2. Amacı anla (ne yapmak istiyor?)
+3. En uygun aracı seç (strength ve bestFor kriterlerine göre)
+4. Kullanıcının direkt kullanabileceği Türkçe bir prompt yaz
 
 KURALLAR:
-- Asla sohbet etme.
-- Cevabını SADECE geçerli bir JSON formatında ver.
-- JSON formatı şöyle olmalı: { "toolName": "...", "description": "...", "reason": "...", "suggestedPrompt": "..." }
-`;
+- Asla sohbet etme
+- Sadece listede olan araçları öner
+- Cevabını JSON formatında ver: { "toolName": "...", "description": "...", "reason": "...", "suggestedPrompt": "...", "url": "..." }`;
+}
 
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
 
-    // Prompt boş mu kontrolü
+    // Validation
     if (!prompt || typeof prompt !== "string") {
       return NextResponse.json(
         { error: "Lütfen bir istek yazın." },
@@ -41,44 +63,62 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Anahtar var mı kontrolü
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: "OpenAI API Key bulunamadı (.env.local dosyasını kontrol et)." },
-        { status: 500 }
-      );
+    // Keyword-based pre-filtering
+    const detectedCategory = detectCategory(prompt);
+    console.log(`Detected category: ${detectedCategory || 'none'}`);
+
+    // Try LLM approach with timeout fallback
+    if (process.env.OPENAI_API_KEY) {
+      try {
+        const tools = getAllTools();
+        const systemPrompt = buildSystemPrompt(tools);
+        const client = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+        });
+
+        // Set timeout for OpenAI call
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('OpenAI timeout')), 8000)
+        );
+
+        const completionPromise = client.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt },
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 500,
+        });
+
+        const completion = await Promise.race([completionPromise, timeoutPromise]) as any;
+        const aiResponse = completion.choices[0].message.content;
+
+        if (aiResponse) {
+          const parsed = JSON.parse(aiResponse);
+          return NextResponse.json(parsed);
+        }
+      } catch (llmError) {
+        console.error("LLM Error, using fallback:", llmError);
+        // Fall through to fallback
+      }
     }
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    // OpenAI'a isteği gönderiyoruz (Doğru Fonksiyon Burası)
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini", // Senin istediğin ucuz ve hızlı model
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: prompt },
-      ],
-      response_format: { type: "json_object" }, // Kesinlikle JSON dönmesini zorluyoruz
-    });
-
-    // Gelen cevabı alıyoruz
-    const aiResponse = completion.choices[0].message.content;
-
-    // Eğer cevap boşsa hata döndür
-    if (!aiResponse) {
-      throw new Error("AI boş cevap döndürdü.");
-    }
-
-    // Cevabı JSON olarak frontend'e gönderiyoruz
-    return NextResponse.json(JSON.parse(aiResponse));
+    // Fallback: Use local tool matching
+    console.log("Using fallback recommendation");
+    const fallbackResponse = getFallbackRecommendation(prompt);
+    return NextResponse.json(fallbackResponse);
 
   } catch (error) {
     console.error("API Hatası:", error);
-    return NextResponse.json(
-      { error: "İşlem sırasında bir hata oluştu." },
-      { status: 500 }
-    );
+
+    // Final fallback
+    return NextResponse.json({
+      toolName: "Perplexity Deep Research",
+      description: "Kaynaklı araştırma",
+      reason: "Sistem hatası, varsayılan araç öneriliyor",
+      suggestedPrompt: "İsteğimi bul ve açıkla",
+      url: "https://perplexity.ai"
+    });
   }
 }
