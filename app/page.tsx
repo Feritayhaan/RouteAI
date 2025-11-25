@@ -4,6 +4,7 @@ import { useState, useEffect, type KeyboardEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Sparkles, MessageCircle, Rocket, Clipboard, ChevronDown, ChevronUp, ExternalLink, Star, Lightbulb } from "lucide-react"
 import WelcomeModal from "@/components/WelcomeModal"
+import ThemeToggle from "@/components/ThemeToggle"
 
 interface Recommendation {
   toolName: string
@@ -232,6 +233,7 @@ export default function Home() {
   return (
     <>
       <WelcomeModal />
+      <ThemeToggle />
       <main className="min-h-screen bg-background flex items-center justify-center p-3 md:p-6 relative overflow-hidden">
         {/* Gradient Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
