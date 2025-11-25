@@ -24,7 +24,7 @@ export default function ThemeToggle() {
     ]
 
     return (
-        <div className="fixed bottom-6 right-6 z-40 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="fixed top-6 right-6 z-40 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="bg-card/80 backdrop-blur-lg border border-border/50 rounded-2xl shadow-2xl p-2 flex gap-1">
                 {themes.map(({ name, icon: Icon, label }) => (
                     <button
