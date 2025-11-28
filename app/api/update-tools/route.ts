@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTools, updateTools } from "@/lib/toolsService";
+import { getTools, updateTools, Tool } from "@/lib/toolsService";
 
 /**
  * Dynamic tool update endpoint
@@ -10,7 +10,7 @@ import { getTools, updateTools } from "@/lib/toolsService";
 export async function POST(req: NextRequest) {
     try {
         // Simulate tool discovery (future: real web search or API integration)
-        const mockNewTools = [
+        const mockNewTools: Tool[] = [
             {
                 name: "New AI Tool Example",
                 category: "metin" as const,
@@ -25,16 +25,42 @@ export async function POST(req: NextRequest) {
                 bestFor: ["test"],
                 strength: 8.5,
                 features: ["demo veri akisi"],
-                lastUpdated: new Date().toISOString()
+                lastUpdated: new Date().toISOString().slice(0, 10)
             }
         ];
 
         // Get current tools from KV
         const currentTools = await getTools();
 
+        // Normalize existing tools to satisfy Tool (ensure literal currency)
+        const normalizedExisting: Tool[] = currentTools.map((tool): Tool => ({
+            ...tool,
+            pricing: {
+                free: tool.pricing?.free ?? true,
+                freemium: tool.pricing?.freemium ?? false,
+                paidOnly: tool.pricing?.paidOnly ?? false,
+                startingPrice: tool.pricing?.startingPrice,
+                currency: "USD"
+            },
+            lastUpdated: tool.lastUpdated ?? new Date().toISOString().slice(0, 10)
+        }) satisfies Tool);
+
         // Merge with new tools (example logic: add if strength > 8.0)
-        const toolsToAdd = mockNewTools.filter(t => t.strength > 8.0);
-        const updatedTools = [...currentTools, ...toolsToAdd];
+        const toolsToAdd: Tool[] = mockNewTools
+            .filter(t => t.strength > 8.0)
+            .map((tool): Tool => ({
+                ...tool,
+                pricing: {
+                    free: tool.pricing?.free ?? true,
+                    freemium: tool.pricing?.freemium ?? false,
+                    paidOnly: tool.pricing?.paidOnly ?? false,
+                    startingPrice: tool.pricing?.startingPrice,
+                    currency: "USD"
+                },
+                lastUpdated: tool.lastUpdated ?? new Date().toISOString().slice(0, 10)
+            }) satisfies Tool);
+
+        const updatedTools: Tool[] = [...normalizedExisting, ...toolsToAdd];
 
         // Save back to KV
         await updateTools(updatedTools);

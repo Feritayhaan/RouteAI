@@ -20,9 +20,9 @@ export interface Tool {
     };
     bestFor: string[];
     strength: number;
-    demoUrl?: string;
     features?: string[];
     lastUpdated?: string;
+    deprecated?: boolean;
 }
 
 // Base Tools - 26 AI Tools (November 2025)
