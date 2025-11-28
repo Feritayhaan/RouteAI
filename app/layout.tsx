@@ -6,12 +6,12 @@ import { ThemeProvider } from "next-themes"
 import "./globals.css"
 
 const geist = Geist({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
 })
 const geistMono = Geist_Mono({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-mono",
   display: "swap",
 })
