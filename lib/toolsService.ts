@@ -6,6 +6,12 @@ import { Category } from './keywords';
 import { ParsedIntent } from './intent/types';
 
 const KV_TOOLS_KEY = 'tools';
+const DEFAULT_PRICING = {
+    free: false,
+    freemium: false,
+    paidOnly: false,
+    currency: "USD" as const
+};
 
 // Tool TypeScript Interface
 export interface Tool {
@@ -533,8 +539,13 @@ export async function getRankedToolsByCategory(
 ): Promise<Tool[]> {
     const all = await getTools();
 
-    // 1) Filter by category and exclude deprecated
-    let tools = all.filter((t) => t.category === category && !t.deprecated);
+    // 1) Filter by category and exclude deprecated, normalize pricing
+    let tools = all
+        .filter((t) => t.category === category && !t.deprecated)
+        .map((t) => ({
+            ...t,
+            pricing: t.pricing ?? DEFAULT_PRICING
+        }));
 
     // 2) Apply pricing filter
     if (options?.pricingFilter === "free") {
@@ -602,7 +613,10 @@ export async function getRankedToolsByIntent(
     pricingFilter?: "all" | "free" | "paid";
   }
 ): Promise<Tool[]> {
-  let tools = await getToolsByCategory(intent.primaryCategory);
+  let tools = (await getToolsByCategory(intent.primaryCategory)).map((t) => ({
+    ...t,
+    pricing: t.pricing ?? DEFAULT_PRICING,
+  }));
 
   if (intent.constraints.pricing === 'free') {
     tools = tools.filter((t) => t.pricing.free);
