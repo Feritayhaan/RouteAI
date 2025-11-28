@@ -31,8 +31,34 @@ const SYSTEM_PROMPT = `Sen RouteAI'in intent analyzer'isin. Kullanicinin istegin
 export async function parseUserIntent(
   query: string
 ): Promise<ParsedIntent | IntentParsingError> {
+  if (!openai) {
+    const fallbackCategory = detectCategory(query);
+    if (fallbackCategory) {
+      return {
+        primaryCategory: fallbackCategory,
+        confidence: 0.55,
+        userGoal: query,
+        secondaryCategories: [],
+        constraints: {},
+        keywords: query.split(/\s+/).filter(Boolean).slice(0, 8),
+        reasoning: 'OPENAI_API_KEY eksik, keyword fallback kullanildi.',
+      };
+    }
+
+    return {
+      code: 'API_ERROR',
+      message: 'OPENAI_API_KEY eksik, AI analiz yapilamadi.',
+      suggestions: [
+        'OPENAI_API_KEY ortam degiskenini ayarla',
+        'Redeploy ettikten sonra tekrar dene',
+      ],
+    };
+  }
+
+  const client = openai;
+
   try {
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
