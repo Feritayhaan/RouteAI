@@ -2,6 +2,7 @@
 // Manages AI tools in Upstash Redis with auto-initialization
 
 import { kv } from './kv';
+import { Category } from './keywords';
 
 const KV_TOOLS_KEY = 'tools';
 
@@ -518,6 +519,42 @@ export async function getTools(): Promise<Tool[]> {
         console.warn('[getTools] KV unavailable, returning BASE_TOOLS. Error:', error);
         return BASE_TOOLS;
     }
+}
+
+/**
+ * Get ranked tools by category with optional pricing filter
+ */
+export async function getRankedToolsByCategory(
+    category: Category,
+    options?: {
+        pricingFilter?: "all" | "free" | "paid";
+    }
+): Promise<Tool[]> {
+    const all = await getTools();
+
+    // 1) Filter by category and exclude deprecated
+    let tools = all.filter((t) => t.category === category && !t.deprecated);
+
+    // 2) Apply pricing filter
+    if (options?.pricingFilter === "free") {
+        tools = tools.filter((t) => t.pricing.free || t.pricing.freemium);
+    } else if (options?.pricingFilter === "paid") {
+        tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
+    }
+
+    // 3) Simple scoring: strength + free/freemium bonus
+    const scored = tools.map((t) => {
+        let score = t.strength ?? 8;
+        if (t.pricing.free) score += 0.3;
+        if (t.pricing.freemium) score += 0.1;
+        return { tool: t, score };
+    });
+
+    // 4) Sort by score
+    scored.sort((a, b) => b.score - a.score);
+
+    // 5) Return tool list
+    return scored.map((s) => s.tool);
 }
 
 /**

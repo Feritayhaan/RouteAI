@@ -2,27 +2,22 @@
 
 import { useState, useEffect, type KeyboardEvent } from "react"
 import { Button } from "@/components/ui/button"
-import { Sparkles, MessageCircle, Rocket, Clipboard, ChevronDown, ChevronUp, ExternalLink, Star, Lightbulb } from "lucide-react"
+import { Sparkles, MessageCircle, Rocket, ExternalLink, Star } from "lucide-react"
 import WelcomeModal from "@/components/WelcomeModal"
 import ThemeToggle from "@/components/ThemeToggle"
 
-interface Recommendation {
+interface RecommendationTool {
   toolName: string
   description: string
-  reason: string
-  suggestedPrompt: string
   url?: string
-  pricing?: {
-    free: boolean
-    freemium: boolean
-    paidOnly: boolean
-    startingPrice?: number
-    currency: "USD"
-  }
-  features?: string[]
-  bestFor?: string[]
-  lastUpdated?: string
-  category?: string
+  pricing?: any
+  strength?: number
+}
+
+interface Recommendation {
+  category: string
+  main: RecommendationTool
+  alternatives: RecommendationTool[]
 }
 
 // Tool URL mapping
@@ -57,15 +52,10 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [rating, setRating] = useState(0)
   const [ratingFeedback, setRatingFeedback] = useState(false)
-  const [expandedSections, setExpandedSections] = useState({
-    description: true,
-    reason: true,
-    prompt: true
-  })
 
   const renderPricingBadges = () => {
-    if (!recommendation?.pricing) return null
-    const { pricing } = recommendation
+    if (!recommendation?.main?.pricing) return null
+    const { pricing } = recommendation.main
     const tags: string[] = []
 
     if (pricing.free) tags.push("Free")
@@ -134,14 +124,6 @@ export default function Home() {
     }
   }
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }))
-  }
-
-
   const getToolUrl = (toolName: string): string => {
     return toolUrls[toolName] || "#"
   }
@@ -156,13 +138,13 @@ export default function Home() {
 
       // Aynı query ve toolName için mevcut rating'i bul
       const existingIndex = ratings.findIndex(
-        (r: any) => r.query === query && r.toolName === recommendation.toolName
+        (r: any) => r.query === query && r.toolName === recommendation.main.toolName
       )
 
       const ratingData = {
         id: Date.now().toString(),
         query: query,
-        toolName: recommendation.toolName,
+        toolName: recommendation.main.toolName,
         rating: newRating,
         timestamp: new Date().toISOString()
       }
@@ -198,7 +180,7 @@ export default function Home() {
       if (existingRatings) {
         const ratings = JSON.parse(existingRatings)
         const previousRating = ratings.find(
-          (r: any) => r.query === query && r.toolName === recommendation.toolName
+          (r: any) => r.query === query && r.toolName === recommendation.main.toolName
         )
 
         if (previousRating) {
@@ -225,11 +207,11 @@ export default function Home() {
           return
         }
 
-        const ratings = JSON.parse(existingRatings)
-        const totalRatings = ratings.length
+      const ratings = JSON.parse(existingRatings)
+      const totalRatings = ratings.length
 
-        // Araç bazlı analiz
-        const toolStats: Record<string, { total: number, count: number }> = {}
+      // Araç bazlı analiz
+      const toolStats: Record<string, { total: number, count: number }> = {}
         // Sorgu bazlı analiz
         const queryStats: Record<string, number> = {}
 
@@ -398,7 +380,7 @@ export default function Home() {
                         {/* Tool Name */}
                         <h2 className="text-xl md:text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight leading-tight break-words">
                           <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent dark:from-foreground dark:via-primary dark:to-primary/90">
-                            {recommendation.toolName}
+                            {recommendation.main.toolName}
                           </span>
                         </h2>
 
@@ -435,7 +417,7 @@ export default function Home() {
                     {/* Action Button - Go to Tool */}
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <a
-                        href={recommendation.url || getToolUrl(recommendation.toolName)}
+                        href={recommendation.main.url || getToolUrl(recommendation.main.toolName)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all duration-200 shadow-lg hover:shadow-xl text-sm md:text-base"
@@ -447,101 +429,51 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <div className="space-y-2 md:space-y-3">
-                    <button
-                      onClick={() => toggleSection('description')}
-                      className="flex items-center justify-between w-full group/section"
-                    >
-                      <div className="flex items-center gap-2 md:gap-3">
-                        <div className="p-1.5 md:p-2.5 rounded-lg bg-primary/10 dark:bg-primary/20">
-                          <Clipboard className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                        </div>
-                        <div className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-                          Açıklama
-                        </div>
+                  <div className="space-y-3 md:space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
+                        Ana öneri
                       </div>
-                      {expandedSections.description ? (
-                        <ChevronUp className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground group-hover/section:text-primary transition-colors flex-shrink-0" />
-                      ) : (
-                        <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground group-hover/section:text-primary transition-colors flex-shrink-0" />
-                      )}
-                    </button>
-                    {expandedSections.description && (
-                      <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground pl-10 md:pl-14 animate-in fade-in slide-in-from-top-2 duration-300">
-                        {recommendation.description}
+                      <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground">
+                        {recommendation.main.description}
                       </p>
-                    )}
-                  </div>
-
-                  {/* Reason */}
-                  <div className="space-y-2 md:space-y-3 pt-2 border-t border-border/50">
-                    <button
-                      onClick={() => toggleSection('reason')}
-                      className="flex items-center justify-between w-full group/section"
-                    >
-                      <div className="flex items-center gap-2 md:gap-3">
-                        <div className="p-1.5 md:p-2.5 rounded-lg bg-primary/10 dark:bg-primary/20">
-                          <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                        </div>
-                        <div className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-                          Neden Bu Araç?
-                        </div>
-                      </div>
-                      {expandedSections.reason ? (
-                        <ChevronUp className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground group-hover/section:text-primary transition-colors flex-shrink-0" />
-                      ) : (
-                        <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground group-hover/section:text-primary transition-colors flex-shrink-0" />
+                      {recommendation.main.url && (
+                        <a
+                          href={recommendation.main.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm text-primary underline mt-2 inline-block"
+                        >
+                          Araca git
+                        </a>
                       )}
-                    </button>
-                    {expandedSections.reason && (
-                      <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground pl-10 md:pl-14 animate-in fade-in slide-in-from-top-2 duration-300">
-                        {recommendation.reason}
-                      </p>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* Ready Prompt - Coming Soon */}
-                  <div className="space-y-2 md:space-y-3 pt-2 border-t border-border/50">
-                    <button
-                      onClick={() => toggleSection('prompt')}
-                      className="flex items-center justify-between w-full group/section"
-                    >
-                      <div className="flex items-center gap-2 md:gap-3">
-                        <div className="p-1.5 md:p-2.5 rounded-lg bg-primary/10 dark:bg-primary/20">
-                          <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                    {recommendation.alternatives && recommendation.alternatives.length > 0 && (
+                      <div className="mt-4 border-t border-border/50 pt-3">
+                        <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase">
+                          Alternatif araçlar
                         </div>
-                        <div className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-                          Hazır Prompt
-                        </div>
-                      </div>
-                      {expandedSections.prompt ? (
-                        <ChevronUp className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground group-hover/section:text-primary transition-colors flex-shrink-0" />
-                      ) : (
-                        <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground group-hover/section:text-primary transition-colors flex-shrink-0" />
-                      )}
-                    </button>
-                    {expandedSections.prompt && (
-                      <div className="pl-10 md:pl-14 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <div className="bg-muted/30 dark:bg-muted/20 border border-dashed border-border/50 rounded-xl p-4 md:p-5 text-center">
-                          <p className="text-sm md:text-base text-muted-foreground italic">
-                            🚀 Yakında eklenecek
-                          </p>
+                        <div className="flex flex-col gap-2">
+                          {recommendation.alternatives.map((alt) => (
+                            <a
+                              key={alt.toolName}
+                              href={alt.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-sm flex justify-between items-center hover:underline"
+                            >
+                              <span>{alt.toolName}</span>
+                              {alt.pricing?.startingPrice && (
+                                <span className="text-xs text-muted-foreground">
+                                  ${alt.pricing.startingPrice}/ay
+                                </span>
+                              )}
+                            </a>
+                          ))}
                         </div>
                       </div>
                     )}
-                  </div>
-
-                  {/* Benzer Araçlar Placeholder */}
-                  <div className="pt-3 md:pt-4 border-t border-border/50">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
-                      <div className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-                        Benzer Araçlar
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground/60 italic">
-                      <span>Yakında eklenecek</span>
-                    </div>
                   </div>
                 </div>
               </div>
