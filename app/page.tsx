@@ -12,6 +12,17 @@ interface Recommendation {
   reason: string
   suggestedPrompt: string
   url?: string
+  pricing?: {
+    free: boolean
+    freemium: boolean
+    paidOnly: boolean
+    startingPrice?: number
+    currency: "USD"
+  }
+  features?: string[]
+  bestFor?: string[]
+  lastUpdated?: string
+  category?: string
 }
 
 // Tool URL mapping
@@ -51,6 +62,34 @@ export default function Home() {
     reason: true,
     prompt: true
   })
+
+  const renderPricingBadges = () => {
+    if (!recommendation?.pricing) return null
+    const { pricing } = recommendation
+    const tags: string[] = []
+
+    if (pricing.free) tags.push("Free")
+    if (pricing.freemium) tags.push("Freemium")
+    if (pricing.paidOnly) tags.push("Paid")
+
+    return (
+      <div className="flex flex-wrap gap-1.5 md:gap-2">
+        {tags.map(tag => (
+          <span
+            key={tag}
+            className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-muted/60 dark:bg-muted/30 text-[10px] md:text-xs font-semibold text-muted-foreground"
+          >
+            {tag}
+          </span>
+        ))}
+        {pricing.startingPrice !== undefined && (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] md:text-xs font-semibold">
+            Baslangic: {pricing.currency} {pricing.startingPrice}
+          </span>
+        )}
+      </div>
+    )
+  }
 
   const getRecommendation = async () => {
     if (!query.trim()) return
@@ -352,6 +391,9 @@ export default function Home() {
                         <div className="inline-flex items-center gap-1.5 px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20">
                           <span className="text-[10px] md:text-xs font-semibold text-primary uppercase tracking-wide">AI</span>
                         </div>
+
+                        {/* Pricing badges */}
+                        {renderPricingBadges()}
 
                         {/* Tool Name */}
                         <h2 className="text-xl md:text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight leading-tight break-words">

@@ -14,11 +14,18 @@ export async function POST(req: NextRequest) {
             {
                 name: "New AI Tool Example",
                 category: "metin" as const,
-                description: "Örnek yeni araç (simülasyon)",
+                description: "Ornek yeni arac (simulasyon)",
                 url: "https://example.com",
-                free: true,
+                pricing: {
+                    free: true,
+                    freemium: true,
+                    paidOnly: false,
+                    currency: "USD"
+                },
                 bestFor: ["test"],
-                strength: 8.5
+                strength: 8.5,
+                features: ["demo veri akisi"],
+                lastUpdated: new Date().toISOString()
             }
         ];
 
@@ -34,17 +41,17 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            message: "Tool update sistemi aktif (simülasyon modu)",
+            message: "Tool update sistemi aktif (simulasyon modu)",
             currentToolCount: updatedTools.length,
             newToolsFound: toolsToAdd.length,
             newTools: toolsToAdd,
-            note: "Gerçek entegrasyon için HuggingFace API veya web scraping eklenebilir"
+            note: "Gercek entegrasyon icin HuggingFace API veya web scraping eklenebilir"
         });
 
     } catch (error) {
         console.error("Update tools error:", error);
         return NextResponse.json(
-            { error: "Tool güncelleme hatası" },
+            { error: "Tool guncelleme hatasi" },
             { status: 500 }
         );
     }
@@ -69,7 +76,7 @@ export async function GET() {
     } catch (error) {
         console.error("Get tools error:", error);
         return NextResponse.json(
-            { error: "Tool bilgisi alınamadı" },
+            { error: "Tool bilgisi alinamadi" },
             { status: 500 }
         );
     }
