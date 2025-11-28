@@ -12,6 +12,7 @@ interface RecommendationTool {
   url?: string
   pricing?: any
   strength?: number
+  why?: string
 }
 
 interface Recommendation {
@@ -437,6 +438,16 @@ export default function Home() {
                       <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground">
                         {recommendation.main.description}
                       </p>
+                      {recommendation.main.why && (
+                        <div className="mt-3 p-3 bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/20">
+                          <div className="flex items-start gap-2">
+                            <span className="text-primary text-xs font-semibold">💡</span>
+                            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                              {recommendation.main.why}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                       {recommendation.main.url && (
                         <a
                           href={recommendation.main.url}

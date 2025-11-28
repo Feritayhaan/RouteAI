@@ -3,6 +3,7 @@
 
 import { kv } from './kv';
 import { Category } from './keywords';
+import { ParsedIntent } from './intent/types';
 
 const KV_TOOLS_KEY = 'tools';
 
@@ -593,4 +594,83 @@ export async function getTopTools(limit: number = 5): Promise<Tool[]> {
 export async function findToolByName(name: string): Promise<Tool | undefined> {
     const tools = await getTools();
     return tools.find(tool => tool.name === name);
+}
+
+export async function getRankedToolsByIntent(
+  intent: ParsedIntent,
+  options?: {
+    pricingFilter?: "all" | "free" | "paid";
+  }
+): Promise<Tool[]> {
+  let tools = await getToolsByCategory(intent.primaryCategory);
+
+  if (intent.constraints.pricing === 'free') {
+    tools = tools.filter((t) => t.pricing.free);
+  } else if (intent.constraints.pricing === 'paid') {
+    tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
+  }
+
+  if (options?.pricingFilter === "free") {
+    tools = tools.filter((t) => t.pricing.free || t.pricing.freemium);
+  } else if (options?.pricingFilter === "paid") {
+    tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
+  }
+
+  const scored = tools.map((t) => {
+    let score = t.strength ?? 8;
+
+    const matchingKeywords = intent.keywords.filter(k => 
+      t.description.toLowerCase().includes(k.toLowerCase()) ||
+      t.bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
+    );
+    score += matchingKeywords.length * 0.2;
+
+    if (intent.constraints.pricing === 'free' && t.pricing.free) {
+      score += 0.5;
+    }
+
+    if (intent.constraints.speed === 'fast' && t.features?.some(f => 
+      f.toLowerCase().includes('fast') || f.toLowerCase().includes('quick')
+    )) {
+      score += 0.3;
+    }
+
+    if (intent.constraints.expertise === 'beginner') {
+      if (t.pricing.free) score += 0.3;
+    }
+
+    return { tool: t, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.map((s) => s.tool);
+}
+
+export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
+  const reasons: string[] = [];
+
+  const matchingKeywords = intent.keywords.filter(k =>
+    tool.bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
+  );
+  if (matchingKeywords.length > 0) {
+    reasons.push(`"${matchingKeywords[0]}" konusunda uzman`);
+  }
+
+  if (intent.constraints.pricing === 'free' && tool.pricing.free) {
+    reasons.push('ucretsiz kullanilabiliyor');
+  }
+
+  if (tool.strength > 9.5) {
+    reasons.push('sektorun en iyisi');
+  } else if (tool.strength > 9) {
+    reasons.push('cok yuksek kaliteli');
+  }
+
+  if (intent.constraints.expertise === 'beginner' && tool.pricing.free) {
+    reasons.push('yeni baslayanlar icin uygun');
+  }
+
+  return reasons.length > 0
+    ? `Bu araci sectim cunku: ${reasons.join(', ')}.`
+    : `${tool.name} bu kategori icin en iyi seceneklerden biri.`;
 }
