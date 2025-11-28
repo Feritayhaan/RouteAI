@@ -1,6 +1,6 @@
 // Keyword mapping for category detection
 
-export type Category = "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri";
+export type Category = "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri" | "kod";
 
 export const keywords: Record<Category, string[]> = {
     gorsel: ["görsel", "resim", "fotoğraf", "logo", "image", "art", "çiz", "tasarım", "design", "picture", "photo", "grafik"],
@@ -8,8 +8,10 @@ export const keywords: Record<Category, string[]> = {
     ses: ["müzik", "ses", "podcast", "voice", "audio", "music", "sound", "voice-over", "voiceover", "seslendirme"],
     arastirma: ["akademik", "makale", "tez", "research", "paper", "bilimsel", "araştırma", "kaynak", "literature"],
     video: ["video", "animasyon", "film", "clip", "animation", "movie", "klip"],
-    veri: ["veri", "analiz", "data", "excel", "chart", "grafik", "istatistik", "statistics", "dashboard"]
+    veri: ["veri", "analiz", "data", "excel", "chart", "grafik", "istatistik", "statistics", "dashboard"],
+    kod: ["kod", "code", "programlama", "coding", "yazılım", "software", "geliştirme", "development", "python", "javascript", "react", "github", "api", "function", "algoritma"]
 };
+
 
 // Detect category from user query
 export function detectCategory(query: string): Category | null {
