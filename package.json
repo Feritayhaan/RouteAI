@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts"
+    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts",
+    "sync:tools": "node scripts/sync-tools.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
