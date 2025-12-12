@@ -1,0 +1,104 @@
+[
+  {
+    "name": "Midjourney v7",
+    "category": "gorsel",
+    "description": "Sinematik kalitede gorsel uretimi icin AI sanat modeli",
+    "url": "https://www.midjourney.com",
+    "pricing": {
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 10,
+      "currency": "USD"
+    },
+    "bestFor": ["artistic images", "cinematic visuals", "concept art"],
+    "strength": 9.8,
+    "features": ["Draft mode", "voice control", "Discord integration"],
+    "lastUpdated": "2025-11-28"
+  },
+  {
+    "name": "ChatGPT (GPT-4o Image)",
+    "category": "gorsel",
+    "description": "Metin dogrulugu ve UI tasarimi icin cok yonlu gorsel AI",
+    "url": "https://chat.openai.com",
+    "pricing": {
+      "free": true,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 20,
+      "currency": "USD"
+    },
+    "bestFor": ["UI wireframes", "diagrams", "text rendering"],
+    "strength": 9.7,
+    "features": ["Perfect text accuracy", "instruction following", "multi-step editing"],
+    "lastUpdated": "2025-11-28"
+  },
+  {
+    "name": "Gemini 2.5 Pro",
+    "category": "metin",
+    "description": "Google'in multimodal AI platformu",
+    "url": "https://gemini.google.com",
+    "pricing": {
+      "free": true,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 19.99,
+      "currency": "USD"
+    },
+    "bestFor": ["multimodal tasks", "Google integration", "research"],
+    "strength": 9.5,
+    "features": ["1M token context", "Deep Research", "NotebookLM"],
+    "lastUpdated": "2025-11-28"
+  },
+  {
+    "name": "GitHub Copilot",
+    "category": "kod",
+    "description": "Microsoft ve OpenAI'nin AI kod tamamlama araci",
+    "url": "https://github.com/features/copilot",
+    "pricing": {
+      "free": true,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 10,
+      "currency": "USD"
+    },
+    "bestFor": ["code completion", "test cases", "documentation"],
+    "strength": 9.7,
+    "features": ["Real-time suggestions", "multi-IDE support", "chat feature"],
+    "lastUpdated": "2025-11-28"
+  },
+  {
+    "name": "Perplexity AI",
+    "category": "arastirma",
+    "description": "Gercek zamanli arama ve arastirma motoru",
+    "url": "https://www.perplexity.ai",
+    "pricing": {
+      "free": true,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 20,
+      "currency": "USD"
+    },
+    "bestFor": ["research", "fact-checking", "cited answers"],
+    "strength": 9.5,
+    "features": ["Real-time search", "citations", "Pro Search"],
+    "lastUpdated": "2025-11-28"
+  },
+  {
+    "name": "Sora 2 (OpenAI)",
+    "category": "video",
+    "description": "En gelismis AI video uretim modeli",
+    "url": "https://openai.com/sora",
+    "pricing": {
+      "free": true,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 20,
+      "currency": "USD"
+    },
+    "bestFor": ["cinematic videos", "storytelling", "marketing"],
+    "strength": 9.9,
+    "features": ["20s videos", "1080p", "spatial audio"],
+    "lastUpdated": "2025-11-28"
+  }
+]
