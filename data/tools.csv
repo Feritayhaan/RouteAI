@@ -1,7 +1,0 @@
-name,category,description,url,free,freemium,paidOnly,startingPrice,currency,bestFor,features,lastUpdated,strength
-Midjourney v7,gorsel,Sinematik kalitede gorsel uretimi icin AI sanat modeli,https://www.midjourney.com,false,false,true,10,USD,"artistic images|cinematic visuals|concept art","Draft mode|voice control|Discord integration",2025-11-28,9.8
-ChatGPT (GPT-4o Image),gorsel,Metin dogrulugu ve UI tasarimi icin cok yonlu gorsel AI,https://chat.openai.com,true,true,false,20,USD,"UI wireframes|diagrams|text rendering","Perfect text accuracy|instruction following|multi-step editing",2025-11-28,9.7
-Gemini 2.5 Pro,metin,Google'in multimodal AI platformu,https://gemini.google.com,true,true,false,19.99,USD,"multimodal tasks|Google integration|research","1M token context|Deep Research|NotebookLM",2025-11-28,9.5
-GitHub Copilot,kod,Microsoft ve OpenAI'nin AI kod tamamlama araci,https://github.com/features/copilot,true,true,false,10,USD,"code completion|test cases|documentation","Real-time suggestions|multi-IDE support|chat feature",2025-11-28,9.7
-Perplexity AI,arastirma,Gercek zamanli arama ve arastirma motoru,https://www.perplexity.ai,true,true,false,20,USD,"research|fact-checking|cited answers","Real-time search|citations|Pro Search",2025-11-28,9.5
-Sora 2 (OpenAI),video,En gelismis AI video uretim modeli,https://openai.com/sora,true,true,false,20,USD,"cinematic videos|storytelling|marketing","20s videos|1080p|spatial audio",2025-11-28,9.9
