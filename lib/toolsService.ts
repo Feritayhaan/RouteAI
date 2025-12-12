@@ -1,8 +1,6 @@
 // RouteAI Tools Service - Vercel KV Storage
 // Manages AI tools in Upstash Redis with auto-initialization
 
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
 import { kv } from './kv';
 import { Category } from './keywords';
 import { ParsedIntent } from './intent/types';
@@ -14,7 +12,6 @@ const DEFAULT_PRICING = {
     paidOnly: false,
     currency: "USD" as const
 };
-const TOOLS_DATA_PATH = path.join(process.cwd(), 'data', 'tools.json');
 
 // Tool TypeScript Interface
 export interface Tool {
@@ -515,32 +512,10 @@ async function initializeTools(): Promise<void> {
     }
 }
 
-async function loadLocalTools(): Promise<Tool[]> {
-    try {
-        const content = await readFile(TOOLS_DATA_PATH, 'utf-8');
-        const parsed = JSON.parse(content) as Tool[];
-        if (Array.isArray(parsed)) {
-            return parsed.map((tool) => ({
-                ...tool,
-                pricing: tool.pricing ?? DEFAULT_PRICING,
-            }));
-        }
-    } catch (error) {
-        console.warn('[getTools] Local tools.json unavailable, skipping. Error:', error);
-    }
-
-    return [];
-}
-
 /**
  * Get all tools from KV (with auto-initialization)
  */
 export async function getTools(): Promise<Tool[]> {
-    const fileTools = await loadLocalTools();
-    if (fileTools.length > 0) {
-        return fileTools;
-    }
-
     try {
         let tools = await kv.get<Tool[]>(KV_TOOLS_KEY);
 
