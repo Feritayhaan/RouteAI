@@ -33,6 +33,11 @@ export interface Tool {
     deprecated?: boolean;
 }
 
+export interface ToolFilters {
+    pricingFilter?: "all" | "free" | "paid";
+    tools?: Tool[];
+}
+
 // Base Tools - 26 AI Tools (November 2025)
 export const BASE_TOOLS: Tool[] = [
     // GORSEL ARACLAR (10)
@@ -607,56 +612,91 @@ export async function findToolByName(name: string): Promise<Tool | undefined> {
     return tools.find(tool => tool.name === name);
 }
 
+function computeKeywordSimilarity(tool: Tool, intent: ParsedIntent): number {
+    const keywords = intent.keywords?.map((k) => k.toLowerCase()) ?? [];
+    const bestFor = tool.bestFor?.map((b) => b.toLowerCase()) ?? [];
+
+    if (keywords.length === 0 || bestFor.length === 0) return 0;
+
+    const matches = keywords.reduce((count, keyword) => {
+        return count + (bestFor.some((bf) => bf.includes(keyword)) ? 1 : 0);
+    }, 0);
+
+    return matches / Math.max(keywords.length, bestFor.length, 1);
+}
+
+function matchesPricingFilter(tool: Tool, filter?: "all" | "free" | "paid"): boolean {
+    if (!filter || filter === "all") return true;
+    const pricing = tool.pricing ?? DEFAULT_PRICING;
+    if (filter === "free") return pricing.free || pricing.freemium;
+    if (filter === "paid") return pricing.paidOnly || pricing.freemium;
+    return true;
+}
+
+function matchesPricingPreference(tool: Tool, intent: ParsedIntent): boolean {
+    const pricing = tool.pricing ?? DEFAULT_PRICING;
+    if (intent.constraints.pricing === 'free') return pricing.free;
+    if (intent.constraints.pricing === 'paid') return pricing.paidOnly || pricing.freemium;
+    return true;
+}
+
+/**
+ * Calculate overall tool score blending similarity, pricing alignment and inherent strength.
+ */
+export function scoreTool(tool: Tool, intent: ParsedIntent, filters?: ToolFilters): number {
+    const pricing = tool.pricing ?? DEFAULT_PRICING;
+    const strengthScore = tool.strength ?? 8;
+
+    const similarityScore = computeKeywordSimilarity(tool, intent) * 4; // Up to ~4 bonus points
+
+    let pricingScore = 0;
+    if (intent.constraints.pricing === 'free') {
+        pricingScore += pricing.free ? 2 : pricing.freemium ? 1 : -3;
+    } else if (intent.constraints.pricing === 'paid') {
+        pricingScore += pricing.paidOnly || pricing.freemium ? 1 : -1;
+    } else if (intent.constraints.pricing === 'freemium' && pricing.freemium) {
+        pricingScore += 0.5;
+    }
+
+    if (filters?.pricingFilter === 'free' && (pricing.free || pricing.freemium)) {
+        pricingScore += 0.5;
+    } else if (filters?.pricingFilter === 'paid' && (pricing.paidOnly || pricing.freemium)) {
+        pricingScore += 0.3;
+    }
+
+    if (intent.constraints.speed === 'fast' && tool.features?.some((f) => f.toLowerCase().includes('fast'))) {
+        pricingScore += 0.2;
+    }
+
+    if (intent.constraints.expertise === 'beginner' && pricing.free) {
+        pricingScore += 0.2;
+    }
+
+    return strengthScore + similarityScore + pricingScore;
+}
+
 export async function getRankedToolsByIntent(
   intent: ParsedIntent,
-  options?: {
-    pricingFilter?: "all" | "free" | "paid";
-  }
+  options?: ToolFilters
 ): Promise<Tool[]> {
-  let tools = (await getToolsByCategory(intent.primaryCategory)).map((t) => ({
+  let tools = (options?.tools ?? (await getToolsByCategory(intent.primaryCategory))).map((t) => ({
     ...t,
     pricing: t.pricing ?? DEFAULT_PRICING,
   }));
 
-  if (intent.constraints.pricing === 'free') {
-    tools = tools.filter((t) => t.pricing.free);
-  } else if (intent.constraints.pricing === 'paid') {
-    tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
+  tools = tools.filter((tool) => matchesPricingPreference(tool, intent));
+
+  if (options?.pricingFilter) {
+    tools = tools.filter((tool) => matchesPricingFilter(tool, options.pricingFilter));
   }
 
-  if (options?.pricingFilter === "free") {
-    tools = tools.filter((t) => t.pricing.free || t.pricing.freemium);
-  } else if (options?.pricingFilter === "paid") {
-    tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
-  }
+  const scored = tools
+    .map((tool) => ({
+      tool,
+      score: scoreTool(tool, intent, options),
+    }))
+    .sort((a, b) => b.score - a.score);
 
-  const scored = tools.map((t) => {
-    let score = t.strength ?? 8;
-
-    const matchingKeywords = intent.keywords.filter(k => 
-      t.description.toLowerCase().includes(k.toLowerCase()) ||
-      t.bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
-    );
-    score += matchingKeywords.length * 0.2;
-
-    if (intent.constraints.pricing === 'free' && t.pricing.free) {
-      score += 0.5;
-    }
-
-    if (intent.constraints.speed === 'fast' && t.features?.some(f => 
-      f.toLowerCase().includes('fast') || f.toLowerCase().includes('quick')
-    )) {
-      score += 0.3;
-    }
-
-    if (intent.constraints.expertise === 'beginner') {
-      if (t.pricing.free) score += 0.3;
-    }
-
-    return { tool: t, score };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
   return scored.map((s) => s.tool);
 }
 
