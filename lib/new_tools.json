@@ -1,0 +1,1326 @@
+[
+  {
+    "name": "Claude Opus 4.5",
+    "category": "text",
+    "tasks": [
+      "coding",
+      "agents",
+      "computer-use",
+      "research",
+      "spreadsheets"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited usage",
+    "url": "https://claude.ai",
+    "launchOrUpdate": "2025-11-24",
+    "strengthReason": "Best-in-class coding (80.9% SWE-bench), 30-hour autonomous tasks, 65% fewer tokens, $5/$25 per million tokens",
+    "source": "https://www.anthropic.com/news/claude-opus-4-5"
+  },
+  {
+    "name": "Gemini 3 Pro",
+    "category": "text",
+    "tasks": [
+      "multimodal-reasoning",
+      "vibe-coding",
+      "video-analysis",
+      "agents"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic access",
+    "url": "https://gemini.google.com",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "1M token context, 1487 Elo on WebDev Arena, state-of-the-art reasoning, Deep Think mode",
+    "source": "https://blog.google/products/gemini/gemini-3/"
+  },
+  {
+    "name": "FLUX.2 (Black Forest Labs)",
+    "category": "image",
+    "tasks": [
+      "text-to-image",
+      "image-editing",
+      "multi-reference"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "FLUX.2 [dev] non-commercial",
+    "url": "https://bfl.ai/blog/flux-2",
+    "launchOrUpdate": "2025-11-24",
+    "strengthReason": "32B parameters, 4MP editing, up to 10 reference images, robust text rendering, Apache 2.0 VAE",
+    "source": "https://bfl.ai/blog/flux-2"
+  },
+  {
+    "name": "GPT-5.1",
+    "category": "text",
+    "tasks": [
+      "adaptive-reasoning",
+      "coding",
+      "agents",
+      "conversation"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "available to free users",
+    "url": "https://chat.openai.com",
+    "launchOrUpdate": "2025-11-12",
+    "strengthReason": "2-3x faster, 50% fewer tokens, 76.3% SWE-bench, adaptive reasoning, no-reasoning mode",
+    "source": "https://www.humai.blog/ai-news-november-2025-monthly-digest/"
+  },
+  {
+    "name": "GPT-5.1 Codex-Max",
+    "category": "code",
+    "tasks": [
+      "long-horizon-coding",
+      "agentic-coding",
+      "multi-step-refactoring"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://chat.openai.com",
+    "launchOrUpdate": "2025-11-19",
+    "strengthReason": "24-hour task execution, context compaction, effort parameter, millions of tokens context",
+    "source": "https://www.marketingprofs.com/opinions/2025/54030/ai-update-november-21-2025-ai-news-and-views-from-the-past-week"
+  },
+  {
+    "name": "Grok 4.1",
+    "category": "text",
+    "tasks": [
+      "creative-writing",
+      "reasoning",
+      "real-time-search",
+      "conversation"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited on X",
+    "url": "https://grok.com",
+    "launchOrUpdate": "2025-11-17",
+    "strengthReason": "1483 Elo (Thinking), 4.22% hallucination rate, #1 EQ-Bench3, E2E encryption on X Chat",
+    "source": "https://x.ai/news/grok-4-1"
+  },
+  {
+    "name": "Google Antigravity (AI IDE)",
+    "category": "code",
+    "tasks": [
+      "agentic-development",
+      "multi-agent-coding",
+      "autonomous-debugging"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "free",
+    "freeTier": "full access for individuals",
+    "url": "https://antigravity.google",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "Agent-first IDE, Manager view for multi-agent orchestration, supports Gemini 3/Claude/GPT-OSS",
+    "source": "https://developers.googleblog.com/en/build-with-google-antigravity-our-new-agentic-development-platform/"
+  },
+  {
+    "name": "ERNIE 5.0 (Baidu)",
+    "category": "text",
+    "tasks": [
+      "multimodal-generation",
+      "video-understanding",
+      "reasoning"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "audio",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "via ERNIE Bot",
+    "url": "https://yiyan.baidu.com",
+    "launchOrUpdate": "2025-11-13",
+    "strengthReason": "2.4T parameters, natively omni-modal, #2 on LMSYS Arena, beats GPT-5 on visual benchmarks",
+    "source": "https://www.prnewswire.com/news-releases/baidu-unveils-ernie-5-0-and-a-series-of-ai-applications-at-baidu-world-2025--ramps-up-global-push"
+  },
+  {
+    "name": "World Labs Marble",
+    "category": "3d",
+    "tasks": [
+      "3d-world-generation",
+      "text-to-3d",
+      "image-to-3d",
+      "vr-content"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "3d"
+    ],
+    "pricing": "freemium",
+    "freeTier": "free tier available",
+    "url": "https://marble.worldlabs.ai",
+    "launchOrUpdate": "2025-11-12",
+    "strengthReason": "First commercial 3D world model, Chisel editor, exports to Gaussian splats/meshes, Vision Pro/Quest 3 compatible",
+    "source": "https://techcrunch.com/2025/11/12/fei-fei-lis-world-labs-speeds-up-the-world-model-race-with-marble-its-first-commercial-product"
+  },
+  {
+    "name": "ElevenLabs Scribe v2 Realtime",
+    "category": "audio",
+    "tasks": [
+      "speech-to-text",
+      "real-time-transcription",
+      "multilingual-stt"
+    ],
+    "modalities": [
+      "audio",
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://elevenlabs.io",
+    "launchOrUpdate": "2025-11-12",
+    "strengthReason": "150ms latency, 93.5% FLEURS accuracy, 90+ languages, $0.40/hour, negative latency prediction",
+    "source": "https://elevenlabs.io/blog/scribe-v2-realtime-in-elevenlabs-agents"
+  },
+  {
+    "name": "NotebookLM Deep Research",
+    "category": "research",
+    "tasks": [
+      "autonomous-research",
+      "document-synthesis",
+      "web-research"
+    ],
+    "modalities": [
+      "text",
+      "audio"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic features",
+    "url": "https://notebooklm.google.com",
+    "launchOrUpdate": "2025-11-16",
+    "strengthReason": "Autonomous research agent, browses hundreds of sites, generates comprehensive reports",
+    "source": "https://www.buildfastwithai.com/blogs/7-breakthrough-ai-tools-november-2025"
+  },
+  {
+    "name": "Microsoft MMCTAgent",
+    "category": "research",
+    "tasks": [
+      "video-reasoning",
+      "long-video-analysis",
+      "multi-agent-reasoning"
+    ],
+    "modalities": [
+      "video",
+      "image",
+      "text"
+    ],
+    "pricing": "research",
+    "freeTier": "research preview",
+    "url": "https://microsoft.com",
+    "launchOrUpdate": "2025-11-16",
+    "strengthReason": "Multi-agent video reasoning, hours-long video analysis, Planner-Critic architecture",
+    "source": "https://www.buildfastwithai.com/blogs/7-breakthrough-ai-tools-november-2025"
+  },
+  {
+    "name": "Google DeepMind SIMA 2",
+    "category": "agent",
+    "tasks": [
+      "3d-world-navigation",
+      "autonomous-learning",
+      "game-agents"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "3d"
+    ],
+    "pricing": "research",
+    "freeTier": "research preview",
+    "url": "https://deepmind.google",
+    "launchOrUpdate": "2025-11-19",
+    "strengthReason": "Gemini-powered gaming agent, learns through trial and error, text/voice/drawing control",
+    "source": "https://www.humai.blog/ai-news-november-2025-monthly-digest/"
+  },
+  {
+    "name": "Jasper AI Image Suite",
+    "category": "image",
+    "tasks": [
+      "bulk-image-editing",
+      "background-removal",
+      "upscaling"
+    ],
+    "modalities": [
+      "image",
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "free generators",
+    "url": "https://jasper.ai",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "Bulk background removal/replacement, uncrop, 16x upscale, product image scaling",
+    "source": "https://www.jasper.ai/blog/announcing-ai-image-suite"
+  },
+  {
+    "name": "Perplexity AI Pro/Max",
+    "category": "research",
+    "tasks": [
+      "web-research",
+      "citation",
+      "video-generation",
+      "task-scheduling"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic research queries",
+    "url": "https://perplexity.ai",
+    "launchOrUpdate": "2025-11-22",
+    "strengthReason": "Gemini 3 Pro, Kimi 2, Grok 4.1 integration, Spaces for task scheduling, 8-second video",
+    "source": "https://releasebot.io/updates/perplexity-ai"
+  },
+  {
+    "name": "FLUX.1 Pro",
+    "category": "image",
+    "tasks": [
+      "text-to-image",
+      "professional-generation"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://flux1ai.com",
+    "launchOrUpdate": "2025-11-27",
+    "strengthReason": "State-of-the-art prompt following, visual quality, output diversity, commercial license",
+    "source": "https://flux1ai.com/pro"
+  },
+  {
+    "name": "Claude Haiku 4.5",
+    "category": "text",
+    "tasks": [
+      "fast-coding",
+      "sub-agent-orchestration",
+      "computer-use"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "available to free users",
+    "url": "https://claude.ai",
+    "launchOrUpdate": "2025-10-14",
+    "strengthReason": "90% Sonnet 4.5 performance, fastest model, safest model in alignment tests, sub-agent orchestration",
+    "source": "https://www.anthropic.com/news/claude-haiku-4-5"
+  },
+  {
+    "name": "OpenAI Atlas (AI Browser)",
+    "category": "productivity",
+    "tasks": [
+      "ai-browsing",
+      "research-automation",
+      "agent-mode"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic features",
+    "url": "https://atlas.openai.com",
+    "launchOrUpdate": "2025-10-21",
+    "strengthReason": "AI-native Chromium browser, Agent Mode for task automation, Ask ChatGPT sidebar",
+    "source": "https://www.reuters.com/technology/openai-unveils-ai-browser-atlas-2025-10-21/"
+  },
+  {
+    "name": "Sora 2",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "video-generation",
+      "storyboarding",
+      "audio-sync"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://sora.com",
+    "launchOrUpdate": "2025-10-15",
+    "strengthReason": "Storyboards beta, 10-second default with extensions, synchronized audio, cameos feature",
+    "source": "https://help.openai.com/en/articles/12593142-sora-release-notes"
+  },
+  {
+    "name": "Synthesia 3.0",
+    "category": "video",
+    "tasks": [
+      "avatar-video",
+      "interactive-agents",
+      "dubbing"
+    ],
+    "modalities": [
+      "text",
+      "video",
+      "audio"
+    ],
+    "pricing": "paid",
+    "freeTier": "free trial",
+    "url": "https://www.synthesia.io",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "Interactive video agents, live dialogue, 50+ avatars, 30+ language dubbing",
+    "source": "https://www.scrumlaunch.com/blog/ai-news-october-2025"
+  },
+  {
+    "name": "Suno v4.5-All (Free Tier)",
+    "category": "audio",
+    "tasks": [
+      "music-generation"
+    ],
+    "modalities": [
+      "text",
+      "audio"
+    ],
+    "pricing": "free",
+    "freeTier": "full v4.5-All access",
+    "url": "https://suno.com",
+    "launchOrUpdate": "2025-10-28",
+    "strengthReason": "Pro-level model in free tier, faster generation, improved vocals",
+    "source": "https://www.techradar.com/ai-platforms-assistants/chatgpt/suno-just-replaced-its-free-ai-music-model-with-v4-5-all"
+  },
+  {
+    "name": "Udio (UMG Licensed)",
+    "category": "audio",
+    "tasks": [
+      "music-generation",
+      "voice-generation"
+    ],
+    "modalities": [
+      "text",
+      "audio"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited credits",
+    "url": "https://udio.com",
+    "launchOrUpdate": "2025-10-29",
+    "strengthReason": "UMG licensing settlement, Voices feature, legally licensed training data",
+    "source": "https://www.universalmusic.com/universal-music-group-and-udio-announce-udios-first-strategic-agreements"
+  },
+  {
+    "name": "GitHub Copilot (Agent Mode)",
+    "category": "code",
+    "tasks": [
+      "agentic-coding",
+      "command-generation",
+      "multi-model"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://github.com/copilot",
+    "launchOrUpdate": "2025-10-25",
+    "strengthReason": "Agent mode as autonomous peer programmer, GPT-5/Claude 4.5/Gemini 2.5 Pro/Grok support",
+    "source": "https://tsttechnology.io/blog/ai-tech-trends-oct-2025"
+  },
+  {
+    "name": "n8n AI Workflow Builder",
+    "category": "agent",
+    "tasks": [
+      "workflow-automation",
+      "ai-orchestration",
+      "no-code"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited workflows",
+    "url": "https://n8n.io",
+    "launchOrUpdate": "2025-10-06",
+    "strengthReason": "Natural language to automation, built-in data tables, native Python runner",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "NotebookLM",
+    "category": "research",
+    "tasks": [
+      "document-analysis",
+      "research-synthesis",
+      "learning-guides"
+    ],
+    "modalities": [
+      "text",
+      "audio",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic features",
+    "url": "https://notebooklm.google.com",
+    "launchOrUpdate": "2025-10-07",
+    "strengthReason": "Grounded AI, Google Drive integration, Learning Guide mode",
+    "source": "https://www.youreverydayai.com/ep-627-notebooklm-new-features-whats-next-and-complete-walkthrough"
+  },
+  {
+    "name": "Qwen3-VL (4B/8B)",
+    "category": "text",
+    "tasks": [
+      "image-understanding",
+      "code-generation",
+      "agent-control"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "pricing": "free",
+    "freeTier": "full open-source",
+    "url": "https://huggingface.co/Alibaba-NLP/Qwen3-VL",
+    "launchOrUpdate": "2025-10-15",
+    "strengthReason": "Dense compact models, FP8 quantization, edge-friendly, GUI control",
+    "source": "https://www.marktechpost.com/2025/10/14/alibabas-qwen-ai-releases-compact-dense-qwen3-vl"
+  },
+  {
+    "name": "Google Gemini for Home",
+    "category": "productivity",
+    "tasks": [
+      "smart-home-control",
+      "natural-language-commands"
+    ],
+    "modalities": [
+      "text",
+      "audio"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic features",
+    "url": "https://home.google.com",
+    "launchOrUpdate": "2025-10-02",
+    "strengthReason": "Replaces Google Assistant, conversational AI, context-aware smart home",
+    "source": "https://blog.google/technology/ai/google-ai-updates-october-2025/"
+  },
+  {
+    "name": "Google Veo 3.1",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "image-to-video",
+      "audio-sync"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "pricing": "paid",
+    "freeTier": "limited via Gemini",
+    "url": "https://gemini.google.com",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "Native audio generation, multi-shot sequencing, character consistency",
+    "source": "https://www.scrumlaunch.com/blog/ai-news-october-2025"
+  },
+  {
+    "name": "Adcreative.ai",
+    "category": "productivity",
+    "tasks": [
+      "ad-creative-generation",
+      "marketing-assets"
+    ],
+    "modalities": [
+      "image",
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "limited trial",
+    "url": "https://www.adcreative.ai",
+    "launchOrUpdate": "2025-10-15",
+    "strengthReason": "Campaign-specific creative generation, conversion-optimized designs",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "Cursor (AI Code Editor)",
+    "category": "code",
+    "tasks": [
+      "code-generation",
+      "refactoring",
+      "multi-file-editing"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "paid",
+    "freeTier": "limited trial",
+    "url": "https://cursor.sh",
+    "launchOrUpdate": "2025-11-09",
+    "strengthReason": "Multi-file codebase awareness, Composer mode, supports GPT-4o/Claude/Gemini",
+    "source": "https://www.humai.blog/best-ai-coding-tools-in-2025-cursor-vs-github-copilot-vs-codeium"
+  },
+  {
+    "name": "Claude Sonnet 4.5",
+    "category": "text",
+    "tasks": [
+      "coding",
+      "reasoning",
+      "long-form-analysis",
+      "compliance"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited usage",
+    "url": "https://claude.ai",
+    "launchOrUpdate": "2025-09-29",
+    "strengthReason": "Best coding model (SWE-bench), reduced hallucinations, frontier performance",
+    "source": "https://techcrunch.com/2025/09/29/anthropic-launches-claude-sonnet-4-5-its-best-ai-model-for-coding"
+  },
+  {
+    "name": "Sora 2 (Launch)",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "video-generation",
+      "audio-sync"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://sora.com",
+    "launchOrUpdate": "2025-09-30",
+    "strengthReason": "GPT-3.5 moment for video, Olympic gymnastics quality, frame-accurate audio",
+    "source": "https://openai.com/index/sora-2/"
+  },
+  {
+    "name": "Replit Agent",
+    "category": "code",
+    "tasks": [
+      "app-generation",
+      "full-stack-development",
+      "deployment"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited usage",
+    "url": "https://replit.com",
+    "launchOrUpdate": "2025-09-16",
+    "strengthReason": "200 min autonomous development, database integration, instant deployment",
+    "source": "https://www.urapptech.com/blogs/replit-ai-agent"
+  },
+  {
+    "name": "Windsurf (Codeium)",
+    "category": "code",
+    "tasks": [
+      "code-completion",
+      "code-chat",
+      "debugging"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "freemium",
+    "freeTier": "unlimited completions and chat",
+    "url": "https://windsurf.com",
+    "launchOrUpdate": "2025-09-15",
+    "strengthReason": "Free-forever tier, IDE-agnostic, persistent context memory",
+    "source": "https://talent500.com/blog/best-ai-tools-for-coding-2025/"
+  },
+  {
+    "name": "Arc Browser AI (Arc Max)",
+    "category": "productivity",
+    "tasks": [
+      "research-synthesis",
+      "tab-management",
+      "summarization"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic browsing",
+    "url": "https://arc.net",
+    "launchOrUpdate": "2025-09-28",
+    "strengthReason": "Multi-tab context awareness, automated research, AI integration",
+    "source": "https://www.firstaimovers.com/p/arc-browser-ai-productivity-guide-2025"
+  },
+  {
+    "name": "Gamma (AI Presentations)",
+    "category": "productivity",
+    "tasks": [
+      "presentation-generation",
+      "slide-design"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited presentations",
+    "url": "https://gamma.app",
+    "launchOrUpdate": "2025-09-15",
+    "strengthReason": "One-click presentation creation, beautiful design auto-generation",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "OpusClip (Video Repurposing)",
+    "category": "video",
+    "tasks": [
+      "short-form-video",
+      "content-repurposing"
+    ],
+    "modalities": [
+      "video",
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited clips",
+    "url": "https://opusclip.com",
+    "launchOrUpdate": "2025-09-15",
+    "strengthReason": "Automatic short-form extraction, captions, multi-platform optimization",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "Fathom (Meeting Assistant)",
+    "category": "productivity",
+    "tasks": [
+      "meeting-transcription",
+      "note-taking",
+      "action-items"
+    ],
+    "modalities": [
+      "audio",
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited transcriptions",
+    "url": "https://www.fathom.video",
+    "launchOrUpdate": "2025-09-15",
+    "strengthReason": "Real-time meeting notes, automatic action items, CRM integration",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "Amazon Lens Live",
+    "category": "productivity",
+    "tasks": [
+      "visual-search",
+      "product-recognition"
+    ],
+    "modalities": [
+      "image"
+    ],
+    "pricing": "free",
+    "freeTier": "full access",
+    "url": "https://amazon.com",
+    "launchOrUpdate": "2025-09-05",
+    "strengthReason": "Real-time visual search, product recognition, shopping integration",
+    "source": "https://tsttechnology.io/blog/tech-updates-mid-september-2025"
+  },
+  {
+    "name": "Apple Intelligence",
+    "category": "productivity",
+    "tasks": [
+      "device-automation",
+      "live-translation",
+      "mail-summarization"
+    ],
+    "modalities": [
+      "text",
+      "audio"
+    ],
+    "pricing": "free",
+    "freeTier": "full access for Apple users",
+    "url": "https://apple.com",
+    "launchOrUpdate": "2025-09-15",
+    "strengthReason": "Live Translation, Genmoji with ChatGPT, system-wide AI integration",
+    "source": "https://tsttechnology.io/blog/tech-updates-mid-september-2025"
+  },
+  {
+    "name": "Base44 (No-Code App Platform)",
+    "category": "agent",
+    "tasks": [
+      "app-building",
+      "dashboard-creation",
+      "workflow-automation"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited apps",
+    "url": "https://www.base44.ai",
+    "launchOrUpdate": "2025-09-06",
+    "strengthReason": "GPT-5 chat integration, domain purchasing, version control",
+    "source": "https://amitsony.com/top-8-ai-tools-in-september-2025"
+  },
+  {
+    "name": "Gemini Robotics 1.5",
+    "category": "agent",
+    "tasks": [
+      "robot-control",
+      "physical-agents",
+      "multi-step-tasks"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "3d"
+    ],
+    "pricing": "research",
+    "freeTier": "research preview",
+    "url": "https://deepmind.google",
+    "launchOrUpdate": "2025-09-01",
+    "strengthReason": "Era of physical agents, cross-robot learning, complex multi-step tasks",
+    "source": "https://blog.google/technology/ai/google-ai-updates-september-2025/"
+  },
+  {
+    "name": "Anyword (Copy AI)",
+    "category": "text",
+    "tasks": [
+      "copywriting",
+      "ad-copy-generation"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited word generation",
+    "url": "https://www.anyword.com",
+    "launchOrUpdate": "2025-11-05",
+    "strengthReason": "Performance scoring, compliance checking, marketing-focused copy",
+    "source": "https://aitoolsguide.in/top-ai-tools-november-2025-update"
+  },
+  {
+    "name": "Writesonic (SEO Content)",
+    "category": "text",
+    "tasks": [
+      "long-form-content",
+      "seo-optimization"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited monthly words",
+    "url": "https://writesonic.com",
+    "launchOrUpdate": "2025-11-05",
+    "strengthReason": "SERP-based outline generator, longer-form editor, SEO features",
+    "source": "https://aitoolsguide.in/top-ai-tools-november-2025-update"
+  },
+  {
+    "name": "Copy.ai",
+    "category": "text",
+    "tasks": [
+      "copywriting",
+      "social-media-content"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited words per month",
+    "url": "https://www.copy.ai",
+    "launchOrUpdate": "2025-11-05",
+    "strengthReason": "Custom AI agents, workflow automation, enterprise focus",
+    "source": "https://aitoolsdirectory.net/blog/the-ai-turning-point-november-2025"
+  },
+  {
+    "name": "ClickUp Brain (Project AI)",
+    "category": "agent",
+    "tasks": [
+      "project-automation",
+      "task-generation"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://clickup.com",
+    "launchOrUpdate": "2025-11-05",
+    "strengthReason": "Project-level AI automation, task suggestions, workflow optimization",
+    "source": "https://aitoolsguide.in/top-ai-tools-november-2025-update"
+  },
+  {
+    "name": "Simplified (Content & Design)",
+    "category": "productivity",
+    "tasks": [
+      "content-generation",
+      "design-creation"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited designs",
+    "url": "https://www.simplified.com",
+    "launchOrUpdate": "2025-11-05",
+    "strengthReason": "One-click content templates, integrated copywriting",
+    "source": "https://aitoolsguide.in/top-ai-tools-november-2025-update"
+  },
+  {
+    "name": "Murf AI",
+    "category": "audio",
+    "tasks": [
+      "voice-generation",
+      "narration"
+    ],
+    "modalities": [
+      "text",
+      "audio"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited voice generation",
+    "url": "https://murf.ai",
+    "launchOrUpdate": "2025-09-15",
+    "strengthReason": "Professional voice synthesis, multi-language support",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "Attio (Sales AI CRM)",
+    "category": "vertical-finance",
+    "tasks": [
+      "lead-intelligence",
+      "sales-automation"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://www.attio.com",
+    "launchOrUpdate": "2025-11-15",
+    "strengthReason": "CRM with built-in AI for deal prioritization",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "Teal (Resume Builder AI)",
+    "category": "productivity",
+    "tasks": [
+      "resume-optimization",
+      "job-tailoring"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited features",
+    "url": "https://www.tealhq.com",
+    "launchOrUpdate": "2025-11-15",
+    "strengthReason": "AI resume optimization, ATS optimization",
+    "source": "https://www.synthesia.io/post/ai-tools"
+  },
+  {
+    "name": "Kling AI 2.1",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "image-to-video"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "free daily credits",
+    "url": "https://klingai.com",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "3D Spatiotemporal Attention, Master mode at 1080p, best image-to-video",
+    "source": "https://www.thepromptbuddy.com/prompts/7-best-ai-video-generators-november-2025-kling-veo-and-rising-stars"
+  },
+  {
+    "name": "Pika 2.5",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "video-editing",
+      "style-transfer"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited generations",
+    "url": "https://pika.art",
+    "launchOrUpdate": "2025-11-01",
+    "strengthReason": "Ultra-realistic generations, enhanced physics, prompt adherence",
+    "source": "https://pika.art"
+  },
+  {
+    "name": "Luma Dream Machine (Ray2)",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "image-to-video",
+      "video-editing"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited generations",
+    "url": "https://lumalabs.ai",
+    "launchOrUpdate": "2025-09-01",
+    "strengthReason": "Modify with Instructions, Camera Motion Concepts, 4K upscale",
+    "source": "https://skywork.ai/blog/luma-ai-dream-machine-review-2025-features-pricing-comparisons/"
+  },
+  {
+    "name": "Runway Gen-3 Alpha",
+    "category": "video",
+    "tasks": [
+      "text-to-video",
+      "image-to-video",
+      "video-editing"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited credits",
+    "url": "https://runwayml.com",
+    "launchOrUpdate": "2025-09-01",
+    "strengthReason": "Enhanced SDK, advanced camera control, production-oriented features",
+    "source": "https://www.tomsguide.com/ai/ai-image-video/runways-gen-3-turbo-ai-video-generator-just-got-a-big-upgrade-heres-whats-new"
+  },
+  {
+    "name": "Gemini 3 Pro Image",
+    "category": "image",
+    "tasks": [
+      "image-generation",
+      "text-rendering",
+      "grounded-generation"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "via Gemini app",
+    "url": "https://gemini.google.com",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "4K generation, legible text rendering, Google Search grounding",
+    "source": "https://ai.google.dev/gemini-api/docs/gemini-3"
+  },
+  {
+    "name": "Ideogram 3.0",
+    "category": "image",
+    "tasks": [
+      "text-in-image",
+      "logo-design",
+      "poster-creation"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited credits daily",
+    "url": "https://www.ideogram.ai",
+    "launchOrUpdate": "2025-09-01",
+    "strengthReason": "Best text-in-image rendering, style reference control, 4.3B styles",
+    "source": "https://tech-now.io/en/blogs/ideogram-3-0-review-2025-the-ultimate-ai-image-generator-for-text-style-control"
+  },
+  {
+    "name": "Google Deep Research",
+    "category": "research",
+    "tasks": [
+      "multi-step-research",
+      "synthesis",
+      "analysis"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited queries",
+    "url": "https://gemini.google.com",
+    "launchOrUpdate": "2025-09-01",
+    "strengthReason": "Extended multi-step analysis, grounded reasoning, improved citations",
+    "source": "https://www.datastudios.org/post/perplexity-ai-free-models-releases-and-capabilities-in-2025"
+  },
+  {
+    "name": "Snapchat × Perplexity Integration",
+    "category": "research",
+    "tasks": [
+      "conversational-search",
+      "verified-answers"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "basic search",
+    "url": "https://snapchat.com",
+    "launchOrUpdate": "2025-11-06",
+    "strengthReason": "Perplexity AI in Snapchat, $400M deal, 1B users access",
+    "source": "https://web.swipeinsight.app/topics/perplexity"
+  },
+  {
+    "name": "Microsoft Copilot Pro",
+    "category": "productivity",
+    "tasks": [
+      "document-drafting",
+      "image-creation",
+      "data-analysis"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "paid",
+    "freeTier": "free tier available",
+    "url": "https://copilot.microsoft.com",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "GPT-5 default in Copilot Chat, Work IQ intelligence layer",
+    "source": "https://www.humai.blog/ai-news-november-2025-monthly-digest/"
+  },
+  {
+    "name": "Google Vertex AI Agent Builder",
+    "category": "agent",
+    "tasks": [
+      "agent-building",
+      "scaling",
+      "governance"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "none",
+    "url": "https://cloud.google.com/vertex-ai",
+    "launchOrUpdate": "2025-11-05",
+    "strengthReason": "ADK API (7M+ downloads), Agent Engine, native identities, Agent Garden",
+    "source": "https://www.humai.blog/ai-news-november-2025-monthly-digest/"
+  },
+  {
+    "name": "Replit AI Integrations",
+    "category": "code",
+    "tasks": [
+      "multi-model-access",
+      "instant-ai"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "freemium",
+    "freeTier": "limited",
+    "url": "https://replit.com",
+    "launchOrUpdate": "2025-11-14",
+    "strengthReason": "300+ AI models instant access, no API keys needed",
+    "source": "https://vavoza.com/this-weeks-biggest-tech-news-and-trending-ai-tools-in-november-2025-vz5/"
+  },
+  {
+    "name": "Mistral Large 2.1",
+    "category": "text",
+    "tasks": [
+      "coding",
+      "reasoning",
+      "multilingual"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "freemium",
+    "freeTier": "via Le Chat",
+    "url": "https://mistral.ai",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "Speculative editing, web search with citations, Canvas",
+    "source": "https://docs.mistral.ai/getting-started/changelog"
+  },
+  {
+    "name": "Pixtral Large (Mistral)",
+    "category": "text",
+    "tasks": [
+      "document-understanding",
+      "image-analysis"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "freemium",
+    "freeTier": "via Le Chat",
+    "url": "https://mistral.ai",
+    "launchOrUpdate": "2025-11-18",
+    "strengthReason": "State-of-art document and image understanding",
+    "source": "https://docs.mistral.ai/getting-started/changelog"
+  },
+  {
+    "name": "Meta Devmate",
+    "category": "code",
+    "tasks": [
+      "code-assistance",
+      "debugging",
+      "model-integration"
+    ],
+    "modalities": [
+      "text",
+      "code"
+    ],
+    "pricing": "free",
+    "freeTier": "full access",
+    "url": "https://github.com/facebookincubator/devmate",
+    "launchOrUpdate": "2025-10-02",
+    "strengthReason": "Integrates rival models (Claude), open-source",
+    "source": "https://www.aiapps.com/blog/ai-news-breakthroughs-launches-trends"
+  },
+  {
+    "name": "Grok Imagine v0.9 (xAI)",
+    "category": "video",
+    "tasks": [
+      "video-generation",
+      "spoken-characters"
+    ],
+    "modalities": [
+      "text",
+      "video",
+      "audio"
+    ],
+    "pricing": "freemium",
+    "freeTier": "free on X",
+    "url": "https://grok.com",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "Short videos with spoken characters and background music",
+    "source": "https://www.scrumlaunch.com/blog/ai-news-october-2025"
+  },
+  {
+    "name": "IBM Granite 4.0 Nano",
+    "category": "text",
+    "tasks": [
+      "local-ai",
+      "on-device-inference"
+    ],
+    "modalities": [
+      "text"
+    ],
+    "pricing": "free",
+    "freeTier": "full open-source",
+    "url": "https://ibm.com",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "Local AI models, on-device inference",
+    "source": "https://www.scrumlaunch.com/blog/ai-news-october-2025"
+  },
+  {
+    "name": "Adobe Firefly Image Model 5",
+    "category": "image",
+    "tasks": [
+      "image-generation",
+      "video-creation"
+    ],
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "pricing": "paid",
+    "freeTier": "limited",
+    "url": "https://firefly.adobe.com",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "Studio-quality generative audio/video, enterprise integration",
+    "source": "https://tsttechnology.io/blog/ai-tech-trends-oct-2025"
+  },
+  {
+    "name": "Gemini 2.5 Computer Use",
+    "category": "agent",
+    "tasks": [
+      "ui-interaction",
+      "web-automation",
+      "form-filling"
+    ],
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "pricing": "paid",
+    "freeTier": "API access",
+    "url": "https://ai.google.dev",
+    "launchOrUpdate": "2025-10-01",
+    "strengthReason": "AI agents interact directly with UIs, navigate websites, fill forms",
+    "source": "https://blog.google/technology/ai/google-ai-updates-october-2025/"
+  },
+  {
+    "name": "Google Pixel Drop AI Features",
+    "category": "productivity",
+    "tasks": [
+      "photo-editing",
+      "scam-detection"
+    ],
+    "modalities": [
+      "image",
+      "audio"
+    ],
+    "pricing": "free",
+    "freeTier": "Pixel users",
+    "url": "https://store.google.com/pixel",
+    "launchOrUpdate": "2025-11-12",
+    "strengthReason": "Generative AI Nano remix, 3D figurines, Scam Detection",
+    "source": "https://tsttechnology.io/blog/ai-tech-news-mid-november"
+  },
+  {
+    "name": "Comma AI (OpenPilot)",
+    "category": "vertical-auto",
+    "tasks": [
+      "self-driving",
+      "driver-assistance"
+    ],
+    "modalities": [
+      "image",
+      "text"
+    ],
+    "pricing": "paid",
+    "freeTier": "open-source software",
+    "url": "https://comma.ai",
+    "launchOrUpdate": "2025-11-01",
+    "strengthReason": "Level 2 self-driving for 325+ cars, one-time fee",
+    "source": "https://vavoza.com/this-weeks-biggest-tech-news-and-trending-ai-tools-in-november-2025-vz5/"
+  }
+]
