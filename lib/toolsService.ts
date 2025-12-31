@@ -1,0 +1,991 @@
+// RouteAI Tools Service - Vercel KV Storage
+// Manages AI tools in Upstash Redis with auto-initialization
+
+import { kv } from './kv';
+import { Category } from './keywords';
+import { ParsedIntent } from './intent/types';
+
+const KV_TOOLS_KEY = 'tools';
+const DEFAULT_PRICING = {
+    free: false,
+    freemium: false,
+    paidOnly: false,
+    currency: "USD" as const
+};
+
+// Tool TypeScript Interface
+export interface Tool {
+    name: string;
+    category: "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri" | "kod";
+    secondaryCategories?: Category[]; // NEW: Tools can span multiple categories
+    description: string;
+    url: string;
+    pricing: {
+        free: boolean;
+        freemium: boolean;
+        paidOnly: boolean;
+        startingPrice?: number;
+        currency: "USD";
+    };
+    bestFor: string[];
+    strength: number;
+    features?: string[];
+    lastUpdated?: string;
+    deprecated?: boolean;
+
+    // NEW: Workflow integration fields
+    inputTypes?: ('text' | 'image' | 'audio' | 'video' | 'data' | 'code')[];
+    outputTypes?: ('text' | 'image' | 'audio' | 'video' | 'data' | 'code' | 'document')[];
+    skillLevel?: 'beginner' | 'intermediate' | 'advanced';
+    speed?: 'fast' | 'medium' | 'slow';
+}
+
+export interface ToolFilters {
+    pricingFilter?: "all" | "free" | "paid";
+    tools?: Tool[];
+}
+
+// Base Tools - 26 AI Tools (November 2025)
+export const BASE_TOOLS: Tool[] = [
+    // GORSEL ARACLAR (10)
+    {
+        name: "Midjourney v7",
+        category: "gorsel",
+        description: "Sinematik kalitede sanat ve gorsel uretimi icin yapay zeka",
+        url: "https://www.midjourney.com",
+        pricing: {
+            free: false,
+            freemium: false,
+            paidOnly: true,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["artistic images", "cinematic visuals", "concept art", "poster design", "character design", "comic art"],
+        strength: 9.8,
+        features: ["Draft mode", "voice control", "Discord integration", "commercial rights"],
+        lastUpdated: "2025-11-28",
+        // NEW workflow fields
+        inputTypes: ["text"],
+        outputTypes: ["image"],
+        skillLevel: "intermediate",
+        speed: "medium"
+    },
+    {
+        name: "ChatGPT (GPT-4o Image)",
+        category: "gorsel",
+        secondaryCategories: ["metin"],
+        description: "Metin dogrulugu ve UI tasarimi icin en iyi yapay zeka",
+        url: "https://chat.openai.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["UI wireframes", "diagrams", "text rendering", "signage", "infographic"],
+        strength: 9.7,
+        features: ["Perfect text accuracy", "instruction following", "multi-step editing"],
+        lastUpdated: "2025-11-28",
+        inputTypes: ["text", "image"],
+        outputTypes: ["image", "text"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+    {
+        name: "DALL-E 3",
+        category: "gorsel",
+        description: "ChatGPT ile entegre fotogercekci gorsel uretimi",
+        url: "https://openai.com/dall-e-3",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["photorealistic images", "precise prompts", "text integration", "product shots"],
+        strength: 9.5,
+        features: ["Unlimited generation", "commercial rights", "aspect ratios", "GPT-4 access"],
+        lastUpdated: "2025-11-28",
+        inputTypes: ["text"],
+        outputTypes: ["image"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+    {
+        name: "Google Imagen 4",
+        category: "gorsel",
+        description: "Hizli ve gercekci gorsel uretimi icin Google AI",
+        url: "https://deepmind.google/technologies/imagen-4/",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 0.035,
+            currency: "USD"
+        },
+        bestFor: ["photorealism", "fast generation", "Google ecosystem"],
+        strength: 9.4,
+        features: ["2K resolution", "SynthID watermarking", "multi-aspect ratio"],
+        lastUpdated: "2025-11-28",
+        inputTypes: ["text"],
+        outputTypes: ["image"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+    {
+        name: "Adobe Firefly Image 4",
+        category: "gorsel",
+        description: "Marka guvenli AI gorsel duzenleme ve olusturma",
+        url: "https://firefly.adobe.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 9.99,
+            currency: "USD"
+        },
+        bestFor: ["brand-safe editing", "commercial use", "Adobe integration"],
+        strength: 9.2,
+        features: ["C2PA credentials", "IP indemnity", "4000 credits/month", "legal training data"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Stable Diffusion XL",
+        category: "gorsel",
+        description: "Acik kaynak, ozellestirilebilir gorsel uretimi",
+        url: "https://stability.ai",
+        pricing: {
+            free: true,
+            freemium: false,
+            paidOnly: false,
+            startingPrice: 0,
+            currency: "USD"
+        },
+        bestFor: ["high-volume generation", "customization", "offline use"],
+        strength: 9.0,
+        features: ["Open source", "unlimited use", "ControlNet", "LoRA training", "1024x1024"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Flux.1 Pro",
+        category: "gorsel",
+        description: "Hizli ve yuksek kaliteli gorsel uretimi",
+        url: "https://flux-ai.io",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 7.99,
+            currency: "USD"
+        },
+        bestFor: ["fast generation", "high quality", "batch processing"],
+        strength: 8.9,
+        features: ["$0.04/image API", "Kontext editing", "10x faster", "commercial rights"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Leonardo AI",
+        category: "gorsel",
+        description: "Takimlar icin uygun fiyatli AI gorsel olusturma",
+        url: "https://leonardo.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 12,
+            currency: "USD"
+        },
+        bestFor: ["team collaboration", "custom models", "game assets"],
+        strength: 8.8,
+        features: ["8500 tokens/month", "private generation", "10 custom models", "canvas"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Ideogram 2.0",
+        category: "gorsel",
+        description: "Mukemmel metin render ozellikli AI gorsel araci",
+        url: "https://ideogram.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 7,
+            currency: "USD"
+        },
+        bestFor: ["text rendering", "posters", "typography", "logos"],
+        strength: 8.7,
+        features: ["Character consistency", "image upload", "400 priority credits", "batch generation"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Canva AI (Magic Studio)",
+        category: "gorsel",
+        description: "25+ AI ozellikli tasarim ve duzenleme platformu",
+        url: "https://www.canva.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["social media", "presentations", "branding", "marketing"],
+        strength: 8.5,
+        features: ["Magic Design", "140M+ assets", "1TB storage", "Brand Kit", "Background Remover"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // METIN ARACLARI (5)
+    {
+        name: "ChatGPT (GPT-5)",
+        category: "metin",
+        description: "En guclu cok amacli AI sohbet ve yazma asistani",
+        url: "https://chat.openai.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["content writing", "research", "coding", "creative writing", "analysis"],
+        strength: 9.9,
+        features: ["GPT-5", "image generation", "web browsing", "custom GPTs", "voice mode", "data analysis"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Claude AI (Claude 4)",
+        category: "metin",
+        description: "Uzun metin analizi ve yazma icin ustun AI",
+        url: "https://claude.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["long documents", "analysis", "coding", "research", "safety"],
+        strength: 9.7,
+        features: ["200K context", "Projects", "Artifacts", "Constitutional AI", "document analysis"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Gemini 2.5 Pro",
+        category: "metin",
+        description: "Google'in multimodal AI platformu",
+        url: "https://gemini.google.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 19.99,
+            currency: "USD"
+        },
+        bestFor: ["multimodal tasks", "Google integration", "research", "code"],
+        strength: 9.5,
+        features: ["1M token context", "Deep Research", "NotebookLM", "Workspace integration"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Jasper AI",
+        category: "metin",
+        description: "Pazarlama icerigi icin ozellesmis AI yazma araci",
+        url: "https://www.jasper.ai",
+        pricing: {
+            free: false,
+            freemium: false,
+            paidOnly: true,
+            startingPrice: 39,
+            currency: "USD"
+        },
+        bestFor: ["marketing copy", "SEO content", "brand voice", "campaigns"],
+        strength: 9.0,
+        features: ["Brand Voice", "50+ templates", "SEO mode", "team collaboration", "API"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Copy.ai",
+        category: "metin",
+        description: "Pazarlama ekipleri icin AI icerik otomasyonu",
+        url: "https://www.copy.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 29,
+            currency: "USD"
+        },
+        bestFor: ["ad copy", "sales emails", "GTM workflows", "automation"],
+        strength: 8.8,
+        features: ["Workflows", "5 seats", "unlimited chat", "500 workflow credits"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // KOD ARACLARI (3)
+    {
+        name: "GitHub Copilot",
+        category: "kod",
+        description: "Microsoft ve OpenAI'nin AI kod tamamlama araci",
+        url: "https://github.com/features/copilot",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["code completion", "function generation", "test cases", "documentation"],
+        strength: 9.7,
+        features: ["Real-time suggestions", "multi-IDE support", "chat feature", "GPT-4"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Cursor",
+        category: "kod",
+        description: "VS Code tabanli gelismis AI kod editoru",
+        url: "https://cursor.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["multi-file edits", "codebase queries", "AI agent mode"],
+        strength: 9.6,
+        features: ["GPT-4 & Claude integration", "agent mode", ".cursorrules", "$20 API credits"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Claude Code (Anthropic)",
+        category: "kod",
+        description: "Terminal tabanli derin kod analizi araci",
+        url: "https://claude.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["terminal coding", "code explanation", "documentation generation"],
+        strength: 9.5,
+        features: ["Multi-file editing", "terminal commands", "deep codebase understanding"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // SES ARACLARI (2)
+    {
+        name: "ElevenLabs",
+        category: "ses",
+        description: "En gercekci AI ses klonlama ve TTS platformu",
+        url: "https://elevenlabs.io",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 5,
+            currency: "USD"
+        },
+        bestFor: ["voice cloning", "audiobooks", "dubbing", "voice agents"],
+        strength: 9.8,
+        features: ["10K+ voices", "70+ languages", "voice cloning", "API", "music generation"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Murf.ai",
+        category: "ses",
+        description: "Profesyonel AI voiceover platformu",
+        url: "https://murf.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 23,
+            currency: "USD"
+        },
+        bestFor: ["voiceovers", "presentations", "e-learning", "ads"],
+        strength: 9.2,
+        features: ["200+ voices", "pitch/speed control", "dubbing", "voice cloning", "text-to-speech"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // VIDEO ARACLARI (2)
+    {
+        name: "Sora 2 (OpenAI)",
+        category: "video",
+        description: "En gelismis AI video uretim modeli",
+        url: "https://openai.com/sora",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["cinematic videos", "storytelling", "marketing", "filmmaking"],
+        strength: 9.9,
+        features: ["20s videos", "1080p", "spatial audio", "draft mode", "voice control"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Google Veo 3",
+        category: "video",
+        description: "Hizli ve yuksek kaliteli AI video uretimi",
+        url: "https://deepmind.google/technologies/veo/",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 19.99,
+            currency: "USD"
+        },
+        bestFor: ["fast generation", "high quality", "Google integration"],
+        strength: 9.7,
+        features: ["$0.15-0.40/second", "Veo 3 Fast", "audio synthesis"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // ARASTIRMA ARACLARI (2)
+    {
+        name: "Perplexity AI",
+        category: "arastirma",
+        description: "AI destekli arama ve arastirma motoru",
+        url: "https://www.perplexity.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["research", "fact-checking", "cited answers", "deep research"],
+        strength: 9.5,
+        features: ["Real-time search", "citations", "GPT-4 access", "Pro Search", "unlimited queries"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Elicit AI",
+        category: "arastirma",
+        description: "Akademik makale analizi ve literatur taramasi",
+        url: "https://elicit.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["literature review", "data extraction", "systematic reviews"],
+        strength: 9.2,
+        features: ["125M+ papers", "2400 extractions/year", "20 columns", "research alerts"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // VERI ARACLARI (2)
+    {
+        name: "Tableau",
+        category: "veri",
+        description: "Endustri standardi veri gorsellestirme platformu",
+        url: "https://www.tableau.com",
+        pricing: {
+            free: false,
+            freemium: false,
+            paidOnly: true,
+            startingPrice: 15,
+            currency: "USD"
+        },
+        bestFor: ["enterprise BI", "data visualization", "dashboards", "analytics"],
+        strength: 9.6,
+        features: ["Interactive dashboards", "Einstein AI", "70+ data sources", "mobile analytics"],
+        lastUpdated: "2025-11-28"
+    },
+    {
+        name: "Microsoft Power BI",
+        category: "veri",
+        description: "Microsoft ekosistemi icin AI destekli BI araci",
+        url: "https://powerbi.microsoft.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 14,
+            currency: "USD"
+        },
+        bestFor: ["Microsoft users", "business intelligence", "corporate reporting"],
+        strength: 9.5,
+        features: ["Copilot AI", "natural language Q&A", "forecasting", "Excel integration"],
+        lastUpdated: "2025-11-28"
+    },
+
+    // ============================================
+    // NEW TOOLS - SUNUMLAR (Presentations)
+    // ============================================
+    {
+        name: "Gamma AI",
+        category: "gorsel",
+        secondaryCategories: ["metin"],
+        description: "AI destekli sunum, döküman ve web sitesi oluşturma",
+        url: "https://gamma.app",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["sunum", "presentation", "slayt", "pitch deck", "döküman", "one-pager", "proposal"],
+        strength: 9.4,
+        features: ["AI content generation", "Beautiful templates", "Collaboration", "Export PDF/PPT"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["document", "image"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+    {
+        name: "Beautiful.ai",
+        category: "gorsel",
+        description: "Otomatik düzenlemeli akıllı sunum tasarımı",
+        url: "https://beautiful.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 12,
+            currency: "USD"
+        },
+        bestFor: ["sunum", "presentation", "slayt", "pitch deck", "iş sunumu", "business presentation"],
+        strength: 9.1,
+        features: ["Smart templates", "Auto-layout", "Team collaboration", "PPT export"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["document"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+    {
+        name: "Tome",
+        category: "gorsel",
+        secondaryCategories: ["metin"],
+        description: "Yapay zeka ile hikaye anlatımlı sunumlar oluştur",
+        url: "https://tome.app",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["sunum", "presentation", "storytelling", "pitch deck", "portfolio", "one-pager"],
+        strength: 9.0,
+        features: ["AI content", "DALL-E integration", "Animations", "Share links"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["document", "image"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+
+    // ============================================
+    // NEW TOOLS - MÜZİK (Music)
+    // ============================================
+    {
+        name: "Suno AI",
+        category: "ses",
+        description: "Metinden tam şarkı oluşturan AI müzik üreticisi",
+        url: "https://suno.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["müzik", "şarkı", "music", "song", "beat", "jingle", "soundtrack", "melodi"],
+        strength: 9.6,
+        features: ["Full songs with vocals", "Multiple genres", "Lyrics generation", "Cover songs"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["audio"],
+        skillLevel: "beginner",
+        speed: "medium"
+    },
+    {
+        name: "Udio",
+        category: "ses",
+        description: "Yüksek kaliteli AI müzik üretimi",
+        url: "https://udio.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 10,
+            currency: "USD"
+        },
+        bestFor: ["müzik", "şarkı", "music", "song", "production", "audio", "soundtrack"],
+        strength: 9.5,
+        features: ["High fidelity audio", "Extended tracks", "Style control", "Commercial use"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["audio"],
+        skillLevel: "beginner",
+        speed: "medium"
+    },
+
+    // ============================================
+    // NEW TOOLS - VİDEO
+    // ============================================
+    {
+        name: "Runway Gen-3",
+        category: "video",
+        description: "Metinden videoya ve video düzenleme AI aracı",
+        url: "https://runwayml.com",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 12,
+            currency: "USD"
+        },
+        bestFor: ["video", "video üretimi", "video generation", "montaj", "efekt", "b-roll"],
+        strength: 9.5,
+        features: ["Text-to-video", "Video editing", "Green screen", "Motion brush"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text", "image", "video"],
+        outputTypes: ["video"],
+        skillLevel: "intermediate",
+        speed: "slow"
+    },
+    {
+        name: "Pika Labs",
+        category: "video",
+        description: "Yaratıcı AI video üretimi ve animasyon",
+        url: "https://pika.art",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 8,
+            currency: "USD"
+        },
+        bestFor: ["video", "animasyon", "animation", "video generation", "kısa video", "social video"],
+        strength: 9.2,
+        features: ["Image-to-video", "Style control", "Lip sync", "Expand canvas"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text", "image"],
+        outputTypes: ["video"],
+        skillLevel: "beginner",
+        speed: "medium"
+    },
+
+    // ============================================
+    // NEW TOOLS - SES (Voice)
+    // ============================================
+    {
+        name: "ElevenLabs",
+        category: "ses",
+        description: "En gerçekçi AI seslendirme ve ses klonlama",
+        url: "https://elevenlabs.io",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 5,
+            currency: "USD"
+        },
+        bestFor: ["seslendirme", "voiceover", "dubbing", "ses", "podcast", "audiobook", "voice clone"],
+        strength: 9.7,
+        features: ["Voice cloning", "29 languages", "Dubbing", "Audio isolation"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["audio"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+
+    // ============================================
+    // NEW TOOLS - ARAŞTIRMA
+    // ============================================
+    {
+        name: "Perplexity AI",
+        category: "arastirma",
+        description: "Kaynak gösterilen AI araştırma ve soru-cevap",
+        url: "https://perplexity.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 20,
+            currency: "USD"
+        },
+        bestFor: ["araştırma", "research", "soru cevap", "bilgi", "kaynak", "fact-check"],
+        strength: 9.4,
+        features: ["Cited answers", "Web search", "File upload", "Focus modes"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["text"],
+        skillLevel: "beginner",
+        speed: "fast"
+    },
+
+    // ============================================
+    // NEW TOOLS - GÖRSEL (Text-heavy)
+    // ============================================
+    {
+        name: "Ideogram",
+        category: "gorsel",
+        description: "Metin yazılı görsellerde en iyi AI aracı",
+        url: "https://ideogram.ai",
+        pricing: {
+            free: true,
+            freemium: true,
+            paidOnly: false,
+            startingPrice: 7,
+            currency: "USD"
+        },
+        bestFor: ["logo", "poster", "banner", "text in image", "afis", "sosyal medya görseli", "flyer"],
+        strength: 9.3,
+        features: ["Perfect text rendering", "Logo generation", "Multiple styles", "Commercial use"],
+        lastUpdated: "2025-12-31",
+        inputTypes: ["text"],
+        outputTypes: ["image"],
+        skillLevel: "beginner",
+        speed: "fast"
+    }
+];
+
+/**
+ * Initialize tools in KV if not exists
+ */
+async function initializeTools(): Promise<void> {
+    try {
+        const existing = await kv.get<Tool[]>(KV_TOOLS_KEY);
+        if (!existing || existing.length === 0) {
+            await kv.set(KV_TOOLS_KEY, BASE_TOOLS);
+            console.log('[init] Tools initialized in KV with', BASE_TOOLS.length, 'tools');
+        }
+    } catch (error) {
+        console.warn('[init] KV unavailable, using BASE_TOOLS fallback. Error:', error);
+    }
+}
+
+/**
+ * Get all tools from KV (with auto-initialization)
+ */
+export async function getTools(): Promise<Tool[]> {
+    try {
+        let tools = await kv.get<Tool[]>(KV_TOOLS_KEY);
+
+        // Auto-initialize if empty
+        if (!tools || tools.length === 0) {
+            console.log('[init] No tools found in KV, initializing...');
+            await initializeTools();
+            tools = await kv.get<Tool[]>(KV_TOOLS_KEY);
+        }
+
+        return tools || BASE_TOOLS; // Fallback to BASE_TOOLS if KV fails
+    } catch (error) {
+        console.warn('[getTools] KV unavailable, returning BASE_TOOLS. Error:', error);
+        return BASE_TOOLS;
+    }
+}
+
+/**
+ * Get ranked tools by category with optional pricing filter
+ */
+export async function getRankedToolsByCategory(
+    category: Category,
+    options?: {
+        pricingFilter?: "all" | "free" | "paid";
+    }
+): Promise<Tool[]> {
+    const all = await getTools();
+
+    // 1) Filter by category and exclude deprecated, normalize pricing
+    let tools = all
+        .filter((t) => t.category === category && !t.deprecated)
+        .map((t) => ({
+            ...t,
+            pricing: t.pricing ?? DEFAULT_PRICING
+        }));
+
+    // 2) Apply pricing filter
+    if (options?.pricingFilter === "free") {
+        tools = tools.filter((t) => t.pricing.free || t.pricing.freemium);
+    } else if (options?.pricingFilter === "paid") {
+        tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
+    }
+
+    // 3) Simple scoring: strength + free/freemium bonus
+    const scored = tools.map((t) => {
+        let score = t.strength ?? 8;
+        if (t.pricing.free) score += 0.3;
+        if (t.pricing.freemium) score += 0.1;
+        return { tool: t, score };
+    });
+
+    // 4) Sort by score
+    scored.sort((a, b) => b.score - a.score);
+
+    // 5) Return tool list
+    return scored.map((s) => s.tool);
+}
+
+/**
+ * Update tools in KV
+ */
+export async function updateTools(tools: Tool[]): Promise<void> {
+    try {
+        await kv.set(KV_TOOLS_KEY, tools);
+        console.log('[update] Tools updated in KV:', tools.length, 'tools');
+    } catch (error) {
+        console.warn('[update] KV unavailable, skipping KV update. Error:', error);
+    }
+}
+
+/**
+ * Get tools by category
+ */
+export async function getToolsByCategory(category: string): Promise<Tool[]> {
+    const tools = await getTools();
+    return tools.filter(tool => tool.category === category);
+}
+
+/**
+ * Get top tools by strength
+ */
+export async function getTopTools(limit: number = 5): Promise<Tool[]> {
+    const tools = await getTools();
+    return [...tools]
+        .sort((a, b) => b.strength - a.strength)
+        .slice(0, limit);
+}
+
+/**
+ * Find tool by name
+ */
+export async function findToolByName(name: string): Promise<Tool | undefined> {
+    const tools = await getTools();
+    return tools.find(tool => tool.name === name);
+}
+
+function computeKeywordSimilarity(tool: Tool, intent: ParsedIntent): number {
+    const keywords = intent.keywords?.map((k) => k.toLowerCase()) ?? [];
+    const bestFor = tool.bestFor?.map((b) => b.toLowerCase()) ?? [];
+
+    if (keywords.length === 0 || bestFor.length === 0) return 0;
+
+    const matches = keywords.reduce((count, keyword) => {
+        return count + (bestFor.some((bf) => bf.includes(keyword)) ? 1 : 0);
+    }, 0);
+
+    return matches / Math.max(keywords.length, bestFor.length, 1);
+}
+
+function matchesPricingFilter(tool: Tool, filter?: "all" | "free" | "paid"): boolean {
+    if (!filter || filter === "all") return true;
+    const pricing = tool.pricing ?? DEFAULT_PRICING;
+    if (filter === "free") return pricing.free || pricing.freemium;
+    if (filter === "paid") return pricing.paidOnly || pricing.freemium;
+    return true;
+}
+
+function matchesPricingPreference(tool: Tool, intent: ParsedIntent): boolean {
+    const pricing = tool.pricing ?? DEFAULT_PRICING;
+    if (intent.constraints.pricing === 'free') return pricing.free;
+    if (intent.constraints.pricing === 'paid') return pricing.paidOnly || pricing.freemium;
+    return true;
+}
+
+/**
+ * Calculate overall tool score blending similarity, pricing alignment and inherent strength.
+ */
+export function scoreTool(tool: Tool, intent: ParsedIntent, filters?: ToolFilters): number {
+    const pricing = tool.pricing ?? DEFAULT_PRICING;
+    const strengthScore = tool.strength ?? 8;
+
+    const similarityScore = computeKeywordSimilarity(tool, intent) * 4; // Up to ~4 bonus points
+
+    let pricingScore = 0;
+    if (intent.constraints.pricing === 'free') {
+        pricingScore += pricing.free ? 2 : pricing.freemium ? 1 : -3;
+    } else if (intent.constraints.pricing === 'paid') {
+        pricingScore += pricing.paidOnly || pricing.freemium ? 1 : -1;
+    } else if (intent.constraints.pricing === 'freemium' && pricing.freemium) {
+        pricingScore += 0.5;
+    }
+
+    if (filters?.pricingFilter === 'free' && (pricing.free || pricing.freemium)) {
+        pricingScore += 0.5;
+    } else if (filters?.pricingFilter === 'paid' && (pricing.paidOnly || pricing.freemium)) {
+        pricingScore += 0.3;
+    }
+
+    if (intent.constraints.speed === 'fast' && tool.features?.some((f) => f.toLowerCase().includes('fast'))) {
+        pricingScore += 0.2;
+    }
+
+    if (intent.constraints.expertise === 'beginner' && pricing.free) {
+        pricingScore += 0.2;
+    }
+
+    return strengthScore + similarityScore + pricingScore;
+}
+
+export async function getRankedToolsByIntent(
+    intent: ParsedIntent,
+    options?: ToolFilters
+): Promise<Tool[]> {
+    let tools = (options?.tools ?? (await getToolsByCategory(intent.primaryCategory))).map((t) => ({
+        ...t,
+        pricing: t.pricing ?? DEFAULT_PRICING,
+    }));
+
+    tools = tools.filter((tool) => matchesPricingPreference(tool, intent));
+
+    if (options?.pricingFilter) {
+        tools = tools.filter((tool) => matchesPricingFilter(tool, options.pricingFilter));
+    }
+
+    const scored = tools
+        .map((tool) => ({
+            tool,
+            score: scoreTool(tool, intent, options),
+        }))
+        .sort((a, b) => b.score - a.score);
+
+    return scored.map((s) => s.tool);
+}
+
+export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
+    const reasons: string[] = [];
+
+    const matchingKeywords = intent.keywords.filter(k =>
+        tool.bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
+    );
+    if (matchingKeywords.length > 0) {
+        reasons.push(`"${matchingKeywords[0]}" konusunda uzman`);
+    }
+
+    if (intent.constraints.pricing === 'free' && tool.pricing.free) {
+        reasons.push('ucretsiz kullanilabiliyor');
+    }
+
+    if (tool.strength > 9.5) {
+        reasons.push('sektorun en iyisi');
+    } else if (tool.strength > 9) {
+        reasons.push('cok yuksek kaliteli');
+    }
+
+    if (intent.constraints.expertise === 'beginner' && tool.pricing.free) {
+        reasons.push('yeni baslayanlar icin uygun');
+    }
+
+    return reasons.length > 0
+        ? `Bu araci sectim cunku: ${reasons.join(', ')}.`
+        : `${tool.name} bu kategori icin en iyi seceneklerden biri.`;
+}
