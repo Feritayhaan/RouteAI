@@ -1,4 +1,4 @@
-import { openai } from './openaiClient';
+import { openai } from '../openai';
 import { ParsedIntent, IntentParsingError } from './types';
 import { detectCategory } from '../keywords';
 
@@ -184,39 +184,19 @@ export async function parseUserIntent(
   // Pre-check for multi-step indicators using new smart detection
   const queryType = detectQueryType(query);
 
-  if (!openai) {
-    const fallbackCategory = detectCategory(query);
-    if (fallbackCategory) {
-      return {
-        primaryCategory: fallbackCategory,
-        confidence: 0.55,
-        userGoal: query,
-        secondaryCategories: [],
-        constraints: {},
-        keywords: query.split(/\s+/).filter(Boolean).slice(0, 8),
-        reasoning: 'OPENAI_API_KEY eksik, keyword fallback kullanildi.',
-        // Smart workflow decision: only multi-step if truly complex
-        complexity: queryType.isMultiStep && !queryType.isExplicitSimple ? 'multi-step' : 'simple',
-        estimatedSteps: queryType.isMultiStep ? 4 : undefined,
-        workflowHints: queryType.hints.length > 0 ? queryType.hints : undefined,
-      };
+  try {
+    // 1. Önce basit kelime eşleşmesi dene (API tasarrufu ve Hız için)
+    const keywordCategory = detectCategory(query);
+
+    // Eğer basit bir sorguysa ve kelime eşleştiyse direkt döndür (API'ye gitme)
+    // "matematik" veya "sunum" gibi kelimeler için aşağıda API deneyecek.
+    if (keywordCategory && query.split(' ').length < 4) {
+      return createFallbackIntent(query, keywordCategory, queryType);
     }
 
-    return {
-      code: 'API_ERROR',
-      message: 'OPENAI_API_KEY eksik, AI analiz yapilamadi.',
-      suggestions: [
-        'OPENAI_API_KEY ortam degiskenini ayarla',
-        'Redeploy ettikten sonra tekrar dene',
-      ],
-    };
-  }
-
-  const client = openai;
-
-  try {
-    const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+    // 2. OpenAI ile Analiz Dene
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini', // Daha hızlı model
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: query },
@@ -295,10 +275,7 @@ export async function parseUserIntent(
 
     const content = response.choices[0]?.message?.content;
     if (!content) {
-      return {
-        code: 'PARSE_ERROR',
-        message: 'OpenAI yanit vermedi',
-      };
+      throw new Error("Boş yanıt");
     }
 
     const parsed = JSON.parse(
@@ -340,39 +317,44 @@ export async function parseUserIntent(
       'Hints:', normalized.workflowHints);
 
     return normalized;
-  } catch (error: any) {
-    console.error('[Intent Parser] Error:', error);
 
+  } catch (error: any) {
+    console.error('[Intent Parser Hatası]:', error.message);
+
+    // 3. API Hata Verdiyse (401 vb.) YEDEK PLAN'a geç
+    // Kelime bazlı tekrar dene
     const fallbackCategory = detectCategory(query);
+
     if (fallbackCategory) {
-      return {
-        primaryCategory: fallbackCategory,
-        confidence: 0.55,
-        userGoal: query,
-        secondaryCategories: [],
-        constraints: {},
-        keywords: query.split(/\s+/).filter(Boolean).slice(0, 8),
-        reasoning: 'OpenAI yaniti alinamadigi icin anahtar kelime tespiti ile fallback yapildi.',
-        // Smart workflow decision: only multi-step if truly complex
-        complexity: queryType.isMultiStep && !queryType.isExplicitSimple ? 'multi-step' : 'simple',
-        estimatedSteps: queryType.isMultiStep ? 4 : undefined,
-        workflowHints: queryType.hints.length > 0 ? queryType.hints : undefined,
-      };
+      console.log(`⚠️ API hatası sonrası "${fallbackCategory}" kategorisi tahmin edildi.`);
+      return createFallbackIntent(query, fallbackCategory, queryType);
     }
 
-    const apiMessage =
-      typeof error?.message === 'string'
-        ? error.message
-        : 'AI analiz yaparken bir sorun olustu. Lutfen tekrar dene.';
-
+    // Hiçbir şey bulunamadıysa
     return {
       code: 'API_ERROR',
-      message: apiMessage,
-      suggestions: [
-        'OPENAI_API_KEY degerini dogrula',
-        'Ag baglantisini kontrol et ve yeniden dene',
-        'Kisa bir sure sonra tekrar dene',
-      ],
+      message: 'Sistemsel bir sorun var (API Key Hatası). Ancak isteğini kategorize edemedim.',
+      suggestions: ['Lütfen .env dosyasındaki API anahtarını kontrol et.']
     };
   }
+}
+
+// Yardımcı Fonksiyon: Basit Intent Oluşturucu
+function createFallbackIntent(
+  query: string,
+  category: string,
+  queryType: { isMultiStep: boolean; isExplicitSimple: boolean; hints: string[] }
+): ParsedIntent {
+  return {
+    primaryCategory: category as any,
+    secondaryCategories: [],
+    confidence: 0.6,
+    userGoal: query,
+    constraints: { pricing: 'free', speed: 'fast', expertise: 'beginner', language: 'tr' },
+    keywords: query.split(' '),
+    reasoning: 'Yedek mekanizma (Fallback) kullanıldı.',
+    complexity: queryType.isMultiStep && !queryType.isExplicitSimple ? 'multi-step' : 'simple',
+    estimatedSteps: queryType.isMultiStep ? 4 : 1,
+    workflowHints: queryType.hints.length > 0 ? queryType.hints : []
+  };
 }

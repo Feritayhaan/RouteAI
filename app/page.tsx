@@ -609,6 +609,16 @@ export default function Home() {
 
       const data = await res.json()
 
+      // LOW_CONFIDENCE hatası için özel işlem
+      if (data.isLowConfidence && data.error) {
+        const suggestionText = data.suggestions
+          ? `\n\n${data.suggestions.map((s: string) => `• ${s}`).join('\n')}`
+          : '';
+        setError(data.error + suggestionText)
+        return
+      }
+
+      // Diğer hatalar
       if (data.error) {
         throw new Error(data.error)
       }
@@ -827,8 +837,8 @@ export default function Home() {
           {/* Error Message */}
           {error && !isLoading && (
             <div className="animate-in fade-in duration-300">
-              <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 md:p-6 text-center">
-                <p className="text-destructive font-medium text-sm md:text-base">{error}</p>
+              <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 md:p-6">
+                <p className="text-destructive font-medium text-sm md:text-base whitespace-pre-line text-left">{error}</p>
               </div>
             </div>
           )}

@@ -20,12 +20,22 @@ export async function POST(req: NextRequest) {
     // 1. Niyet Analizi (Hala kullanıyoruz çünkü kullanıcının "kod" mu istediğini anlamalıyız)
     const intentResult = await analyzeIntent(prompt);
 
-    // Eğer kullanıcı kod istediyse direkt döndür
+    // Eğer kullanıcı kod istediyse veya hata varsa
     if ('code' in intentResult) {
+      // LOW_CONFIDENCE durumunda daha yardımcı bir mesaj göster
+      if (intentResult.code === 'LOW_CONFIDENCE') {
+        return NextResponse.json({
+          error: intentResult.message,
+          suggestions: intentResult.suggestions,
+          isLowConfidence: true, // Frontend'de farklı gösterebilmek için
+        }, { status: 200 }); // 200 döndür ki frontend hata olarak algılamasın
+      }
+
+      // Diğer hatalar için normal error response
       return NextResponse.json({
         error: intentResult.message,
         suggestions: intentResult.suggestions,
-      });
+      }, { status: 400 });
     }
 
     const intent = intentResult;
