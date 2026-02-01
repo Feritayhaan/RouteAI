@@ -1,19 +1,55 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 import { analyzeIntent } from "@/lib/intent";
 import { generateWorkflow, formatWorkflowForApi } from "@/lib/workflow";
 import { searchTools } from "@/lib/vectorService"; // Az önce oluşturduğumuz servis
 import { getTools, generateExplanation, Tool } from "@/lib/toolsService";
+import { recommendRequestSchema } from "@/lib/validations/recommend";
+import { checkRateLimit } from "@/lib/rateLimit";
+import { getClientIp } from "@/lib/getClientIp";
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, pricingFilter } = await req.json();
+    // Rate limiting - check BEFORE any expensive operations
+    const ip = getClientIp(req);
+    const rateLimitResult = await checkRateLimit(ip, "recommend");
 
-    if (!prompt || typeof prompt !== "string") {
+    if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: "Lütfen bir istek yazın." },
+        { error: "Too many requests", retryAfter: rateLimitResult.reset },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": rateLimitResult.reset.toString(),
+          },
+        }
+      );
+    }
+
+    const body = await req.json();
+
+    // Validate request body with Zod
+    const validationResult = recommendRequestSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const details: Record<string, string> = {};
+      validationResult.error.errors.forEach((err) => {
+        const field = err.path.join(".");
+        details[field] = err.message;
+      });
+
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          details,
+        },
         { status: 400 }
       );
     }
+
+    const { prompt, pricingFilter } = validationResult.data;
 
     console.log('[API] İstek analiz ediliyor:', prompt);
 
