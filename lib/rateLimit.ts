@@ -105,6 +105,7 @@ export async function checkRateLimit(
         if (recent.length >= FALLBACK_LIMIT) {
             return {
                 success: false,
+                limit: FALLBACK_LIMIT,
                 remaining: 0,
                 reset: Math.ceil((recent[0] + FALLBACK_WINDOW - now) / 1000),
             };
@@ -113,6 +114,7 @@ export async function checkRateLimit(
         inMemoryFallback.set(key, recent);
         return {
             success: true,
+            limit: FALLBACK_LIMIT,
             remaining: FALLBACK_LIMIT - recent.length,
             reset: 60,
         };
