@@ -17,9 +17,12 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "RouteAI - Yapay Zeka Navigatörün",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.routeai.chat"),
+  title: {
+    default: "RouteAI - Yapay Zeka Navigatörün",
+    template: "%s | RouteAI",
+  },
   description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
-  generator: "v0.app",
   icons: {
     icon: [
       {
