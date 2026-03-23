@@ -681,82 +681,14 @@ export const BASE_TOOLS: Tool[] = [
         skillLevel: "beginner",
         speed: "medium"
     },
-
-    // ============================================
-    // NEW TOOLS - SES (Voice)
-    // ============================================
-    {
-        name: "ElevenLabs",
-        category: "ses",
-        description: "En gerçekçi AI seslendirme ve ses klonlama",
-        url: "https://elevenlabs.io",
-        pricing: {
-            free: true,
-            freemium: true,
-            paidOnly: false,
-            startingPrice: 5,
-            currency: "USD"
-        },
-        bestFor: ["seslendirme", "voiceover", "dubbing", "ses", "podcast", "audiobook", "voice clone"],
-        strength: 9.7,
-        features: ["Voice cloning", "29 languages", "Dubbing", "Audio isolation"],
-        lastUpdated: "2025-12-31",
-        inputTypes: ["text"],
-        outputTypes: ["audio"],
-        skillLevel: "beginner",
-        speed: "fast"
-    },
-
-    // ============================================
-    // NEW TOOLS - ARAŞTIRMA
-    // ============================================
-    {
-        name: "Perplexity AI",
-        category: "arastirma",
-        description: "Kaynak gösterilen AI araştırma ve soru-cevap",
-        url: "https://perplexity.ai",
-        pricing: {
-            free: true,
-            freemium: true,
-            paidOnly: false,
-            startingPrice: 20,
-            currency: "USD"
-        },
-        bestFor: ["araştırma", "research", "soru cevap", "bilgi", "kaynak", "fact-check"],
-        strength: 9.4,
-        features: ["Cited answers", "Web search", "File upload", "Focus modes"],
-        lastUpdated: "2025-12-31",
-        inputTypes: ["text"],
-        outputTypes: ["text"],
-        skillLevel: "beginner",
-        speed: "fast"
-    },
-
-    // ============================================
-    // NEW TOOLS - GÖRSEL (Text-heavy)
-    // ============================================
-    {
-        name: "Ideogram",
-        category: "gorsel",
-        description: "Metin yazılı görsellerde en iyi AI aracı",
-        url: "https://ideogram.ai",
-        pricing: {
-            free: true,
-            freemium: true,
-            paidOnly: false,
-            startingPrice: 7,
-            currency: "USD"
-        },
-        bestFor: ["logo", "poster", "banner", "text in image", "afis", "sosyal medya görseli", "flyer"],
-        strength: 9.3,
-        features: ["Perfect text rendering", "Logo generation", "Multiple styles", "Commercial use"],
-        lastUpdated: "2025-12-31",
-        inputTypes: ["text"],
-        outputTypes: ["image"],
-        skillLevel: "beginner",
-        speed: "fast"
-    }
 ];
+
+let toolsCache: { data: Tool[]; expiry: number } | null = null;
+const TOOLS_CACHE_TTL = 5 * 60 * 1000; // 5 dakika
+
+export function invalidateToolsCache() {
+    toolsCache = null;
+}
 
 /**
  * Initialize tools in KV if not exists
@@ -777,6 +709,11 @@ async function initializeTools(): Promise<void> {
  * Get all tools from KV (with auto-initialization)
  */
 export async function getTools(): Promise<Tool[]> {
+    // In-memory cache kontrolü
+    if (toolsCache && Date.now() < toolsCache.expiry) {
+        return toolsCache.data;
+    }
+
     try {
         let tools = await kv.get<Tool[]>(KV_TOOLS_KEY);
 
@@ -787,7 +724,9 @@ export async function getTools(): Promise<Tool[]> {
             tools = await kv.get<Tool[]>(KV_TOOLS_KEY);
         }
 
-        return tools || BASE_TOOLS; // Fallback to BASE_TOOLS if KV fails
+        const result = tools || BASE_TOOLS;
+        toolsCache = { data: result, expiry: Date.now() + TOOLS_CACHE_TTL };
+        return result;
     } catch (error) {
         console.warn('[getTools] KV unavailable, returning BASE_TOOLS. Error:', error);
         return BASE_TOOLS;

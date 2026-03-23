@@ -1,5 +1,9 @@
 import { kv } from "@vercel/kv";
 
+const inMemoryFallback = new Map<string, number[]>();
+const FALLBACK_LIMIT = 10;
+const FALLBACK_WINDOW = 60000; // 1 dakika
+
 export interface RateLimitResult {
     success: boolean;
     limit: number;
@@ -93,13 +97,24 @@ export async function checkRateLimit(
 
         return mostRestrictive;
     } catch (error) {
-        // If KV is down, allow the request but log the error
-        console.error("[RateLimit] KV error, allowing request:", error);
+        console.error('Rate limit KV error, using in-memory fallback:', error);
+        const key = `${endpoint}:${ip}`;
+        const now = Date.now();
+        const timestamps = inMemoryFallback.get(key) || [];
+        const recent = timestamps.filter(t => now - t < FALLBACK_WINDOW);
+        if (recent.length >= FALLBACK_LIMIT) {
+            return {
+                success: false,
+                remaining: 0,
+                reset: Math.ceil((recent[0] + FALLBACK_WINDOW - now) / 1000),
+            };
+        }
+        recent.push(now);
+        inMemoryFallback.set(key, recent);
         return {
             success: true,
-            limit: limits[0].requests,
-            remaining: limits[0].requests,
-            reset: limits[0].windowSeconds,
+            remaining: FALLBACK_LIMIT - recent.length,
+            reset: 60,
         };
     }
 }

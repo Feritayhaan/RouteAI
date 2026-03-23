@@ -15,17 +15,26 @@ export const keywords: Record<Category, string[]> = {
 
 // Detect category from user query
 export function detectCategory(query: string): Category | null {
-    const lowerQuery = query.toLowerCase();
+    const normalizedQuery = query.toLowerCase();
+    const scores: Record<string, number> = {};
 
     for (const [category, keywordList] of Object.entries(keywords)) {
+        let count = 0;
         for (const keyword of keywordList) {
-            if (lowerQuery.includes(keyword)) {
-                return category as Category;
+            if (normalizedQuery.includes(keyword)) {
+                count++;
             }
+        }
+        if (count > 0) {
+            scores[category] = count;
         }
     }
 
-    return null; // No category detected
+    if (Object.keys(scores).length === 0) return null;
+
+    // En çok eşleşen kategoriyi döndür
+    const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+    return best[0] as Category;
 }
 
 // Get all keywords for a category

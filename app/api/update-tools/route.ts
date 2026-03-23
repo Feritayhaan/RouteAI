@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTools, updateTools, Tool } from "@/lib/toolsService";
+import { getTools, updateTools, invalidateToolsCache, Tool } from "@/lib/toolsService";
 
 /**
  * Dynamic tool update endpoint
@@ -8,6 +8,11 @@ import { getTools, updateTools, Tool } from "@/lib/toolsService";
  */
 
 export async function POST(req: NextRequest) {
+    const adminSecret = req.headers.get('x-admin-key') || new URL(req.url).searchParams.get('key');
+    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+        return Response.json({ error: 'Yetkisiz erişim' }, { status: 401 });
+    }
+
     try {
         // Simulate tool discovery (future: real web search or API integration)
         const mockNewTools: Tool[] = [
@@ -64,6 +69,7 @@ export async function POST(req: NextRequest) {
 
         // Save back to KV
         await updateTools(updatedTools);
+        invalidateToolsCache();
 
         return NextResponse.json({
             success: true,
@@ -84,7 +90,12 @@ export async function POST(req: NextRequest) {
 }
 
 // GET endpoint for checking current tool status
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const adminSecret = req.headers.get('x-admin-key') || new URL(req.url).searchParams.get('key');
+    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+        return Response.json({ error: 'Yetkisiz erişim' }, { status: 401 });
+    }
+
     try {
         const tools = await getTools();
         const categories = [...new Set(tools.map(t => t.category))];

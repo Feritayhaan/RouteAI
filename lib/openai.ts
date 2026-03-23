@@ -12,5 +12,4 @@ if (!apiKey) {
 
 export const openai = new OpenAI({
     apiKey: apiKey || "dummy-key", // Boşsa hata patlamasın, aşağıda yakalarız
-    dangerouslyAllowBrowser: true // Sadece gerekli durumlarda
 });
