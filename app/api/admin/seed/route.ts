@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Index } from "@upstash/vector";
 import OpenAI from "openai";
 import { updateTools, invalidateToolsCache, Tool } from "@/lib/toolsService";
-// Yeni JSON dosyasını import ediyoruz
-import rawData from "@/lib/new_tools.json";
+import toolsDatabase from "@/lib/tools-database.json";
 
 // Lazy initialization - build time'da env vars olmayabilir
 function getIndex(): Index {
@@ -19,21 +18,6 @@ function getOpenAI(): OpenAI {
     });
 }
 
-// Kategori Çevirici (İngilizce JSON -> Senin Sistemin)
-const categoryMap: Record<string, "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri" | "kod"> = {
-    "text": "metin",
-    "image": "gorsel",
-    "audio": "ses",
-    "video": "video",
-    "code": "kod",
-    "research": "arastirma",
-    "productivity": "veri",
-    "agent": "kod",
-    "3d": "gorsel",
-    "vertical-auto": "veri",
-    "vertical-finance": "veri"
-};
-
 export async function GET(request: NextRequest) {
     const adminSecret = request.headers.get('x-admin-key') || new URL(request.url).searchParams.get('key');
     if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
@@ -45,35 +29,8 @@ export async function GET(request: NextRequest) {
 
         console.log("🚀 Gelişmiş veri göçü başlıyor...");
 
-        // 1. Veriyi Dönüştür (Transformation)
-        const formattedTools: Tool[] = (rawData as any[]).map((item: any) => {
-            // Fiyatlandırma mantığını çevir
-            const isFree = item.pricing === "free";
-            const isFreemium = item.pricing === "freemium";
-            const isPaid = item.pricing === "paid";
-
-            return {
-                name: item.name,
-                category: categoryMap[item.category] || "arastirma",
-                description: item.strengthReason || "Yapay zeka aracı",
-                url: item.url,
-                pricing: {
-                    free: isFree,
-                    freemium: isFreemium,
-                    paidOnly: isPaid,
-                    startingPrice: 0,
-                    currency: "USD" as const
-                },
-                bestFor: item.tasks || [],
-                strength: 9.5,
-                features: item.modalities || [],
-                lastUpdated: item.launchOrUpdate,
-                inputTypes: ["text"] as ('text' | 'image' | 'audio' | 'video' | 'data' | 'code')[],
-                outputTypes: ["text"] as ('text' | 'image' | 'audio' | 'video' | 'data' | 'code' | 'document')[],
-                skillLevel: "intermediate" as const,
-                speed: "fast" as const
-            };
-        });
+        // Tools already in the correct format from tools-database.json
+        const formattedTools = toolsDatabase as Tool[];
 
         console.log(`📊 Toplam ${formattedTools.length} araç işlendi.`);
 
