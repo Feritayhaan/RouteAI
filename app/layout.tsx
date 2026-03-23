@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "RouteAI - Your AI Navigator",
-  description: "Find the perfect AI tool for your task instantly",
+  title: "RouteAI - Yapay Zeka Navigatörün",
+  description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
   generator: "v0.app",
   icons: {
     icon: [

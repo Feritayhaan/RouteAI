@@ -4,8 +4,8 @@ export const recommendRequestSchema = z.object({
   prompt: z
     .string()
     .trim()
-    .min(3, "Prompt must be at least 3 characters")
-    .max(500, "Prompt must be at most 500 characters"),
+    .min(3, "Sorgunuz en az 3 karakter olmalı")
+    .max(500, "Sorgunuz en fazla 500 karakter olabilir"),
   pricingFilter: z
     .enum(["all", "free", "paid"])
     .optional()

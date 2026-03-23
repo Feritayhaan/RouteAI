@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Index } from "@upstash/vector";
 import OpenAI from "openai";
-import { updateTools, Tool } from "@/lib/toolsService";
+import { updateTools, invalidateToolsCache, Tool } from "@/lib/toolsService";
 // Yeni JSON dosyasını import ediyoruz
 import rawData from "@/lib/new_tools.json";
 
@@ -34,7 +34,11 @@ const categoryMap: Record<string, "gorsel" | "metin" | "ses" | "arastirma" | "vi
     "vertical-finance": "veri"
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const adminSecret = request.headers.get('x-admin-key') || new URL(request.url).searchParams.get('key');
+    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+        return Response.json({ error: 'Yetkisiz erişim' }, { status: 401 });
+    }
     try {
         const index = getIndex();
         const openai = getOpenAI();
@@ -115,6 +119,8 @@ export async function GET() {
             console.log(`✅ Vektör: ${tool.name}`);
             successCount++;
         }
+
+        invalidateToolsCache();
 
         return NextResponse.json({
             success: true,

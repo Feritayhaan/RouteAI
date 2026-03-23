@@ -4,11 +4,23 @@ import { ParsedIntent } from './types';
 const CACHE_PREFIX = 'intent:';
 const CACHE_TTL = 60 * 60 * 24;
 
-function getCacheKey(query: string): string {
-  const normalized = query
+function normalizeQuery(query: string): string {
+  return query
     .toLowerCase()
-    .trim()
-    .replace(/\s+/g, ' ');
+    .replace(/ı/g, 'i')
+    .replace(/İ/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ü/g, 'u')
+    .replace(/ç/g, 'c')
+    .replace(/ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/[^\w\s]/g, '') // noktalama kaldır
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getCacheKey(query: string): string {
+  const normalized = normalizeQuery(query);
   return `${CACHE_PREFIX}${normalized}`;
 }
 
