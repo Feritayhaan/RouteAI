@@ -9,6 +9,14 @@ import WorkflowDisplay from "@/components/WorkflowDisplay"
 import SimpleRecommendationDisplay from "@/components/SimpleRecommendationDisplay"
 import type { ApiResponse, SimpleRecommendation, WorkflowRecommendation } from "@/lib/types"
 
+interface ToolRating {
+  toolName: string;
+  rating: number;
+  timestamp?: string;
+  id?: string;
+  query?: string;
+}
+
 // Window interface for ratings
 declare global {
   interface Window {
@@ -82,10 +90,10 @@ export default function HomeClient() {
 
     try {
       const existingRatings = localStorage.getItem('routeai-ratings')
-      const ratings = existingRatings ? JSON.parse(existingRatings) : []
+      const ratings: ToolRating[] = existingRatings ? JSON.parse(existingRatings) as ToolRating[] : []
 
       const existingIndex = ratings.findIndex(
-        (r: any) => r.query === query && r.toolName === response.main.toolName
+        (r: ToolRating) => r.query === query && r.toolName === response.main.toolName
       )
 
       const ratingData = {
@@ -116,9 +124,9 @@ export default function HomeClient() {
     try {
       const existingRatings = localStorage.getItem('routeai-ratings')
       if (existingRatings) {
-        const ratings = JSON.parse(existingRatings)
+        const ratings = JSON.parse(existingRatings) as ToolRating[]
         const previousRating = ratings.find(
-          (r: any) => r.query === query && r.toolName === response.main.toolName
+          (r: ToolRating) => r.query === query && r.toolName === response.main.toolName
         )
 
         if (previousRating) {
@@ -145,12 +153,12 @@ export default function HomeClient() {
           return
         }
 
-        const ratings = JSON.parse(existingRatings)
+        const ratings = JSON.parse(existingRatings) as ToolRating[]
         const totalRatings = ratings.length
         const toolStats: Record<string, { total: number, count: number }> = {}
         const queryStats: Record<string, number> = {}
 
-        ratings.forEach((r: any) => {
+        ratings.forEach((r: ToolRating) => {
           if (!toolStats[r.toolName]) {
             toolStats[r.toolName] = { total: 0, count: 0 }
           }

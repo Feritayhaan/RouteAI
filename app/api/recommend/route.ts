@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
     // Neden seçildiğini açıkla
     const explanation = generateExplanation(intent, main);
 
-    return NextResponse.json({
+    const responseData: Record<string, unknown> = {
       type: 'simple',
       category: intent.primaryCategory,
       main: {
@@ -151,11 +151,15 @@ export async function POST(req: NextRequest) {
         pricing: t.pricing,
         strength: t.strength,
       })),
-      _debug: {
-        source: 'vector-search',
-        matchScore: searchResults[0]?.score // Ne kadar emin olduğunu görelim
-      }
-    });
+      ...(process.env.NODE_ENV !== 'production' && {
+        _debug: {
+          source: 'vector-search',
+          matchScore: searchResults[0]?.score,
+        },
+      }),
+    };
+
+    return NextResponse.json(responseData);
 
   } catch (error) {
     console.error("API Hatası:", error);
