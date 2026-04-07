@@ -277,20 +277,20 @@ export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
     }
 
     if (intent.constraints.pricing === 'free' && tool.pricing.free) {
-        reasons.push('ucretsiz kullanilabiliyor');
+        reasons.push('Ücretsiz kullanılabiliyor');
     }
 
     if (tool.strength > 9.5) {
-        reasons.push('sektorun en iyisi');
+        reasons.push('Sektörün en iyisi');
     } else if (tool.strength > 9) {
-        reasons.push('cok yuksek kaliteli');
+        reasons.push('Çok yüksek kaliteli');
     }
 
     if (intent.constraints.expertise === 'beginner' && tool.pricing.free) {
-        reasons.push('yeni baslayanlar icin uygun');
+        reasons.push('Yeni başlayanlar için uygun');
     }
 
     return reasons.length > 0
-        ? `Bu araci sectim cunku: ${reasons.join(', ')}.`
-        : `${tool.name} bu kategori icin en iyi seceneklerden biri.`;
+        ? `Bu aracı seçtim çünkü: ${reasons.join(', ')}.`
+        : `${tool.name} bu kategori için en iyi seçeneklerden biri.`;
 }

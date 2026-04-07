@@ -1,15 +1,14 @@
 import OpenAI from 'openai';
 
-// API Anahtarını kontrol et ve temizle (boşluk varsa siler)
-const apiKey = process.env.OPENAI_API_KEY?.trim();
-
-if (!apiKey) {
-    console.error("❌ HATA: OPENAI_API_KEY bulunamadı! .env dosyanı kontrol et.");
-} else {
-    // Güvenlik için anahtarın sadece ilk 7 karakterini logluyoruz
-    console.log(`✅ OpenAI Bağlantısı: ${apiKey.substring(0, 7)}... ile başlatılıyor.`);
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error(
+    'OPENAI_API_KEY ortam değişkeni tanımlanmamış. Lütfen .env.local dosyasına ekleyin.'
+  );
 }
 
+// API Anahtarını temizle (boşluk varsa siler)
+const apiKey = process.env.OPENAI_API_KEY.trim();
+
 export const openai = new OpenAI({
-    apiKey: apiKey || "dummy-key", // Boşsa hata patlamasın, aşağıda yakalarız
+    apiKey,
 });
