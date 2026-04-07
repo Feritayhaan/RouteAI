@@ -164,7 +164,9 @@ export default function HomeClient() {
           }
           toolStats[r.toolName].total += r.rating
           toolStats[r.toolName].count += 1
-          queryStats[r.query] = (queryStats[r.query] || 0) + 1
+          if (r.query) {
+            queryStats[r.query] = (queryStats[r.query] || 0) + 1
+          }
         })
 
         console.log('\n📊 ROUTEAI RATING ANALİZİ')
