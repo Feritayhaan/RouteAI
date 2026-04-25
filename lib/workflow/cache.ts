@@ -14,10 +14,11 @@ const WORKFLOW_CACHE_PREFIX = 'wf:';
  */
 export async function getCachedWorkflow(
     templateId: string,
-    category: string
+    category: string,
+    constraintsKey: string = 'default'
 ): Promise<GeneratedWorkflow | null> {
     try {
-        const key = `${WORKFLOW_CACHE_PREFIX}${templateId}:${category}`;
+        const key = `${WORKFLOW_CACHE_PREFIX}${templateId}:${category}:${constraintsKey}`;
         const cached = await kv.get<GeneratedWorkflow>(key);
 
         if (cached) {
@@ -39,10 +40,11 @@ export async function getCachedWorkflow(
 export async function setCachedWorkflow(
     templateId: string,
     category: string,
-    workflow: GeneratedWorkflow
+    workflow: GeneratedWorkflow,
+    constraintsKey: string = 'default'
 ): Promise<void> {
     try {
-        const key = `${WORKFLOW_CACHE_PREFIX}${templateId}:${category}`;
+        const key = `${WORKFLOW_CACHE_PREFIX}${templateId}:${category}:${constraintsKey}`;
         await kv.set(key, workflow, { ex: WORKFLOW_CACHE_TTL });
         console.log('[Workflow Cache] SET:', key);
     } catch {

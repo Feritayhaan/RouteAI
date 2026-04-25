@@ -53,7 +53,8 @@ export async function generateWorkflow(
     // ============================================================
     // SORUN 4: Cache kontrolü — daha önce üretilmişse tekrar üretme
     // ============================================================
-    const cached = await getCachedWorkflow(template.id, intent.primaryCategory);
+    const constraintsKey = `${intent.constraints?.pricing || 'all'}-${intent.constraints?.expertise || 'all'}-${intent.constraints?.speed || 'all'}`;
+    const cached = await getCachedWorkflow(template.id, intent.primaryCategory, constraintsKey);
     if (cached) {
         console.log('[Workflow] Cache HIT:', template.id);
         return cached;
@@ -81,7 +82,7 @@ export async function generateWorkflow(
     };
 
     // Cache'e yaz (fire-and-forget)
-    setCachedWorkflow(template.id, intent.primaryCategory, result).catch(() => {});
+    setCachedWorkflow(template.id, intent.primaryCategory, result, constraintsKey).catch(() => {});
 
     return result;
 }

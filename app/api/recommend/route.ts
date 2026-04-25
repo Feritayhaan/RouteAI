@@ -186,52 +186,57 @@ export async function POST(req: NextRequest) {
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       start(controller) {
-        // CHUNK 1: Ana öneri — HEMEN gönder (ilk byte)
-        const explanation = generateExplanation(intent, main);
-        const mainChunk = {
-          chunk: 'main',
-          type: 'simple',
-          category: intent.primaryCategory,
-          main: {
-            toolName: main.name,
-            description: main.description,
-            url: main.url,
-            pricing: main.pricing,
-            strength: main.strength,
-            why: explanation,
-          },
-        };
-        controller.enqueue(encoder.encode(JSON.stringify(mainChunk) + '\n'));
-
-        // CHUNK 2: Alternatifler
-        const alternativesChunk = {
-          chunk: 'alternatives',
-          alternatives: rest.slice(0, 3).map((t) => ({
-            toolName: t.name,
-            description: t.description,
-            url: t.url,
-            pricing: t.pricing,
-            strength: t.strength,
-          })),
-        };
-        controller.enqueue(encoder.encode(JSON.stringify(alternativesChunk) + '\n'));
-
-        // CHUNK 3: Meta bilgisi (kategori + debug)
-        const metaChunk: Record<string, unknown> = {
-          chunk: 'meta',
-          category: intent.primaryCategory,
-          confidence: intent.confidence,
-        };
-        if (process.env.NODE_ENV !== 'production') {
-          metaChunk._debug = {
-            source: 'vector-search',
-            matchScore: searchResults[0]?.score,
-            tier: intent.reasoning?.includes('Kademe 1') ? 'rule-based' : 'llm',
+        try {
+          // CHUNK 1: Ana öneri — HEMEN gönder (ilk byte)
+          const explanation = generateExplanation(intent, main);
+          const mainChunk = {
+            chunk: 'main',
+            type: 'simple',
+            category: intent.primaryCategory,
+            main: {
+              toolName: main.name,
+              description: main.description,
+              url: main.url,
+              pricing: main.pricing,
+              strength: main.strength,
+              why: explanation,
+            },
           };
-        }
-        controller.enqueue(encoder.encode(JSON.stringify(metaChunk) + '\n'));
+          controller.enqueue(encoder.encode(JSON.stringify(mainChunk) + '\n'));
 
-        controller.close();
+          // CHUNK 2: Alternatifler
+          const alternativesChunk = {
+            chunk: 'alternatives',
+            alternatives: rest.slice(0, 3).map((t) => ({
+              toolName: t.name,
+              description: t.description,
+              url: t.url,
+              pricing: t.pricing,
+              strength: t.strength,
+            })),
+          };
+          controller.enqueue(encoder.encode(JSON.stringify(alternativesChunk) + '\n'));
+
+          // CHUNK 3: Meta bilgisi (kategori + debug)
+          const metaChunk: Record<string, unknown> = {
+            chunk: 'meta',
+            category: intent.primaryCategory,
+            confidence: intent.confidence,
+          };
+          if (process.env.NODE_ENV !== 'production') {
+            metaChunk._debug = {
+              source: 'vector-search',
+              matchScore: searchResults[0]?.score,
+              tier: intent.reasoning?.includes('Kademe 1') ? 'rule-based' : 'llm',
+            };
+          }
+          controller.enqueue(encoder.encode(JSON.stringify(metaChunk) + '\n'));
+
+          controller.close();
+        } catch (streamError) {
+          console.error("Stream generation error:", streamError);
+          controller.error(streamError);
+        }
       },
     });
 

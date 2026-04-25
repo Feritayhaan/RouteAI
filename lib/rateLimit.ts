@@ -1,8 +1,5 @@
 import { kv } from "./kv";
 
-const inMemoryFallback = new Map<string, number[]>();
-const FALLBACK_LIMIT = 10;
-const FALLBACK_WINDOW = 60000; // 1 dakika
 
 export interface RateLimitResult {
     success: boolean;
@@ -97,26 +94,15 @@ export async function checkRateLimit(
 
         return mostRestrictive;
     } catch (error) {
-        console.error('Rate limit KV error, using in-memory fallback:', error);
-        const key = `${endpoint}:${ip}`;
-        const now = Date.now();
-        const timestamps = inMemoryFallback.get(key) || [];
-        const recent = timestamps.filter(t => now - t < FALLBACK_WINDOW);
-        if (recent.length >= FALLBACK_LIMIT) {
-            return {
-                success: false,
-                limit: FALLBACK_LIMIT,
-                remaining: 0,
-                reset: Math.ceil((recent[0] + FALLBACK_WINDOW - now) / 1000),
-            };
-        }
-        recent.push(now);
-        inMemoryFallback.set(key, recent);
+        console.error('Rate limit KV error. Failing strict to prevent DDoS in Edge runtime:', error);
+        
+        // Edge runtime'da in-memory state isolate'lar arası paylaşılamadığı için
+        // KV'ye ulaşılamazsa güvenli kapalı kalma (fail-closed) uyguluyoruz.
         return {
-            success: true,
-            limit: FALLBACK_LIMIT,
-            remaining: FALLBACK_LIMIT - recent.length,
-            reset: 60,
+            success: false,
+            limit: 0,
+            remaining: 0,
+            reset: 60, // İstemci 1 dakika sonra tekrar dener
         };
     }
 }

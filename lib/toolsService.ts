@@ -284,14 +284,14 @@ export async function getRankedToolsByIntent(
 export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
     const reasons: string[] = [];
 
-    const matchingKeywords = intent.keywords.filter(k =>
-        tool.bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
+    const matchingKeywords = (intent.keywords || []).filter(k =>
+        (tool.bestFor || []).some(bf => bf.toLowerCase().includes(k.toLowerCase()))
     );
     if (matchingKeywords.length > 0) {
         reasons.push(`"${matchingKeywords[0]}" konusunda uzman`);
     }
 
-    if (intent.constraints.pricing === 'free' && tool.pricing.free) {
+    if (intent.constraints?.pricing === 'free' && tool.pricing?.free) {
         reasons.push('Ücretsiz kullanılabiliyor');
     }
 
@@ -301,7 +301,7 @@ export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
         reasons.push('Çok yüksek kaliteli');
     }
 
-    if (intent.constraints.expertise === 'beginner' && tool.pricing.free) {
+    if (intent.constraints?.expertise === 'beginner' && tool.pricing?.free) {
         reasons.push('Yeni başlayanlar için uygun');
     }
 

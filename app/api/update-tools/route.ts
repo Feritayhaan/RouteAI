@@ -1,5 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTools, updateTools, invalidateToolsCache, Tool } from "@/lib/toolsService";
+import { Index } from "@upstash/vector";
+import OpenAI from "openai";
+
+// Lazy initialization - build time'da env vars olmayabilir
+function getIndex(): Index {
+    return new Index({
+        url: process.env.UPSTASH_VECTOR_REST_URL!,
+        token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+    });
+}
+
+function getOpenAI(): OpenAI {
+    return new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
+}
 
 /**
  * Dynamic tool update endpoint
@@ -50,9 +66,10 @@ export async function POST(req: NextRequest) {
             lastUpdated: tool.lastUpdated ?? new Date().toISOString().slice(0, 10)
         }) satisfies Tool);
 
-        // Merge with new tools (example logic: add if strength > 8.0)
+        // Deduplicate and filter new tools
         const toolsToAdd: Tool[] = mockNewTools
             .filter(t => t.strength > 8.0)
+            .filter(newTool => !normalizedExisting.some(existing => existing.name.toLowerCase() === newTool.name.toLowerCase()))
             .map((tool): Tool => ({
                 ...tool,
                 pricing: {
@@ -70,6 +87,42 @@ export async function POST(req: NextRequest) {
         // Save back to KV
         await updateTools(updatedTools);
         invalidateToolsCache();
+
+        // Update Vector DB for new tools
+        if (toolsToAdd.length > 0) {
+            const index = getIndex();
+            const openai = getOpenAI();
+            
+            for (const tool of toolsToAdd) {
+                const textToEmbed = `
+        Tool: ${tool.name}
+        Category: ${tool.category}
+        Description: ${tool.description}
+        Tasks: ${(tool.bestFor || []).join(", ")}
+        Features: ${(tool.features || []).join(", ")}
+        Pricing: ${tool.pricing.free ? "Free" : tool.pricing.freemium ? "Freemium" : "Paid"}
+                `.trim();
+
+                const embeddingResponse = await openai.embeddings.create({
+                    model: "text-embedding-3-small",
+                    input: textToEmbed,
+                    encoding_format: "float",
+                });
+
+                await index.upsert({
+                    id: tool.name,
+                    vector: embeddingResponse.data[0].embedding,
+                    metadata: {
+                        name: tool.name,
+                        category: tool.category,
+                        description: tool.description,
+                        url: tool.url,
+                        pricing: JSON.stringify(tool.pricing),
+                        strength: tool.strength
+                    }
+                });
+            }
+        }
 
         return NextResponse.json({
             success: true,

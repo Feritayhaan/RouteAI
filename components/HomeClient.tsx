@@ -26,6 +26,7 @@ declare global {
 
 export default function HomeClient() {
   const [query, setQuery] = useState("")
+  const [pricingFilter, setPricingFilter] = useState<"all" | "free" | "paid">("all")
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,7 +47,7 @@ export default function HomeClient() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: query }),
+        body: JSON.stringify({ prompt: query, pricingFilter }),
       })
 
       if (!res.ok) {
@@ -323,6 +324,28 @@ export default function HomeClient() {
                   style={{ boxShadow: 'none' }}
                 />
               </div>
+            </div>
+
+            {/* Pricing Filter Segmented Control */}
+            <div className="flex bg-card/80 dark:bg-card border border-border/50 rounded-xl p-1 shadow-sm max-w-[360px] mx-auto">
+              <button
+                onClick={() => setPricingFilter("all")}
+                className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "all" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
+              >
+                Tümü
+              </button>
+              <button
+                onClick={() => setPricingFilter("free")}
+                className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "free" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
+              >
+                Ücretsiz
+              </button>
+              <button
+                onClick={() => setPricingFilter("paid")}
+                className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "paid" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
+              >
+                Ücretli
+              </button>
             </div>
 
             <Button

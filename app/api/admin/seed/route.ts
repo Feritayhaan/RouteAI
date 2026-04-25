@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import { updateTools, invalidateToolsCache, Tool } from "@/lib/toolsService";
 import toolsDatabase from "@/lib/tools-database.json";
 
+export const maxDuration = 60; // Vercel hobby tier maks timeout engelleme (60 saniye)
 // Lazy initialization - build time'da env vars olmayabilir
 function getIndex(): Index {
     return new Index({
@@ -43,38 +44,43 @@ export async function GET(request: NextRequest) {
         console.log("🧹 Vektör DB temizlendi.");
 
         let successCount = 0;
+        const BATCH_SIZE = 10;
 
-        for (const tool of formattedTools) {
-            const textToEmbed = `
+        for (let i = 0; i < formattedTools.length; i += BATCH_SIZE) {
+            const batch = formattedTools.slice(i, i + BATCH_SIZE);
+            
+            await Promise.all(batch.map(async (tool) => {
+                const textToEmbed = `
         Tool: ${tool.name}
         Category: ${tool.category}
         Description: ${tool.description}
         Tasks: ${tool.bestFor.join(", ")}
         Features: ${tool.features?.join(", ")}
         Pricing: ${tool.pricing.free ? "Free" : tool.pricing.freemium ? "Freemium" : "Paid"}
-      `.trim();
+                `.trim();
 
-            const embeddingResponse = await openai.embeddings.create({
-                model: "text-embedding-3-small",
-                input: textToEmbed,
-                encoding_format: "float",
-            });
+                const embeddingResponse = await openai.embeddings.create({
+                    model: "text-embedding-3-small",
+                    input: textToEmbed,
+                    encoding_format: "float",
+                });
 
-            await index.upsert({
-                id: tool.name,
-                vector: embeddingResponse.data[0].embedding,
-                metadata: {
-                    name: tool.name,
-                    category: tool.category,
-                    description: tool.description,
-                    url: tool.url,
-                    pricing: JSON.stringify(tool.pricing),
-                    strength: tool.strength
-                }
-            });
+                await index.upsert({
+                    id: tool.name,
+                    vector: embeddingResponse.data[0].embedding,
+                    metadata: {
+                        name: tool.name,
+                        category: tool.category,
+                        description: tool.description,
+                        url: tool.url,
+                        pricing: JSON.stringify(tool.pricing),
+                        strength: tool.strength
+                    }
+                });
 
-            console.log(`✅ Vektör: ${tool.name}`);
-            successCount++;
+                console.log(`✅ Vektör: ${tool.name}`);
+                successCount++;
+            }));
         }
 
         invalidateToolsCache();
