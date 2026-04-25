@@ -47,6 +47,15 @@ export interface WorkflowTemplate {
   // Keywords that trigger this workflow
   triggers: string[];
 
+  // Semantic matching: "Bu workflow ne zaman kullanılır?" 1-2 cümle
+  semanticDescription: string;
+
+  // Minimum güven eşiği — skor bunun altındaysa workflow tetiklenmez
+  minConfidence: number;
+
+  // Hangi kategoriler bu workflow'u tetikleyebilir
+  primaryCategories: string[];
+
   // The steps in this workflow
   steps: WorkflowStepTemplate[];
 

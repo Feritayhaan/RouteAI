@@ -12,6 +12,20 @@ import {
     StepToolRecommendation,
 } from './workflowTypes';
 import { findMatchingTemplate } from './workflowTemplates';
+import { getCachedWorkflow, setCachedWorkflow } from './cache';
+
+// ================================================================
+// SORUN 3: OutputTypes eşleştirme haritası
+// ================================================================
+const mediaTypeToOutputType: Record<string, string> = {
+    'text': 'text',
+    'image': 'image',
+    'audio': 'audio',
+    'video': 'video',
+    'code': 'code',
+    'data': 'text',
+    'document': 'text',
+};
 
 /**
  * Generate a complete workflow with tool recommendations for each step
@@ -25,8 +39,8 @@ export async function generateWorkflow(
         return null;
     }
 
-    // Find matching workflow template
-    const template = findMatchingTemplate(userQuery, intent.workflowHints);
+    // Find matching workflow template (Sorun 2: intent bazlı scoring)
+    const template = findMatchingTemplate(userQuery, intent.workflowHints, intent);
 
     if (!template) {
         // No matching template found, fall back to simple recommendation
@@ -36,7 +50,18 @@ export async function generateWorkflow(
 
     console.log('[Workflow] Matched template:', template.id);
 
-    // Generate recommendations for each step
+    // ============================================================
+    // SORUN 4: Cache kontrolü — daha önce üretilmişse tekrar üretme
+    // ============================================================
+    const cached = await getCachedWorkflow(template.id, intent.primaryCategory);
+    if (cached) {
+        console.log('[Workflow] Cache HIT:', template.id);
+        return cached;
+    }
+
+    // ============================================================
+    // SORUN 1: Tüm adımlar PARALEL çalışır (Promise.all)
+    // ============================================================
     const steps = await Promise.all(
         template.steps.map(step => generateStepRecommendation(step, intent, template))
     );
@@ -44,7 +69,7 @@ export async function generateWorkflow(
     // Collect all unique categories
     const categories = [...new Set(template.steps.map(s => s.category))];
 
-    return {
+    const result: GeneratedWorkflow = {
         templateId: template.id,
         templateName: template.name,
         userQuery,
@@ -54,6 +79,11 @@ export async function generateWorkflow(
         complexity: template.complexity,
         categories,
     };
+
+    // Cache'e yaz (fire-and-forget)
+    setCachedWorkflow(template.id, intent.primaryCategory, result).catch(() => {});
+
+    return result;
 }
 
 /**
@@ -74,7 +104,7 @@ async function generateStepRecommendation(
         keywords: [...intent.keywords, ...step.capabilities],
     };
 
-    // Score and rank tools for this step
+    // Score and rank tools for this step (Sorun 3: outputTypes filtresi dahil)
     const scoredTools = categoryTools
         .filter(tool => !tool.deprecated)
         .map(tool => ({
@@ -123,6 +153,7 @@ async function generateStepRecommendation(
 
 /**
  * Calculate score for a tool in the context of a specific workflow step
+ * Sorun 3: outputTypes/inputTypes filtresi eklendi
  */
 function calculateStepScore(
     tool: Tool,
@@ -146,6 +177,25 @@ function calculateStepScore(
     for (const capability of lowerCapabilities) {
         if (lowerFeatures.some(feat => feat.includes(capability))) {
             score += 0.5;
+        }
+    }
+
+    // ================================================================
+    // SORUN 3: OutputTypes ve InputTypes eşleşme kontrolü
+    // ================================================================
+    const expectedOutput = mediaTypeToOutputType[step.outputType];
+    if (expectedOutput && tool.outputTypes) {
+        if (tool.outputTypes.includes(expectedOutput as any)) {
+            score += 2; // Tam uyuşma — büyük bonus
+        } else {
+            score -= 1; // Uyuşmazlık — penaltı
+        }
+    }
+
+    const expectedInput = mediaTypeToOutputType[step.inputType];
+    if (expectedInput && tool.inputTypes) {
+        if (tool.inputTypes.includes(expectedInput as any)) {
+            score += 1; // inputType uyuşması — küçük bonus
         }
     }
 
@@ -197,6 +247,12 @@ function generateStepReasoning(
 
     if (matchingCapabilities.length > 0) {
         reasons.push(`"${matchingCapabilities[0]}" konusunda uzman`);
+    }
+
+    // OutputType match reason
+    const expectedOutput = mediaTypeToOutputType[step.outputType];
+    if (expectedOutput && tool.outputTypes?.includes(expectedOutput as any)) {
+        reasons.push(`${step.outputType} çıktısı üretiyor`);
     }
 
     // Pricing reason

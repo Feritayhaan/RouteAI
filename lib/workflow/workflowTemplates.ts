@@ -2,6 +2,7 @@
 // Predefined multi-step workflows for common use cases
 
 import { WorkflowTemplate } from './workflowTypes';
+import { ParsedIntent } from '../intent/types';
 
 /**
  * Library of workflow templates
@@ -20,6 +21,9 @@ export const WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
             'comic', 'çizgi roman', 'manga', 'graphic novel',
             'webtoon', 'karikatür hikaye', 'çizgi hikaye'
         ],
+        semanticDescription: 'Kullanıcı sıfırdan bir çizgi roman, manga, webtoon veya grafik roman oluşturmak istiyor. Hikaye yazımı, karakter tasarımı, panel çizimi ve düzenleme adımlarını kapsayan çok aşamalı bir projedir.',
+        minConfidence: 0.6,
+        primaryCategories: ['gorsel', 'metin'],
         complexity: 'complex',
         estimatedDuration: '4-8 saat',
         tags: ['creative', 'visual', 'storytelling'],
@@ -117,6 +121,9 @@ color palette, white background, detailed --ar 16:9`
             'video', 'film', 'video çek', 'video yap', 'reklam videosu',
             'tanıtım filmi', 'youtube video', 'kısa film', 'video içerik'
         ],
+        semanticDescription: 'Kullanıcı profesyonel bir video üretmek istiyor. Senaryo yazımı, görsel üretimi, seslendirme ve müzik ekleme adımlarını kapsayan prodüksiyon sürecidir.',
+        minConfidence: 0.6,
+        primaryCategories: ['video', 'ses'],
         complexity: 'complex',
         estimatedDuration: '3-6 saat',
         tags: ['video', 'creative', 'marketing'],
@@ -194,6 +201,9 @@ enstrümantal müzik oluştur. Tempo: [BPM]`,
             'brand identity', 'marka kimliği', 'branding', 'kurumsal kimlik',
             'logo ve marka', 'marka oluştur', 'marka tasarımı', 'startup branding'
         ],
+        semanticDescription: 'Kullanıcı bir marka veya şirket için baştan sona kurumsal kimlik oluşturmak istiyor. Logo, renk paleti, tipografi ve marka kılavuzu adımlarını kapsar.',
+        minConfidence: 0.6,
+        primaryCategories: ['gorsel', 'metin'],
         complexity: 'complex',
         estimatedDuration: '3-5 saat',
         tags: ['branding', 'design', 'business'],
@@ -278,6 +288,9 @@ Include HEX codes, color names, and usage guidelines.`,
             'podcast', 'podcast yap', 'podcast bölümü', 'ses içerik',
             'audio content', 'radyo programı', 'sesli içerik'
         ],
+        semanticDescription: 'Kullanıcı bir podcast bölümü veya serisi hazırlamak istiyor. Konu araştırması, kayıt/seslendirme, ses düzenleme ve kapak görseli oluşturma adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['ses', 'arastirma'],
         complexity: 'medium',
         estimatedDuration: '2-4 saat',
         tags: ['audio', 'content', 'media'],
@@ -353,6 +366,9 @@ modern design, bold typography, [RENK ŞEMASI],
             'blog', 'blog yaz', 'blog yazısı', 'makale yaz', 'içerik üret',
             'seo content', 'article', 'blog post', 'içerik pazarlama'
         ],
+        semanticDescription: 'Kullanıcı SEO uyumlu bir blog yazısı veya makale oluşturmak istiyor. Araştırma, yazım ve görsel oluşturma adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['metin', 'arastirma'],
         complexity: 'simple',
         estimatedDuration: '1-2 saat',
         tags: ['content', 'writing', 'marketing'],
@@ -420,6 +436,9 @@ no text overlay needed --ar 16:9`,
             'ebook', 'e-kitap', 'kitap yaz', 'kitap oluştur', 'dijital kitap',
             'kindle', 'epub', 'pdf kitap'
         ],
+        semanticDescription: 'Kullanıcı bir e-kitap veya dijital kitap yazmak ve yayınlamak istiyor. Anahat oluşturma, içerik yazımı, kapak tasarımı ve formatlama adımlarını kapsar.',
+        minConfidence: 0.6,
+        primaryCategories: ['metin', 'gorsel'],
         complexity: 'complex',
         estimatedDuration: '8-20 saat',
         tags: ['writing', 'publishing', 'content'],
@@ -503,6 +522,9 @@ bestseller quality --ar 2:3`
             'youtube', 'youtube video', 'youtuber', 'youtube kanalı',
             'youtube içerik', 'vlog', 'tutorial video'
         ],
+        semanticDescription: 'Kullanıcı YouTube için video içerik üretmek istiyor. SEO araştırması, senaryo yazımı, thumbnail tasarımı, video üretimi ve yayınlama optimizasyonu adımlarını kapsar.',
+        minConfidence: 0.6,
+        primaryCategories: ['video', 'metin', 'gorsel'],
         complexity: 'complex',
         estimatedDuration: '4-8 saat',
         tags: ['youtube', 'video', 'content'],
@@ -609,6 +631,9 @@ Oluştur:
             'logo', 'logo tasarla', 'logo yap', 'logo oluştur',
             'amblem', 'marka logosu', 'şirket logosu'
         ],
+        semanticDescription: 'Kullanıcı bir logo tasarlamak istiyor. Brief oluşturma, AI ile logo üretimi ve finalleştirme adımlarından oluşan basit bir süreçtir.',
+        minConfidence: 0.5,
+        primaryCategories: ['gorsel'],
         complexity: 'simple',
         estimatedDuration: '1-2 saat',
         tags: ['design', 'branding', 'logo'],
@@ -682,6 +707,9 @@ vector style --ar 1:1`,
             'sosyal medya', 'social media', 'instagram', 'kampanya',
             'sosyal medya içerik', 'post', 'içerik takvimi'
         ],
+        semanticDescription: 'Kullanıcı planlı bir sosyal medya kampanyası oluşturmak istiyor. Strateji, görsel şablonlar, carousel/story içerikleri ve copywriting adımlarından oluşur.',
+        minConfidence: 0.5,
+        primaryCategories: ['gorsel', 'metin'],
         complexity: 'medium',
         estimatedDuration: '3-5 saat',
         tags: ['social media', 'marketing', 'content'],
@@ -769,6 +797,9 @@ Her post için:
             'ürün fotoğraf', 'product photo', 'e-ticaret görsel',
             'amazon', 'ürün çekim', 'product shot', 'ürün görseli'
         ],
+        semanticDescription: 'Kullanıcı e-ticaret veya pazarlama için ürün fotoğrafları oluşturmak istiyor. Arka plan kaldırma, lifestyle görselleri ve infografik oluşturma adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['gorsel'],
         complexity: 'simple',
         estimatedDuration: '1-3 saat',
         tags: ['ecommerce', 'product', 'photography'],
@@ -834,6 +865,9 @@ aspirational, high-end aesthetic --ar 4:3`,
             'müzik', 'şarkı', 'music', 'beat', 'melodi',
             'müzik yap', 'şarkı yaz', 'jingle', 'soundtrack'
         ],
+        semanticDescription: 'Kullanıcı orijinal bir müzik parçası, şarkı veya beat oluşturmak istiyor. Söz yazımı, melodi üretimi, ses düzenleme ve kapak tasarımı adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['ses', 'metin'],
         complexity: 'medium',
         estimatedDuration: '2-4 saat',
         tags: ['music', 'audio', 'creative'],
@@ -919,6 +953,9 @@ minimal text, streaming platform ready --ar 1:1`,
             'sunum', 'presentation', 'slayt', 'powerpoint',
             'pitch deck', 'keynote', 'prezentasyon'
         ],
+        semanticDescription: 'Kullanıcı profesyonel bir sunum veya pitch deck hazırlamak istiyor. İçerik planı, slayt tasarımı ve finalizasyon adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['gorsel', 'metin'],
         complexity: 'simple',
         estimatedDuration: '1-3 saat',
         tags: ['presentation', 'business', 'slides'],
@@ -990,6 +1027,9 @@ professional, minimal text --ar 16:9`,
             'çeviri', 'translation', 'localization', 'lokalizasyon',
             'tercüme', 'dil çeviri', 'metin çevir'
         ],
+        semanticDescription: 'Kullanıcı bir metni profesyonelce çevirmek ve lokalize etmek istiyor. Kaynak analizi, çeviri ve kalite kontrol adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['metin'],
         complexity: 'simple',
         estimatedDuration: '1-4 saat',
         tags: ['translation', 'language', 'localization'],
@@ -1059,6 +1099,9 @@ Gereksinimler:
             'dashboard', 'veri analizi', 'data visualization',
             'grafik', 'rapor', 'analytics', 'bi'
         ],
+        semanticDescription: 'Kullanıcı verilerden anlamlı bir dashboard veya analitik rapor oluşturmak istiyor. Veri analizi, görselleştirme ve layout tasarımı adımlarını kapsar.',
+        minConfidence: 0.5,
+        primaryCategories: ['veri', 'gorsel'],
         complexity: 'medium',
         estimatedDuration: '2-5 saat',
         tags: ['data', 'analytics', 'visualization'],
@@ -1129,6 +1172,9 @@ supporting charts below, professional BI aesthetic --ar 16:9`,
             'mobil uygulama', 'app design', 'uygulama tasarla',
             'mobile app', 'ios app', 'android app', 'ui design'
         ],
+        semanticDescription: 'Kullanıcı bir mobil uygulama tasarlamak istiyor. UX araştırması, design system oluşturma, ekran tasarımları ve prototipleme adımlarını kapsar.',
+        minConfidence: 0.6,
+        primaryCategories: ['gorsel', 'kod'],
         complexity: 'complex',
         estimatedDuration: '5-10 saat',
         tags: ['mobile', 'ui', 'ux', 'design'],
@@ -1204,56 +1250,112 @@ iOS style, clean, intuitive --ar 9:19`,
     }
 ];
 
+// ============================================
+// TEMPLATE SCORING & MATCHING
+// ============================================
+
+/**
+ * Score a template against intent and prompt for relevance
+ */
+export function scoreTemplate(
+    template: WorkflowTemplate,
+    intent: ParsedIntent,
+    prompt: string
+): number {
+    let score = 0;
+    const promptLower = prompt.toLowerCase();
+
+    // 1. Keyword (trigger) eşleşmesi (ağırlık: 0.4 per match)
+    const keywordMatches = template.triggers.filter(t =>
+        promptLower.includes(t.toLowerCase())
+    ).length;
+    score += keywordMatches * 0.4;
+
+    // 2. Kısmi kelime eşleşmesi (trigger'ların parçaları, ağırlık: 0.15)
+    for (const trigger of template.triggers) {
+        const words = trigger.toLowerCase().split(' ');
+        for (const word of words) {
+            if (word.length > 3 && promptLower.includes(word)) {
+                score += 0.15;
+            }
+        }
+    }
+
+    // 3. Kategori eşleşmesi (ağırlık: 0.3)
+    if (template.primaryCategories?.includes(intent.primaryCategory)) {
+        score += 0.3;
+    }
+
+    // 4. İkincil kategori eşleşmesi (ağırlık: 0.15)
+    if (intent.secondaryCategories) {
+        for (const sec of intent.secondaryCategories) {
+            if (template.primaryCategories?.includes(sec)) {
+                score += 0.15;
+                break;
+            }
+        }
+    }
+
+    // 5. Workflow hint eşleşmesi (ağırlık: 0.2)
+    if (intent.workflowHints) {
+        for (const hint of intent.workflowHints) {
+            const hintLower = hint.toLowerCase();
+            if (template.triggers.some(t => t.toLowerCase().includes(hintLower))) {
+                score += 0.2;
+            }
+            if (template.tags.some(t => t.toLowerCase().includes(hintLower))) {
+                score += 0.1;
+            }
+        }
+    }
+
+    // 6. Güven çarpanı
+    score *= (intent.confidence || 0.7);
+
+    return score;
+}
+
 /**
  * Find matching workflow template based on user intent
+ * Uses scoring system with minConfidence threshold
  */
 export function findMatchingTemplate(
     query: string,
-    workflowHints?: string[]
+    workflowHints?: string[],
+    intent?: ParsedIntent
 ): WorkflowTemplate | null {
-    const lowerQuery = query.toLowerCase();
-    const hints = workflowHints?.map(h => h.toLowerCase()) || [];
+    // intent yoksa eski davranışa fallback
+    const effectiveIntent: ParsedIntent = intent ?? {
+        primaryCategory: 'metin',
+        secondaryCategories: [],
+        confidence: 0.7,
+        userGoal: query,
+        constraints: { pricing: 'free', speed: 'fast', expertise: 'beginner', language: 'tr' },
+        keywords: query.split(/\s+/),
+        reasoning: '',
+        complexity: 'multi-step',
+        workflowHints: workflowHints ?? [],
+    };
 
     // Score each template
-    const scored = WORKFLOW_TEMPLATES.map(template => {
-        let score = 0;
+    const scored = WORKFLOW_TEMPLATES.map(template => ({
+        template,
+        score: scoreTemplate(template, effectiveIntent, query),
+    }));
 
-        // Check trigger matches
-        for (const trigger of template.triggers) {
-            if (lowerQuery.includes(trigger.toLowerCase())) {
-                score += 10;
-            }
-            // Partial match
-            const triggerWords = trigger.toLowerCase().split(' ');
-            for (const word of triggerWords) {
-                if (word.length > 3 && lowerQuery.includes(word)) {
-                    score += 3;
-                }
-            }
-        }
-
-        // Check workflow hints
-        for (const hint of hints) {
-            if (template.triggers.some(t => t.toLowerCase().includes(hint))) {
-                score += 5;
-            }
-            if (template.tags.some(t => t.toLowerCase().includes(hint))) {
-                score += 3;
-            }
-        }
-
-        return { template, score };
-    });
-
-    // Sort by score and return best match
+    // Sort by score descending
     scored.sort((a, b) => b.score - a.score);
 
-    // Return template only if score is meaningful
-    if (scored[0] && scored[0].score >= 5) {
-        return scored[0].template;
+    const best = scored[0];
+
+    // Skor, template'in minimum güven eşiğinin altındaysa → workflow döndürme
+    if (!best || best.score < (best.template.minConfidence ?? 0.3)) {
+        console.log('[Workflow] En iyi skor yetersiz:', best?.score, '< eşik:', best?.template.minConfidence);
+        return null;
     }
 
-    return null;
+    console.log('[Workflow] Template seçildi:', best.template.id, 'skor:', best.score.toFixed(2));
+    return best.template;
 }
 
 /**
