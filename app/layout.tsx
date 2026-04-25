@@ -24,10 +24,6 @@ export const metadata: Metadata = {
     template: "%s | RouteAI",
   },
   description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
-  icons: {
-    icon: "/globe.svg",
-    apple: "/globe.svg",
-  },
 }
 
 export default function RootLayout({
