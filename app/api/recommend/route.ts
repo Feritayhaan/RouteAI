@@ -13,6 +13,20 @@ import { getClientIp } from "@/lib/getClientIp";
 export const runtime = 'edge';
 export const preferredRegion = 'fra1'; // Avrupa (Türkiye yakın)
 
+// ============================================================
+// Kategori → beklenen outputTypes haritası
+// Vector search yanlış kategori araç döndürürse filtrelemek için.
+// ============================================================
+const categoryOutputMap: Record<string, string[]> = {
+  video: ['video'],
+  gorsel: ['image'],
+  ses: ['audio'],
+  kod: ['code', 'text'],
+  metin: ['text'],
+  arastirma: ['text'],
+  veri: ['text', 'image'],
+};
+
 export async function POST(req: NextRequest) {
   try {
     // Rate limiting - check BEFORE any expensive operations
@@ -118,9 +132,43 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Fallback: kategori bazlı
+    // ============================================================
+    // outputTypes çapraz kontrolü: kategoriyle uyumlu çıktı veren araçları tut.
+    // Örn: "video üret" => sadece outputTypes 'video' olan araçlar kalsın
+    // (Gamma AI gibi sunum araçları elenir).
+    // ============================================================
+    const expectedOutputs = categoryOutputMap[intent.primaryCategory];
+    if (expectedOutputs && recommendedTools.length > 0) {
+      const filtered = recommendedTools.filter(t =>
+        !t.outputTypes || // outputTypes tanımlı değilse geç (legacy araç)
+        t.outputTypes.some(o => expectedOutputs.includes(o))
+      );
+      if (filtered.length > 0) {
+        recommendedTools = filtered;
+      }
+    }
+
+    // Fallback: kategori bazlı + outputTypes güvenliği
     if (recommendedTools.length === 0) {
-      recommendedTools = allTools.filter(t => t.category === intent.primaryCategory);
+      recommendedTools = allTools.filter(t => {
+        if (t.category !== intent.primaryCategory) return false;
+        if (t.deprecated) return false;
+        const expected = categoryOutputMap[intent.primaryCategory];
+        if (!expected || !t.outputTypes) return true;
+        return t.outputTypes.some(o => expected.includes(o));
+      });
+
+      // Pricing filtre fallback'e de uygulansın
+      if (pricingFilter && pricingFilter !== 'all') {
+        recommendedTools = recommendedTools.filter(t => {
+          if (pricingFilter === 'free') return t.pricing.free || t.pricing.freemium;
+          if (pricingFilter === 'paid') return t.pricing.paidOnly || t.pricing.freemium;
+          return true;
+        });
+      }
+
+      // Strength'e göre sırala (vector skor yok)
+      recommendedTools.sort((a, b) => (b.strength ?? 0) - (a.strength ?? 0));
     }
 
     if (recommendedTools.length === 0) {

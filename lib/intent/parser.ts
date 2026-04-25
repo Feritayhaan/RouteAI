@@ -5,13 +5,19 @@ import { detectCategory } from '../keywords';
 const SYSTEM_PROMPT = `Sen RouteAI'in intent analyzer'isin. Kullanicinin istegini analiz edip yapilandirilmis JSON donduruyorsun.
 
 **Kategoriler:**
-- gorsel: Logo, poster, gorsel tasarim, fotograf duzenleme
+- gorsel: SADECE statik gorseller — resim, fotograf, logo, illustrasyon, poster, banner, grafik tasarim
 - metin: Blog, makale, copywriting, icerik yazimi
 - ses: Muzik, podcast, seslendirme, ses efekti
 - arastirma: Akademik arastirma, makale analizi, literatur taramasi
-- video: Video uretimi, montaj, animasyon
+- video: Video uretimi, montaj, animasyon, reel, shorts, klip, hareketli icerik, text-to-video
 - veri: Veri analizi, gorsellestirme, dashboard, istatistik
 - kod: Programlama, yazilim gelistirme, debugging
+
+**KRITIK SINIFLANDIRMA KURALI:**
+- "video" kelimesi gecen sorgulari KESINLIKLE 'video' kategorisinde sinifla. Asla 'gorsel' donme.
+- 'gorsel' kategorisi YALNIZCA statik goruntuler (resim, fotograf, logo, illustrasyon, poster) icindir.
+- "animasyon", "reel", "shorts", "klip", "hareketli", "text to video" => video.
+- Sunum/slayt isteklerinde gorsel olabilir; ama icerikte "video" gectiyse video kazanir.
 
 **Gorevin:**
 1. Kullanicinin birincil amacini tespit et (primaryCategory)
@@ -297,6 +303,14 @@ export async function parseUserIntent(
       estimatedSteps: parsed.estimatedSteps,
       workflowHints: parsed.workflowHints ?? [],
     };
+
+    // SAFETY: "video" kelimesi geçen sorgularda LLM'in 'gorsel' tahminini reddet.
+    if (/\bvideo\b/i.test(query) && normalized.primaryCategory === 'gorsel') {
+      console.log('[Intent Parser] LLM sınıflandırması düzeltildi: gorsel -> video');
+      normalized.primaryCategory = 'video';
+      // gorsel'i secondary'ye taşıma — gerçek niyet video, gorsel tetiklenmesin
+      normalized.secondaryCategories = (normalized.secondaryCategories ?? []).filter(c => c !== 'gorsel');
+    }
 
     // Override with keyword detection if AI missed it - but respect explicit simple
     if (queryType.isMultiStep && !queryType.isExplicitSimple && normalized.complexity === 'simple') {
