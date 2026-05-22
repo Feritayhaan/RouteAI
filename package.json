@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts"
+    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts",
+    "seed:vectors": "node scripts/seed-vectors.mjs",
+    "seed:vectors:force": "node scripts/seed-vectors.mjs --force"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.1",
