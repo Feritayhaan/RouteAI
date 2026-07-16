@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { analyzeIntent } from "@/lib/intent";
 import { generateWorkflow, formatWorkflowForApi } from "@/lib/workflow";
 import { searchTools } from "@/lib/vectorService";
-import { getTools, generateExplanation, Tool } from "@/lib/toolsService";
+import { getTools, generateExplanation, getLocalized, resolveLocale, Tool } from "@/lib/toolsService";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
           type: 'workflow',
           category: intent.primaryCategory,
-          workflow: formatWorkflowForApi(workflow),
+          workflow: formatWorkflowForApi(workflow, resolveLocale(intent.constraints?.language)),
         });
       }
       // workflow null döndüyse simple recommendation'a düş
@@ -183,6 +183,7 @@ export async function POST(req: NextRequest) {
     // ============================================================
     const [main, ...rest] = recommendedTools;
 
+    const locale = resolveLocale(intent.constraints?.language);
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       start(controller) {
@@ -195,7 +196,7 @@ export async function POST(req: NextRequest) {
             category: intent.primaryCategory,
             main: {
               toolName: main.name,
-              description: main.description,
+              description: getLocalized(main, 'description', locale),
               url: main.url,
               pricing: main.pricing,
               strength: main.strength,
@@ -209,7 +210,7 @@ export async function POST(req: NextRequest) {
             chunk: 'alternatives',
             alternatives: rest.slice(0, 3).map((t) => ({
               toolName: t.name,
-              description: t.description,
+              description: getLocalized(t, 'description', locale),
               url: t.url,
               pricing: t.pricing,
               strength: t.strength,

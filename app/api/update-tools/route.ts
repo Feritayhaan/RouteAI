@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTools, updateTools, invalidateToolsCache, Tool } from "@/lib/toolsService";
+import { getTools, updateTools, invalidateToolsCache, getLocalized, Tool } from "@/lib/toolsService";
 import { Index } from "@upstash/vector";
 import OpenAI from "openai";
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
             {
                 name: "New AI Tool Example",
                 category: "metin" as const,
-                description: "Ornek yeni arac (simulasyon)",
+                description: { tr: "Ornek yeni arac (simulasyon)", en: "" },
                 url: "https://example.com",
                 pricing: {
                     free: true,
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
                     paidOnly: false,
                     currency: "USD"
                 },
-                bestFor: ["test"],
+                bestFor: { en: ["test"], tr: [] },
                 strength: 8.5,
                 features: ["demo veri akisi"],
                 lastUpdated: new Date().toISOString().slice(0, 10)
@@ -97,8 +97,8 @@ export async function POST(req: NextRequest) {
                 const textToEmbed = `
         Tool: ${tool.name}
         Category: ${tool.category}
-        Description: ${tool.description}
-        Tasks: ${(tool.bestFor || []).join(", ")}
+        Description: ${getLocalized(tool, 'description')}
+        Tasks: ${getLocalized(tool, 'bestFor').join(", ")}
         Features: ${(tool.features || []).join(", ")}
         Pricing: ${tool.pricing.free ? "Free" : tool.pricing.freemium ? "Freemium" : "Paid"}
                 `.trim();
@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
                     metadata: {
                         name: tool.name,
                         category: tool.category,
-                        description: tool.description,
+                        description: getLocalized(tool, 'description'),
                         url: tool.url,
                         pricing: JSON.stringify(tool.pricing),
                         strength: tool.strength

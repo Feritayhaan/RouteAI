@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import { ParsedIntent } from '../intent/types';
-import { Tool, getRankedToolsByIntent, scoreTool } from '../toolsService';
+import { Tool, getRankedToolsByIntent, getLocalized, resolveLocale, scoreTool } from '../toolsService';
 import * as toolsService from '../toolsService';
 
 const baseIntent: ParsedIntent = {
@@ -18,34 +18,84 @@ const sampleTools: Tool[] = [
   {
     name: 'Free Logo Pro',
     category: 'gorsel',
-    description: 'Fast logo generator',
+    description: { tr: 'Hızlı logo üretici', en: 'Fast logo generator' },
     url: 'https://example.com/free-logo',
     pricing: { free: true, freemium: false, paidOnly: false, currency: 'USD' },
-    bestFor: ['logo design', 'branding'],
+    bestFor: { en: ['logo design', 'branding'], tr: [] },
     strength: 8.2,
     features: ['fast generation'],
   },
   {
     name: 'Paid Visual Suite',
     category: 'gorsel',
-    description: 'Premium design tool',
+    description: { tr: 'Premium tasarım aracı', en: 'Premium design tool' },
     url: 'https://example.com/paid',
     pricing: { free: false, freemium: false, paidOnly: true, currency: 'USD' },
-    bestFor: ['3d rendering'],
+    bestFor: { en: ['3d rendering'], tr: [] },
     strength: 9.5,
     features: ['high quality'],
   },
   {
     name: 'Freemium Graphics',
     category: 'gorsel',
-    description: 'Good for brands',
+    description: { tr: 'Markalar için ideal', en: 'Good for brands' },
     url: 'https://example.com/freemium',
     pricing: { free: false, freemium: true, paidOnly: false, currency: 'USD' },
-    bestFor: ['branding', 'illustration'],
+    bestFor: { en: ['branding', 'illustration'], tr: [] },
     strength: 8.9,
     features: ['fast preview'],
   },
 ];
+
+describe('getLocalized', () => {
+  const tool = sampleTools[0];
+
+  it('returns the requested locale when it is filled', () => {
+    assert.strictEqual(getLocalized(tool, 'description', 'tr'), 'Hızlı logo üretici');
+    assert.strictEqual(getLocalized(tool, 'description', 'en'), 'Fast logo generator');
+  });
+
+  it('falls back to en when the requested locale is empty', () => {
+    // bestFor.tr migration sonrasi bos: tr istense de en donmeli, aksi halde
+    // keyword skorlamasi sifirlanirdi.
+    assert.deepStrictEqual(getLocalized(tool, 'bestFor', 'tr'), ['logo design', 'branding']);
+  });
+
+  it('returns empty when every locale is empty', () => {
+    const blank = { ...tool, description: { tr: '', en: '' }, bestFor: { tr: [], en: [] } };
+    assert.strictEqual(getLocalized(blank, 'description', 'tr'), '');
+    assert.deepStrictEqual(getLocalized(blank, 'bestFor', 'tr'), []);
+  });
+
+  it('treats whitespace-only text as empty and falls back', () => {
+    const padded = { ...tool, description: { tr: '   ', en: 'Fast logo generator' } };
+    assert.strictEqual(getLocalized(padded, 'description', 'tr'), 'Fast logo generator');
+  });
+
+  it('tolerates the legacy flat shape still living in KV', () => {
+    const legacy = {
+      ...tool,
+      description: 'Eski sema aciklamasi',
+      bestFor: ['logo design'],
+    } as unknown as Tool;
+
+    assert.strictEqual(getLocalized(legacy, 'description', 'tr'), 'Eski sema aciklamasi');
+    assert.deepStrictEqual(getLocalized(legacy, 'bestFor', 'tr'), ['logo design']);
+  });
+
+  it('defaults to the tr locale when none is passed', () => {
+    assert.strictEqual(getLocalized(tool, 'description'), 'Hızlı logo üretici');
+  });
+});
+
+describe('resolveLocale', () => {
+  it('keeps supported locales and falls back to tr otherwise', () => {
+    assert.strictEqual(resolveLocale('en'), 'en');
+    assert.strictEqual(resolveLocale('tr'), 'tr');
+    assert.strictEqual(resolveLocale('de'), 'tr');
+    assert.strictEqual(resolveLocale(undefined), 'tr');
+  });
+});
 
 describe('scoreTool', () => {
   it('rewards similarity and pricing alignment', () => {

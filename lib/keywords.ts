@@ -4,7 +4,12 @@ export type Category = "gorsel" | "metin" | "ses" | "arastirma" | "video" | "ver
 
 export const keywords: Record<Category, string[]> = {
     gorsel: ["resim", "görsel", "fotoğraf", "image", "photo", "logo", "illüstrasyon", "poster", "banner", "tasarım yap", "çiz", "draw", "art", "picture", "amblem"],
-    metin: ["yazı", "metin", "blog", "yazma", "content", "writing", "makale", "article", "text", "yaz", "içerik", "copy"],
+    metin: [
+        "yazı", "metin", "blog", "yazma", "content", "writing", "makale", "article", "text", "yaz", "içerik", "copy",
+        // Sunum araçları (Gamma, Beautiful.ai, Tome) metin kategorisinde:
+        // metin prompt'undan slayt içeriği/döküman üretiyorlar.
+        "sunum", "sunu", "slayt", "slide", "presentation", "pitch deck", "deck", "powerpoint"
+    ],
     ses: ["müzik", "ses", "podcast", "voice", "audio", "music", "sound", "voice-over", "voiceover", "seslendirme"],
     arastirma: ["akademik", "tez", "research", "paper", "bilimsel", "araştırma", "kaynak", "literature"],
     video: [

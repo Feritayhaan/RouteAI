@@ -123,14 +123,14 @@ export async function searchTools(query: string, topK: number = 5): Promise<Sear
 
 async function keywordFallbackSearch(query: string, limit: number): Promise<SearchResult[]> {
     try {
-        const { getTools } = await import('./toolsService');
+        const { getTools, getLocalized } = await import('./toolsService');
         const allTools = await getTools();
         const queryLower = query.toLowerCase();
         const queryWords = queryLower.split(/\s+/);
 
         const scored = allTools.map(tool => {
             let score = 0;
-            const toolText = `${tool.name} ${tool.description} ${tool.category} ${(tool.bestFor || []).join(' ')}`.toLowerCase();
+            const toolText = `${tool.name} ${getLocalized(tool, 'description')} ${tool.category} ${getLocalized(tool, 'bestFor').join(' ')}`.toLowerCase();
             for (const word of queryWords) {
                 if (toolText.includes(word)) score++;
             }
@@ -147,7 +147,7 @@ async function keywordFallbackSearch(query: string, limit: number): Promise<Sear
                 metadata: {
                     name: s.tool.name,
                     category: s.tool.category,
-                    description: s.tool.description,
+                    description: getLocalized(s.tool, 'description'),
                     url: s.tool.url,
                     pricing: s.tool.pricing.free ? 'free' : s.tool.pricing.freemium ? 'freemium' : 'paid',
                     strength: s.tool.strength,

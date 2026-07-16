@@ -14,13 +14,23 @@ const DEFAULT_PRICING = {
     currency: "USD" as const
 };
 
+// Locale primitives. Yeni dil eklemek icin tek yapilacak: SUPPORTED_LOCALES'e ekle.
+// Record<Locale, ...> sayesinde eksik ceviri alanlari derleme hatasi verir.
+export const SUPPORTED_LOCALES = ['tr', 'en'] as const;
+export type Locale = (typeof SUPPORTED_LOCALES)[number];
+export const DEFAULT_LOCALE: Locale = 'tr';
+export const FALLBACK_LOCALE: Locale = 'en';
+
+export type LocaleText = Record<Locale, string>;
+export type LocaleList = Record<Locale, string[]>;
+
 // Tool TypeScript Interface
 export interface Tool {
     id?: string; // Unique slug identifier (e.g., "cursor-ai")
     name: string;
     category: "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri" | "kod";
     secondaryCategories?: Category[]; // NEW: Tools can span multiple categories
-    description: string;
+    description: LocaleText;
     url: string;
     pricing: {
         free: boolean;
@@ -29,7 +39,7 @@ export interface Tool {
         startingPrice?: number;
         currency: "USD";
     };
-    bestFor: string[];
+    bestFor: LocaleList;
     strength: number;
     features?: string[];
     lastUpdated?: string;
@@ -45,6 +55,48 @@ export interface Tool {
 export interface ToolFilters {
     pricingFilter?: "all" | "free" | "paid";
     tools?: Tool[];
+}
+
+function isFilled(value: unknown): boolean {
+    return Array.isArray(value)
+        ? value.length > 0
+        : typeof value === 'string' && value.trim().length > 0;
+}
+
+/**
+ * Locale'e gore bir aracin cevrilebilir alanini okur.
+ * Fallback zinciri: istenen locale -> FALLBACK_LOCALE ('en') -> bos.
+ *
+ * Bos dize/dizi "yok" sayilir: migration sonrasi bestFor.tr bos olacagi icin
+ * tr locale'de en'e dusulmesi sarttir, aksi halde keyword skorlamasi sifirlanir.
+ *
+ * Eski sema (duz string / string[]) da tolere edilir. Bu, KV'de duran migration
+ * oncesi veriyi KV'ye hic yazmadan guvenli kilar.
+ */
+export function getLocalized(tool: Tool, field: 'description', locale?: Locale): string;
+export function getLocalized(tool: Tool, field: 'bestFor', locale?: Locale): string[];
+export function getLocalized(
+    tool: Tool,
+    field: 'description' | 'bestFor',
+    locale: Locale = DEFAULT_LOCALE
+): string | string[] {
+    const empty = field === 'bestFor' ? [] : '';
+    const raw = tool?.[field] as unknown;
+
+    if (typeof raw === 'string' || Array.isArray(raw)) return raw;
+    if (!raw || typeof raw !== 'object') return empty;
+
+    const map = raw as Record<string, string | string[] | undefined>;
+
+    for (const key of [locale, FALLBACK_LOCALE]) {
+        if (isFilled(map[key])) return map[key]!;
+    }
+    return empty;
+}
+
+/** Serbest bir dil kodunu (or. intent.constraints.language) desteklenen bir locale'e daraltir. */
+export function resolveLocale(language?: string): Locale {
+    return SUPPORTED_LOCALES.includes(language as Locale) ? (language as Locale) : DEFAULT_LOCALE;
 }
 
 // Tools loaded from merged JSON database
@@ -195,7 +247,8 @@ export async function findToolByName(name: string): Promise<Tool | undefined> {
 
 function computeKeywordSimilarity(tool: Tool, intent: ParsedIntent): number {
     const keywords = intent.keywords?.map((k) => k.toLowerCase()) ?? [];
-    const bestFor = tool.bestFor?.map((b) => b.toLowerCase()) ?? [];
+    const bestFor = getLocalized(tool, 'bestFor', resolveLocale(intent.constraints?.language))
+        .map((b) => b.toLowerCase());
 
     if (keywords.length === 0 || bestFor.length === 0) return 0;
 
@@ -284,8 +337,9 @@ export async function getRankedToolsByIntent(
 export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
     const reasons: string[] = [];
 
+    const bestFor = getLocalized(tool, 'bestFor', resolveLocale(intent.constraints?.language));
     const matchingKeywords = (intent.keywords || []).filter(k =>
-        (tool.bestFor || []).some(bf => bf.toLowerCase().includes(k.toLowerCase()))
+        bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
     );
     if (matchingKeywords.length > 0) {
         reasons.push(`"${matchingKeywords[0]}" konusunda uzman`);

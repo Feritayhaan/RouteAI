@@ -1,6 +1,6 @@
 // Tool matching and filtering utilities
 
-import { getTools, Tool } from '../toolsService';
+import { getTools, getLocalized, Tool } from '../toolsService';
 import { Category } from '../keywords';
 
 /**
@@ -23,7 +23,7 @@ export async function findBestTool(query: string, category: Category | null = nu
         let score = tool.strength; // Base score from strength
 
         // Bonus points for bestFor matching
-        const bestForMatches = tool.bestFor.filter(keyword =>
+        const bestForMatches = getLocalized(tool, 'bestFor').filter(keyword =>
             lowerQuery.includes(keyword.toLowerCase())
         );
         score += bestForMatches.length * 0.5;

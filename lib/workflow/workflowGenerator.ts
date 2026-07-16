@@ -2,7 +2,7 @@
 // Generates step-based tool recommendations for multi-step workflows
 
 import { Category } from '../keywords';
-import { Tool, getToolsByCategory } from '../toolsService';
+import { Tool, Locale, getToolsByCategory, getLocalized, resolveLocale } from '../toolsService';
 import { ParsedIntent } from '../intent/types';
 import {
     WorkflowTemplate,
@@ -164,7 +164,8 @@ function calculateStepScore(
     let score = tool.strength || 8;
 
     // Bonus for matching step capabilities
-    const lowerBestFor = tool.bestFor?.map(b => b.toLowerCase()) || [];
+    const lowerBestFor = getLocalized(tool, 'bestFor', resolveLocale(intent.constraints?.language))
+        .map(b => b.toLowerCase());
     const lowerCapabilities = step.capabilities.map(c => c.toLowerCase());
 
     for (const capability of lowerCapabilities) {
@@ -239,8 +240,9 @@ function generateStepReasoning(
     const reasons: string[] = [];
 
     // Check capability matches
+    const bestFor = getLocalized(tool, 'bestFor', resolveLocale(intent.constraints?.language));
     const matchingCapabilities = step.capabilities.filter(cap =>
-        tool.bestFor?.some(bf =>
+        bestFor.some(bf =>
             bf.toLowerCase().includes(cap.toLowerCase()) ||
             cap.toLowerCase().includes(bf.toLowerCase())
         )
@@ -294,7 +296,7 @@ function createFallbackRecommendation(
     const fallbackTool: Tool = {
         name: type === 'primary' ? 'ChatGPT (GPT-5)' : 'Claude AI (Claude 4)',
         category: category,
-        description: 'Genel amaçlı AI asistanı',
+        description: { tr: 'Genel amaçlı AI asistanı', en: '' },
         url: type === 'primary' ? 'https://chat.openai.com' : 'https://claude.ai',
         pricing: {
             free: true,
@@ -303,7 +305,7 @@ function createFallbackRecommendation(
             startingPrice: 20,
             currency: 'USD',
         },
-        bestFor: ['general purpose', 'content creation', 'writing'],
+        bestFor: { en: ['general purpose', 'content creation', 'writing'], tr: [] },
         strength: 9.5,
     };
 
@@ -317,7 +319,7 @@ function createFallbackRecommendation(
 /**
  * Format workflow for API response
  */
-export function formatWorkflowForApi(workflow: GeneratedWorkflow) {
+export function formatWorkflowForApi(workflow: GeneratedWorkflow, locale?: Locale) {
     return {
         name: workflow.templateName,
         totalSteps: workflow.totalSteps,
@@ -331,7 +333,7 @@ export function formatWorkflowForApi(workflow: GeneratedWorkflow) {
             category: step.category,
             primary: {
                 toolName: step.primary.tool.name,
-                description: step.primary.tool.description,
+                description: getLocalized(step.primary.tool, 'description', locale),
                 url: step.primary.tool.url,
                 pricing: step.primary.tool.pricing,
                 strength: step.primary.tool.strength,
@@ -340,7 +342,7 @@ export function formatWorkflowForApi(workflow: GeneratedWorkflow) {
             },
             alternative: {
                 toolName: step.alternative.tool.name,
-                description: step.alternative.tool.description,
+                description: getLocalized(step.alternative.tool, 'description', locale),
                 url: step.alternative.tool.url,
                 pricing: step.alternative.tool.pricing,
                 strength: step.alternative.tool.strength,
