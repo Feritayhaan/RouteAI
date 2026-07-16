@@ -1,0 +1,26 @@
+# RouteAI — Claude Code Kuralları
+
+## Proje
+Türkçe-öncelikli AI araç navigatörü. Next.js 16 + Upstash Vector + Vercel KV.
+Aktif faz: Faz 1 (çekirdek onarım). Hedef: 20 gerçek Türkçe sorgunun 18'i doğru araç önermeli.
+
+## Mutlak kurallar (NEGATİF)
+- ASLA strength/skor değeri uydurma. Skorlar sadece `data/kazananlar-matrisi.md`
+  dosyasından veya benim açıkça verdiğim değerlerden gelir. Kaynağı olmayan skor = hata.
+- ASLA istenmeyen dosyaları refactor etme, yeniden adlandırma, "temizleme".
+  Görev hangi dosyaları söylüyorsa sadece onlara dokun.
+- ASLA `git push`, deploy, `vercel` komutu çalıştırma. Commit'e kadar getir, dur.
+- ASLA Upstash KV veya Vector'daki canlı veriyi silme/sıfırlama komutu çalıştırma.
+  Seed/reset scriptleri yazılır ama ÇALIŞTIRILMAZ — ben çalıştırırım.
+- ASLA yeni npm paketi ekleme (açıkça istemedikçe).
+- ASLA yeni özellik ekleme. Faz 1 onarım fazıdır: workflow, prompt oluşturucu,
+  API-proxy, auth gibi konulara dokunulmaz — istesem bile bana fazı hatırlat.
+- Türkçe metin üretirken karakterleri koru (ç, ğ, ı, ö, ş, ü). ASCII'ye çevirme.
+
+## Yapılması gerekenler (DESTEKLEYİCİ)
+- Her değişiklikten sonra `npm run build` ve varsa testleri çalıştır, hatasız olduğunu göster.
+- Şema değişikliklerinde Zod validasyonlarını (`lib/validations/`) senkron tut.
+- Mevcut 3 katmanlı fallback mimarisini (cache → KV → JSON) koru; hiçbir değişiklik
+  bu zinciri kırmamalı.
+- Belirsizlik varsa varsayım yapma, bana sor.
+- Değişiklik özetini kısa tut: hangi dosya, ne değişti, nasıl doğrulandı.
