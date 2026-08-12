@@ -3,7 +3,8 @@ import { analyzeIntent } from "@/lib/intent";
 import { generateWorkflow, formatWorkflowForApi } from "@/lib/workflow";
 import { searchTools } from "@/lib/vectorService";
 import { getTools, generateExplanation, getLocalized, resolveLocale, Tool } from "@/lib/toolsService";
-import { matchesPricingFilter } from "@/lib/pricing";
+import { getPricingModel, isPaidOnly, matchesPricingFilter } from "@/lib/pricing";
+import { rankTools } from "@/lib/ranking";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -117,56 +118,87 @@ export async function POST(req: NextRequest) {
     // 3. VEKTÖR ARAMASI + EŞLEŞTİRME
     // ============================================================
     const allTools = await getTools();
-    let recommendedTools: Tool[] = [];
 
+    const searchScores = new Map<string, number>();
+    const candidates: Tool[] = [];
     for (const result of searchResults) {
       const tool = allTools.find(t => t.name === result.metadata.name);
-      if (tool) recommendedTools.push(tool);
-    }
-
-    // Fiyat filtresi — "Ücretli" artık freemium'u KAPSAMIYOR (bkz. lib/pricing.ts)
-    if (pricingFilter && pricingFilter !== 'all') {
-      recommendedTools = recommendedTools.filter(t => matchesPricingFilter(t.pricing, pricingFilter));
+      if (!tool) continue;
+      candidates.push(tool);
+      searchScores.set(tool.name, result.score);
     }
 
     // ============================================================
-    // outputTypes çapraz kontrolü: kategoriyle uyumlu çıktı veren araçları tut.
-    // Örn: "video üret" => sadece outputTypes 'video' olan araçlar kalsın
-    // (Gamma AI gibi sunum araçları elenir).
+    // Filtreler tek yerde tanımlı: hem arama dalında hem kategori
+    // fallback'inde AYNI kurallar çalışsın diye (eskiden kopyalanmıştı).
     // ============================================================
-    const expectedOutputs = categoryOutputMap[intent.primaryCategory];
-    if (expectedOutputs && recommendedTools.length > 0) {
-      const filtered = recommendedTools.filter(t =>
-        !t.outputTypes || // outputTypes tanımlı değilse geç (legacy araç)
-        t.outputTypes.some(o => expectedOutputs.includes(o))
-      );
-      if (filtered.length > 0) {
-        recommendedTools = filtered;
-      }
-    }
 
-    // Fallback: kategori bazlı + outputTypes güvenliği
-    if (recommendedTools.length === 0) {
-      recommendedTools = allTools.filter(t => {
-        if (t.category !== intent.primaryCategory) return false;
-        if (t.deprecated) return false;
-        const expected = categoryOutputMap[intent.primaryCategory];
-        if (!expected || !t.outputTypes) return true;
-        return t.outputTypes.some(o => expected.includes(o));
-      });
+    // UI'dan gelen filtre + sorgunun kendi fiyat kısıtı.
+    // relaxIntent=true iken sorgu kısıtı düşer, UI filtresi ASLA düşmez:
+    // kullanıcının açıkça tıkladığı filtreyi gevşetme hakkımız yok.
+    const filterByPricing = (list: Tool[], relaxIntent: boolean): Tool[] => {
+      let out = list;
 
-      // Pricing filtre fallback'e de uygulansın
+      // "Ücretli" artık freemium'u KAPSAMIYOR (bkz. lib/pricing.ts)
       if (pricingFilter && pricingFilter !== 'all') {
-        recommendedTools = recommendedTools.filter(t => matchesPricingFilter(t.pricing, pricingFilter));
+        out = out.filter(t => matchesPricingFilter(t.pricing, pricingFilter));
       }
 
-      // Strength'e göre sırala (vector skor yok)
-      recommendedTools.sort((a, b) => (b.strength ?? 0) - (a.strength ?? 0));
+      if (!relaxIntent) {
+        // Kullanıcı "ücretsiz" dediyse freemium yeterli değil: ücretsiz
+        // sanıp ödeme duvarına çarpmak, az seçenek görmekten kötü.
+        if (intent.constraints?.pricing === 'free') {
+          out = out.filter(t => getPricingModel(t.pricing) === 'free');
+        } else if (intent.constraints?.pricing === 'paid') {
+          out = out.filter(t => isPaidOnly(t.pricing));
+        }
+      }
+
+      return out;
+    };
+
+    // outputTypes çapraz kontrolü: kategoriyle uyumlu çıktı veren araçları tut.
+    // Örn: "video üret" => sadece outputTypes 'video' olan araçlar kalsın.
+    const filterByOutputs = (list: Tool[]): Tool[] => {
+      const expected = categoryOutputMap[intent.primaryCategory];
+      if (!expected) return list;
+      return list.filter(t =>
+        !t.outputTypes || // outputTypes tanımlı değilse geç (legacy araç)
+        t.outputTypes.some(o => expected.includes(o))
+      );
+    };
+
+    const categoryPool = (): Tool[] =>
+      allTools.filter(t => t.category === intent.primaryCategory && !t.deprecated);
+
+    // ============================================================
+    // Aday seçimi: aramadan başla, boşalırsa sırayla gevşet.
+    // Kısıtı gevşetmek sessizce olmaz — meta'da relaxedConstraint ile bildirilir.
+    // ============================================================
+    let relaxedConstraint: 'pricing' | null = null;
+    let recommendedTools = filterByOutputs(filterByPricing(candidates, false));
+
+    if (recommendedTools.length === 0) {
+      // Arama ya boş döndü ya da bulduğu araçlar kategori/fiyat kısıtına
+      // uymuyor. Eskiden bu durumda kısıt SESSİZCE yok sayılıp kategori dışı
+      // araç ana öneri oluyordu ("YouTube altyazı" -> OpusClip, video aracı).
+      recommendedTools = filterByOutputs(filterByPricing(categoryPool(), false));
+    }
+
+    if (recommendedTools.length === 0) {
+      relaxedConstraint = 'pricing';
+      recommendedTools = filterByOutputs(filterByPricing(candidates, true));
+      if (recommendedTools.length === 0) {
+        recommendedTools = filterByOutputs(filterByPricing(categoryPool(), true));
+      }
     }
 
     if (recommendedTools.length === 0) {
       return NextResponse.json({ error: "Bu istek için uygun araç bulunamadı" });
     }
+
+    // Tek sıralama yolu: arama skoru > karantina cezası > strength > lastUpdated
+    recommendedTools = rankTools(recommendedTools, { searchScores });
 
     // ============================================================
     // GÖREV 5: Streaming NDJSON — ilk byte hızı maksimize
@@ -175,6 +207,22 @@ export async function POST(req: NextRequest) {
     // Chunk 3: meta/debug → en sonda
     // ============================================================
     const [main, ...rest] = recommendedTools;
+
+    // Alternatifler ana aracın ya da sorgunun kategorisiyle ilgili olmalı.
+    // Eskiden hiçbir filtreden geçmiyordu: "ses klonlama podcast" sorgusunda
+    // 1. alternatif GitHub Copilot (kod) çıkıyordu. 3'ten az kalırsa az
+    // gösteriyoruz — alakasız araçla doldurmak boşluktan kötü.
+    const allowedCategories = new Set<string>([
+      main.category,
+      intent.primaryCategory,
+      ...(intent.secondaryCategories ?? []),
+    ]);
+    const alternatives = rest
+      .filter(t =>
+        allowedCategories.has(t.category) ||
+        t.secondaryCategories?.some(c => allowedCategories.has(c))
+      )
+      .slice(0, 3);
 
     const locale = resolveLocale(intent.constraints?.language);
     const encoder = new TextEncoder();
@@ -201,7 +249,7 @@ export async function POST(req: NextRequest) {
           // CHUNK 2: Alternatifler
           const alternativesChunk = {
             chunk: 'alternatives',
-            alternatives: rest.slice(0, 3).map((t) => ({
+            alternatives: alternatives.map((t) => ({
               toolName: t.name,
               description: getLocalized(t, 'description', locale),
               url: t.url,
@@ -217,6 +265,11 @@ export async function POST(req: NextRequest) {
             category: intent.primaryCategory,
             confidence: intent.confidence,
           };
+          // Kısıt gevşetildiyse sessiz kalma: kullanıcı "ücretsiz" isteyip
+          // ücretli sonuç görüyorsa bunu bilmeli.
+          if (relaxedConstraint) {
+            metaChunk.relaxedConstraint = relaxedConstraint;
+          }
           if (process.env.NODE_ENV !== 'production') {
             metaChunk._debug = {
               source: 'vector-search',

@@ -362,7 +362,12 @@ export async function parseUserIntent(
 function extractConstraints(query: string): ParsedIntent['constraints'] {
   const lower = query.toLowerCase();
   const constraints: ParsedIntent['constraints'] = {
-    pricing: 'free',
+    // Varsayilan 'freemium' = "tercih belirtilmedi". Eskiden 'free' idi ve
+    // bu, kullanicinin ucretsiz istedigi ile parser'in bir sey bilmedigi
+    // durumu AYIRT EDILEMEZ kiliyordu; kisiti okuyan taraf her sorguyu
+    // ucretsiz sanirdi. Asagidaki regex sadece kullanici gercekten
+    // soyledigginde 'free' yazar.
+    pricing: 'freemium',
     speed: 'fast',
     expertise: 'beginner',
     language: 'tr',
@@ -404,7 +409,7 @@ function createFallbackIntent(
     secondaryCategories: [],
     confidence: 0.7,
     userGoal: query,
-    constraints: constraints ?? { pricing: 'free', speed: 'fast', expertise: 'beginner', language: 'tr' },
+    constraints: constraints ?? { pricing: 'freemium', speed: 'fast', expertise: 'beginner', language: 'tr' },
     keywords: query.split(/\s+/).filter(w => w.length > 2),
     reasoning: 'Kademe 1: Kural tabanlı hızlı classifier kullanıldı.',
     complexity: queryType.isMultiStep && !queryType.isExplicitSimple ? 'multi-step' : 'simple',

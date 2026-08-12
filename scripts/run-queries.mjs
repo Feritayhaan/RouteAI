@@ -11,7 +11,8 @@ import { analyzeIntent } from '../lib/intent/index.ts';
 import { searchTools } from '../lib/vectorService.ts';
 import { generateWorkflow, formatWorkflowForApi } from '../lib/workflow/index.ts';
 import { getTools, generateExplanation, getLocalized, resolveLocale } from '../lib/toolsService.ts';
-import { matchesPricingFilter, priceLabelOrUnknown } from '../lib/pricing.ts';
+import { getPricingModel, isPaidOnly, matchesPricingFilter, priceLabelOrUnknown } from '../lib/pricing.ts';
+import { rankTools } from '../lib/ranking.ts';
 
 // route.ts'ten birebir kopya
 const categoryOutputMap = {
@@ -60,51 +61,81 @@ async function runQuery(prompt, pricingFilter) {
     }
 
     const allTools = await getTools();
-    let recommendedTools = [];
+    const searchScores = new Map();
+    const candidates = [];
     for (const result of searchResults) {
         const tool = allTools.find((t) => t.name === result.metadata.name);
-        if (tool) recommendedTools.push(tool);
+        if (!tool) continue;
+        candidates.push(tool);
+        searchScores.set(tool.name, result.score);
     }
 
-    if (pricingFilter && pricingFilter !== 'all') {
-        recommendedTools = recommendedTools.filter((t) => matchesPricingFilter(t.pricing, pricingFilter));
-    }
+    const filterByPricing = (list, relaxIntent) => {
+        let out = list;
+        if (pricingFilter && pricingFilter !== 'all') {
+            out = out.filter((t) => matchesPricingFilter(t.pricing, pricingFilter));
+        }
+        if (!relaxIntent) {
+            if (intent.constraints?.pricing === 'free') {
+                out = out.filter((t) => getPricingModel(t.pricing) === 'free');
+            } else if (intent.constraints?.pricing === 'paid') {
+                out = out.filter((t) => isPaidOnly(t.pricing));
+            }
+        }
+        return out;
+    };
 
-    const expectedOutputs = categoryOutputMap[intent.primaryCategory];
-    if (expectedOutputs && recommendedTools.length > 0) {
-        const filtered = recommendedTools.filter(
-            (t) => !t.outputTypes || t.outputTypes.some((o) => expectedOutputs.includes(o))
-        );
-        if (filtered.length > 0) recommendedTools = filtered;
-    }
+    const filterByOutputs = (list) => {
+        const expected = categoryOutputMap[intent.primaryCategory];
+        if (!expected) return list;
+        return list.filter((t) => !t.outputTypes || t.outputTypes.some((o) => expected.includes(o)));
+    };
 
+    const categoryPool = () =>
+        allTools.filter((t) => t.category === intent.primaryCategory && !t.deprecated);
+
+    let relaxedConstraint = null;
     let usedFallback = false;
+    let recommendedTools = filterByOutputs(filterByPricing(candidates, false));
+
     if (recommendedTools.length === 0) {
         usedFallback = true;
-        recommendedTools = allTools.filter((t) => {
-            if (t.category !== intent.primaryCategory) return false;
-            if (t.deprecated) return false;
-            const expected = categoryOutputMap[intent.primaryCategory];
-            if (!expected || !t.outputTypes) return true;
-            return t.outputTypes.some((o) => expected.includes(o));
-        });
+        recommendedTools = filterByOutputs(filterByPricing(categoryPool(), false));
+    }
 
-        if (pricingFilter && pricingFilter !== 'all') {
-            recommendedTools = recommendedTools.filter((t) => matchesPricingFilter(t.pricing, pricingFilter));
+    if (recommendedTools.length === 0) {
+        relaxedConstraint = 'pricing';
+        recommendedTools = filterByOutputs(filterByPricing(candidates, true));
+        if (recommendedTools.length === 0) {
+            usedFallback = true;
+            recommendedTools = filterByOutputs(filterByPricing(categoryPool(), true));
         }
-
-        recommendedTools.sort((a, b) => (b.strength ?? 0) - (a.strength ?? 0));
     }
 
     if (recommendedTools.length === 0) return { kind: 'empty', intent };
 
+    recommendedTools = rankTools(recommendedTools, { searchScores });
+
     const [main, ...rest] = recommendedTools;
+    const allowedCategories = new Set([
+        main.category,
+        intent.primaryCategory,
+        ...(intent.secondaryCategories ?? []),
+    ]);
+    const alternatives = rest
+        .filter(
+            (t) =>
+                allowedCategories.has(t.category) ||
+                t.secondaryCategories?.some((c) => allowedCategories.has(c))
+        )
+        .slice(0, 3);
     const locale = resolveLocale(intent.constraints?.language);
 
     return {
         kind: 'simple',
         intent,
         usedFallback,
+        relaxedConstraint,
         main: {
             name: main.name,
             category: main.category,
@@ -114,7 +145,7 @@ async function runQuery(prompt, pricingFilter) {
             why: generateExplanation(intent, main),
             description: getLocalized(main, 'description', locale),
         },
-        alternatives: rest.slice(0, 3).map((t) => ({
+        alternatives: alternatives.map((t) => ({
             name: t.name,
             category: t.category,
             price: priceLabelOrUnknown(t.pricing),
@@ -140,7 +171,7 @@ console.log('\n\n================ 10 SORGU SONUCU ================\n');
 for (const r of results) {
     console.log(`SORGU: ${r.query}`);
     if (r.kind === 'simple') {
-        console.log(`  sorgu kategorisi : ${r.intent.primaryCategory} (guven ${r.intent.confidence})${r.usedFallback ? '  [KATEGORI FALLBACK]' : ''}`);
+        console.log(`  sorgu kategorisi : ${r.intent.primaryCategory} (guven ${r.intent.confidence}, fiyat kisiti=${r.intent.constraints.pricing})${r.usedFallback ? '  [KATEGORI FALLBACK]' : ''}${r.relaxedConstraint ? `  [KISIT GEVSETILDI: ${r.relaxedConstraint}]` : ''}`);
         console.log(`  ANA ONERI        : ${r.main.name}${flag(r.main)}`);
         console.log(`                     kategori=${r.main.category} | ${r.main.price} | strength=${r.main.strength}`);
         console.log(`                     "${r.main.description}"`);
@@ -173,3 +204,13 @@ console.log(`  hata/bos                           : ${results.filter((r) => r.ki
 console.log(`  ana onerisi DENETLENMEMIS olan     : ${unreviewedMain.length}/${simple.length}  ${unreviewedMain.map((r) => r.query).join(', ')}`);
 console.log(`  arac kategorisi != sorgu kategorisi: ${catMismatch.length}/${simple.length}  ${catMismatch.map((r) => `${r.query}(${r.main.category}!=${r.intent.primaryCategory})`).join(', ')}`);
 console.log(`  ana onerinin fiyati bilinmiyor     : ${unknownPrice.length}/${simple.length}`);
+
+// Kabul kriteri 4b: hicbir alternatif listesinde kategori disi arac olmayacak.
+const offCategory = [];
+for (const r of simple) {
+    const allowed = new Set([r.main.category, r.intent.primaryCategory, ...(r.intent.secondaryCategories ?? [])]);
+    for (const a of r.alternatives) {
+        if (!allowed.has(a.category)) offCategory.push(`${r.query} -> ${a.name}(${a.category})`);
+    }
+}
+console.log(`  KATEGORI DISI ALTERNATIF           : ${offCategory.length}  ${offCategory.join(', ')}`);
