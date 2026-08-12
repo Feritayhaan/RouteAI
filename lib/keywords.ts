@@ -1,5 +1,7 @@
 // Keyword mapping for category detection
 
+import { normalizeTr } from "./text";
+
 export type Category = "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri" | "kod";
 
 export const keywords: Record<Category, string[]> = {
@@ -27,13 +29,14 @@ const CATEGORY_PRIORITY: Category[] = ["video", "ses", "kod", "veri", "arastirma
 
 // Detect category from user query
 export function detectCategory(query: string): Category | null {
-    const normalizedQuery = query.toLowerCase();
+    // Diakritik-duyarsiz: "gorsel" yazan da "görsel" yazan da ayni kategoriye dussun.
+    const normalizedQuery = normalizeTr(query);
     const scores: Record<string, number> = {};
 
     for (const [category, keywordList] of Object.entries(keywords)) {
         let count = 0;
         for (const keyword of keywordList) {
-            if (normalizedQuery.includes(keyword.toLowerCase())) {
+            if (normalizedQuery.includes(normalizeTr(keyword))) {
                 count++;
             }
         }

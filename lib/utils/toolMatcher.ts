@@ -2,6 +2,7 @@
 
 import { getTools, getLocalized, Tool } from '../toolsService';
 import { Category } from '../keywords';
+import { normalizeTr } from '../text';
 
 /**
  * Filter tools by category
@@ -16,7 +17,8 @@ export async function filterByCategory(category: Category): Promise<Tool[]> {
  */
 export async function findBestTool(query: string, category: Category | null = null): Promise<Tool | null> {
     const tools = category ? await filterByCategory(category) : await getTools();
-    const lowerQuery = query.toLowerCase();
+    // Diakritik-duyarsiz karsilastirma: iki taraf da normalizeTr'den gecer.
+    const normalizedQuery = normalizeTr(query);
 
     // Score each tool
     const scoredTools = tools.map(tool => {
@@ -24,7 +26,7 @@ export async function findBestTool(query: string, category: Category | null = nu
 
         // Bonus points for bestFor matching
         const bestForMatches = getLocalized(tool, 'bestFor').filter(keyword =>
-            lowerQuery.includes(keyword.toLowerCase())
+            normalizedQuery.includes(normalizeTr(keyword))
         );
         score += bestForMatches.length * 0.5;
 

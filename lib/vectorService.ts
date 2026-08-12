@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { kv } from "./kv";
 import { hashString } from "./hash";
 import { getPricingModel } from "./pricing";
+import { normalizeTr } from "./text";
 
 // ================================================================
 // Vektor aramasi bayrakla KAPALI (tanimsiz = kapali, acmak icin 'true').
@@ -149,12 +150,14 @@ async function keywordFallbackSearch(query: string, limit: number): Promise<Sear
     try {
         const { getTools, getLocalized } = await import('./toolsService');
         const allTools = await getTools();
-        const queryLower = query.toLowerCase();
-        const queryWords = queryLower.split(/\s+/);
+        // Diakritik-duyarsiz: "dugun" yazan kullanici "düğün" verisini bulsun.
+        const queryWords = normalizeTr(query).split(/\s+/).filter(Boolean);
 
         const scored = allTools.map(tool => {
             let score = 0;
-            const toolText = `${tool.name} ${getLocalized(tool, 'description')} ${tool.category} ${getLocalized(tool, 'bestFor').join(' ')}`.toLowerCase();
+            const toolText = normalizeTr(
+                `${tool.name} ${getLocalized(tool, 'description')} ${tool.category} ${getLocalized(tool, 'bestFor').join(' ')}`
+            );
             for (const word of queryWords) {
                 if (toolText.includes(word)) score++;
             }
