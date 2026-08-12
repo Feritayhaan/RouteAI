@@ -4,14 +4,17 @@ import { ExternalLink, Star, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
+import FeedbackButtons from "./FeedbackButtons"
 
 export default function SimpleRecommendationDisplay({
   recommendation,
+  query,
   rating,
   onRatingChange,
   ratingFeedback
 }: {
   recommendation: SimpleRecommendation
+  query: string
   rating: number
   onRatingChange: (rating: number) => void
   ratingFeedback: boolean
@@ -132,6 +135,8 @@ export default function SimpleRecommendationDisplay({
                 </div>
               </div>
             )}
+
+            <FeedbackButtons query={query} toolName={recommendation.main.toolName} />
           </div>
         </div>
       </div>

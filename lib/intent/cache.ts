@@ -4,7 +4,7 @@ import { ParsedIntent } from './types';
 const CACHE_PREFIX = 'intent:';
 const CACHE_TTL = 60 * 60 * 24;
 
-function normalizeQuery(query: string): string {
+export function normalizeQuery(query: string): string {
   return query
     .toLowerCase()
     .replace(/ı/g, 'i')

@@ -18,6 +18,10 @@ const RATE_LIMITS: Record<string, RateLimitConfig[]> = {
         { requests: 10, windowSeconds: 60 },    // 10 per minute
         { requests: 60, windowSeconds: 3600 },  // 60 per hour
     ],
+    feedback: [
+        { requests: 20, windowSeconds: 60 },    // 20 per minute
+        { requests: 120, windowSeconds: 3600 }, // 120 per hour
+    ],
 };
 
 /**

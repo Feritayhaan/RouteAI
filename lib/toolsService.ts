@@ -274,6 +274,11 @@ function matchesPricingPreference(tool: Tool, intent: ParsedIntent): boolean {
     return true;
 }
 
+// TODO: Normalize edilmis agirlikli formule gecilecek:
+//   vektor 0.55 + bestFor eslesmesi 0.30 + (strength / 100) * 0.15
+// strength 100'luk skalaya gecince bu formul strength'i ham puan olarak toplamaya
+// devam ederse diger sinyalleri ezer (similarity max ~4, pricing ~±3). Ara durumda
+// tutarsizlik bilinctli: eval'e kadar deploy yok.
 /**
  * Calculate overall tool score blending similarity, pricing alignment and inherent strength.
  */

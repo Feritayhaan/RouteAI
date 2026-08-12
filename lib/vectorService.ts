@@ -1,6 +1,7 @@
 import { Index } from "@upstash/vector";
 import OpenAI from "openai";
 import { kv } from "./kv";
+import { hashString } from "./hash";
 
 // Lazy initialization - build time'da env vars olmayabilir
 let _index: Index | null = null;
@@ -30,19 +31,6 @@ function getOpenAI(): OpenAI {
 // ================================================================
 const EMB_CACHE_PREFIX = 'emb:';
 const EMB_CACHE_TTL = 3600; // 1 saat
-
-/**
- * Simple string hash for cache keys (FNV-1a 32-bit)
- * Edge-uyumlu, crypto.subtle gerektirmez
- */
-function hashString(str: string): string {
-    let hash = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-        hash ^= str.charCodeAt(i);
-        hash = Math.imul(hash, 0x01000193);
-    }
-    return (hash >>> 0).toString(36);
-}
 
 /**
  * Embedding'i cache'den al veya OpenAI'dan üret

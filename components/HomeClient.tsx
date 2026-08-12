@@ -379,7 +379,9 @@ export default function HomeClient() {
               <WorkflowDisplay workflow={(response as WorkflowRecommendation).workflow} />
             ) : (
               <SimpleRecommendationDisplay
+                key={`${query}-${(response as SimpleRecommendation).main.toolName}`}
                 recommendation={response as SimpleRecommendation}
+                query={query}
                 rating={rating}
                 onRatingChange={handleStarClick}
                 ratingFeedback={ratingFeedback}
