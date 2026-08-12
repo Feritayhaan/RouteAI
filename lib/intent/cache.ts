@@ -1,7 +1,11 @@
 import { kv } from '../kv';
 import { ParsedIntent } from './types';
 
-const CACHE_PREFIX = 'intent:';
+// v2: eski parser pricing:'free' degerini VARSAYILAN olarak her intent'e yaziyordu;
+// yeni kod o kisiti uyguladigi icin cache'teki eski kayitlar "ucretsiz" demeyen
+// sorgulari da ucretsiz havuzuna sikistiriyordu. Prefix cevrildi, eski anahtarlar
+// 24 saatlik TTL ile kendiliginden olecek.
+const CACHE_PREFIX = 'intent:v2:';
 const CACHE_TTL = 60 * 60 * 24;
 
 export function normalizeQuery(query: string): string {
