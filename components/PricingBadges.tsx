@@ -12,7 +12,6 @@ export default function PricingBadges({ pricing }: { pricing?: RecommendationToo
   const model = getPricingModel(pricing)
   // Ucretsizde fiyat cipi rozeti tekrar etmis olur.
   const priceLabel = model === 'free' ? null : priceLabelOrUnknown(pricing)
-  const isStale = pricing.priceStatus === 'stale'
 
   return (
     <div className="flex flex-wrap gap-1.5">
@@ -26,12 +25,13 @@ export default function PricingBadges({ pricing }: { pricing?: RecommendationToo
         </span>
       )}
 
-      {isStale && (
-        <span
-          title="Fiyat en son 60 günden önce doğrulandı"
-          className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-semibold"
-        >
-          Fiyat güncel olmayabilir
+      {/* Uyari degil tarih: DB'deki en yeni fiyat verisi 2025-12-31, yani hicbir
+          fiyat "taze" degil. "Fiyat guncel olmayabilir" rozeti 96 aracin
+          hepsinde cikip sinyal tasimayi birakiyordu. Tarihi gosterip kararı
+          kullaniciya birakiyoruz. */}
+      {pricing.priceCheckedAt && (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted/40 text-[10px] text-muted-foreground/70">
+          {new Date(pricing.priceCheckedAt).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })} verisi
         </span>
       )}
     </div>
