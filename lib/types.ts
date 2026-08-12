@@ -1,14 +1,12 @@
+import { PricingLike } from './pricing'
+
 export interface RecommendationTool {
   toolName: string
   description: string
   url?: string
-  pricing?: {
-    free?: boolean
-    freemium?: boolean
-    paidOnly?: boolean
-    startingPrice?: number
-    currency?: string
-  }
+  /** Gevsek sema: KV'de migration oncesi kayitlar hala olabilir. Okurken
+   *  lib/pricing.ts helper'larini kullan, bayraklari elle yorumlama. */
+  pricing?: PricingLike
   strength?: number
   why?: string
   promptSuggestion?: string

@@ -2,6 +2,7 @@ import { Index } from "@upstash/vector";
 import OpenAI from "openai";
 import { kv } from "./kv";
 import { hashString } from "./hash";
+import { getPricingModel } from "./pricing";
 
 // Lazy initialization - build time'da env vars olmayabilir
 let _index: Index | null = null;
@@ -137,7 +138,7 @@ async function keywordFallbackSearch(query: string, limit: number): Promise<Sear
                     category: s.tool.category,
                     description: getLocalized(s.tool, 'description'),
                     url: s.tool.url,
-                    pricing: s.tool.pricing.free ? 'free' : s.tool.pricing.freemium ? 'freemium' : 'paid',
+                    pricing: getPricingModel(s.tool.pricing),
                     strength: s.tool.strength,
                 },
             }));

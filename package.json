@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts"
+    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts",
+    "validate:db": "node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-db.mjs",
+    "migrate:pricing": "node scripts/migrate-pricing.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.1",

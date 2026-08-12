@@ -4,6 +4,7 @@
 import { Category } from '../keywords';
 import { Tool, Locale, getToolsByCategory, getLocalized, resolveLocale, getTools } from '../toolsService';
 import { ParsedIntent } from '../intent/types';
+import { makePricing } from '../pricing';
 import {
     WorkflowTemplate,
     WorkflowStepTemplate,
@@ -659,13 +660,7 @@ function createFallbackRecommendation(
         category: category,
         description: { tr: 'Genel amaçlı AI asistanı', en: '' },
         url: type === 'primary' ? 'https://chat.openai.com' : 'https://claude.ai',
-        pricing: {
-            free: true,
-            freemium: true,
-            paidOnly: false,
-            startingPrice: 20,
-            currency: 'USD',
-        },
+        pricing: makePricing('freemium', 20),
         bestFor: { en: ['general purpose', 'content creation', 'writing'], tr: [] },
         strength: 9.5,
     };

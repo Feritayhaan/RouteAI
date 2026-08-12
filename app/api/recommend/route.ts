@@ -3,6 +3,7 @@ import { analyzeIntent } from "@/lib/intent";
 import { generateWorkflow, formatWorkflowForApi } from "@/lib/workflow";
 import { searchTools } from "@/lib/vectorService";
 import { getTools, generateExplanation, getLocalized, resolveLocale, Tool } from "@/lib/toolsService";
+import { matchesPricingFilter } from "@/lib/pricing";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -123,13 +124,9 @@ export async function POST(req: NextRequest) {
       if (tool) recommendedTools.push(tool);
     }
 
-    // Fiyat filtresi
+    // Fiyat filtresi — "Ücretli" artık freemium'u KAPSAMIYOR (bkz. lib/pricing.ts)
     if (pricingFilter && pricingFilter !== 'all') {
-      recommendedTools = recommendedTools.filter(t => {
-        if (pricingFilter === 'free') return t.pricing.free || t.pricing.freemium;
-        if (pricingFilter === 'paid') return t.pricing.paidOnly || t.pricing.freemium;
-        return true;
-      });
+      recommendedTools = recommendedTools.filter(t => matchesPricingFilter(t.pricing, pricingFilter));
     }
 
     // ============================================================
@@ -160,11 +157,7 @@ export async function POST(req: NextRequest) {
 
       // Pricing filtre fallback'e de uygulansın
       if (pricingFilter && pricingFilter !== 'all') {
-        recommendedTools = recommendedTools.filter(t => {
-          if (pricingFilter === 'free') return t.pricing.free || t.pricing.freemium;
-          if (pricingFilter === 'paid') return t.pricing.paidOnly || t.pricing.freemium;
-          return true;
-        });
+        recommendedTools = recommendedTools.filter(t => matchesPricingFilter(t.pricing, pricingFilter));
       }
 
       // Strength'e göre sırala (vector skor yok)

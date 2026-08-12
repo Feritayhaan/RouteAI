@@ -2,6 +2,7 @@
 
 import { ExternalLink, Star, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
+import { priceLabelOrUnknown } from "@/lib/pricing"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
@@ -38,7 +39,10 @@ export default function SimpleRecommendationDisplay({
               </div>
 
               <div className="flex-1 space-y-1.5 md:space-y-2 min-w-0">
-                <div className="flex items-center gap-2">
+                {/* Bu rozet SORGUNUN kategorisi, aracin degil: Beautiful.ai
+                    veritabaninda 'metin' ama video sorgusunda "VIDEO" yaziyordu. */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-muted-foreground">Sorgu kategorisi</span>
                   <CategoryBadge category={recommendation.category} />
                 </div>
                 {renderPricingBadges()}
@@ -125,11 +129,11 @@ export default function SimpleRecommendationDisplay({
                       className="text-sm flex justify-between items-center hover:underline"
                     >
                       <span>{alt.toolName}</span>
-                      {alt.pricing?.startingPrice && (
-                        <span className="text-xs text-muted-foreground">
-                          ${alt.pricing.startingPrice}/ay
-                        </span>
-                      )}
+                      {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
+                          ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
+                      <span className="text-xs text-muted-foreground">
+                        {priceLabelOrUnknown(alt.pricing)}
+                      </span>
                     </a>
                   ))}
                 </div>

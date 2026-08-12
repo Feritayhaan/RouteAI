@@ -4,15 +4,26 @@
 import { kv } from './kv';
 import { Category } from './keywords';
 import { ParsedIntent } from './intent/types';
+import {
+    ToolPricing,
+    getPricingModel,
+    hasFreeTier,
+    isPaidOnly,
+    makePricing,
+    matchesPricingFilter,
+} from './pricing';
 import toolsDatabase from './tools-database.json';
 
 const KV_TOOLS_KEY = 'tools';
-const DEFAULT_PRICING = {
-    free: false,
-    freemium: false,
-    paidOnly: false,
-    currency: "USD" as const
-};
+
+// Fiyat verisi olmayan arac 'paid' sayilir: veri yoklugunda "ucretsiz" demek,
+// kullaniciyi yanlis yone gonderen tek hata turudur.
+const DEFAULT_PRICING: ToolPricing = makePricing('paid');
+
+// Denetlenmemis kayitlar (Kasim 2025 toplu ithali) siralamada geriye itilir.
+// Silmiyoruz — Gun 3'te elden gecirilecekler; sadece ana oneri olarak
+// cikmalarini engelliyoruz.
+const UNREVIEWED_PENALTY = 1.5;
 
 // Locale primitives. Yeni dil eklemek icin tek yapilacak: SUPPORTED_LOCALES'e ekle.
 // Record<Locale, ...> sayesinde eksik ceviri alanlari derleme hatasi verir.
@@ -32,15 +43,12 @@ export interface Tool {
     secondaryCategories?: Category[]; // NEW: Tools can span multiple categories
     description: LocaleText;
     url: string;
-    pricing: {
-        free: boolean;
-        freemium: boolean;
-        paidOnly: boolean;
-        startingPrice?: number;
-        currency: "USD";
-    };
+    /** makePricing() ile uretilir; bayraklar model'den turer. Bkz. lib/pricing.ts */
+    pricing: ToolPricing;
     bestFor: LocaleList;
     strength: number;
+    /** 'unreviewed' = fiyat/guc verisi elden gecmemis toplu ithal kaydi. */
+    reviewStatus?: 'reviewed' | 'unreviewed';
     features?: string[];
     lastUpdated?: string;
     deprecated?: boolean;
@@ -186,17 +194,17 @@ export async function getRankedToolsByCategory(
         }));
 
     // 2) Apply pricing filter
-    if (options?.pricingFilter === "free") {
-        tools = tools.filter((t) => t.pricing.free || t.pricing.freemium);
-    } else if (options?.pricingFilter === "paid") {
-        tools = tools.filter((t) => t.pricing.paidOnly || t.pricing.freemium);
+    if (options?.pricingFilter && options.pricingFilter !== "all") {
+        tools = tools.filter((t) => matchesPricingFilter(t.pricing, options.pricingFilter));
     }
 
-    // 3) Simple scoring: strength + free/freemium bonus
+    // 3) Simple scoring: strength + free/freemium bonus - denetlenmemis cezasi
     const scored = tools.map((t) => {
+        const model = getPricingModel(t.pricing);
         let score = t.strength ?? 8;
-        if (t.pricing.free) score += 0.3;
-        if (t.pricing.freemium) score += 0.1;
+        if (model === 'free') score += 0.3;
+        if (model === 'freemium') score += 0.1;
+        if (t.reviewStatus === 'unreviewed') score -= UNREVIEWED_PENALTY;
         return { tool: t, score };
     });
 
@@ -259,18 +267,12 @@ function computeKeywordSimilarity(tool: Tool, intent: ParsedIntent): number {
     return matches / Math.max(keywords.length, bestFor.length, 1);
 }
 
-function matchesPricingFilter(tool: Tool, filter?: "all" | "free" | "paid"): boolean {
-    if (!filter || filter === "all") return true;
-    const pricing = tool.pricing ?? DEFAULT_PRICING;
-    if (filter === "free") return pricing.free || pricing.freemium;
-    if (filter === "paid") return pricing.paidOnly || pricing.freemium;
-    return true;
-}
-
 function matchesPricingPreference(tool: Tool, intent: ParsedIntent): boolean {
     const pricing = tool.pricing ?? DEFAULT_PRICING;
-    if (intent.constraints.pricing === 'free') return pricing.free;
-    if (intent.constraints.pricing === 'paid') return pricing.paidOnly || pricing.freemium;
+    // 'free' istegi tam ucretsiz demek: freemium burada yeterli degil.
+    if (intent.constraints.pricing === 'free') return getPricingModel(pricing) === 'free';
+    // 'paid' istegi artik freemium'u KAPSAMIYOR — ayrimin coktugu yer burasiydi.
+    if (intent.constraints.pricing === 'paid') return isPaidOnly(pricing);
     return true;
 }
 
@@ -284,22 +286,23 @@ function matchesPricingPreference(tool: Tool, intent: ParsedIntent): boolean {
  */
 export function scoreTool(tool: Tool, intent: ParsedIntent, filters?: ToolFilters): number {
     const pricing = tool.pricing ?? DEFAULT_PRICING;
+    const model = getPricingModel(pricing);
     const strengthScore = tool.strength ?? 8;
 
     const similarityScore = computeKeywordSimilarity(tool, intent) * 4; // Up to ~4 bonus points
 
     let pricingScore = 0;
     if (intent.constraints.pricing === 'free') {
-        pricingScore += pricing.free ? 2 : pricing.freemium ? 1 : -3;
+        pricingScore += model === 'free' ? 2 : model === 'freemium' ? 1 : -3;
     } else if (intent.constraints.pricing === 'paid') {
-        pricingScore += pricing.paidOnly || pricing.freemium ? 1 : -1;
-    } else if (intent.constraints.pricing === 'freemium' && pricing.freemium) {
+        pricingScore += isPaidOnly(pricing) ? 1 : -1;
+    } else if (intent.constraints.pricing === 'freemium' && model === 'freemium') {
         pricingScore += 0.5;
     }
 
-    if (filters?.pricingFilter === 'free' && (pricing.free || pricing.freemium)) {
+    if (filters?.pricingFilter === 'free' && hasFreeTier(pricing)) {
         pricingScore += 0.5;
-    } else if (filters?.pricingFilter === 'paid' && (pricing.paidOnly || pricing.freemium)) {
+    } else if (filters?.pricingFilter === 'paid' && isPaidOnly(pricing)) {
         pricingScore += 0.3;
     }
 
@@ -307,11 +310,14 @@ export function scoreTool(tool: Tool, intent: ParsedIntent, filters?: ToolFilter
         pricingScore += 0.2;
     }
 
-    if (intent.constraints.expertise === 'beginner' && pricing.free) {
+    if (intent.constraints.expertise === 'beginner' && model === 'free') {
         pricingScore += 0.2;
     }
 
-    return strengthScore + similarityScore + pricingScore;
+    // Denetlenmemis kayit ana oneri olarak cikmasin (Qwen3-VL, Devmate, Antigravity...)
+    const reviewPenalty = tool.reviewStatus === 'unreviewed' ? UNREVIEWED_PENALTY : 0;
+
+    return strengthScore + similarityScore + pricingScore - reviewPenalty;
 }
 
 export async function getRankedToolsByIntent(
@@ -326,7 +332,7 @@ export async function getRankedToolsByIntent(
     tools = tools.filter((tool) => matchesPricingPreference(tool, intent));
 
     if (options?.pricingFilter) {
-        tools = tools.filter((tool) => matchesPricingFilter(tool, options.pricingFilter));
+        tools = tools.filter((tool) => matchesPricingFilter(tool.pricing, options.pricingFilter));
     }
 
     const scored = tools
@@ -350,7 +356,7 @@ export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
         reasons.push(`"${matchingKeywords[0]}" konusunda uzman`);
     }
 
-    if (intent.constraints?.pricing === 'free' && tool.pricing?.free) {
+    if (intent.constraints?.pricing === 'free' && getPricingModel(tool.pricing) === 'free') {
         reasons.push('Ücretsiz kullanılabiliyor');
     }
 
@@ -360,7 +366,7 @@ export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
         reasons.push('Çok yüksek kaliteli');
     }
 
-    if (intent.constraints?.expertise === 'beginner' && tool.pricing?.free) {
+    if (intent.constraints?.expertise === 'beginner' && hasFreeTier(tool.pricing)) {
         reasons.push('Yeni başlayanlar için uygun');
     }
 

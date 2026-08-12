@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Index } from "@upstash/vector";
 import OpenAI from "openai";
 import { updateTools, invalidateToolsCache, getLocalized, Tool } from "@/lib/toolsService";
+import { getPricingModel } from "@/lib/pricing";
 import toolsDatabase from "@/lib/tools-database.json";
 
 export const maxDuration = 60; // Vercel hobby tier maks timeout engelleme (60 saniye)
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest) {
         Description: ${getLocalized(tool, 'description')}
         Tasks: ${getLocalized(tool, 'bestFor').join(", ")}
         Features: ${tool.features?.join(", ")}
-        Pricing: ${tool.pricing.free ? "Free" : tool.pricing.freemium ? "Freemium" : "Paid"}
+        Pricing: ${getPricingModel(tool.pricing)}
                 `.trim();
 
                 const embeddingResponse = await openai.embeddings.create({

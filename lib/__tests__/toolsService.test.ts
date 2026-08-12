@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import { ParsedIntent } from '../intent/types';
 import { Tool, getRankedToolsByIntent, getLocalized, resolveLocale, scoreTool } from '../toolsService';
+import { makePricing } from '../pricing';
 import * as toolsService from '../toolsService';
 
 const baseIntent: ParsedIntent = {
@@ -20,7 +21,7 @@ const sampleTools: Tool[] = [
     category: 'gorsel',
     description: { tr: 'Hızlı logo üretici', en: 'Fast logo generator' },
     url: 'https://example.com/free-logo',
-    pricing: { free: true, freemium: false, paidOnly: false, currency: 'USD' },
+    pricing: makePricing('free'),
     bestFor: { en: ['logo design', 'branding'], tr: [] },
     strength: 8.2,
     features: ['fast generation'],
@@ -30,7 +31,7 @@ const sampleTools: Tool[] = [
     category: 'gorsel',
     description: { tr: 'Premium tasarım aracı', en: 'Premium design tool' },
     url: 'https://example.com/paid',
-    pricing: { free: false, freemium: false, paidOnly: true, currency: 'USD' },
+    pricing: makePricing('paid', 30, '2025-11-28'),
     bestFor: { en: ['3d rendering'], tr: [] },
     strength: 9.5,
     features: ['high quality'],
@@ -40,7 +41,7 @@ const sampleTools: Tool[] = [
     category: 'gorsel',
     description: { tr: 'Markalar için ideal', en: 'Good for brands' },
     url: 'https://example.com/freemium',
-    pricing: { free: false, freemium: true, paidOnly: false, currency: 'USD' },
+    pricing: makePricing('freemium'),
     bestFor: { en: ['branding', 'illustration'], tr: [] },
     strength: 8.9,
     features: ['fast preview'],

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTools, updateTools, invalidateToolsCache, getLocalized, Tool } from "@/lib/toolsService";
+import { getPricingModel, makePricing } from "@/lib/pricing";
 import { Index } from "@upstash/vector";
 import OpenAI from "openai";
 
@@ -37,14 +38,12 @@ export async function POST(req: NextRequest) {
                 category: "metin" as const,
                 description: { tr: "Ornek yeni arac (simulasyon)", en: "" },
                 url: "https://example.com",
-                pricing: {
-                    free: true,
-                    freemium: true,
-                    paidOnly: false,
-                    currency: "USD"
-                },
+                pricing: makePricing("freemium"),
                 bestFor: { en: ["test"], tr: [] },
                 strength: 8.5,
+                // Otomatik kesfedilen arac elden gecmemis sayilir: siralamada
+                // geriye itilir, ana oneri olarak cikmaz.
+                reviewStatus: "unreviewed",
                 features: ["demo veri akisi"],
                 lastUpdated: new Date().toISOString().slice(0, 10)
             }
@@ -54,15 +53,15 @@ export async function POST(req: NextRequest) {
         const currentTools = await getTools();
 
         // Normalize existing tools to satisfy Tool (ensure literal currency)
+        // KV'de migration oncesi kayitlar olabilir: modeli eski bayraklardan
+        // turetip fiyat nesnesini yeniden uretiyoruz (bayraklar model'den turer).
         const normalizedExisting: Tool[] = currentTools.map((tool): Tool => ({
             ...tool,
-            pricing: {
-                free: tool.pricing?.free ?? true,
-                freemium: tool.pricing?.freemium ?? false,
-                paidOnly: tool.pricing?.paidOnly ?? false,
-                startingPrice: tool.pricing?.startingPrice,
-                currency: "USD"
-            },
+            pricing: makePricing(
+                getPricingModel(tool.pricing),
+                tool.pricing?.startingPrice ?? null,
+                tool.pricing?.priceCheckedAt ?? tool.lastUpdated ?? null
+            ),
             lastUpdated: tool.lastUpdated ?? new Date().toISOString().slice(0, 10)
         }) satisfies Tool);
 
@@ -72,13 +71,11 @@ export async function POST(req: NextRequest) {
             .filter(newTool => !normalizedExisting.some(existing => existing.name.toLowerCase() === newTool.name.toLowerCase()))
             .map((tool): Tool => ({
                 ...tool,
-                pricing: {
-                    free: tool.pricing?.free ?? true,
-                    freemium: tool.pricing?.freemium ?? false,
-                    paidOnly: tool.pricing?.paidOnly ?? false,
-                    startingPrice: tool.pricing?.startingPrice,
-                    currency: "USD"
-                },
+                pricing: makePricing(
+                    getPricingModel(tool.pricing),
+                    tool.pricing?.startingPrice ?? null,
+                    tool.pricing?.priceCheckedAt ?? tool.lastUpdated ?? null
+                ),
                 lastUpdated: tool.lastUpdated ?? new Date().toISOString().slice(0, 10)
             }) satisfies Tool);
 
@@ -100,7 +97,7 @@ export async function POST(req: NextRequest) {
         Description: ${getLocalized(tool, 'description')}
         Tasks: ${getLocalized(tool, 'bestFor').join(", ")}
         Features: ${(tool.features || []).join(", ")}
-        Pricing: ${tool.pricing.free ? "Free" : tool.pricing.freemium ? "Freemium" : "Paid"}
+        Pricing: ${getPricingModel(tool.pricing)}
                 `.trim();
 
                 const embeddingResponse = await openai.embeddings.create({
