@@ -1428,8 +1428,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "gemini-3-pro",
@@ -1475,8 +1474,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "flux2-black-forest-labs",
@@ -1519,8 +1517,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "gpt-51",
@@ -1564,8 +1561,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "gpt-51-codex-max",
@@ -1609,8 +1605,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "grok-41",
@@ -1698,8 +1693,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "ernie-50-baidu",
@@ -1744,8 +1738,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "world-labs-marble",
@@ -1834,12 +1827,11 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "notebooklm-deep-research",
-    "name": "NotebookLM",
+    "name": "NotebookLM Deep Research",
     "category": "arastirma",
     "description": {
       "tr": "Otonom araştırma ajanı, yüzlerce siteyi tarar ve kapsamlı raporlar üretir",
@@ -1922,8 +1914,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "google-deepmind-sima-2",
@@ -1968,8 +1959,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "jasper-ai-image-suite",
@@ -2012,8 +2002,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "perplexity-ai-promax",
@@ -2058,8 +2047,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "claude-haiku-45",
@@ -2102,13 +2090,12 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "openai-atlas-ai-browser",
     "name": "OpenAI Atlas (AI Browser)",
-    "category": "arastirma",
+    "category": "veri",
     "description": {
       "tr": "AI yerlisi Chromium tarayıcı, görev otomasyonu için Agent Mode ve Ask ChatGPT yan paneli",
       "en": "AI-native Chromium browser, Agent Mode for task automation, Ask ChatGPT sidebar"
@@ -2231,8 +2218,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "udio-umg-licensed",
@@ -2274,8 +2260,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "github-copilot-agent-mode",
@@ -2319,8 +2304,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "n8n-ai-workflow-builder",
@@ -2407,8 +2391,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "google-gemini-for-home",
@@ -2450,8 +2433,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "google-veo-31",
@@ -2496,13 +2478,12 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "adcreativeai",
     "name": "Adcreative.ai",
-    "category": "gorsel",
+    "category": "veri",
     "description": {
       "tr": "Kampanyaya özel reklam kreatifi üretimi ve dönüşüm odaklı tasarımlar",
       "en": "Campaign-specific creative generation, conversion-optimized designs"
@@ -2535,7 +2516,7 @@
       "text"
     ],
     "outputTypes": [
-      "image"
+      "text"
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
@@ -2583,8 +2564,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "replit-agent",
@@ -2714,8 +2694,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "opusclip-video-repurposing",
@@ -2762,7 +2741,7 @@
   {
     "id": "fathom-meeting-assistant",
     "name": "Fathom (Meeting Assistant)",
-    "category": "metin",
+    "category": "veri",
     "description": {
       "tr": "Gerçek zamanlı toplantı notları, otomatik aksiyon maddeleri ve CRM entegrasyonu",
       "en": "Real-time meeting notes, automatic action items, CRM integration"
@@ -2841,8 +2820,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "apple-intelligence",
@@ -2885,8 +2863,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "base44-no-code-app-platform",
@@ -2974,8 +2951,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "anyword-copy-ai",
@@ -3062,7 +3038,7 @@
   {
     "id": "clickup-brain-project-ai",
     "name": "ClickUp Brain (Project AI)",
-    "category": "metin",
+    "category": "kod",
     "description": {
       "tr": "Proje düzeyinde AI otomasyonu, görev önerileri ve iş akışı optimizasyonu",
       "en": "Project-level AI automation, task suggestions, workflow optimization"
@@ -3104,7 +3080,7 @@
   {
     "id": "simplified-content-and-design",
     "name": "Simplified (Content & Design)",
-    "category": "gorsel",
+    "category": "veri",
     "description": {
       "tr": "Tek tıkla içerik şablonları ve entegre metin yazarlığı",
       "en": "One-click content templates, integrated copywriting"
@@ -3137,7 +3113,6 @@
       "text"
     ],
     "outputTypes": [
-      "image",
       "text"
     ],
     "skillLevel": "intermediate",
@@ -3184,8 +3159,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "attio-sales-ai-crm",
@@ -3226,13 +3200,12 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "teal-resume-builder-ai",
     "name": "Teal (Resume Builder AI)",
-    "category": "metin",
+    "category": "veri",
     "description": {
       "tr": "AI ile özgeçmiş ve ATS optimizasyonu",
       "en": "AI resume optimization, ATS optimization"
@@ -3355,8 +3328,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "luma-dream-machine-ray2",
@@ -3444,8 +3416,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "gemini-3-pro-image",
@@ -3531,8 +3502,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "google-deep-research",
@@ -3574,8 +3544,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "snapchat-perplexity-integration",
@@ -3616,13 +3585,12 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "microsoft-copilot-pro",
     "name": "Microsoft Copilot Pro",
-    "category": "metin",
+    "category": "veri",
     "description": {
       "tr": "Copilot Chat'te varsayılan GPT-5 ve Work IQ zeka katmanı",
       "en": "GPT-5 default in Copilot Chat, Work IQ intelligence layer"
@@ -3703,8 +3671,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "replit-ai-integrations",
@@ -3747,12 +3714,11 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "mistral-large-21",
-    "name": "Le Chat (Mistral)",
+    "name": "Mistral Large 2.1",
     "category": "metin",
     "description": {
       "tr": "Spekülatif düzenleme, kaynakçalı web araması ve Canvas",
@@ -3832,8 +3798,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "meta-devmate",
@@ -3877,8 +3842,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "grok-imagine-v09-xai",
@@ -3962,8 +3926,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "adobe-firefly-image-model-5",
@@ -4007,8 +3970,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "gemini-25-computer-use",
@@ -4052,8 +4014,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "google-pixel-drop-ai-features",
@@ -4095,8 +4056,7 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   },
   {
     "id": "comma-ai-openpilot",
@@ -4138,7 +4098,6 @@
     ],
     "skillLevel": "intermediate",
     "speed": "fast",
-    "reviewStatus": "unreviewed",
-    "deprecated": true
+    "reviewStatus": "unreviewed"
   }
 ]

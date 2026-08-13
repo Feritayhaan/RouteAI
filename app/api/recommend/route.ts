@@ -123,7 +123,10 @@ export async function POST(req: NextRequest) {
     const candidates: Tool[] = [];
     for (const result of searchResults) {
       const tool = allTools.find(t => t.name === result.metadata.name);
-      if (!tool) continue;
+      // deprecated kayıtlar arama sonucundan da elenmeli. Kategori fallback'i
+      // (categoryPool) bunu zaten yapıyordu ama arama yolu yapmıyordu: karantina
+      // triyajıyla emekliye ayrılan araçlar buradan sızıyordu.
+      if (!tool || tool.deprecated) continue;
       candidates.push(tool);
       searchScores.set(tool.name, result.score);
     }

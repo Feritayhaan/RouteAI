@@ -65,7 +65,7 @@ async function runQuery(prompt, pricingFilter) {
     const candidates = [];
     for (const result of searchResults) {
         const tool = allTools.find((t) => t.name === result.metadata.name);
-        if (!tool) continue;
+        if (!tool || tool.deprecated) continue;
         candidates.push(tool);
         searchScores.set(tool.name, result.score);
     }
