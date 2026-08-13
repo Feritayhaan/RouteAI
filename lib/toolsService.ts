@@ -14,7 +14,9 @@ import {
 } from './pricing';
 import toolsDatabase from './tools-database.json';
 
-const KV_TOOLS_KEY = 'tools';
+// seed ucu yazdiktan sonra KV'yi GERI OKUYUP dogruluyor; anahtar iki yerde
+// ayri ayri yazilmasin diye disari aciliyor.
+export const KV_TOOLS_KEY = 'tools';
 
 // Fiyat verisi olmayan arac 'paid' sayilir: veri yoklugunda "ucretsiz" demek,
 // kullaniciyi yanlis yone gonderen tek hata turudur.
