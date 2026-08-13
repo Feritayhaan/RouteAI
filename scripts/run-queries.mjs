@@ -1,6 +1,11 @@
 // 10 sabit sorguyu app/api/recommend/route.ts ile AYNI mantiktan gecirir.
 //
-//   node --env-file=.env.local --loader ./lib/__tests__/ts-loader.mjs scripts/run-queries.mjs
+//   npm run bench
+//
+// Ciplak `node scripts/run-queries.mjs` CALISMAZ: bu dosya .ts modulleri
+// import ediyor ve lib icindeki uzantisiz importlari ('./parser' gibi) Node'un
+// ESM cozumleyicisi bulamiyor. npm script'i hem ts-loader'i hem .env.local'i
+// yukluyor — ikisi de zorunlu.
 //
 // Neden HTTP'ye vurmuyoruz: checkRateLimit KV'ye ulasamayinca fail-closed
 // davranip 429 donuyor (kasitli bir guvenlik karari, dokunmuyoruz). Bu yuzden
@@ -154,6 +159,15 @@ async function runQuery(prompt, pricingFilter) {
         })),
     };
 }
+
+// Katalog ozeti. getTools() TUM katalogu doner (deprecated dahil) — eleme
+// tuketici tarafinda yapilir, route.ts de boyle. Bu satir "kac arac var" ile
+// "kac arac onerilebilir" sorularini ayirt edilebilir kilar.
+const katalog = await getTools();
+const deprecatedSayi = katalog.filter((t) => t.deprecated).length;
+console.log(
+    `[bench] katalog ${katalog.length} arac | onerilebilir ${katalog.length - deprecatedSayi} | deprecated ${deprecatedSayi}`
+);
 
 const results = [];
 for (const q of QUERIES) {
