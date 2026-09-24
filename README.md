@@ -101,8 +101,9 @@ Tarayıcıda [http://localhost:3000](http://localhost:3000) adresine git.
 | `ADMIN_SECRET` | Admin endpoint'leri için gizli anahtar | ✅ |
 | `NEXT_PUBLIC_BASE_URL` | Uygulama base URL'i | ⬜ |
 | `VECTOR_SEARCH_ENABLED` | `true` ise Upstash Vector araması açılır; boş/tanımsız = kapalı (anahtar kelime araması). `UPSTASH_VECTOR_*` sadece bu açıkken kullanılır | ⬜ |
-| `OPENAI_MODEL` | v2 sohbet ajanının OpenAI modeli (P5'te devreye girer; şu an kullanılmıyor) | ⬜ |
-| `AA_API_KEY` | Artificial Analysis API anahtarı, gece model senkronu için (P3'te devreye girer; şu an kullanılmıyor) | ⬜ |
+| `OPENAI_MODEL` | Sohbet ajanının (`/api/chat`) OpenAI modeli. Tanımsızsa `gpt-4o-mini` (`lib/agent/config.ts` → `DEFAULT_OPENAI_MODEL`) | ⬜ |
+| `OPENAI_MONTHLY_TOKEN_BUDGET` | Aylık token bütçesi (sohbet ajanı). Kullanım KV'de `usage:<YYYY-MM>`; aşılınca v1 anahtar kelime yoluna düşülür. Tanımsız = sınır yok | ⬜ |
+| `AA_API_KEY` | Artificial Analysis API anahtarı, gece model senkronu (`npm run sync:models`). Yoksa AA atlanır, LMArena yine çalışır | ⬜ |
 
 Değerleri boş bir şablon: [`.env.local.example`](.env.local.example).
 
