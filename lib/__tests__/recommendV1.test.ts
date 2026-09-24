@@ -13,7 +13,7 @@ const { extractConstraints, parseUserIntent } = await import('../intent/parser')
 const { analyzeIntent } = await import('../intent/index');
 const { searchTools, searchTerms, wordsMatch } = await import('../vectorService');
 const { getTools } = await import('../toolsService');
-const { categoryOutputMap, selectV1Tools } = await import('../recommendV1');
+const { categoryOutputMap, recommendV1, selectV1Tools } = await import('../recommendV1');
 
 /** route.ts'in simple dalı: niyet + anahtar kelime araması + aday seçimi. */
 async function mainRecommendation(query: string) {
@@ -142,5 +142,44 @@ describe('anahtar kelime araması', () => {
 
   it('sadece dolgu kelimesinden oluşan sorgu hiçbir aracı eşleştirmez', async () => {
     assert.deepStrictEqual(await searchTools('için ve bir bu', 8), []);
+  });
+});
+
+describe('recommendV1: route ile ortak akış', () => {
+  it('tek araç sorgusu simple döner ve aday seçimiyle aynı ana öneriyi verir', async () => {
+    const result = await recommendV1('sunum hazırla', 'all');
+    assert.strictEqual(result.kind, 'simple');
+    if (result.kind !== 'simple') return;
+    assert.strictEqual(result.selection.main.name, 'Gamma AI');
+    assert.strictEqual(result.intent.primaryCategory, 'metin');
+  });
+
+  it('çok adımlı sorgu şablondan workflow döner', async () => {
+    const result = await recommendV1('çizgi roman', 'all');
+    assert.strictEqual(result.kind, 'workflow');
+    if (result.kind !== 'workflow') return;
+    assert.ok(result.workflow.steps.length > 0);
+  });
+
+  it('LLM erişilemezse ve kategori bulunamazsa error döner', async () => {
+    // Kategorisiz sorgu LLM kademesine gider; OpenAI isteği yakalanıp reddedilir.
+    const originalFetch = globalThis.fetch;
+    const calls: string[] = [];
+    globalThis.fetch = (async (input: string | URL | Request) => {
+      calls.push(input instanceof Request ? input.url : String(input));
+      return new Response('{}', { status: 400 });
+    }) as typeof fetch;
+    process.env.OPENAI_API_KEY = 'sk-test-kullanilmamali';
+
+    try {
+      const result = await recommendV1('merhaba nasılsın', 'all');
+      assert.ok(calls.some((url) => url.includes('openai.com')), 'LLM kademesi denenmeli');
+      assert.strictEqual(result.kind, 'error');
+      if (result.kind !== 'error') return;
+      assert.strictEqual(result.error.code, 'API_ERROR');
+    } finally {
+      globalThis.fetch = originalFetch;
+      delete process.env.OPENAI_API_KEY;
+    }
   });
 });

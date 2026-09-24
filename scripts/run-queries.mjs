@@ -8,17 +8,15 @@
 // yukluyor — ikisi de zorunlu.
 //
 // Neden HTTP'ye vurmuyoruz: checkRateLimit KV'ye ulasamayinca fail-closed
-// davranip 429 donuyor (kasitli bir guvenlik karari, dokunmuyoruz). Bu yuzden
-// rate limit SONRASI akis burada tekrarlaniyor. Aday secimi/filtre/siralama
-// route ile ORTAK (lib/recommendV1.ts); burada kalan tek kopya niyet + arama +
-// workflow orkestrasyonu. Route'taki orkestrasyon degisirse bu dosya da degismeli.
+// davranip 429 donuyor (kasitli bir guvenlik karari, dokunmuyoruz). Rate limit
+// SONRASI akisin tamami (niyet + arama + workflow + aday secimi) route ile
+// ORTAK: lib/recommendV1.ts'teki recommendV1(). Burada kopya yok; sadece
+// sonucun rapor bicimi var.
 
-import { analyzeIntent } from '../lib/intent/index.ts';
-import { searchTools } from '../lib/vectorService.ts';
-import { generateWorkflow, formatWorkflowForApi } from '../lib/workflow/index.ts';
+import { formatWorkflowForApi } from '../lib/workflow/index.ts';
 import { getTools, generateExplanation, getLocalized, resolveLocale } from '../lib/toolsService.ts';
 import { priceLabelOrUnknown } from '../lib/pricing.ts';
-import { selectV1Tools } from '../lib/recommendV1.ts';
+import { recommendV1 } from '../lib/recommendV1.ts';
 
 const QUERIES = [
     'web sitesi',
@@ -34,32 +32,24 @@ const QUERIES = [
 ];
 
 async function runQuery(prompt, pricingFilter) {
-    const [intentResult, searchResults] = await Promise.all([
-        analyzeIntent(prompt),
-        searchTools(prompt, 8),
-    ]);
+    const result = await recommendV1(prompt, pricingFilter);
 
-    if ('code' in intentResult) {
-        return { kind: 'error', code: intentResult.code, message: intentResult.message };
+    if (result.kind === 'error') {
+        return { kind: 'error', code: result.error.code, message: result.error.message };
     }
-    const intent = intentResult;
+    const { intent } = result;
 
-    if (intent.complexity === 'multi-step') {
-        const workflow = await generateWorkflow(intent, prompt);
-        if (workflow) {
-            return {
-                kind: 'workflow',
-                intent,
-                data: formatWorkflowForApi(workflow, resolveLocale(intent.constraints?.language)),
-            };
-        }
+    if (result.kind === 'workflow') {
+        return {
+            kind: 'workflow',
+            intent,
+            data: formatWorkflowForApi(result.workflow, resolveLocale(intent.constraints?.language)),
+        };
     }
 
-    const allTools = await getTools();
-    const selection = selectV1Tools({ intent, searchResults, allTools, pricingFilter });
-    if (!selection) return { kind: 'empty', intent };
+    if (result.kind === 'empty') return { kind: 'empty', intent };
 
-    const { main, alternatives, relaxedConstraint, usedFallback } = selection;
+    const { main, alternatives, relaxedConstraint, usedFallback } = result.selection;
     const locale = resolveLocale(intent.constraints?.language);
 
     return {
