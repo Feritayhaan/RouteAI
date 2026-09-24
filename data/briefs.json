@@ -1,0 +1,242 @@
+[
+  {
+    "id": "slides-create-1",
+    "taskId": "slides.create",
+    "text": {
+      "en": "Create a 10-slide pitch deck for a seed-stage startup that sells a meal-planning app. Include problem, solution, market, business model, traction placeholder, team and ask.",
+      "tr": "Yemek planlama uygulaması satan çekirdek aşamadaki bir girişim için 10 slaytlık pitch deck hazırla. Problem, çözüm, pazar, iş modeli, çekiş (yer tutucu), ekip ve yatırım talebi olsun."
+    }
+  },
+  {
+    "id": "slides-create-2",
+    "taskId": "slides.create",
+    "text": {
+      "en": "Turn this outline into a 6-slide internal quarterly review: goals, results vs. targets, three wins, two misses, next-quarter priorities, open questions.",
+      "tr": "Bu taslağı 6 slaytlık bir şirket içi çeyrek değerlendirmesine çevir: hedefler, hedefe karşı sonuçlar, üç başarı, iki kaçırılan hedef, gelecek çeyrek öncelikleri, açık sorular."
+    }
+  },
+  {
+    "id": "slides-create-3",
+    "taskId": "slides.create",
+    "text": {
+      "en": "Make an 8-slide lesson for high-school students explaining photosynthesis, with one diagram slide and a 3-question quiz at the end.",
+      "tr": "Lise öğrencilerine fotosentezi anlatan 8 slaytlık bir ders sunumu hazırla; bir diyagram slaytı ve sonunda 3 soruluk bir quiz olsun."
+    }
+  },
+  {
+    "id": "image-logo-1",
+    "taskId": "image.logo",
+    "text": {
+      "en": "Design a logo for a neighborhood bakery called \"Maya's Oven\". Warm, hand-made feel; the name must be readable; works in one color.",
+      "tr": "\"Maya'nın Fırını\" adlı bir mahalle fırını için logo tasarla. Sıcak, el yapımı hissi; isim okunur olmalı; tek renkte de çalışmalı."
+    }
+  },
+  {
+    "id": "image-logo-2",
+    "taskId": "image.logo",
+    "text": {
+      "en": "Create an icon-only logo mark for a fintech app named Ledgerly. Modern, geometric, recognizable at 32×32 px.",
+      "tr": "Ledgerly adlı bir fintek uygulaması için sadece ikondan oluşan bir logo işareti tasarla. Modern, geometrik, 32×32 piksel boyutta tanınabilir olmalı."
+    }
+  },
+  {
+    "id": "image-logo-3",
+    "taskId": "image.logo",
+    "text": {
+      "en": "Design a logo for a youth football club, \"Kuzey Yıldızları FC\", with a crest shape and a star; two colors: navy and gold.",
+      "tr": "\"Kuzey Yıldızları FC\" adlı bir gençlik futbol kulübü için arma biçiminde, yıldızlı bir logo tasarla; iki renk: lacivert ve altın."
+    }
+  },
+  {
+    "id": "image-generate-1",
+    "taskId": "image.generate",
+    "text": {
+      "en": "A photorealistic image of a lighthouse on a rocky coast at sunset, waves crashing, wide angle, 16:9.",
+      "tr": "Gün batımında kayalık bir kıyıda deniz feneri, dalgalar kayalara çarpıyor; fotogerçekçi, geniş açı, 16:9."
+    }
+  },
+  {
+    "id": "image-generate-2",
+    "taskId": "image.generate",
+    "text": {
+      "en": "A children's book illustration of a fox and a hedgehog sharing an umbrella in the rain, soft watercolor style.",
+      "tr": "Yağmurda bir şemsiyeyi paylaşan tilki ve kirpinin çocuk kitabı illüstrasyonu; yumuşak suluboya stili."
+    }
+  },
+  {
+    "id": "image-generate-3",
+    "taskId": "image.generate",
+    "text": {
+      "en": "A poster for a jazz night with the readable title \"Friday Jazz\" and the date line \"Every Friday 21:00\", art-deco style.",
+      "tr": "Okunur \"Friday Jazz\" başlığı ve \"Her Cuma 21:00\" tarih satırı olan, art deco stilinde bir caz gecesi posteri."
+    }
+  },
+  {
+    "id": "video-text-to-video-1",
+    "taskId": "video.text-to-video",
+    "text": {
+      "en": "A 10-second cinematic shot of a barista pouring latte art in slow motion, warm morning light, shallow depth of field.",
+      "tr": "Sabah ışığında, sığ alan derinliğiyle, latte art döken bir baristanın 10 saniyelik sinematik ağır çekim görüntüsü."
+    }
+  },
+  {
+    "id": "video-text-to-video-2",
+    "taskId": "video.text-to-video",
+    "text": {
+      "en": "A 6-second product teaser: a pair of running shoes rotating on a pedestal, studio lighting, clean white background.",
+      "tr": "6 saniyelik ürün tanıtımı: kaide üzerinde dönen bir çift koşu ayakkabısı, stüdyo ışığı, temiz beyaz arka plan."
+    }
+  },
+  {
+    "id": "video-text-to-video-3",
+    "taskId": "video.text-to-video",
+    "text": {
+      "en": "An 8-second drone-style flyover of a foggy pine forest at dawn with a winding river.",
+      "tr": "Şafakta sisli bir çam ormanı ve kıvrılan bir nehir üzerinde 8 saniyelik drone tarzı uçuş görüntüsü."
+    }
+  },
+  {
+    "id": "video-edit-short-social-1",
+    "taskId": "video.edit-short-social",
+    "text": {
+      "en": "Cut a 3-minute raw phone recording of a recipe into a 30-second vertical Reel with captions and a hook in the first 2 seconds.",
+      "tr": "Telefonla çekilmiş 3 dakikalık ham tarif kaydını, ilk 2 saniyede dikkat çeken bir girişle ve altyazılı 30 saniyelik dikey bir Reels'e dönüştür."
+    }
+  },
+  {
+    "id": "video-edit-short-social-2",
+    "taskId": "video.edit-short-social",
+    "text": {
+      "en": "Make a 15-second TikTok from 5 product photos of a handmade candle shop, with transitions and on-screen text.",
+      "tr": "El yapımı mum dükkânının 5 ürün fotoğrafından geçişli ve ekran yazılı 15 saniyelik bir TikTok videosu yap."
+    }
+  },
+  {
+    "id": "video-edit-short-social-3",
+    "taskId": "video.edit-short-social",
+    "text": {
+      "en": "Edit a 60-second YouTube Short from a talking-head clip: remove pauses, add auto captions and zoom cuts.",
+      "tr": "Konuşan kişi çekiminden 60 saniyelik bir YouTube Shorts hazırla: duraklamaları kes, otomatik altyazı ve zoom geçişleri ekle."
+    }
+  },
+  {
+    "id": "audio-tts-voiceover-1",
+    "taskId": "audio.tts-voiceover",
+    "text": {
+      "en": "Voice a 90-second e-learning script in Turkish: calm, clear, professional female or male voice.",
+      "tr": "90 saniyelik bir e-öğrenme metnini Türkçe seslendir: sakin, net, profesyonel bir kadın ya da erkek sesi."
+    }
+  },
+  {
+    "id": "audio-tts-voiceover-2",
+    "taskId": "audio.tts-voiceover",
+    "text": {
+      "en": "Create a 30-second English radio-style ad voiceover for a coffee shop opening, energetic tone.",
+      "tr": "Bir kafe açılışı için 30 saniyelik, enerjik tonda İngilizce radyo reklamı seslendirmesi oluştur."
+    }
+  },
+  {
+    "id": "audio-tts-voiceover-3",
+    "taskId": "audio.tts-voiceover",
+    "text": {
+      "en": "Narrate a 5-minute explainer video script about personal budgeting in English with a friendly tone.",
+      "tr": "Kişisel bütçe hakkında 5 dakikalık bir anlatım videosu metnini samimi bir tonla İngilizce seslendir."
+    }
+  },
+  {
+    "id": "text-marketing-copy-1",
+    "taskId": "text.marketing-copy",
+    "text": {
+      "en": "Write three Facebook ad variations (headline + primary text) for lightweight running shoes aimed at beginners.",
+      "tr": "Yeni başlayan koşucular için hafif koşu ayakkabısına üç farklı Facebook reklam metni yaz (başlık + ana metin)."
+    }
+  },
+  {
+    "id": "text-marketing-copy-2",
+    "taskId": "text.marketing-copy",
+    "text": {
+      "en": "Write a 120-word product description for an online store selling a handmade ceramic mug.",
+      "tr": "El yapımı seramik kupa satan bir online mağaza için 120 kelimelik ürün açıklaması yaz."
+    }
+  },
+  {
+    "id": "text-marketing-copy-3",
+    "taskId": "text.marketing-copy",
+    "text": {
+      "en": "Write five Instagram captions announcing a café's new autumn menu, each with a call to action.",
+      "tr": "Bir kafenin yeni sonbahar menüsünü duyuran, her biri harekete geçirici bir çağrı içeren beş Instagram açıklaması yaz."
+    }
+  },
+  {
+    "id": "research-academic-1",
+    "taskId": "research.academic",
+    "text": {
+      "en": "Find 10 peer-reviewed papers from the last five years on the effect of remote work on employee productivity and summarize their findings.",
+      "tr": "Uzaktan çalışmanın çalışan verimliliğine etkisi üzerine son beş yılda yayımlanmış 10 hakemli makale bul ve bulgularını özetle."
+    }
+  },
+  {
+    "id": "research-academic-2",
+    "taskId": "research.academic",
+    "text": {
+      "en": "Build a literature table (author, year, method, sample size, main result) for studies on microplastics in drinking water.",
+      "tr": "İçme suyundaki mikroplastikler üzerine yapılmış çalışmalar için bir literatür tablosu (yazar, yıl, yöntem, örneklem, ana sonuç) oluştur."
+    }
+  },
+  {
+    "id": "research-academic-3",
+    "taskId": "research.academic",
+    "text": {
+      "en": "Identify the main open questions in research on large language model hallucinations, citing at least five papers.",
+      "tr": "Büyük dil modellerinin halüsinasyonu üzerine araştırmalardaki başlıca açık soruları en az beş makaleye atıfla belirle."
+    }
+  },
+  {
+    "id": "code-assistant-ide-1",
+    "taskId": "code.assistant-ide",
+    "text": {
+      "en": "In an existing TypeScript project, add input validation to a signup form handler and write unit tests for it.",
+      "tr": "Var olan bir TypeScript projesinde kayıt formu işleyicisine girdi doğrulaması ekle ve birim testlerini yaz."
+    }
+  },
+  {
+    "id": "code-assistant-ide-2",
+    "taskId": "code.assistant-ide",
+    "text": {
+      "en": "Refactor a 300-line Python script into functions with type hints without changing its behavior.",
+      "tr": "300 satırlık bir Python scriptini davranışını değiştirmeden tip ipuçlu fonksiyonlara böl."
+    }
+  },
+  {
+    "id": "code-assistant-ide-3",
+    "taskId": "code.assistant-ide",
+    "text": {
+      "en": "Explain an unfamiliar React codebase: where state lives, how data is fetched, and how to add a new page.",
+      "tr": "Tanımadığın bir React kod tabanını açıkla: durum nerede tutuluyor, veri nasıl çekiliyor, yeni sayfa nasıl eklenir."
+    }
+  },
+  {
+    "id": "code-website-builder-1",
+    "taskId": "code.website-builder",
+    "text": {
+      "en": "Build a one-page website for a yoga studio with class schedule, prices, location map and a contact form.",
+      "tr": "Ders programı, fiyatlar, konum haritası ve iletişim formu olan tek sayfalık bir yoga stüdyosu web sitesi yap."
+    }
+  },
+  {
+    "id": "code-website-builder-2",
+    "taskId": "code.website-builder",
+    "text": {
+      "en": "Create a personal portfolio site for a photographer with a gallery, about page and booking link.",
+      "tr": "Bir fotoğrafçı için galeri, hakkımda sayfası ve randevu bağlantısı olan kişisel portfolyo sitesi oluştur."
+    }
+  },
+  {
+    "id": "code-website-builder-3",
+    "taskId": "code.website-builder",
+    "text": {
+      "en": "Make a landing page for a mobile app launch with feature sections, screenshots and an email signup.",
+      "tr": "Özellik bölümleri, ekran görüntüleri ve e-posta kayıt alanı olan bir mobil uygulama lansmanı için açılış sayfası yap."
+    }
+  }
+]

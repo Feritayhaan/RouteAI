@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { evaluateRow, parseGolden, summarize } from '../../evals/metrics.mjs';
 import toolsDatabase from '../tools-database.json';
+import tasksJson from '../../data/tasks.json';
 
 const golden = parseGolden(readFileSync(new URL('../../evals/golden.jsonl', import.meta.url), 'utf8'));
-const tasksDraft = readFileSync(new URL('../../evals/tasks-draft.md', import.meta.url), 'utf8');
 
 describe('altın set (evals/golden.jsonl)', () => {
   it('40 satır: 20 Türkçe + 20 İngilizce, en az 8 netleştirme gerektiren', () => {
@@ -43,8 +43,8 @@ describe('altın set (evals/golden.jsonl)', () => {
     assert.deepStrictEqual(bad.map((r) => r.id), []);
   });
 
-  it("her expectedTask evals/tasks-draft.md'de tanımlı", () => {
-    const defined = new Set([...tasksDraft.matchAll(/`([a-z0-9]+\.[a-z0-9-]+)`/g)].map((m) => m[1]));
+  it("her expectedTask data/tasks.json'da tanımlı", () => {
+    const defined = new Set((tasksJson as { id: string }[]).map((t) => t.id));
     const missing = golden.filter((r) => !defined.has(r.expectedTask)).map((r) => `${r.id}: ${r.expectedTask}`);
     assert.deepStrictEqual(missing, []);
   });
