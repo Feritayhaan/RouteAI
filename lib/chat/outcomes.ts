@@ -17,8 +17,10 @@ export interface ToolClick {
   productName: string;
   taskId: string;
   clickedAt: number;
-  /** Bu sohbette son kopyalanan prompt oturumu (P7). */
+  /** Bu sohbette son kopyalanan prompt oturumu ve rehberi (P7). */
   promptSessionId?: string;
+  guideId?: string;
+  guideVersion?: number;
 }
 
 export type OutcomePrompt =

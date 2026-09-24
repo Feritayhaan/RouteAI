@@ -35,16 +35,46 @@ export function comparisonKey(sessionId: string, taskId: string, a: string, b: s
   return `sig:comparison:${sessionHash(sessionId)}:${taskId}:${x}:${y}`;
 }
 
+export function voteKey(sessionId: string, taskId: string, productId: string): string {
+  return `sig:vote:${sessionHash(sessionId)}:${taskId}:${productId}`;
+}
+
+/** KV'deki kayıt biçimleri (aggregate-signals ve stats okur). */
+export interface OutcomeRecord { taskId: string; productId: string; answer: 'yes' | 'partial' | 'no'; tags: string[]; promptSessionId: string | null; guideId: string | null; guideVersion: number | null; at: string }
+export interface ComparisonRecord { taskId: string; a: string; b: string; winner: string; at: string }
+export interface VoteRecord { taskId: string; productId: string; toolName: string; vote: 'up' | 'down'; ts: number; sessionHash: string; at: string }
+
 export async function saveOutcome(req: OutcomeRequest, now: number = Date.now(), store: SignalKv = kv as unknown as SignalKv): Promise<string> {
   const at = new Date(now).toISOString();
   if (req.kind === 'outcome') {
     const key = outcomeKey(req.sessionId, req.taskId, req.productId);
-    await store.set(key, { taskId: req.taskId, productId: req.productId, answer: req.answer, tags: req.tags, promptSessionId: req.promptSessionId ?? null, at }, { ex: SIGNAL_TTL_SECONDS });
+    const record: OutcomeRecord = {
+      taskId: req.taskId, productId: req.productId, answer: req.answer, tags: req.tags,
+      promptSessionId: req.promptSessionId ?? null, guideId: req.guideId ?? null, guideVersion: req.guideVersion ?? null, at,
+    };
+    await store.set(key, record, { ex: SIGNAL_TTL_SECONDS });
     await store.sadd(OUTCOME_INDEX, key);
     return key;
   }
   const key = comparisonKey(req.sessionId, req.taskId, req.productA, req.productB);
-  await store.set(key, { taskId: req.taskId, a: req.productA, b: req.productB, winner: req.winner, at }, { ex: SIGNAL_TTL_SECONDS });
+  const record: ComparisonRecord = { taskId: req.taskId, a: req.productA, b: req.productB, winner: req.winner, at };
+  await store.set(key, record, { ex: SIGNAL_TTL_SECONDS });
   await store.sadd(COMPARISON_INDEX, key);
+  return key;
+}
+
+/**
+ * Sohbetteki öneri oyu: oturum + ürün + görev başına tek kayıt (son oy geçerli).
+ * Admin listesi (fb:recent) de bu anahtarı görür.
+ */
+export async function saveVote(
+  v: { sessionId: string; taskId: string; productId: string; toolName: string; vote: 'up' | 'down' },
+  now: number = Date.now(),
+  store: SignalKv & { lpush?: (k: string, v: string) => Promise<unknown>; ltrim?: (k: string, a: number, b: number) => Promise<unknown> } = kv as unknown as SignalKv
+): Promise<string> {
+  const key = voteKey(v.sessionId, v.taskId, v.productId);
+  const record: VoteRecord = { taskId: v.taskId, productId: v.productId, toolName: v.toolName, vote: v.vote, ts: now, sessionHash: sessionHash(v.sessionId), at: new Date(now).toISOString() };
+  await store.set(key, record, { ex: SIGNAL_TTL_SECONDS });
+  await store.sadd(VOTE_INDEX, key);
   return key;
 }

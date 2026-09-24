@@ -17,7 +17,8 @@
     "eval:simulate": "node --loader ./lib/__tests__/ts-loader.mjs evals/simulate.mjs",
     "build:guides": "node --loader ./lib/__tests__/ts-loader.mjs scripts/build-guides.mjs",
     "prebuild": "npm run build:guides",
-    "eval:prompts": "node --loader ./lib/__tests__/ts-loader.mjs evals/runPrompts.mjs"
+    "eval:prompts": "node --loader ./lib/__tests__/ts-loader.mjs evals/runPrompts.mjs",
+    "aggregate:signals": "node scripts/aggregate-signals.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.1",

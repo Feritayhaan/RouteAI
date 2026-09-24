@@ -16,6 +16,9 @@ export const outcomeAnswerSchema = z.object({
   tags: z.array(z.enum(OUTCOME_TAGS)).max(OUTCOME_TAGS.length).default([]),
   /** Bu sohbette son kopyalanan prompt oturumu (P7: rehber sürümü başına başarı). */
   promptSessionId: z.string().regex(/^[A-Za-z0-9_-]{8,100}$/).optional(),
+  /** Kopyalanan promptun rehberi ve sürümü: rehber sürümü başına "işini gördü" oranı. */
+  guideId: id.optional(),
+  guideVersion: z.number().int().positive().optional(),
 });
 
 /** "Hangisi daha iyiydi?" cevabı. */

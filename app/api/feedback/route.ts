@@ -5,7 +5,7 @@ import { normalizeQuery } from "@/lib/intent/cache";
 import { feedbackRequestSchema, type FeedbackRecord } from "@/lib/validations/feedback";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
-import { sessionHash } from "@/lib/signals/store";
+import { saveVote } from "@/lib/signals/store";
 
 export const runtime = 'edge';
 export const preferredRegion = 'fra1';
@@ -61,13 +61,17 @@ export async function POST(req: NextRequest) {
     let key: string;
     let record: FeedbackRecord;
     if (query) {
+      // v1 (klasik): her oy ayrı kayıt; sorgu metni saklanır (gizlilik sayfasında yazılı).
       key = `fb:${day}:${hashString(normalizeQuery(query))}:${ts}`;
       record = { query, toolName, vote, ts };
     } else {
-      // v2 (sohbet): mesaj metni yok; oturum sadece hash olarak.
-      const sid = sessionHash(sessionId!);
-      key = `fb:${day}:${hashString(`${sid}:${taskId}:${productId}`)}:${ts}`;
-      record = { toolName, vote, ts, taskId, productId, sessionHash: sid };
+      // v2 (sohbet): mesaj metni yok; oturum sadece hash olarak. Oturum + ürün +
+      // görev başına tek kayıt (son oy geçerli); RouteAI Skoru'na bu kayıt girer.
+      key = await saveVote({ sessionId: sessionId!, taskId: taskId!, productId: productId!, toolName, vote }, ts);
+      await kv.lrem(RECENT_KEY, 0, key);
+      await kv.lpush(RECENT_KEY, key);
+      await kv.ltrim(RECENT_KEY, 0, RECENT_MAX - 1);
+      return NextResponse.json({ success: true });
     }
 
     await kv.set(key, record);
