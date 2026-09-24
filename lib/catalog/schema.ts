@@ -210,6 +210,29 @@ export const signalSchema = z.object({
 export type Signal = z.infer<typeof signalSchema>;
 
 // ------------------------------------------------------------------
+// Candidate (data/candidates.json) — keşiften gelen adaylar. searchCatalog
+// bu dosyayı HİÇ okumaz; Ferit products.json'a status 'active' ile taşır.
+// ------------------------------------------------------------------
+
+export const candidateSchema = z.object({
+  id: idSchema,
+  name: z.string().min(1),
+  url: z.string().url(),
+  domain: z.string().min(3),
+  /** Kaynağın kendi metni (başlık/tagline) ya da sınıflandırıcının özeti; doğrulanmadı. */
+  description: z.object({ en: z.string(), tr: z.string() }),
+  tasks: z.array(taskIdSchema),
+  isWebProduct: z.boolean().nullable(),
+  pricingModel: z.literal('unknown'),
+  status: z.literal('candidate'),
+  source: z.enum(['hackernews', 'producthunt']),
+  sourceUrl: z.string().url(),
+  discoveredAt: dateStringSchema,
+});
+export type Candidate = z.infer<typeof candidateSchema>;
+export const candidatesFileSchema = z.array(candidateSchema);
+
+// ------------------------------------------------------------------
 // Dosya şemaları
 // ------------------------------------------------------------------
 

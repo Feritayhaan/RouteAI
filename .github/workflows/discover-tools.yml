@@ -1,0 +1,59 @@
+# Haftalık aday keşfi: Show HN + Product Hunt -> data/candidates.json.
+# Yeni aday varsa discover/<tarih> dalına commit + PR (gövde = discovery-report.md).
+# Adaylar önerilmez; Ferit products.json'a status 'active' ile taşır.
+#
+# Secret'lar (isteğe bağlı): OPENAI_API_KEY (sınıflandırma), PRODUCT_HUNT_TOKEN.
+# Settings > Actions > "Allow GitHub Actions to create and approve pull requests" açık olmalı.
+# Sadece GitHub'ın kendi action'ları kullanılıyor.
+
+name: discover-tools
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: discover-tools
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Adayları keşfet
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PRODUCT_HUNT_TOKEN: ${{ secrets.PRODUCT_HUNT_TOKEN }}
+        run: npm run discover:tools
+      - name: Kataloğu doğrula
+        run: npm run validate:catalog
+      - name: Yeni aday varsa PR aç
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- data/candidates.json; then
+            echo "Yeni aday yok; PR yok."
+            exit 0
+          fi
+          DATE=$(date -u +%Y-%m-%d)
+          BRANCH="discover/${DATE}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add data/candidates.json data/discovery-report.md
+          git commit -m "discover: adaylar ${DATE}"
+          git push --force-with-lease origin "$BRANCH"
+          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
+            --title "discover: adaylar ${DATE}" --body-file data/discovery-report.md
