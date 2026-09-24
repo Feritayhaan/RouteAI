@@ -7,12 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts lib/__tests__/text.test.ts lib/__tests__/adminAuth.test.ts lib/__tests__/recommendV1.test.ts lib/__tests__/evals.test.ts lib/__tests__/catalog.test.ts",
+    "test": "node --loader ./lib/__tests__/ts-loader.mjs --test lib/__tests__/toolsService.test.ts lib/__tests__/text.test.ts lib/__tests__/adminAuth.test.ts lib/__tests__/recommendV1.test.ts lib/__tests__/evals.test.ts lib/__tests__/catalog.test.ts lib/__tests__/syncModels.test.ts",
     "bench": "node --env-file=.env.local --loader ./lib/__tests__/ts-loader.mjs scripts/run-queries.mjs",
     "validate:db": "node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-db.mjs",
     "migrate:pricing": "node scripts/migrate-pricing.mjs",
     "eval": "node --loader ./lib/__tests__/ts-loader.mjs evals/run.mjs",
-    "validate:catalog": "node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-catalog.mjs"
+    "validate:catalog": "node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-catalog.mjs",
+    "sync:models": "node --loader ./lib/__tests__/ts-loader.mjs scripts/sync-models.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.1",
