@@ -21,6 +21,7 @@ export const en = {
     newChat: 'New chat',
     language: 'Language',
     classic: 'Classic search',
+    privacy: 'Privacy',
   },
   chat: {
     thinking: 'Thinking…',
@@ -143,4 +144,12 @@ export const en = {
     thanks: 'Thanks',
   },
   theme: { label: 'Theme: {name}', system: 'System', light: 'Light', dark: 'Dark' },
+  errors: {
+    notFoundTitle: 'Page not found',
+    notFoundBody: 'This page does not exist. Tell RouteAI what you want to make instead.',
+    errorTitle: 'Something went wrong',
+    errorBody: 'The page could not be loaded. Try again or start a new chat.',
+    retry: 'Try again',
+    home: 'Back to RouteAI',
+  },
 } as const;

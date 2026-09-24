@@ -22,6 +22,7 @@ export const tr: Dictionary = {
     newChat: 'Yeni sohbet',
     language: 'Dil',
     classic: 'Klasik arama',
+    privacy: 'Gizlilik',
   },
   chat: {
     thinking: 'Düşünüyorum…',
@@ -144,4 +145,12 @@ export const tr: Dictionary = {
     thanks: 'Teşekkürler',
   },
   theme: { label: 'Tema: {name}', system: 'Sistem', light: 'Aydınlık', dark: 'Karanlık' },
+  errors: {
+    notFoundTitle: 'Sayfa bulunamadı',
+    notFoundBody: 'Bu sayfa yok. Bunun yerine RouteAI’a ne yapmak istediğini yaz.',
+    errorTitle: 'Bir şeyler ters gitti',
+    errorBody: 'Sayfa yüklenemedi. Tekrar dene ya da yeni bir sohbet başlat.',
+    retry: 'Tekrar dene',
+    home: 'RouteAI’a dön',
+  },
 };
