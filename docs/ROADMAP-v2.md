@@ -1,0 +1,24 @@
+# RouteAI v2 — Yol haritası (lansman: Kasım 2026 sonu)
+
+## Ürün
+Sohbet eden ajan: amacı anlar, gerekirse en fazla 2 seçenekli soru sorar, görev taksonomisinden bir görev seçer, katalogdan puanlı ürünleri alır, en iyi araç + 2 alternatifi güven seviyesi, fiyat, veri tarihi ve kaynakla önerir, seçilen araç için prompt rehberinden etkileşimli olarak prompt üretir: konuşmadan bilgileri çıkarır, gerekirse tek kartta en fazla 3 soru sorar, iki varyant (güvenli/yaratıcı) gösterir, kullanıcı butonlar ve serbest metinle iyileştirir. Global, en + tr.
+Kapsam dışı (lansman sonrası): hesaplar, ödeme, sponsorlu listeleme, mobil uygulama, Postgres, API-proxy.
+
+## Mimari
+- Katalog git'te JSON: data/tasks.json, data/models.json, data/products.json, data/reviews.json, data/briefs.json, data/signals.json, data/prompt-guides/*.md. Zod şeması lib/catalog/schema.ts.
+- Modeller her gece GitHub Action ile Artificial Analysis API ve LMArena (Hugging Face) verisinden güncellenir ve PR açılır. Ürünler seçilmiştir; yeni ürünler 'candidate' olarak PR ile gelir.
+- /api/chat: OpenAI tool calling. Araçlar: search_catalog, ask_user, build_prompt, get_workflow. Puanı her zaman deterministik kod hesaplar.
+- OpenAI erişilemezse ya da aylık bütçe dolarsa v1 anahtar kelime yoluna düşülür.
+
+## RouteAI Skoru (ana sistem)
+Sıralama RouteAI'ın kendi kanıtına dayanır; benchmark sadece ön bilgidir. Birim: (ürün, görev) çifti. Görev taksonomisi bu yüzden omurgadır.
+q = (kb*B + ke*E + Σ w*y) / (kb + ke + Σ w). kb = 10 (B: LMArena/AA yüzdelik dilimi; yoksa kb = 0). ke = 5 (E: uzman rubriği 0–1; yoksa ke = 0).
+Kendi gözlemler: iş sonucu w = 1 (evet 1, kısmen 0.5, hayır 0), karşılaştırma w = 0.5 (kazanan 1, kaybeden 0), öneri oyu w = 0.3. 90 iş sonucundan sonra benchmark'ın payı %10'un altına düşer.
+Kanıt kuralı: B yok, uzman değerlendirmesi yok ve kendi gözlem ağırlığı 3'ten azsa ürün önerilmez. Sponsorluk ve affiliate bilgisi sıralamaya asla girmez.
+Güven: high = kendi gözlem ağırlığı ≥ 30 VE en yeni gözlem ≤ 30 gün; medium = kendi gözlem ≥ 10 VEYA (benchmark ≤ 30 gün VE uzman değerlendirmesi); low = diğer.
+
+## Fazlar
+P0 zemin | P1 altın eval seti | P2 veri modeli + taksonomi | P3 gece model senkronu | P4 RouteAI Skoru motoru | P5 sohbet ajanı API | P6 sohbet arayüzü + i18n | P7 etkileşimli prompt oluşturucu | P8 keşif, geri bildirim, analitik, lansman
+
+## Hedefler
+Altın sette doğru görev ≥ %90, ilk 3'te kabul edilebilir araç ≥ %85. Lansman sonrası: iş sonucu yanıt oranı ≥ %20, işini gördü oranı ≥ %65, beğenilme ≥ %70, araca geçiş ≥ %40, prompt kopyalama ≥ %30, netleştirme oranı %15–%35.
