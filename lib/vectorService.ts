@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { kv } from "./kv";
 import { hashString } from "./hash";
 import { getPricingModel } from "./pricing";
-import { normalizeTr } from "./text";
+import { normalizeTr, tokenizeTr } from "./text";
 
 // ================================================================
 // Vektor aramasi bayrakla KAPALI (tanimsiz = kapali, acmak icin 'true').
@@ -146,20 +146,59 @@ export async function searchTools(query: string, topK: number = 5): Promise<Sear
     }
 }
 
+// ================================================================
+// Anahtar kelime araması
+//
+// Eskiden sorgu kelimesi araç metninde SUBSTRING olarak aranıyordu: "için"
+// ve "var" neredeyse her açıklamada geçtiği için alakasız araçlar puan
+// topluyordu ("python kodumda hata var" -> Microsoft Copilot Pro), "videosu"
+// ise hiçbir metinde geçmediği için video araçları puan alamıyordu.
+// ================================================================
+
+// Anlam taşımayan dolgu kelimeleri. Eşleştirme normalize metinde yapıldığı
+// için liste de normalize edilir ("için" -> "icin").
+const SEARCH_STOP_WORDS = new Set([
+    // tr
+    'için', 've', 'bir', 'bu', 'ile', 'var', 'yok', 'mi', 'çok', 'daha', 'gibi', 'istiyorum', 'olarak',
+    // en
+    'the', 'a', 'an', 'for', 'and', 'to', 'of', 'with', 'i', 'want', 'my', 'need',
+].map(normalizeTr));
+
+/** Sorgudan arama terimleri: normalize, kelimelere böl, dolgu ve 2 harften kısa kelimeleri at. */
+export function searchTerms(query: string): string[] {
+    return tokenizeTr(query).filter(word => word.length >= 2 && !SEARCH_STOP_WORDS.has(word));
+}
+
+/**
+ * Sorgu kelimesi bir araç kelimesiyle eşleşir mi? Türkçe ekler yüzünden önek:
+ *  - araç kelimesi (≥3 harf) sorgu kelimesinin öneki: "videosu" -> "video", "kodumda" -> "kod"
+ *  - sorgu kelimesi (≥4 harf) araç kelimesinin öneki: "sunu" -> "sunum"
+ */
+export function wordsMatch(queryWord: string, toolWord: string): boolean {
+    return (toolWord.length >= 3 && queryWord.startsWith(toolWord))
+        || (queryWord.length >= 4 && toolWord.startsWith(queryWord));
+}
+
 async function keywordFallbackSearch(query: string, limit: number): Promise<SearchResult[]> {
     try {
         const { getTools, getLocalized } = await import('./toolsService');
         const allTools = await getTools();
         // Diakritik-duyarsiz: "dugun" yazan kullanici "düğün" verisini bulsun.
-        const queryWords = normalizeTr(query).split(/\s+/).filter(Boolean);
+        const queryWords = searchTerms(query);
 
         const scored = allTools.map(tool => {
             let score = 0;
-            const toolText = normalizeTr(
+            const toolWords = new Set(tokenizeTr(
                 `${tool.name} ${getLocalized(tool, 'description')} ${tool.category} ${getLocalized(tool, 'bestFor').join(' ')}`
-            );
+            ));
+            // Her sorgu kelimesi araç başına en fazla 1 puan getirir.
             for (const word of queryWords) {
-                if (toolText.includes(word)) score++;
+                for (const toolWord of toolWords) {
+                    if (wordsMatch(word, toolWord)) {
+                        score++;
+                        break;
+                    }
+                }
             }
             return { tool, score };
         });

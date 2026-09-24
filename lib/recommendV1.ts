@@ -17,13 +17,15 @@ import { rankTools } from './ranking';
 // ============================================================
 // Kategori → beklenen outputTypes haritası
 // Vector search yanlış kategori araç döndürürse filtrelemek için.
+// metin'de 'document' şart: sunum araçları (Gamma, Beautiful.ai, Tome) metin
+// kategorisinde ama çıktıları 'document'; yoksa hiç önerilemiyorlardı.
 // ============================================================
 export const categoryOutputMap: Record<string, string[]> = {
   video: ['video'],
   gorsel: ['image'],
   ses: ['audio'],
   kod: ['code', 'text'],
-  metin: ['text'],
+  metin: ['text', 'document'],
   arastirma: ['text'],
   veri: ['text', 'image'],
 };

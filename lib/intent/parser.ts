@@ -364,7 +364,7 @@ export async function parseUserIntent(
 // ================================================================
 // Yardımcı: Prompt'tan kısıtlamaları çıkar (LLM'siz)
 // ================================================================
-function extractConstraints(query: string): ParsedIntent['constraints'] {
+export function extractConstraints(query: string): ParsedIntent['constraints'] {
   const lower = query.toLowerCase();
   const constraints: ParsedIntent['constraints'] = {
     // Varsayilan 'freemium' = "tercih belirtilmedi". Eskiden 'free' idi ve
@@ -378,10 +378,11 @@ function extractConstraints(query: string): ParsedIntent['constraints'] {
     language: 'tr',
   };
 
-  // Pricing
-  if (/ücretsiz|bedava|free|para\s*vermeden|parasız/.test(lower)) {
+  // Pricing. "free" ve "pro" kelime sınırlı: "freelancer" ücretsiz,
+  // "GoPro" ücretli demek değil.
+  if (/ücretsiz|bedava|\bfree\b|para\s*vermeden|parasız/.test(lower)) {
     constraints.pricing = 'free';
-  } else if (/premium|profesyonel|paid|pro\b/.test(lower)) {
+  } else if (/premium|profesyonel|paid|\bpro\b/.test(lower)) {
     constraints.pricing = 'paid';
   }
 
