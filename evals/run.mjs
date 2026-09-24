@@ -21,6 +21,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// env.mjs İLK import: ortamı lib modülleri yüklenmeden hazırlar (bkz. o dosya).
+import { hasOpenAIKey, openaiCallCount, out, quietly, setVerbose } from './env.mjs';
 import { evaluateRow, parseGolden, summarize } from './metrics.mjs';
 import { explainOracleMisses } from './oracleMisses.mjs';
 
@@ -40,69 +42,7 @@ if (!RECOMMENDERS.includes(recommenderName)) {
   process.exit(1);
 }
 
-// ------------------------------------------------------------------
-// Ortam — lib modülleri yüklenmeden ÖNCE
-// ------------------------------------------------------------------
-try {
-  process.loadEnvFile(path.join(ROOT, '.env.local'));
-  console.log('[eval] .env.local yüklendi');
-} catch (error) {
-  if (error?.code === 'ENOENT') {
-    console.log('[eval] .env.local yok; mevcut ortam değişkenleriyle devam');
-  } else {
-    console.log(`[eval] .env.local okunamadı (${error?.message ?? error}); mevcut ortam değişkenleriyle devam`);
-  }
-}
-
-for (const key of Object.keys(process.env)) {
-  if (/^(KV_|UPSTASH_)/.test(key) || key === 'REDIS_URL' || key === 'VECTOR_SEARCH_ENABLED') {
-    delete process.env[key];
-  }
-}
-
-const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY?.trim());
-if (!hasOpenAIKey) {
-  // Sahte anahtar sadece istemcinin kurulup isteği denemesi için: istek aşağıdaki
-  // fetch sarmalayıcısında ağa çıkmadan reddedilir ve sayılır.
-  process.env.OPENAI_API_KEY = 'sk-eval-no-key';
-}
-
-let openaiCalls = 0;
-const realFetch = globalThis.fetch;
-globalThis.fetch = async (input, init) => {
-  const url = input instanceof Request ? input.url : String(input);
-  let host = '';
-  try {
-    host = new URL(url).hostname;
-  } catch {
-    // göreli URL: OpenAI değil
-  }
-  if (host === 'openai.com' || host.endsWith('.openai.com')) {
-    openaiCalls++;
-    if (!hasOpenAIKey) {
-      return new Response(JSON.stringify({ error: { message: 'eval: OPENAI_API_KEY yok' } }), {
-        status: 401,
-        headers: { 'content-type': 'application/json' },
-      });
-    }
-  }
-  return realFetch(input, init);
-};
-
-// lib modülleri konsola bol log basıyor; tablo okunur kalsın diye adaptör
-// çağrısı sırasında susturulur (--verbose ile açılır).
-const out = console.log.bind(console);
-const CONSOLE_METHODS = ['log', 'info', 'warn', 'error', 'debug'];
-async function quietly(fn) {
-  if (verbose) return fn();
-  const saved = CONSOLE_METHODS.map((m) => console[m]);
-  for (const m of CONSOLE_METHODS) console[m] = () => {};
-  try {
-    return await fn();
-  } finally {
-    CONSOLE_METHODS.forEach((m, i) => { console[m] = saved[i]; });
-  }
-}
+setVerbose(verbose);
 
 const { recommenders } = await quietly(() => import('./recommenders.mjs'));
 const recommend = recommenders[recommenderName];
@@ -117,7 +57,7 @@ out(`[eval] OpenAI anahtarı: ${hasOpenAIKey ? 'var (LLM çağrıları gerçek)'
 
 const rows = [];
 for (const g of golden) {
-  const callsBefore = openaiCalls;
+  const callsBefore = openaiCallCount();
   const started = performance.now();
   let output;
   try {
@@ -126,7 +66,7 @@ for (const g of golden) {
     output = { tools: [], detail: { kind: 'throw', message: String(error?.message ?? error) } };
   }
   const latencyMs = Math.round(performance.now() - started);
-  const llmCalls = openaiCalls - callsBefore;
+  const llmCalls = openaiCallCount() - callsBefore;
 
   if (!hasOpenAIKey && llmCalls > 0 && !output.skipped) {
     output = { ...output, skipped: 'needs OPENAI_API_KEY' };

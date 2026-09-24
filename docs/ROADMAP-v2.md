@@ -67,3 +67,12 @@ Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var),
 - `next dev` bir AI ajanı altında çalışınca CLAUDE.md'ye kendi "agent rules" bloğunu ekliyor; geri alındı, commit edilmedi.
 - Yerelde sohbet için KV şart: KV yoksa rate limiter bilinçli olarak kapalı kalır ve `/api/chat` 429 döner.
 
+## P7 notları
+- Rehber formatı: `data/prompt-guides/<id>.md` (YAML alt kümesi frontmatter + 4 bölüm) -> `npm run build:guides` -> `data/prompt-guides.json` (edge için). `prebuild` ve `validate:catalog` bunu çağırır. Ayrıştırıcı `lib/promptBuilder/yaml.ts` (paket yok): satır içi eşleme, çok satırlı metin ve çapa desteklenmez, açık hata verir.
+- 10 taslak rehber, 17 ürüne bağlı. Resmi dokümana erişilemediği için hepsi KAYNAK GEREKLİ; `docs/prompt-guides-review.md` Ferit'in kontrol listesi.
+- Oturum KV'de `ps:<id>` (24 saat). Akış: extract (1 LLM çağrısı) -> plan (deterministik, en fazla 3 soru, oturum başına 1 soru kartı) -> generate (1 çağrı, safe + creative) -> validate (+ en fazla 1 onarım, sonra "kontrol edilmedi"). İyileştirme: hazır buton | varsayım değişikliği | serbest talimat; oturum başına 10.
+- `build_prompt` sonucu (soru ya da prompt kartı) ajanın turunu bitirir; prompt oluşturucunun token'ları sohbet bütçesine eklenir. `/api/prompt/answer` ve `/api/prompt/refine` ajan döngüsüne girmez; rate limit 'prompt', bütçe, 20 sn zaman aşımı.
+- Model: `OPENAI_PROMPT_MODEL`, yoksa `OPENAI_MODEL`. max_tokens: görsel/video/ses/müzik 600, metin/kod/sunum 1200.
+- Analitik çağrıları yerinde (`lib/analytics.ts`, şimdilik no-op): prompt_question_shown, prompt_generated, prompt_refined, prompt_copied. OutcomeCard, sohbette son kopyalanan promptSessionId'yi taşır.
+- `npm run eval:prompts`: 20 senaryo; bu ortamda anahtar yok, 20/20 skipped. Uçtan uca elle test (en az 3 rehber) OPENAI_API_KEY + KV ile yapılmalı; kart arayüzü `/dev/cards`'ta örnek veriyle görülebilir.
+
