@@ -72,7 +72,8 @@ export async function POST(req: NextRequest) {
 
     const { prompt, pricingFilter } = validationResult.data;
 
-    console.log('[API] İstek analiz ediliyor:', prompt);
+    // Kullanıcı metni loglanmaz; teşhis için uzunluğu yeter.
+    console.log('[API] İstek analiz ediliyor, uzunluk:', prompt.length);
 
     // 1. Niyet Analizi ve Vektör Aramasını PARALEL çalıştır
     const [intentResult, searchResults] = await Promise.all([

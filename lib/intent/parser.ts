@@ -348,10 +348,15 @@ export async function parseUserIntent(
       return createFallbackIntent(query, fallbackCategory, queryType);
     }
 
+    // Hatanın ayrıntısı yukarıda sadece sunucu loguna yazıldı. Kullanıcıya
+    // iç yapılandırma (anahtar, .env) hakkında hiçbir şey söylenmez.
     return {
       code: 'API_ERROR',
-      message: 'Sistemsel bir sorun var (API Key Hatası). Ancak isteğini kategorize edemedim.',
-      suggestions: ['Lütfen .env dosyasındaki API anahtarını kontrol et.']
+      message: 'Şu an isteğini işleyemedim. Biraz sonra tekrar dene ya da ne yapmak istediğini birkaç kelimeyle yaz.',
+      suggestions: [
+        'Örnek: "Logo tasarımı yapmak istiyorum"',
+        'Örnek: "Blog yazısı yazmak için AI lazım"',
+      ],
     };
   }
 }

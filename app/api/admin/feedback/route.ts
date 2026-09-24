@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
+import { requireAdmin } from "@/lib/adminAuth";
 import type { FeedbackRecord } from "@/lib/validations/feedback";
 
 const RECENT_KEY = 'fb:recent';
 const LIMIT = 100;
 
 export async function GET(request: NextRequest) {
-    const adminSecret = request.headers.get('x-admin-key') || new URL(request.url).searchParams.get('key');
-    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
-        return Response.json({ error: 'Yetkisiz erişim' }, { status: 401 });
-    }
+    const denied = await requireAdmin(request);
+    if (denied) return denied;
 
     try {
         const keys = await kv.lrange(RECENT_KEY, 0, LIMIT - 1);
