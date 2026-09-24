@@ -22,3 +22,8 @@ P0 zemin | P1 altın eval seti | P2 veri modeli + taksonomi | P3 gece model senk
 
 ## Hedefler
 Altın sette doğru görev ≥ %90, ilk 3'te kabul edilebilir araç ≥ %85. Lansman sonrası: iş sonucu yanıt oranı ≥ %20, işini gördü oranı ≥ %65, beğenilme ≥ %70, araca geçiş ≥ %40, prompt kopyalama ≥ %30, netleştirme oranı %15–%35.
+
+## P0 notları
+- lib/recommendV1.ts P0'da oluşturuldu; P1 onu yeniden oluşturmaz, kullanır.
+- Anahtar kelime eşleşmesi: kelime başından önek eşleşmesi, Türkçe eklere izin verir; "art" tam kelime.
+- Admin uçları sadece x-admin-key başlığı; seed POST.
