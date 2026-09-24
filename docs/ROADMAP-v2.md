@@ -57,3 +57,13 @@ Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var),
 - v2 eval (`npm run eval -- --recommender=v2`) bu ortamda OPENAI_API_KEY olmadığı için koşulamadı; 40/40 skipped. Anahtarla koşulunca taskMatch hedefi ≥ %90; altındaysa özet satırındaki "karışan görevler"e göre `lib/agent/systemPrompt.ts` ve `data/tasks.json` açıklamaları iyileştirilecek (en fazla 3 tur).
 - get_workflow adım adları şablondan geldiği için şimdilik Türkçe (EN arayüzde de).
 
+## P6 notları
+- Ana sayfa artık sohbet (`components/chat/ChatShell.tsx`); eski tek sorgu arayüzü `/classic` (noindex, sitemap'te yok). `/dev/cards` sadece geliştirmede açılan kart önizlemesi (örnek veri), üretimde 404.
+- Dil: `proxy.ts` (Next 16'da middleware'in yeni adı) `?lang` -> Accept-Language -> en sırasıyla `x-routeai-locale` başlığını ekler; `<html lang>` ve metadata bundan. Sözlük `lib/i18n/{en,tr}.ts`; anahtar eşitliği tiple zorunlu.
+- Türkçe şablonlarda sayıya ek getiren kalıplardan ("%43'i") kaçınıldı: ek sayının okunuşuna göre değişiyor ("%43'ü"). Yeni şablon yazarken aynı kural.
+- `WorkflowDisplay`'deki "tahmini maliyet" bölümü sohbet kartına alınmadı: kaynaksız fiyat tahmini üretiyor (klasik arayüzde duruyor).
+- Kart kanıt payı çubuğu için skor sonucuna `expertShare` ve `ownShare` eklendi (formül değişmedi).
+- `/api/outcome`: oturum + ürün + görev başına tek kayıt, oturum kimliği sadece hash olarak (`lib/signals/store.ts`), IP ve mesaj metni saklanmaz. Anahtarlar `sig:outcome:index` ve `sig:comparison:index` kümelerinde; P8 toplar.
+- `next dev` bir AI ajanı altında çalışınca CLAUDE.md'ye kendi "agent rules" bloğunu ekliyor; geri alındı, commit edilmedi.
+- Yerelde sohbet için KV şart: KV yoksa rate limiter bilinçli olarak kapalı kalır ve `/api/chat` 429 döner.
+
