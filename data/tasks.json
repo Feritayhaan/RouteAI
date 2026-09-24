@@ -1,0 +1,1658 @@
+[
+  {
+    "id": "text.write-longform",
+    "label": {
+      "en": "Long-form writing",
+      "tr": "Uzun metin yazımı"
+    },
+    "description": {
+      "en": "Blog posts, articles and other long-form content.",
+      "tr": "Blog yazısı, makale ve diğer uzun içerikler."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [
+      {
+        "id": "seo",
+        "question": {
+          "en": "Does the text need to rank in search engines (SEO)?",
+          "tr": "Metnin arama motorlarında öne çıkması (SEO) gerekiyor mu?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "text.marketing-copy",
+    "label": {
+      "en": "Marketing copy",
+      "tr": "Pazarlama metni"
+    },
+    "description": {
+      "en": "Ad copy, slogans, product descriptions and campaign text.",
+      "tr": "Reklam metni, slogan, ürün açıklaması ve kampanya metinleri."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [
+      {
+        "id": "channel",
+        "question": {
+          "en": "Where will the copy be used?",
+          "tr": "Metin nerede kullanılacak?"
+        },
+        "options": [
+          {
+            "id": "ads",
+            "label": {
+              "en": "Ads",
+              "tr": "Reklam"
+            }
+          },
+          {
+            "id": "social",
+            "label": {
+              "en": "Social media",
+              "tr": "Sosyal medya"
+            }
+          },
+          {
+            "id": "website",
+            "label": {
+              "en": "Website / store",
+              "tr": "Web sitesi / mağaza"
+            }
+          },
+          {
+            "id": "email",
+            "label": {
+              "en": "Email",
+              "tr": "E-posta"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "text.email",
+    "label": {
+      "en": "Email writing",
+      "tr": "E-posta yazımı"
+    },
+    "description": {
+      "en": "Writing and replying to emails.",
+      "tr": "E-posta yazma ve yanıtlama."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [
+      {
+        "id": "mail-app",
+        "question": {
+          "en": "Which email app do you use?",
+          "tr": "Hangi e-posta uygulamasını kullanıyorsun?"
+        },
+        "options": [
+          {
+            "id": "gmail",
+            "label": {
+              "en": "Gmail",
+              "tr": "Gmail"
+            }
+          },
+          {
+            "id": "outlook",
+            "label": {
+              "en": "Outlook",
+              "tr": "Outlook"
+            }
+          },
+          {
+            "id": "other",
+            "label": {
+              "en": "Other",
+              "tr": "Diğer"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "text.summarize",
+    "label": {
+      "en": "Summarizing",
+      "tr": "Özetleme"
+    },
+    "description": {
+      "en": "Condensing long text, documents or recordings into key points.",
+      "tr": "Uzun metin, belge ya da kayıtları ana noktalara indirme."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [
+      {
+        "id": "source",
+        "question": {
+          "en": "What do you want to summarize?",
+          "tr": "Neyi özetlemek istiyorsun?"
+        },
+        "options": [
+          {
+            "id": "document",
+            "label": {
+              "en": "A document / PDF",
+              "tr": "Belge / PDF"
+            }
+          },
+          {
+            "id": "web",
+            "label": {
+              "en": "A web page",
+              "tr": "Web sayfası"
+            }
+          },
+          {
+            "id": "recording",
+            "label": {
+              "en": "A meeting or video",
+              "tr": "Toplantı ya da video"
+            }
+          }
+        ],
+        "critical": true
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "text.translate",
+    "label": {
+      "en": "Translation",
+      "tr": "Çeviri"
+    },
+    "description": {
+      "en": "Translating text and documents between languages.",
+      "tr": "Metin ve belgeleri diller arasında çevirme."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [
+      {
+        "id": "content",
+        "question": {
+          "en": "What are you translating?",
+          "tr": "Neyi çeviriyorsun?"
+        },
+        "options": [
+          {
+            "id": "short",
+            "label": {
+              "en": "Short text",
+              "tr": "Kısa metin"
+            }
+          },
+          {
+            "id": "document",
+            "label": {
+              "en": "A document file",
+              "tr": "Belge dosyası"
+            }
+          },
+          {
+            "id": "website",
+            "label": {
+              "en": "A website",
+              "tr": "Web sitesi"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "text.rewrite-edit",
+    "label": {
+      "en": "Rewriting and editing",
+      "tr": "Düzeltme ve yeniden yazma"
+    },
+    "description": {
+      "en": "Proofreading, rewriting and changing the tone of existing text.",
+      "tr": "Var olan metni düzeltme, yeniden yazma ve tonunu değiştirme."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "chat.general-assistant",
+    "label": {
+      "en": "General assistant",
+      "tr": "Genel asistan"
+    },
+    "description": {
+      "en": "An all-purpose AI chat assistant for questions, ideas and everyday tasks.",
+      "tr": "Soru, fikir ve günlük işler için genel amaçlı yapay zekâ sohbet asistanı."
+    },
+    "modality": "text",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_intelligence"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "research.web",
+    "label": {
+      "en": "Web research",
+      "tr": "Web araştırması"
+    },
+    "description": {
+      "en": "Researching a topic on the web with cited sources.",
+      "tr": "Bir konuyu kaynak göstererek web'de araştırma."
+    },
+    "modality": "research",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "search"
+      }
+    ],
+    "slots": [
+      {
+        "id": "depth",
+        "question": {
+          "en": "Do you need a quick answer or an in-depth report?",
+          "tr": "Hızlı bir cevap mı, kapsamlı bir rapor mu istiyorsun?"
+        },
+        "options": [
+          {
+            "id": "quick",
+            "label": {
+              "en": "Quick answer",
+              "tr": "Hızlı cevap"
+            }
+          },
+          {
+            "id": "report",
+            "label": {
+              "en": "In-depth report",
+              "tr": "Kapsamlı rapor"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "research.academic",
+    "label": {
+      "en": "Academic research",
+      "tr": "Akademik araştırma"
+    },
+    "description": {
+      "en": "Finding, reading and analyzing academic papers; literature reviews.",
+      "tr": "Akademik makale bulma, okuma ve analiz etme; literatür taraması."
+    },
+    "modality": "research",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "search"
+      }
+    ],
+    "slots": [
+      {
+        "id": "goal",
+        "question": {
+          "en": "What do you need most?",
+          "tr": "En çok neye ihtiyacın var?"
+        },
+        "options": [
+          {
+            "id": "find",
+            "label": {
+              "en": "Find relevant papers",
+              "tr": "İlgili makaleleri bulmak"
+            }
+          },
+          {
+            "id": "summarize",
+            "label": {
+              "en": "Summarize papers I have",
+              "tr": "Elimdeki makaleleri özetlemek"
+            }
+          },
+          {
+            "id": "extract",
+            "label": {
+              "en": "Extract data across papers",
+              "tr": "Makalelerden veri çıkarmak"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "research.document-qa",
+    "label": {
+      "en": "Document Q&A",
+      "tr": "Belgeyle soru-cevap"
+    },
+    "description": {
+      "en": "Asking questions about your own uploaded documents.",
+      "tr": "Yüklediğin belgeler hakkında soru sorma."
+    },
+    "modality": "research",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "document"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "slides.create",
+    "label": {
+      "en": "Presentations",
+      "tr": "Sunum hazırlama"
+    },
+    "description": {
+      "en": "Creating slide decks and pitch decks.",
+      "tr": "Sunum ve pitch deck hazırlama."
+    },
+    "modality": "slides",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "starting-point",
+        "question": {
+          "en": "What are you starting from?",
+          "tr": "Neyle başlıyorsun?"
+        },
+        "options": [
+          {
+            "id": "scratch",
+            "label": {
+              "en": "Just an idea",
+              "tr": "Sadece bir fikir"
+            }
+          },
+          {
+            "id": "document",
+            "label": {
+              "en": "An existing document",
+              "tr": "Var olan bir belge"
+            }
+          },
+          {
+            "id": "powerpoint",
+            "label": {
+              "en": "An existing PowerPoint",
+              "tr": "Var olan bir PowerPoint"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "document"
+    ]
+  },
+  {
+    "id": "docs.create",
+    "label": {
+      "en": "Documents and templates",
+      "tr": "Belge ve şablon"
+    },
+    "description": {
+      "en": "Creating documents and templates such as invoices, resumes and proposals.",
+      "tr": "Fatura, özgeçmiş, teklif gibi belge ve şablonlar hazırlama."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "doc-type",
+        "question": {
+          "en": "What kind of document is it?",
+          "tr": "Ne tür bir belge?"
+        },
+        "options": [
+          {
+            "id": "invoice",
+            "label": {
+              "en": "Invoice / form",
+              "tr": "Fatura / form"
+            }
+          },
+          {
+            "id": "resume",
+            "label": {
+              "en": "Resume",
+              "tr": "Özgeçmiş"
+            }
+          },
+          {
+            "id": "proposal",
+            "label": {
+              "en": "Proposal / report",
+              "tr": "Teklif / rapor"
+            }
+          },
+          {
+            "id": "other",
+            "label": {
+              "en": "Other",
+              "tr": "Diğer"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "document"
+    ]
+  },
+  {
+    "id": "image.generate",
+    "label": {
+      "en": "Image generation",
+      "tr": "Görsel üretimi"
+    },
+    "description": {
+      "en": "Generating images from a text description.",
+      "tr": "Metin tarifinden görsel üretme."
+    },
+    "modality": "image",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text_to_image"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-image"
+      }
+    ],
+    "slots": [
+      {
+        "id": "style",
+        "question": {
+          "en": "What kind of image?",
+          "tr": "Nasıl bir görsel?"
+        },
+        "options": [
+          {
+            "id": "photo",
+            "label": {
+              "en": "Photorealistic",
+              "tr": "Fotogerçekçi"
+            }
+          },
+          {
+            "id": "art",
+            "label": {
+              "en": "Illustration / art",
+              "tr": "İllüstrasyon / sanat"
+            }
+          },
+          {
+            "id": "text",
+            "label": {
+              "en": "Contains readable text",
+              "tr": "Okunur yazı içeren"
+            }
+          }
+        ],
+        "critical": true
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "image.logo",
+    "label": {
+      "en": "Logo design",
+      "tr": "Logo tasarımı"
+    },
+    "description": {
+      "en": "Designing a logo for a brand, shop or project.",
+      "tr": "Bir marka, dükkân ya da proje için logo tasarlama."
+    },
+    "modality": "image",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text_to_image"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-image"
+      }
+    ],
+    "slots": [
+      {
+        "id": "text-in-logo",
+        "question": {
+          "en": "Should the logo contain a name or text?",
+          "tr": "Logoda isim ya da yazı olacak mı?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": true
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "image.edit",
+    "label": {
+      "en": "Image editing",
+      "tr": "Görsel düzenleme"
+    },
+    "description": {
+      "en": "Editing existing images: adding or removing objects, changing style.",
+      "tr": "Var olan görseli düzenleme: nesne ekleme/silme, stil değiştirme."
+    },
+    "modality": "image",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "image_edit"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "image-editing"
+      }
+    ],
+    "slots": [
+      {
+        "id": "edit-type",
+        "question": {
+          "en": "What do you want to change?",
+          "tr": "Neyi değiştirmek istiyorsun?"
+        },
+        "options": [
+          {
+            "id": "objects",
+            "label": {
+              "en": "Add or remove objects",
+              "tr": "Nesne ekle/çıkar"
+            }
+          },
+          {
+            "id": "style",
+            "label": {
+              "en": "Change the style",
+              "tr": "Stili değiştir"
+            }
+          },
+          {
+            "id": "extend",
+            "label": {
+              "en": "Extend the image",
+              "tr": "Görseli genişlet"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "image.product-photo",
+    "label": {
+      "en": "Product photos",
+      "tr": "Ürün fotoğrafı"
+    },
+    "description": {
+      "en": "Creating product shots for stores, ads and social media.",
+      "tr": "Mağaza, reklam ve sosyal medya için ürün fotoğrafı üretme."
+    },
+    "modality": "image",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text_to_image"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-image"
+      }
+    ],
+    "slots": [
+      {
+        "id": "has-photo",
+        "question": {
+          "en": "Do you already have a photo of the product?",
+          "tr": "Ürünün bir fotoğrafı elinde var mı?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": true
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "image.background-remove",
+    "label": {
+      "en": "Background removal",
+      "tr": "Arka plan kaldırma"
+    },
+    "description": {
+      "en": "Removing or replacing the background of a photo.",
+      "tr": "Fotoğrafın arka planını kaldırma ya da değiştirme."
+    },
+    "modality": "image",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "image_edit"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "image-editing"
+      }
+    ],
+    "slots": [
+      {
+        "id": "volume",
+        "question": {
+          "en": "How many images?",
+          "tr": "Kaç görsel?"
+        },
+        "options": [
+          {
+            "id": "few",
+            "label": {
+              "en": "A few",
+              "tr": "Birkaç tane"
+            }
+          },
+          {
+            "id": "bulk",
+            "label": {
+              "en": "Many at once",
+              "tr": "Toplu, çok sayıda"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "image.upscale",
+    "label": {
+      "en": "Image upscaling",
+      "tr": "Görsel büyütme"
+    },
+    "description": {
+      "en": "Increasing the resolution and sharpness of images.",
+      "tr": "Görselin çözünürlüğünü ve netliğini artırma."
+    },
+    "modality": "image",
+    "benchmark": [],
+    "slots": [],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "design.social-graphic",
+    "label": {
+      "en": "Social media graphics",
+      "tr": "Sosyal medya görseli"
+    },
+    "description": {
+      "en": "Designing posts, stories and banners for social media.",
+      "tr": "Sosyal medya için gönderi, hikâye ve banner tasarlama."
+    },
+    "modality": "image",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text_to_image"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-image"
+      }
+    ],
+    "slots": [
+      {
+        "id": "design-skill",
+        "question": {
+          "en": "Do you want ready-made templates or to generate from scratch?",
+          "tr": "Hazır şablon mu istersin, sıfırdan üretim mi?"
+        },
+        "options": [
+          {
+            "id": "templates",
+            "label": {
+              "en": "Templates",
+              "tr": "Hazır şablon"
+            }
+          },
+          {
+            "id": "generate",
+            "label": {
+              "en": "Generate from scratch",
+              "tr": "Sıfırdan üretim"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ]
+  },
+  {
+    "id": "video.text-to-video",
+    "label": {
+      "en": "Text-to-video",
+      "tr": "Metinden video"
+    },
+    "description": {
+      "en": "Generating video clips from a text description.",
+      "tr": "Metin tarifinden video üretme."
+    },
+    "modality": "video",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "text_to_video"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-video"
+      }
+    ],
+    "slots": [
+      {
+        "id": "audio",
+        "question": {
+          "en": "Does the video need sound or dialogue?",
+          "tr": "Videoda ses ya da konuşma olacak mı?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "video"
+    ]
+  },
+  {
+    "id": "video.image-to-video",
+    "label": {
+      "en": "Image-to-video",
+      "tr": "Görselden video"
+    },
+    "description": {
+      "en": "Animating a photo or image into a video clip.",
+      "tr": "Bir fotoğrafı ya da görseli canlandırıp videoya çevirme."
+    },
+    "modality": "video",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "image_to_video"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "image-to-video"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "video"
+    ]
+  },
+  {
+    "id": "video.edit-short-social",
+    "label": {
+      "en": "Short social video",
+      "tr": "Kısa sosyal medya videosu"
+    },
+    "description": {
+      "en": "Making and editing short videos for Reels, Shorts and TikTok.",
+      "tr": "Reels, Shorts ve TikTok için kısa video hazırlama ve düzenleme."
+    },
+    "modality": "video",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "video_edit"
+      }
+    ],
+    "slots": [
+      {
+        "id": "has-footage",
+        "question": {
+          "en": "Do you already have footage to edit?",
+          "tr": "Düzenlenecek hazır görüntün var mı?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": true
+      }
+    ],
+    "outputTypes": [
+      "video"
+    ]
+  },
+  {
+    "id": "video.subtitles",
+    "label": {
+      "en": "Subtitles",
+      "tr": "Altyazı"
+    },
+    "description": {
+      "en": "Adding subtitles or captions to videos, including translated subtitles.",
+      "tr": "Videoya altyazı ekleme; altyazı çevirisi dahil."
+    },
+    "modality": "video",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "translate",
+        "question": {
+          "en": "Should the subtitles be in another language?",
+          "tr": "Altyazı başka bir dilde mi olacak?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "video"
+    ]
+  },
+  {
+    "id": "video.avatar-presenter",
+    "label": {
+      "en": "Avatar presenter video",
+      "tr": "Avatar sunuculu video"
+    },
+    "description": {
+      "en": "Videos with an AI avatar presenting a script.",
+      "tr": "Yapay zekâ avatarının metni sunduğu videolar."
+    },
+    "modality": "video",
+    "benchmark": [],
+    "slots": [],
+    "outputTypes": [
+      "video"
+    ]
+  },
+  {
+    "id": "video.repurpose-clips",
+    "label": {
+      "en": "Clips from long videos",
+      "tr": "Uzun videodan klip"
+    },
+    "description": {
+      "en": "Turning long videos or podcasts into short clips.",
+      "tr": "Uzun video ya da podcast'i kısa kliplere dönüştürme."
+    },
+    "modality": "video",
+    "benchmark": [],
+    "slots": [],
+    "outputTypes": [
+      "video"
+    ]
+  },
+  {
+    "id": "audio.tts-voiceover",
+    "label": {
+      "en": "Voiceover (text-to-speech)",
+      "tr": "Seslendirme (metinden ses)"
+    },
+    "description": {
+      "en": "Turning text into natural-sounding speech for videos, courses and ads.",
+      "tr": "Metni video, kurs ve reklamlar için doğal sese dönüştürme."
+    },
+    "modality": "audio",
+    "benchmark": [
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-speech"
+      }
+    ],
+    "slots": [
+      {
+        "id": "language",
+        "question": {
+          "en": "Which language should the voice speak?",
+          "tr": "Ses hangi dilde konuşacak?"
+        },
+        "options": [
+          {
+            "id": "tr",
+            "label": {
+              "en": "Turkish",
+              "tr": "Türkçe"
+            }
+          },
+          {
+            "id": "en",
+            "label": {
+              "en": "English",
+              "tr": "İngilizce"
+            }
+          },
+          {
+            "id": "other",
+            "label": {
+              "en": "Another language",
+              "tr": "Başka bir dil"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "audio"
+    ]
+  },
+  {
+    "id": "audio.voice-clone",
+    "label": {
+      "en": "Voice cloning",
+      "tr": "Ses klonlama"
+    },
+    "description": {
+      "en": "Creating a synthetic copy of a voice (with consent).",
+      "tr": "Bir sesin (izinli) sentetik kopyasını oluşturma."
+    },
+    "modality": "audio",
+    "benchmark": [
+      {
+        "source": "artificialanalysis",
+        "key": "text-to-speech"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "audio"
+    ]
+  },
+  {
+    "id": "audio.transcribe",
+    "label": {
+      "en": "Transcription",
+      "tr": "Transkript (döküm)"
+    },
+    "description": {
+      "en": "Converting speech in audio or video files into text.",
+      "tr": "Ses ya da video dosyasındaki konuşmayı yazıya dökme."
+    },
+    "modality": "audio",
+    "benchmark": [],
+    "slots": [],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "audio.cleanup",
+    "label": {
+      "en": "Audio cleanup",
+      "tr": "Ses temizleme"
+    },
+    "description": {
+      "en": "Removing noise and echo and improving voice recordings.",
+      "tr": "Kayıtlardaki gürültü ve yankıyı giderme, sesi iyileştirme."
+    },
+    "modality": "audio",
+    "benchmark": [],
+    "slots": [],
+    "outputTypes": [
+      "audio"
+    ]
+  },
+  {
+    "id": "audio.meeting-notes",
+    "label": {
+      "en": "Meeting notes",
+      "tr": "Toplantı notu"
+    },
+    "description": {
+      "en": "Recording meetings and producing notes and action items.",
+      "tr": "Toplantıyı kaydedip not ve aksiyon maddeleri çıkarma."
+    },
+    "modality": "audio",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "platform",
+        "question": {
+          "en": "Where do your meetings happen?",
+          "tr": "Toplantıların nerede oluyor?"
+        },
+        "options": [
+          {
+            "id": "zoom",
+            "label": {
+              "en": "Zoom",
+              "tr": "Zoom"
+            }
+          },
+          {
+            "id": "meet",
+            "label": {
+              "en": "Google Meet",
+              "tr": "Google Meet"
+            }
+          },
+          {
+            "id": "teams",
+            "label": {
+              "en": "Microsoft Teams",
+              "tr": "Microsoft Teams"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ]
+  },
+  {
+    "id": "music.generate",
+    "label": {
+      "en": "Music generation",
+      "tr": "Müzik üretimi"
+    },
+    "description": {
+      "en": "Generating songs, background music and jingles.",
+      "tr": "Şarkı, fon müziği ve jingle üretme."
+    },
+    "modality": "music",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "vocals",
+        "question": {
+          "en": "With vocals or instrumental?",
+          "tr": "Sözlü mü, enstrümantal mi?"
+        },
+        "options": [
+          {
+            "id": "vocals",
+            "label": {
+              "en": "With vocals",
+              "tr": "Sözlü"
+            }
+          },
+          {
+            "id": "instrumental",
+            "label": {
+              "en": "Instrumental",
+              "tr": "Enstrümantal"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "audio"
+    ]
+  },
+  {
+    "id": "code.assistant-ide",
+    "label": {
+      "en": "Coding assistant (editor)",
+      "tr": "Kod asistanı (editör)"
+    },
+    "description": {
+      "en": "AI help inside your code editor: autocomplete, chat and edits.",
+      "tr": "Kod editörünün içinde yapay zekâ desteği: tamamlama, sohbet, düzenleme."
+    },
+    "modality": "code",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "webdev"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_coding"
+      }
+    ],
+    "slots": [
+      {
+        "id": "editor",
+        "question": {
+          "en": "Which editor do you use?",
+          "tr": "Hangi editörü kullanıyorsun?"
+        },
+        "options": [
+          {
+            "id": "vscode",
+            "label": {
+              "en": "VS Code",
+              "tr": "VS Code"
+            }
+          },
+          {
+            "id": "jetbrains",
+            "label": {
+              "en": "JetBrains",
+              "tr": "JetBrains"
+            }
+          },
+          {
+            "id": "other",
+            "label": {
+              "en": "Other",
+              "tr": "Diğer"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "code"
+    ]
+  },
+  {
+    "id": "code.agent-cli",
+    "label": {
+      "en": "Coding agent (terminal)",
+      "tr": "Kod ajanı (terminal)"
+    },
+    "description": {
+      "en": "An AI agent that works on a codebase from the terminal.",
+      "tr": "Terminalden bir kod tabanı üzerinde çalışan yapay zekâ ajanı."
+    },
+    "modality": "code",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "webdev"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_coding"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "code"
+    ]
+  },
+  {
+    "id": "code.debug",
+    "label": {
+      "en": "Debugging",
+      "tr": "Hata ayıklama"
+    },
+    "description": {
+      "en": "Finding and fixing errors in code.",
+      "tr": "Koddaki hataları bulma ve düzeltme."
+    },
+    "modality": "code",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "webdev"
+      },
+      {
+        "source": "artificialanalysis",
+        "key": "llm_coding"
+      }
+    ],
+    "slots": [],
+    "outputTypes": [
+      "code"
+    ]
+  },
+  {
+    "id": "code.app-builder",
+    "label": {
+      "en": "App builder",
+      "tr": "Uygulama oluşturucu"
+    },
+    "description": {
+      "en": "Building an app by describing it, without writing code.",
+      "tr": "Kod yazmadan, tarif ederek uygulama yapma."
+    },
+    "modality": "code",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "webdev"
+      }
+    ],
+    "slots": [
+      {
+        "id": "platform",
+        "question": {
+          "en": "Web app or mobile app?",
+          "tr": "Web uygulaması mı, mobil uygulama mı?"
+        },
+        "options": [
+          {
+            "id": "web",
+            "label": {
+              "en": "Web",
+              "tr": "Web"
+            }
+          },
+          {
+            "id": "mobile",
+            "label": {
+              "en": "Mobile",
+              "tr": "Mobil"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "code"
+    ]
+  },
+  {
+    "id": "code.website-builder",
+    "label": {
+      "en": "Website builder",
+      "tr": "Web sitesi yapma"
+    },
+    "description": {
+      "en": "Creating a website, with or without coding.",
+      "tr": "Kodlu ya da kodsuz web sitesi yapma."
+    },
+    "modality": "code",
+    "benchmark": [
+      {
+        "source": "lmarena",
+        "key": "webdev"
+      }
+    ],
+    "slots": [
+      {
+        "id": "coding-skill",
+        "question": {
+          "en": "Do you write code?",
+          "tr": "Kod yazıyor musun?"
+        },
+        "options": [
+          {
+            "id": "none",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          },
+          {
+            "id": "developer",
+            "label": {
+              "en": "Yes, I am a developer",
+              "tr": "Evet, geliştiriciyim"
+            }
+          }
+        ],
+        "critical": true
+      }
+    ],
+    "outputTypes": [
+      "code"
+    ]
+  },
+  {
+    "id": "data.spreadsheet-analysis",
+    "label": {
+      "en": "Spreadsheet analysis",
+      "tr": "Tablo analizi"
+    },
+    "description": {
+      "en": "Analyzing Excel or spreadsheet data and answering questions about it.",
+      "tr": "Excel ya da tablo verisini analiz etme ve sorulara cevap bulma."
+    },
+    "modality": "data",
+    "benchmark": [],
+    "slots": [],
+    "outputTypes": [
+      "data",
+      "text"
+    ]
+  },
+  {
+    "id": "data.dashboard",
+    "label": {
+      "en": "Dashboards and BI",
+      "tr": "Dashboard ve BI"
+    },
+    "description": {
+      "en": "Building interactive dashboards and business reports.",
+      "tr": "Etkileşimli dashboard ve iş raporları hazırlama."
+    },
+    "modality": "data",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "ecosystem",
+        "question": {
+          "en": "Does your team use Microsoft 365?",
+          "tr": "Ekibin Microsoft 365 kullanıyor mu?"
+        },
+        "options": [
+          {
+            "id": "yes",
+            "label": {
+              "en": "Yes",
+              "tr": "Evet"
+            }
+          },
+          {
+            "id": "no",
+            "label": {
+              "en": "No",
+              "tr": "Hayır"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "data"
+    ]
+  },
+  {
+    "id": "automation.workflow",
+    "label": {
+      "en": "Workflow automation",
+      "tr": "İş akışı otomasyonu"
+    },
+    "description": {
+      "en": "Connecting apps and automating repetitive tasks.",
+      "tr": "Uygulamaları bağlayıp tekrarlayan işleri otomatikleştirme."
+    },
+    "modality": "automation",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "coding-skill",
+        "question": {
+          "en": "Are you comfortable with a bit of technical setup?",
+          "tr": "Biraz teknik kurulumla uğraşmak senin için sorun mu?"
+        },
+        "options": [
+          {
+            "id": "none",
+            "label": {
+              "en": "I want no-code",
+              "tr": "Kodsuz olsun"
+            }
+          },
+          {
+            "id": "some",
+            "label": {
+              "en": "Some setup is fine",
+              "tr": "Biraz kurulum olur"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "data"
+    ]
+  },
+  {
+    "id": "3d.generate",
+    "label": {
+      "en": "3D generation",
+      "tr": "3D üretimi"
+    },
+    "description": {
+      "en": "Generating 3D models or scenes from text or images.",
+      "tr": "Metin ya da görselden 3D model veya sahne üretme."
+    },
+    "modality": "3d",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "output",
+        "question": {
+          "en": "A single object or a whole scene?",
+          "tr": "Tek bir nesne mi, bütün bir sahne mi?"
+        },
+        "options": [
+          {
+            "id": "object",
+            "label": {
+              "en": "Single object",
+              "tr": "Tek nesne"
+            }
+          },
+          {
+            "id": "scene",
+            "label": {
+              "en": "Scene / world",
+              "tr": "Sahne / dünya"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "3d"
+    ]
+  }
+]
