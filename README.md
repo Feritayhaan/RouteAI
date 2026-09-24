@@ -1,253 +1,190 @@
-# 🚀 RouteAI — Yapay Zeka Navigatörün
+# RouteAI
 
-RouteAI, kullanıcının ne yapmak istediğini doğal dille yazması üzerine en uygun AI aracını veya adım adım iş akışını (workflow) öneren akıllı bir navigasyon platformudur. OpenAI GPT-4o-mini destekli niyet analizi, Upstash vektör veritabanı tabanlı semantik arama ve 80+ araçlık zengin bir veritabanı ile çalışır.
+Ne yapmak istediğini yazarsın; RouteAI sohbet ederek amacını netleştirir, kendi görev taksonomisinden bir görev seçer, katalogdaki ürünleri **RouteAI Skoru** ile sıralar ve en iyi aracı + 2 alternatifi güven seviyesi, fiyat, veri tarihi ve kaynakla önerir. Seçilen araç için prompt rehberinden etkileşimli olarak prompt yazar (iki varyant: güvenli / yaratıcı). İngilizce ve Türkçe.
 
----
+Eski tek sorgu arayüzü (v1, anahtar kelime + niyet analizi) `/classic` altında duruyor. Sohbet ajanı OpenAI'a ulaşamazsa ya da aylık bütçe dolarsa aynı v1 yoluna düşer.
 
-## 🏗️ Mimari Özet
+## Durum (dosyalardan, 2026-09-24)
+
+Bu tablo `data/` ve `evals/results/` altındaki dosyalardan okundu; dosyalar değiştikçe güncellenmeli.
+
+| Ne | Sayı | Kaynak |
+| --- | --- | --- |
+| Görev (task) | 40 | `data/tasks.json` |
+| Ürün | 96 (56 `active`, 40 `retired`) | `data/products.json` |
+| Model (benchmark verisi) | 0 — ilk gece senkronu henüz merge edilmedi | `data/models.json` |
+| Uzman değerlendirmesi | 0 | `data/reviews.json` |
+| Uzman brief taslağı | 30 | `data/briefs.json` |
+| Kendi sinyal kaydı (ürün+görev) | 0 | `data/signals.json` |
+| Aday ürün | 0 | `data/candidates.json` |
+| Prompt rehberi | 10 (10'u taslak, 0'ı gözden geçirilmiş; hepsi KAYNAK GEREKLİ) | `data/prompt-guides/*.md` |
+| Rehbere bağlı ürün | 17 | `data/products.json` → `promptGuide` |
+| `pricingUrl` dolu aktif ürün | 0 | `data/products.json` |
+
+Sonuç: benchmark, uzman ve kendi sinyal verisi olmadığı için **RouteAI Skoru bugün hiçbir ürünü önermiyor** (kanıt kuralı). Katalog dolana kadar sohbet ajanı "yeterli kanıt yok" der ya da v1'e düşer. Ayrıntı: `evals/results/v2-oracle-misses.md`.
+
+## Mimari
 
 ```
-Kullanıcı Sorgusu
-       │
-       ▼
-┌──────────────────────────────────────────────────────┐
-│  1. Niyet Analizi (Intent Parsing)                   │
-│     • OpenAI GPT-4o-mini ile JSON Structured Output  │
-│     • Keyword fallback mekanizması                   │
-│     • Karmaşıklık tespiti (simple / multi-step)      │
-│     • Upstash KV ile intent caching                  │
-└───────────────┬──────────────────┬───────────────────┘
-                │                  │
-        ┌───────▼──────┐   ┌──────▼───────┐
-        │  Simple      │   │  Multi-step  │
-        │  (Tek araç)  │   │  (Workflow)  │
-        └───────┬──────┘   └──────┬───────┘
-                │                  │
-                ▼                  ▼
-┌───────────────────────┐  ┌─────────────────────────┐
-│ 2. Vektör Arama       │  │ 3. Workflow Generator    │
-│    Upstash Vector DB  │  │    Template matching     │
-│    text-embedding-3   │  │    Adım adım araç eşle  │
-│    Keyword fallback   │  │    Prompt önerileri      │
-└───────────┬───────────┘  └────────────┬────────────┘
-            │                           │
-            ▼                           ▼
-┌───────────────────────────────────────────────────────┐
-│  4. Streaming NDJSON Response                         │
-│     • Chunk 1: Ana araç önerisi (anında)              │
-│     • Chunk 2: Alternatifler                          │
-│     • Chunk 3: Debug bilgisi (dev only)               │
-└───────────────────────────────────────────────────────┘
+Tarayıcı (components/chat, lib/i18n)
+   │  NDJSON akışı                         ┌──────────── git'teki katalog (data/*.json) ───────────┐
+   ▼                                       │ tasks · products · models · reviews · signals ·      │
+POST /api/chat  (edge, fra1)               │ briefs · candidates · prompt-guides                   │
+   │  rate limit + aylık token bütçesi     └──────────▲───────────────────────▲───────────────────┘
+   ▼                                                  │ gece PR'ı             │ haftalık/aylık PR
+lib/agent: OpenAI tool calling (en fazla 6 araç)      │                       │
+   ├─ search_catalog ─► lib/catalog/search ─► score.ts (RouteAI Skoru, deterministik)
+   ├─ ask_user        (en fazla 2 soru)               │                       │
+   ├─ get_workflow                                    │                       │
+   └─ build_prompt ──► lib/promptBuilder: extract → plan → generate → validate
+                          (oturum KV'de ps:<id>, 24 saat)
+   hata / bütçe dolu ─► lib/recommendV1 (v1 anahtar kelime yolu)
+
+Kartlar ─► /api/outcome · /api/feedback · /api/events ─► KV (sayaçlar, anonim)
+                                                          │ sadece okuma
+GitHub Actions: nightly-data  (AA + LMArena → models.json; KV → signals.json)  ─┘
+                discover-tools (Show HN + Product Hunt → candidates.json)
+                check-prices   (pricingUrl → products.json önerisi + price-report.md)
 ```
 
-## ⚙️ Teknoloji Yığını
+- Puanı her zaman kod hesaplar; model sadece aracı çağırır ve kartı anlatır. Kartlar modelin metninden değil araç sonucundan çizilir.
+- RouteAI Skoru: `q = (kb·B + ke·E + Σ w·y) / (kb + ke + Σ w)`; kb = 10 (benchmark yüzdelik dilimi), ke = 5 (uzman rubriği), iş sonucu w = 1, karşılaştırma w = 0.5, oy w = 0.3. Benchmark ve uzman verisi yoksa ve kendi gözlem ağırlığı 3'ten azsa ürün önerilmez. Ağırlıklar: `lib/catalog/weights.ts`. Ayrıntı: `docs/ROADMAP-v2.md`.
+- Sponsorluk ya da affiliate bilgisi sıralamaya girmez.
 
-| Katman | Teknoloji |
-|--------|-----------|
-| Frontend | Next.js 16 (App Router), React 19, TailwindCSS 3 |
-| Backend | Next.js API Routes (Edge-ready) |
-| AI | OpenAI GPT-4o-mini, text-embedding-3-small |
-| Vektör DB | Upstash Vector |
-| KV / Cache | Upstash Redis (@vercel/kv) |
-| Validasyon | Zod |
-| Tema | next-themes (light/dark) |
-| Analytics | Vercel Analytics |
+## Veri kaynakları ve lisanslar
 
----
+| Kaynak | Ne için | Nasıl | Not |
+| --- | --- | --- | --- |
+| [Artificial Analysis](https://artificialanalysis.ai) | Model benchmark skorları | `npm run sync:models`, API (`AA_API_KEY`) | Gösterilirken kaynak adı görünür olmalı; kartlar adı `lib/catalog/sources.ts`'ten yazar |
+| [LMArena](https://lmarena.ai) | Arena sıralamaları | Hugging Face datasets-server, `lmarena-ai/leaderboard-dataset` | Aynı atıf şartı |
+| [Hacker News Algolia API](https://hn.algolia.com/api) | Aday ürün keşfi (Show HN) | `npm run discover:tools` | Sadece ad, URL, tarih ve HN bağlantısı saklanır |
+| [Product Hunt API](https://api.producthunt.com/v2/docs) | Aday ürün keşfi | `PRODUCT_HUNT_TOKEN` varsa | Aynı |
+| Ürünlerin kendi fiyat sayfaları | Fiyat kontrolü | `npm run check:prices` | Öneri + rapor PR ile gelir; fiyat PR merge edilince geçerli |
+| Kendi sinyallerimiz | İş sonucu, karşılaştırma, oy | KV → `npm run aggregate:signals` | Anonim; mesaj metni ve IP saklanmaz |
 
-## 🚀 Kurulum ve Çalıştırma
+Her sayı `data/` altında kaynağı ve tarihiyle durur. Kaynaklarının lisans metinleri bu repoda kopyalanmadı; kullanım koşulları lansmandan önce kaynakların kendi sayfalarından doğrulanmalı (bkz. `docs/LAUNCH-CHECKLIST.md`).
 
-### Gereksinimler
-
-- Node.js 18+
-- npm veya yarn
-- OpenAI API anahtarı
-- Upstash Vector + KV hesabı
-
-### Kurulum
+## Kurulum
 
 ```bash
-# 1. Bağımlılıkları yükle
 npm install
-
-# 2. Ortam değişkenlerini ayarla
-cp .env.local.example .env.local   # veya mevcut .env.local dosyasını düzenle
-
-# 3. Geliştirme sunucusunu başlat
-npm run dev
-
-# 4. (İlk kurulumda) Araçları KV'ye yaz (VECTOR_SEARCH_ENABLED=true ise vektör indeksini de doldurur)
-curl -X POST -H "x-admin-key: YOUR_ADMIN_SECRET" http://localhost:3000/api/admin/seed
+cp .env.local.example .env.local   # değerleri doldur
+npm run dev                         # http://localhost:3000
 ```
 
-Tarayıcıda [http://localhost:3000](http://localhost:3000) adresine git.
+Sohbet için en az `OPENAI_API_KEY` ve KV (`KV_REST_API_URL`, `KV_REST_API_TOKEN`) gerekir; rate limiter KV olmadan isteği reddeder (429).
 
----
+## Ortam değişkenleri
 
-## 🔑 Environment Variables
-
-`.env.local` dosyasında aşağıdaki değişkenleri tanımla:
+`.env.local.example` ile birebir aynı liste ve sıra.
 
 | Değişken | Açıklama | Zorunlu |
-|----------|----------|---------|
-| `OPENAI_API_KEY` | OpenAI API anahtarı (GPT-4o-mini + embeddings) | ✅ |
-| `UPSTASH_VECTOR_REST_URL` | Upstash Vector veritabanı URL'i | ✅ |
-| `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector erişim tokeni | ✅ |
-| `KV_REST_API_URL` | Upstash Redis REST API URL'i | ✅ |
-| `KV_REST_API_TOKEN` | Upstash Redis erişim tokeni | ✅ |
-| `KV_REST_API_READ_ONLY_TOKEN` | Upstash Redis salt-okunur token | ✅ |
-| `KV_URL` | Redis bağlantı URL'i (rediss://) | ✅ |
-| `REDIS_URL` | Redis bağlantı URL'i (alternatif) | ⬜ |
-| `ADMIN_SECRET` | Admin endpoint'leri için gizli anahtar | ✅ |
-| `NEXT_PUBLIC_BASE_URL` | Uygulama base URL'i | ⬜ |
-| `VECTOR_SEARCH_ENABLED` | `true` ise Upstash Vector araması açılır; boş/tanımsız = kapalı (anahtar kelime araması). `UPSTASH_VECTOR_*` sadece bu açıkken kullanılır | ⬜ |
-| `OPENAI_MODEL` | Sohbet ajanının (`/api/chat`) OpenAI modeli. Tanımsızsa `gpt-4o-mini` (`lib/agent/config.ts` → `DEFAULT_OPENAI_MODEL`) | ⬜ |
-| `OPENAI_MONTHLY_TOKEN_BUDGET` | Aylık token bütçesi (sohbet ajanı). Kullanım KV'de `usage:<YYYY-MM>`; aşılınca v1 anahtar kelime yoluna düşülür. Tanımsız = sınır yok | ⬜ |
-| `AA_API_KEY` | Artificial Analysis API anahtarı, gece model senkronu (`npm run sync:models`). Yoksa AA atlanır, LMArena yine çalışır | ⬜ |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | Sohbet ajanı, prompt oluşturucu, v1 niyet analizi; workflow'larda keşif sınıflandırması ve fiyat çıkarımı | ✅ |
+| `OPENAI_MODEL` | Sohbet ajanının modeli. Boşsa `gpt-4o-mini` (`lib/agent/config.ts`) | ⬜ |
+| `OPENAI_PROMPT_MODEL` | Prompt oluşturucunun modeli. Boşsa `OPENAI_MODEL`, o da boşsa `gpt-4o-mini` | ⬜ |
+| `OPENAI_MONTHLY_TOKEN_BUDGET` | Aylık token bütçesi (sohbet + prompt oluşturucu). Kullanım KV'de `usage:<YYYY-MM>` ve `usage:day:<YYYY-MM-DD>`; aşılınca v1'e düşülür. Boş = sınır yok | ⬜ |
+| `UPSTASH_VECTOR_REST_URL` | Upstash Vector URL'i (sadece `VECTOR_SEARCH_ENABLED=true` iken) | ⬜ |
+| `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector token'ı (aynı koşul) | ⬜ |
+| `VECTOR_SEARCH_ENABLED` | `true` ise v1'de vektör araması; boş = anahtar kelime araması | ⬜ |
+| `KV_REST_API_URL` | Upstash Redis REST URL'i (rate limit, oturumlar, sinyaller, analitik) | ✅ |
+| `KV_REST_API_TOKEN` | Upstash Redis yazma token'ı | ✅ |
+| `KV_REST_API_READ_ONLY_TOKEN` | Salt okunur token; `aggregate:signals` bunu tercih eder | ⬜ |
+| `KV_URL` | Vercel KV entegrasyonu ekler; kod kullanmaz | ⬜ |
+| `REDIS_URL` | Vercel KV entegrasyonu ekler; kod kullanmaz | ⬜ |
+| `ADMIN_SECRET` | `/api/admin/*` ve `/api/update-tools`; sadece `x-admin-key` başlığıyla | ✅ |
+| `AA_API_KEY` | Artificial Analysis API; boşsa senkron AA'yı atlar, LMArena yine çalışır | ⬜ |
+| `PRODUCT_HUNT_TOKEN` | Keşif; boşsa sadece Hacker News | ⬜ |
+| `NEXT_PUBLIC_BASE_URL` | Taban URL (metadata); boşsa `https://www.routeai.chat` | ⬜ |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Gizlilik sayfasındaki iletişim adresi; boşsa satır çıkmaz | ⬜ |
 
-Değerleri boş bir şablon: [`.env.local.example`](.env.local.example).
+## Scriptler
 
----
+| Komut | Ne yapar |
+| --- | --- |
+| `npm run dev` / `build` / `start` | Next.js (build öncesi `build:guides` çalışır) |
+| `npm run lint` | ESLint |
+| `npm test` | Birim testleri (`node:test`, `lib/__tests__/*.test.ts`) |
+| `npm run validate:catalog` | Rehberleri derler, `data/` altındaki tüm katalog dosyalarını Zod + çapraz kontrollerle doğrular |
+| `npm run build:guides` | `data/prompt-guides/*.md` → `data/prompt-guides.json` |
+| `npm run eval -- --recommender=v1\|v2-oracle\|v2` | Altın set değerlendirmesi → `evals/results/<tarih>-<recommender>.json` |
+| `npm run eval:prompts` | Prompt oluşturucu senaryoları (OpenAI gerekir) |
+| `npm run eval:simulate` | RouteAI Skoru'nun sentetik veriyle davranışı (gerçek veri değil) |
+| `npm run sync:models` | Artificial Analysis + LMArena → `data/models.json` + `data/sync-report.md` |
+| `npm run aggregate:signals` | KV'den iş sonucu, karşılaştırma ve oyları **okur** → `data/signals.json` + `data/signals-anomalies.md` |
+| `npm run discover:tools` | Show HN + Product Hunt → `data/candidates.json` + `data/discovery-report.md` |
+| `npm run check:prices` | Aktif ürünlerin `pricingUrl` sayfaları → `data/products.json`'da fiyat önerisi + `data/price-report.md` |
+| `npm run validate:db` / `bench` / `migrate:pricing` | v1 veritabanı (`lib/tools-database.json`) araçları |
 
-## 📡 API Endpoint Dokümantasyonu
+## GitHub Actions
 
-### `POST /api/recommend`
+Hepsi değişiklik varsa ayrı bir dala commit atar ve PR açar; merge kararı insanın. Repo ayarında *Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"* açık olmalı.
 
-Kullanıcının doğal dil sorgusunu analiz ederek uygun AI aracı veya workflow önerir.
+| Workflow | Zaman (UTC) | Secret'lar |
+| --- | --- | --- |
+| `nightly-data` (`sync-models.yml`) | her gün 03:00 | `AA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_READ_ONLY_TOKEN` |
+| `discover-tools` | pazartesi 04:00 | `OPENAI_API_KEY`, `PRODUCT_HUNT_TOKEN` (ikisi de isteğe bağlı) |
+| `check-prices` | ayın 1'i 05:00 | `OPENAI_API_KEY` |
 
-**Request Body:**
-```json
-{
-  "prompt": "Çizgi roman oluşturmak istiyorum",
-  "pricingFilter": "all"  // Opsiyonel: "all" | "free" | "paid"
-}
-```
+Adaylar (`status: candidate`) hiçbir zaman önerilmez; ürün `data/products.json`'a `active` olarak elle taşınınca girer.
 
-**Response (Streaming NDJSON):**
-```
-Content-Type: application/x-ndjson
+## API
 
-// Chunk 1 - Ana öneri
-{"chunk":"main","type":"simple","category":"gorsel","main":{"toolName":"Midjourney v7","description":"...","url":"...","pricing":{...},"strength":9.8,"why":"..."}}
+| Uç | Açıklama | Rate limit |
+| --- | --- | --- |
+| `POST /api/chat` | Sohbet ajanı, NDJSON akışı (`text`, `card`, `done`, `error`) | 20/dk, 100/saat |
+| `POST /api/prompt/answer` | Prompt soru kartının cevapları → PromptCard | 30/dk, 200/saat |
+| `POST /api/prompt/refine` | Hazır buton / varsayım değişikliği / serbest talimat → yeni versiyon | 30/dk, 200/saat |
+| `POST /api/outcome` | "İşini gördü mü?" ve karşılaştırma cevabı (oturum+ürün+görev başına tek kayıt) | 20/dk, 120/saat |
+| `POST /api/feedback` | Öneri oyu (oturum+ürün+görev başına son oy geçerli; v1 alanları da kabul) | 20/dk, 120/saat |
+| `POST /api/events` | Anonim olay sayaçları | 60/dk, 600/saat |
+| `POST /api/recommend` | v1 önerisi (`/classic`) | 10/dk, 60/saat |
+| `GET /api/admin/stats` | Son 30 gün ve ROADMAP metrikleri. Yerelde `?sample=1` sentetik veri (üretimde kapalı) | `x-admin-key` |
+| `GET /api/admin/feedback` | Son geri bildirimler | `x-admin-key` |
+| `POST /api/admin/seed` | v1 araçlarını KV'ye (ve açıksa vektöre) yazar — yıkıcı | `x-admin-key` |
 
-// Chunk 2 - Alternatifler
-{"chunk":"alternatives","alternatives":[{"toolName":"DALL-E 3","description":"...","url":"...","pricing":{...},"strength":9.5}]}
-```
+## Eval nasıl çalışır
 
-**Workflow Response (tek seferlik JSON):**
-```json
-{
-  "type": "workflow",
-  "category": "gorsel",
-  "workflow": {
-    "name": "Çizgi Roman Oluşturma",
-    "totalSteps": 5,
-    "estimatedDuration": "3-5 saat",
-    "steps": [...]
-  }
-}
-```
+- `evals/golden.jsonl`: 40 sorgu (20 tr, 20 en; taslak, `evals/REVIEW.md`). Her satırda beklenen görev, kabul edilebilir ürünler ve netleştirme gerekip gerekmediği.
+- `npm run eval -- --recommender=…` KV ve vektör değişkenlerini süreçten siler; `OPENAI_API_KEY` yoksa OpenAI'a giden satırlar `skipped` sayılır. Metrikler `evals/metrics.mjs`: `taskMatch`, `top1Hit`, `top3Hit`, `clarifyRate` (+ gerekli/gereksiz ayrımı), ortalama gecikme.
+- `v2-oracle`: görevi golden'dan doğru kabul eder, sadece RouteAI Skoru sıralamasını ölçer. `v2`: tam ajan (OpenAI gerekir).
 
-**Hata Durumları:**
-| Status | Açıklama |
-|--------|----------|
-| `200` | Başarılı veya LOW_CONFIDENCE (önerilerle) |
-| `400` | Validasyon hatası veya parse hatası |
-| `429` | Rate limit aşıldı |
-| `500` | Sunucu hatası |
+Son koşular (2026-09-24, OpenAI anahtarı olmadan):
 
----
+| Recommender | Değerlendirilen | taskMatch | top3Hit | clarifyRate | Dosya |
+| --- | --- | --- | --- | --- | --- |
+| v1 | 15/40 (25 skipped) | n/a | 13/15 = %86.7 | 0/15 | `evals/results/2026-09-24-v1.json` |
+| v2-oracle | 40/40 | n/a (görev verili) | 0/39 = %0 | 0/40 | `evals/results/2026-09-24-v2-oracle.json` |
+| v2 | koşulmadı (anahtar yok) | — | — | — | — |
+| eval:prompts | 0/20 (20 skipped) | — | — | — | `evals/results/2026-09-24-prompts.json` |
 
-> Admin uçları anahtarı **yalnızca** `x-admin-key` başlığından okur; `?key=` sorgu parametresi desteklenmez (URL'deki sır loglara ve tarayıcı geçmişine sızar).
+v1 sayıları sadece kural tabanlı kademede çözülen kısa sorguları kapsar ve iyimserdir. v2-oracle'ın %0'ı katalogda benchmark, uzman ve sinyal verisi olmamasından.
 
-### `GET /api/update-tools`
+## Gizlilik
 
-Mevcut araç sayısını ve kategori dağılımını döndürür.
+`/privacy` (en/tr). Saklanan: anonim `sessionId` (sunucuda sadece hash'i), günlük olay sayaçları, oylar ve iş sonucu cevapları. Sohbet mesajları saklanmaz ve loglanmaz; IP sadece rate limit için en fazla yaklaşık 1 saat tutulur. İstisnalar: prompt oluşturucu oturumu (amaç, talimatlar, üretilen promptlar) 24 saat; `/classic`'te oy verilirse arama metni oyla birlikte saklanır. Sohbet metni yanıt üretmek için OpenAI'a gönderilir. Kodda nasıl doğrulandığı: `docs/privacy-verification.md`.
 
-**Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
-
-### `POST /api/update-tools`
-
-Şimdilik `501 Not Implemented` döner; araç keşfi P8'de aday ürün akışıyla gelecek.
-
-**Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
-
-### `POST /api/admin/seed`
-
-`lib/tools-database.json`'daki araçları KV'ye yazar; `VECTOR_SEARCH_ENABLED=true` ise vektör indeksini sıfırlayıp embedding'lerle yeniden doldurur. Yıkıcı bir iş olduğu için yalnızca POST ile çalışır. İlk kurulumda veya veritabanı sıfırlandığında çalıştırılmalıdır.
-
-**Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
-
-### `GET /api/admin/feedback`
-
-Son 100 geri bildirim kaydını döndürür.
-
-**Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
-
----
-
-## 📂 Proje Yapısı
+## Proje yapısı (v2 parçaları)
 
 ```
-RouteAI/
-├── app/
-│   ├── api/
-│   │   ├── recommend/route.ts    # Ana öneri API'si (streaming)
-│   │   ├── update-tools/route.ts # Araç güncelleme
-│   │   └── admin/seed/route.ts   # Veritabanı seed
-│   ├── layout.tsx                # Root layout
-│   ├── page.tsx                  # Ana sayfa
-│   └── globals.css               # Tailwind + tema
-├── components/
-│   ├── HomeClient.tsx            # Ana istemci bileşeni
-│   ├── WorkflowDisplay.tsx       # Workflow gösterimi
-│   ├── SimpleRecommendationDisplay.tsx
-│   └── ui/                       # Temel UI bileşenleri
-├── lib/
-│   ├── intent/                   # Niyet analizi modülü
-│   │   ├── parser.ts             # OpenAI + keyword fallback
-│   │   ├── cache.ts              # KV tabanlı intent cache
-│   │   └── types.ts              # ParsedIntent, IntentParsingError
-│   ├── workflow/                 # Workflow motoru
-│   │   ├── workflowGenerator.ts  # Workflow oluşturucu
-│   │   ├── workflowTemplates.ts  # 20+ önceden tanımlı şablon
-│   │   └── workflowTypes.ts      # Tip tanımları
-│   ├── tools-database.json       # 80+ AI araç veritabanı
-│   ├── toolsService.ts           # 3 katmanlı cache + CRUD
-│   ├── vectorService.ts          # Upstash Vector arama
-│   ├── rateLimit.ts              # Sliding window rate limiter
-│   └── openai.ts                 # OpenAI client
-└── types/
-    └── shims.d.ts                # Tip shim'leri
+app/
+  page.tsx                 sohbet (components/chat)
+  classic/                 v1 arayüzü
+  privacy/                 gizlilik sayfası
+  api/chat, api/prompt/*, api/outcome, api/feedback, api/events, api/admin/stats
+lib/
+  agent/                   ajan döngüsü, araçlar, bütçe, v1'e düşüş
+  catalog/                 şema, yükleme, RouteAI Skoru, uygunluk, arama
+  promptBuilder/           rehberler, extract/plan/generate/validate, oturum
+  analytics/               olaylar, KV sayaçları, stats
+  signals/                 iş sonucu / karşılaştırma / oy kayıtları
+  i18n/                    en + tr sözlükleri, dil seçimi
+data/                      katalog (git'te JSON) ve raporlar
+scripts/                   sync, aggregate, discover, prices, validate, build-guides
+evals/                     altın set, metrikler, sonuçlar
+docs/                      ROADMAP-v2, LAUNCH-CHECKLIST, rehber gözden geçirme, elle test
 ```
 
----
-
-## 🤝 Katkı Rehberi
-
-1. Bu repo'yu fork'la
-2. Feature branch oluştur: `git checkout -b feature/yeni-ozellik`
-3. Değişikliklerini commit'le: `git commit -m 'feat: yeni özellik ekle'`
-4. Branch'ini push'la: `git push origin feature/yeni-ozellik`
-5. Pull Request aç
-
-### Geliştirme Kuralları
-
-- TypeScript strict mode kullan
-- Her API değişikliğinde Zod şemasını güncelle
-- Yeni araç eklerken `tools-database.json` formatına uy
-- Commit mesajlarında [Conventional Commits](https://www.conventionalcommits.org/) kullan
-
-### Test
-
-```bash
-npm run test
-npm run lint
-npm run eval -- --recommender=v1   # altın set (evals/golden.jsonl); sonuç evals/results/'a yazılır
-```
-
----
-
-## 📄 Lisans
+## Lisans
 
 Bu proje özel lisans altındadır. Ticari kullanım için iletişime geçin.
