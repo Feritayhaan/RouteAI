@@ -28,13 +28,14 @@ const DEFAULT_LABELS: Labels = {
   thanks: "Teşekkürler 🙏",
 }
 
-export default function FeedbackButtons(props: Target & { labels?: Labels }) {
+export default function FeedbackButtons(props: Target & { labels?: Labels; onVote?: (vote: Vote) => void }) {
   const [voted, setVoted] = useState<Vote | null>(null)
   const labels = props.labels ?? DEFAULT_LABELS
 
   const sendVote = (vote: Vote) => {
     if (voted) return
     setVoted(vote)
+    props.onVote?.(vote)
 
     const body = props.query !== undefined
       ? { query: props.query, toolName: props.toolName, vote }

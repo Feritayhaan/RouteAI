@@ -1,6 +1,8 @@
 "use client"
 
+import { useEffect } from "react"
 import { AlertTriangle, ExternalLink, Info } from "lucide-react"
+import { trackEvent } from "@/lib/analytics/client"
 import type { RecommendationCard as Card, RecommendationItem } from "@/lib/agent/cards"
 import { format, priceText, reasonText } from "@/lib/i18n"
 import FeedbackButtons from "@/components/FeedbackButtons"
@@ -93,6 +95,11 @@ function ShareBar({ item }: { item: RecommendationItem }) {
 
 export default function RecommendationCard({ card }: { card: Card }) {
   const { dict, sessionId } = useChatContext()
+  const shown = card.items.length > 0 && !card.noEvidence
+
+  useEffect(() => {
+    if (shown) trackEvent("recommendation_shown", card.taskId ? { taskId: card.taskId } : {})
+  }, [shown, card.taskId])
 
   if (card.noEvidence || card.items.length === 0) {
     return (
@@ -173,6 +180,7 @@ export default function RecommendationCard({ card }: { card: Card }) {
           productId={main.productId}
           toolName={main.name}
           labels={{ question: dict.feedback.question, up: dict.feedback.up, down: dict.feedback.down, thanks: dict.feedback.thanks }}
+          onVote={() => trackEvent("feedback", { taskId: card.taskId! })}
         />
       )}
     </div>

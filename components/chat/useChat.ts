@@ -7,6 +7,7 @@ import type { ChatEvent } from "@/lib/agent/cards"
 import { createNdjsonParser } from "@/lib/chat/ndjson"
 import { toApiMessages, type UIMessage } from "@/lib/chat/history"
 import type { Locale } from "@/lib/i18n"
+import { trackEvent } from "@/lib/analytics/client"
 
 export type AssistantStatus = "streaming" | "done" | "error" | "stopped" | "rate_limited"
 
@@ -59,6 +60,7 @@ export function useChat({ locale, sessionId }: { locale: Locale; sessionId: stri
 
     const user: ChatMessage = { id: newId(), role: "user", parts: [{ type: "text", text: trimmed }] }
     const assistant: ChatMessage = { id: newId(), role: "assistant", parts: [], status: "streaming" }
+    if (messagesRef.current.length === 0) trackEvent("chat_start")
     const history = [...messagesRef.current.filter((m) => m.status !== "error" && m.status !== "rate_limited"), user]
     setMessages((prev) => [...prev, user, assistant])
     setBusy(true)

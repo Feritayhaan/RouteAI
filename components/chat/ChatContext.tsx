@@ -9,14 +9,20 @@ export interface ToolOpen {
   taskId: string
 }
 
+export interface CopiedPrompt {
+  promptSessionId: string
+  guideId: string
+  guideVersion: number
+}
+
 export interface ChatContextValue {
   locale: Locale
   dict: Dictionary
   sessionId: string
   /** Kullanıcı bir aracı açtı: iş sonucu sorusu için kaydedilir. */
   onToolOpen: (tool: ToolOpen) => void
-  /** Prompt kopyalandı: iş sonucu kaydı bu prompt oturumuna bağlanır. */
-  onPromptCopied: (promptSessionId: string) => void
+  /** Prompt kopyalandı: iş sonucu kaydı bu prompt oturumuna ve rehber sürümüne bağlanır. */
+  onPromptCopied: (copied: CopiedPrompt) => void
   /** Kart içinden kullanıcı mesajı gönderir (soru kartı cevabı). */
   send: (text: string) => void
   busy: boolean

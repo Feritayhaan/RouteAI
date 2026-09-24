@@ -8,7 +8,8 @@ import { getSessionId } from "@/lib/chat/session"
 import { localStore, sessionStore } from "@/lib/chat/storage"
 import { dueOutcomePrompt, markOutcomeAsked, recordToolClick, type OutcomePrompt } from "@/lib/chat/outcomes"
 import ThemeToggle from "@/components/ThemeToggle"
-import { ChatContext, type ChatContextValue, type ToolOpen } from "./ChatContext"
+import { trackEvent } from "@/lib/analytics/client"
+import { ChatContext, type ChatContextValue, type CopiedPrompt, type ToolOpen } from "./ChatContext"
 import { useChat } from "./useChat"
 import MessageBubble from "./MessageBubble"
 import OutcomeCard from "./OutcomeCard"
@@ -22,7 +23,7 @@ export default function ChatShell({ locale }: { locale: Locale }) {
   const [outcome, setOutcome] = useState<OutcomePrompt | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const lastPromptSession = useRef<string | undefined>(undefined)
+  const lastPrompt = useRef<CopiedPrompt | undefined>(undefined)
 
   // İş sonucu sorusu: sonraki ziyarette hemen, sekmeye dönüşte ≥ 2 dk sonra.
   const checkOutcome = useCallback((requireAway: boolean) => {
@@ -50,11 +51,12 @@ export default function ChatShell({ locale }: { locale: Locale }) {
   }, [messages, outcome])
 
   const onToolOpen = useCallback((tool: ToolOpen) => {
-    recordToolClick(localStore(), { ...tool, clickedAt: Date.now(), ...(lastPromptSession.current ? { promptSessionId: lastPromptSession.current } : {}) })
+    trackEvent("tool_click", { taskId: tool.taskId })
+    recordToolClick(localStore(), { ...tool, clickedAt: Date.now(), ...(lastPrompt.current ?? {}) })
   }, [])
 
-  const onPromptCopied = useCallback((promptSessionId: string) => {
-    lastPromptSession.current = promptSessionId
+  const onPromptCopied = useCallback((copied: CopiedPrompt) => {
+    lastPrompt.current = copied
   }, [])
 
   const ctx: ChatContextValue = useMemo(
@@ -181,6 +183,8 @@ export default function ChatShell({ locale }: { locale: Locale }) {
               )}
             </form>
             <p className="mx-auto w-full max-w-3xl px-4 pb-2 text-center text-[11px] text-muted-foreground">
+              <a href={`/privacy?lang=${locale}`} className="underline underline-offset-2 hover:text-foreground">{dict.home.privacy}</a>
+              {" · "}
               <a href="/classic" className="underline underline-offset-2 hover:text-foreground">{dict.home.classic}</a>
             </p>
           </div>

@@ -223,7 +223,7 @@ describe('bütçe ve v1 yedek yolu', () => {
     const s = store(0);
     const { emit } = collect();
     await handleChat({ messages: [user('hi')], locale: 'en' }, { client, model: 'm', tasks, store: s, timeoutMs: 1000, search, log: () => {} }, emit);
-    assert.deepStrictEqual(s.added, [42]);
+    assert.deepStrictEqual(s.added, [42, 42]); // aylık + günlük sayaç
   });
 
   it('v1 yedek kartı LLM çağırmaz ve puansızdır', async () => {

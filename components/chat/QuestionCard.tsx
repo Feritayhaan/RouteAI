@@ -1,6 +1,7 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useEffect, useId, useState } from "react"
+import { trackEvent } from "@/lib/analytics/client"
 import type { QuestionCard as Card } from "@/lib/agent/cards"
 import { useChatContext } from "./ChatContext"
 
@@ -12,6 +13,10 @@ export default function QuestionCard({ card, active }: { card: Card; active: boo
   const [showOther, setShowOther] = useState(false)
   const inputId = useId()
   const disabled = !active || busy || answered !== null
+
+  useEffect(() => {
+    trackEvent("clarify_shown")
+  }, [])
 
   const answer = (text: string) => {
     if (disabled || !text.trim()) return

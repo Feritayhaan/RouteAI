@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { trackEvent } from "@/lib/analytics/client"
 import { format } from "@/lib/i18n"
 import type { ToolClick } from "@/lib/chat/outcomes"
 import { OUTCOME_TAGS } from "@/lib/validations/outcome"
@@ -15,8 +16,13 @@ export default function OutcomeCard({ click, onDone }: { click: ToolClick; onDon
   const [tags, setTags] = useState<string[]>([])
   const [sent, setSent] = useState(false)
 
+  useEffect(() => {
+    trackEvent("outcome_shown", { taskId: click.taskId })
+  }, [click.taskId])
+
   const submit = (a: Answer, t: string[]) => {
     setSent(true)
+    trackEvent("outcome_answered", { taskId: click.taskId })
     onDone?.()
     fetch("/api/outcome", {
       method: "POST",
@@ -29,6 +35,7 @@ export default function OutcomeCard({ click, onDone }: { click: ToolClick; onDon
         answer: a,
         tags: t,
         ...(click.promptSessionId ? { promptSessionId: click.promptSessionId } : {}),
+        ...(click.guideId && click.guideVersion ? { guideId: click.guideId, guideVersion: click.guideVersion } : {}),
       }),
     }).catch(() => {})
   }

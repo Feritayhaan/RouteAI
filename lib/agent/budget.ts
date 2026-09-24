@@ -26,6 +26,11 @@ export function usageKey(now: number = Date.now()): string {
   return `usage:${new Date(now).toISOString().slice(0, 7)}`;
 }
 
+/** Günlük kullanım (admin stats'taki "günlük token kullanımı"). */
+export function dailyUsageKey(now: number = Date.now()): string {
+  return `usage:day:${new Date(now).toISOString().slice(0, 10)}`;
+}
+
 /** OPENAI_MONTHLY_TOKEN_BUDGET; tanımsız ya da geçersizse null (sınır yok). */
 export function monthlyTokenBudget(): number | null {
   const raw = process.env.OPENAI_MONTHLY_TOKEN_BUDGET?.trim();
@@ -51,6 +56,7 @@ export async function recordUsage(store: UsageStore, tokens: number, now: number
   if (tokens <= 0) return;
   try {
     await store.add(usageKey(now), tokens);
+    await store.add(dailyUsageKey(now), tokens);
   } catch (error) {
     console.warn('[budget] kullanım yazılamadı:', error instanceof Error ? error.message : String(error));
   }

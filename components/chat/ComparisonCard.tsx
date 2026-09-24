@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { trackEvent } from "@/lib/analytics/client"
 import { format } from "@/lib/i18n"
 import type { ToolClick } from "@/lib/chat/outcomes"
 import { useChatContext } from "./ChatContext"
@@ -10,8 +11,13 @@ export default function ComparisonCard({ taskId, a, b, onDone }: { taskId: strin
   const { dict, sessionId } = useChatContext()
   const [sent, setSent] = useState(false)
 
+  useEffect(() => {
+    trackEvent("outcome_shown", { taskId })
+  }, [taskId])
+
   const pick = (winner: string) => {
     setSent(true)
+    trackEvent("comparison_answered", { taskId })
     onDone?.()
     fetch("/api/outcome", {
       method: "POST",

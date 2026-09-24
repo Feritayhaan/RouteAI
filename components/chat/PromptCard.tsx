@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react"
 import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, Sparkles } from "lucide-react"
 import type { PromptCard as Card } from "@/lib/agent/cards"
 import { format } from "@/lib/i18n"
-import { trackEvent } from "@/lib/analytics"
+import { trackEvent } from "@/lib/analytics/client"
 import { refinePrompt, type RefineRequest } from "@/lib/chat/promptApi"
 import { useChatContext } from "./ChatContext"
 
@@ -62,14 +62,14 @@ export default function PromptCard({ card: initial }: { card: Card }) {
   useEffect(() => {
     if (tracked.current.has(card.versionN)) return
     tracked.current.add(card.versionN)
-    trackEvent("prompt_generated", { guideId: card.guideId, guideVersion: card.guideVersion, filledBy: card.filledBy })
+    trackEvent("prompt_generated", { guideId: card.guideId, guideVersion: card.guideVersion })
   }, [card])
 
   const refine = async (action: RefineRequest, refinementId: string) => {
     if (loading) return
     setLoading(true)
     setError(null)
-    trackEvent("prompt_refined", { guideId: card.guideId, refinementId })
+    trackEvent("prompt_refined", { guideId: card.guideId, guideVersion: card.guideVersion, refinementId })
     const result = await refinePrompt(card.promptSessionId, action)
     setLoading(false)
     if ("error" in result) {
@@ -158,8 +158,8 @@ export default function PromptCard({ card: initial }: { card: Card }) {
           <CopyPromptButton
             text={current.prompt}
             onCopied={() => {
-              onPromptCopied(card.promptSessionId)
-              trackEvent("prompt_copied", { guideId: card.guideId, guideVersion: card.guideVersion, variant: current.id, versionN: card.versionN })
+              onPromptCopied({ promptSessionId: card.promptSessionId, guideId: card.guideId, guideVersion: card.guideVersion })
+              trackEvent("prompt_copied", { guideId: card.guideId, guideVersion: card.guideVersion, variant: current.id })
             }}
           />
           {card.productUrl && (
