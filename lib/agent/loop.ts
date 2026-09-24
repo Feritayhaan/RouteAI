@@ -130,7 +130,9 @@ export async function runAgent(input: AgentInput, deps: AgentDeps, emit: (e: Cha
         questionsAsked,
         maxQuestions: MAX_QUESTIONS,
         buildPrompt: deps.buildPrompt,
+        conversation: history.map((m) => ({ role: m.role, content: m.content })),
       });
+      if (exec.tokens) usage.totalTokens += exec.tokens;
       if (exec.taskId) taskId = exec.taskId;
       if (exec.card) pushCard(exec.card);
       if (exec.endTurn) {

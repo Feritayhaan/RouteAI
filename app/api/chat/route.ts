@@ -8,6 +8,7 @@ import { openAIChatClient } from "@/lib/agent/client";
 import { AGENT_TIMEOUT_MS, agentModel } from "@/lib/agent/config";
 import { kvUsageStore } from "@/lib/agent/budget";
 import type { ChatEvent } from "@/lib/agent/cards";
+import { makeBuildPromptTool } from "@/lib/promptBuilder/agentTool";
 
 // Sohbet ajanı: NDJSON akışı. Olaylar: text | card | done | error.
 // Akış mantığı lib/agent/handler.ts'te (OpenAI hatası / zaman aşımı / bütçe
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
           tasks: loadCatalog().tasks,
           store: kvUsageStore(),
           timeoutMs: AGENT_TIMEOUT_MS,
+          buildPrompt: makeBuildPromptTool(),
         },
         emit
       );

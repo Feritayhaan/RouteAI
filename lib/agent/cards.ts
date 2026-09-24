@@ -50,21 +50,61 @@ export const questionCardSchema = z.object({
 });
 export type QuestionCard = z.infer<typeof questionCardSchema>;
 
-/** P7'de dolacak; P6'da mock veriyle çizilir. */
+/** Prompt oluşturucunun (P7) kartı: iki varyant, varsayımlar, iyileştirmeler. */
 export const promptCardSchema = z.object({
   type: z.literal('prompt'),
+  promptSessionId: z.string(),
   productId: z.string(),
   productName: z.string(),
   productUrl: z.string().url().optional(),
   guideId: z.string(),
   guideVersion: z.number().int(),
+  /** Rehber henüz gözden geçirilmedi ("Taslak rehber"). */
   draft: z.boolean(),
-  promptSessionId: z.string().optional(),
-  prompt: z.string(),
-  settings: z.array(z.object({ key: z.string(), value: z.string() })),
+  versionN: z.number().int().positive(),
+  variants: z.array(z.object({
+    id: z.enum(['safe', 'creative']),
+    prompt: z.string(),
+    negativePrompt: z.string().nullable(),
+    settings: z.array(z.object({ key: z.string(), value: z.string() })),
+    validation: z.object({ status: z.enum(['passed', 'unchecked']), errors: z.array(z.string()) }),
+  })).min(1),
+  /** Kullanıcının söylemediği her şey; tıklanınca seçenekler açılır. */
+  assumptions: z.array(z.object({
+    slotId: z.string(),
+    value: z.string(),
+    why: z.string(),
+    question: z.string(),
+    options: z.array(z.object({ id: z.string(), label: z.string(), value: z.string() })),
+  })),
+  refinements: z.array(z.object({
+    id: z.string(),
+    label: z.string(),
+    kind: z.enum(['guide', 'suggested']),
+    slotId: z.string().nullable(),
+    value: z.string().nullable(),
+    instruction: z.string().nullable(),
+  })),
   howToUse: z.array(z.string()),
-}).passthrough();
+  filledBy: z.object({ user: z.number(), inferred: z.number(), default: z.number() }),
+  refinementsLeft: z.number().int().nonnegative(),
+});
 export type PromptCard = z.infer<typeof promptCardSchema>;
+
+/** Prompt için eksik bilgiler: tek kart, en fazla 3 soru. */
+export const promptQuestionCardSchema = z.object({
+  type: z.literal('prompt_question'),
+  promptSessionId: z.string(),
+  guideId: z.string(),
+  productName: z.string(),
+  questions: z.array(z.object({
+    slotId: z.string(),
+    question: z.string(),
+    options: z.array(z.object({ id: z.string(), label: z.string() })),
+    allowFreeText: z.boolean(),
+  })).min(1).max(3),
+});
+export type PromptQuestionCard = z.infer<typeof promptQuestionCardSchema>;
 
 export const workflowCardSchema = z.object({
   type: z.literal('workflow'),
@@ -92,6 +132,7 @@ export const cardSchema = z.discriminatedUnion('type', [
   recommendationCardSchema,
   questionCardSchema,
   promptCardSchema,
+  promptQuestionCardSchema,
   workflowCardSchema,
 ]);
 export type Card = z.infer<typeof cardSchema>;

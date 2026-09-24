@@ -9,7 +9,7 @@ import { searchCatalog, type SearchContext, type SearchResult } from '../catalog
 import { SOURCES } from '../catalog/sources';
 import { findMatchingTemplate } from '../workflow/workflowTemplates';
 import type { WorkflowStepTemplate } from '../workflow/workflowTypes';
-import type { Card, PromptCard, QuestionCard, RecommendationCard, RecommendationItem, WorkflowCard } from './cards';
+import type { Card, PromptCard, PromptQuestionCard, QuestionCard, RecommendationCard, RecommendationItem, WorkflowCard } from './cards';
 
 // ------------------------------------------------------------------
 // Argüman şemaları
@@ -131,9 +131,13 @@ export function toolDefinitions(tasks: Task[]) {
 // Yürütücüler
 // ------------------------------------------------------------------
 
-export type BuildPromptFn = (args: z.infer<typeof buildPromptArgs>, locale: 'en' | 'tr') => Promise<
-  | { card: PromptCard | QuestionCard; summary: Record<string, unknown> }
-  | { error: string }
+export type BuildPromptFn = (
+  args: z.infer<typeof buildPromptArgs>,
+  locale: 'en' | 'tr',
+  conversation: { role: 'user' | 'assistant'; content: string }[]
+) => Promise<
+  | { card: PromptCard | PromptQuestionCard; summary: Record<string, unknown>; tokens: number }
+  | { error: string; tokens?: number }
 >;
 
 export interface ToolContext {
@@ -143,15 +147,19 @@ export interface ToolContext {
   questionsAsked: number;
   maxQuestions: number;
   buildPrompt?: BuildPromptFn;
+  /** build_prompt'un konuşmadan bilgi çıkarması için. */
+  conversation?: { role: 'user' | 'assistant'; content: string }[];
 }
 
 export interface ToolExecution {
   /** Modele dönen (JSON'a çevrilecek) sonuç. */
   result: Record<string, unknown>;
   card?: Card;
-  /** true: kart gönderildi, tur burada biter (ask_user). */
+  /** true: kart gönderildi, tur burada biter (ask_user, build_prompt). */
   endTurn?: boolean;
   taskId?: string;
+  /** Aracın kendi LLM token'ları (bütçeye sayılır). */
+  tokens?: number;
 }
 
 function sourcesFor(item: SearchResult['items'][number]): RecommendationItem['sources'] {
@@ -283,9 +291,10 @@ export async function executeTool(name: string, rawArgs: string, ctx: ToolContex
       const parsed = buildPromptArgs.safeParse(args);
       if (!parsed.success) return invalid(parsed.error);
       if (!ctx.buildPrompt) return { result: { error: 'not_available' } };
-      const out = await ctx.buildPrompt(parsed.data, ctx.locale);
-      if ('error' in out) return { result: { error: out.error } };
-      return { result: out.summary, card: out.card, endTurn: out.card.type === 'question' };
+      const out = await ctx.buildPrompt(parsed.data, ctx.locale, ctx.conversation ?? []);
+      if ('error' in out) return { result: { error: out.error }, tokens: out.tokens ?? 0 };
+      // Kart kendini anlatıyor (soru ya da iki varyant): tur burada biter.
+      return { result: out.summary, card: out.card, endTurn: true, tokens: out.tokens };
     }
 
     case 'get_workflow': {
