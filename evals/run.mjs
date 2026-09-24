@@ -1,6 +1,7 @@
 // Altın değerlendirme seti koşucusu.
 //
 //   npm run eval                        # varsayılan: --recommender=v1
+//   npm run eval -- --recommender=v2-oracle   # görevi bilen RouteAI Skoru sıralaması
 //   npm run eval -- --recommender=v2
 //   npm run eval -- --recommender=v1 --verbose   # lib loglarını da göster
 //
@@ -21,9 +22,10 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateRow, parseGolden, summarize } from './metrics.mjs';
+import { explainOracleMisses } from './oracleMisses.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const RECOMMENDERS = ['v1', 'v2'];
+const RECOMMENDERS = ['v1', 'v2-oracle', 'v2'];
 
 // ------------------------------------------------------------------
 // Argümanlar
@@ -119,7 +121,7 @@ for (const g of golden) {
   const started = performance.now();
   let output;
   try {
-    output = await quietly(() => recommend(g.query));
+    output = await quietly(() => recommend(g.query, g));
   } catch (error) {
     output = { tools: [], detail: { kind: 'throw', message: String(error?.message ?? error) } };
   }
@@ -198,3 +200,15 @@ writeFileSync(resultFile, `${JSON.stringify({
 }, null, 2)}\n`);
 out('');
 out(`[eval] sonuç yazıldı: ${path.relative(ROOT, resultFile)}`);
+
+// v2-oracle hedefin altındaysa kaçan her sorgunun nedeni yazılır (P4 KABUL).
+if (recommenderName === 'v2-oracle') {
+  const target = 0.85;
+  const rate = summary.top3Hit.rate;
+  if (rate === null || rate < target) {
+    const { loadCatalog } = await import('../lib/catalog/index.ts');
+    const missesFile = path.join(resultsDir, 'v2-oracle-misses.md');
+    writeFileSync(missesFile, explainOracleMisses(rows, golden, loadCatalog(), { date, rate, target }));
+    out(`[eval] top3Hit hedefin (%${target * 100}) altında; nedenler: ${path.relative(ROOT, missesFile)}`);
+  }
+}

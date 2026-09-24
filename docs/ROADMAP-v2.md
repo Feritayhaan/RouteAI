@@ -42,3 +42,10 @@ Koşu: 2026-09-24, `npm run eval -- --recommender=v1`. Sonuç: `evals/results/20
 | skipped | 25/40 | 0 |
 
 Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var), tr-06 "ürün fotoğrafı arka plan kaldır" (görsel üreticilere düştü), tr-19 "YouTube kanalım için ses lazım" (workflow'a düştü; ilk adımda NotebookLM).
+
+## P4 notları
+- v2-oracle (görev golden'dan doğru kabul, sadece RouteAI Skoru sıralaması), 2026-09-24: top3Hit 0/39. Neden veri: `data/models.json` boş (senkron henüz koşmadı, ürünlere model bağlı değil), uzman değerlendirmesi ve sinyal yok; RouteAI Skoru kanıtsız ürünü önermiyor. Ayrıntı: `evals/results/v2-oracle-misses.md`.
+- Simülasyon (sentetik, `npm run eval:simulate`): gözlem yokken sıra benchmark'a göre; ürün başına 10 iş sonucunda kendi kanıtı iyi olan ürün öne geçiyor. `evals/results/2026-09-24-v2-oracle-simulation.md`.
+- Formül notu: 90 iş sonucunda benchmark payı tam 10/100 = %10; "%10'un altı" 91'de başlıyor. Ağırlıklar değiştirilmedi; ifade ya da K_BENCHMARK Ferit'in kararı.
+- `searchCatalog` kısıt gevşetmesi sırası: maxMonthlyUsd → access → pricing → commercialUse; gevşetilenler `relaxedConstraint` dizisinde döner.
+
