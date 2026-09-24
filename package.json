@@ -12,9 +12,12 @@
     "validate:db": "node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-db.mjs",
     "migrate:pricing": "node scripts/migrate-pricing.mjs",
     "eval": "node --loader ./lib/__tests__/ts-loader.mjs evals/run.mjs",
-    "validate:catalog": "node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-catalog.mjs",
+    "validate:catalog": "npm run build:guides && node --loader ./lib/__tests__/ts-loader.mjs scripts/validate-catalog.mjs",
     "sync:models": "node --loader ./lib/__tests__/ts-loader.mjs scripts/sync-models.mjs",
-    "eval:simulate": "node --loader ./lib/__tests__/ts-loader.mjs evals/simulate.mjs"
+    "eval:simulate": "node --loader ./lib/__tests__/ts-loader.mjs evals/simulate.mjs",
+    "build:guides": "node --loader ./lib/__tests__/ts-loader.mjs scripts/build-guides.mjs",
+    "prebuild": "npm run build:guides",
+    "eval:prompts": "node --loader ./lib/__tests__/ts-loader.mjs evals/runPrompts.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.1",

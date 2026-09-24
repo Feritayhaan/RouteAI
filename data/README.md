@@ -16,6 +16,8 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 | `migration-review.md` | v1 → v2 göçünde emin olunmayan görev eşlemeleri. | Göç scripti |
 | `model-aliases.json` | İki kaynakta farklı adla geçen modellerin elle eşlemesi (sadece emin olunanlar). | Elle |
 | `sync-report.md` | Son model senkronunun raporu: hatalar, yeni/kaybolan modeller, alias adayları, kullanılan alanlar. | Gece senkronu |
+| `prompt-guides/*.md` | Araç başına prompt rehberleri (frontmatter + Sözdizimi / Şablon / Yap-Yapma / Örnekler). `reviewedBy` boşsa taslak. Biçim: `lib/promptBuilder/guideSchema.ts`. | Elle; Ferit onaylar |
+| `prompt-guides.json` | Rehberlerin derlenmiş hali (edge'de fs yok). Elle düzenleme. | `npm run build:guides` |
 | `link-review.md` | Ürün → model bağlantı önerileri; `[x]` işaretlenenler `--apply` ile products.json'a yazılır. | `scripts/link-products.mjs` |
 
 ### tasks.json

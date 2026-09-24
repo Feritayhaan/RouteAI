@@ -23,6 +23,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "midjourney",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -54,6 +55,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "image-natural",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -82,6 +84,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "image-natural",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -110,6 +113,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "image-natural",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -195,6 +199,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "image-natural",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -252,6 +257,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "ideogram",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -322,6 +328,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "chat-general",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -359,6 +366,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "chat-general",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -395,6 +403,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "chat-general",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -507,6 +516,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "cursor-task",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -565,6 +575,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "elevenlabs-voiceover",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -620,6 +631,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "text-to-video",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -648,6 +660,7 @@
       "priceCheckedAt": "2025-11-28"
     },
     "access": [],
+    "promptGuide": "text-to-video",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
@@ -786,6 +799,7 @@
       "priceCheckedAt": "2025-12-31"
     },
     "access": [],
+    "promptGuide": "gamma",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-12-31"
@@ -867,6 +881,7 @@
       "priceCheckedAt": "2025-12-31"
     },
     "access": [],
+    "promptGuide": "suno",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-12-31"
@@ -923,6 +938,7 @@
       "priceCheckedAt": "2025-12-31"
     },
     "access": [],
+    "promptGuide": "runway",
     "status": "active",
     "reviewStatus": "reviewed",
     "addedAt": "2025-12-31"
@@ -2262,6 +2278,7 @@
       "priceCheckedAt": null
     },
     "access": [],
+    "promptGuide": "image-natural",
     "status": "active",
     "reviewStatus": "unreviewed",
     "addedAt": "2025-11-18"

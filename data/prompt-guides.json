@@ -1,0 +1,2868 @@
+[
+  {
+    "id": "chat-general",
+    "version": 1,
+    "appliesTo": [
+      "chatgpt-gpt-5",
+      "claude-ai-claude-4",
+      "gemini-25-pro"
+    ],
+    "modality": "text",
+    "promptLanguage": "user",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "role",
+        "impact": "high",
+        "question": {
+          "en": "Which role should the assistant take?",
+          "tr": "Asistan hangi rolde olsun?"
+        },
+        "options": [
+          {
+            "id": "expert",
+            "label": {
+              "en": "Subject expert",
+              "tr": "Konu uzmanı"
+            },
+            "value": "a subject-matter expert"
+          },
+          {
+            "id": "editor",
+            "label": {
+              "en": "Editor",
+              "tr": "Editör"
+            },
+            "value": "an editor"
+          },
+          {
+            "id": "teacher",
+            "label": {
+              "en": "Teacher",
+              "tr": "Öğretmen"
+            },
+            "value": "a patient teacher"
+          },
+          {
+            "id": "analyst",
+            "label": {
+              "en": "Analyst",
+              "tr": "Analist"
+            },
+            "value": "an analyst"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "format",
+        "impact": "high",
+        "question": {
+          "en": "What output format?",
+          "tr": "Çıktı nasıl olsun?"
+        },
+        "options": [
+          {
+            "id": "bullets",
+            "label": {
+              "en": "Bullet list",
+              "tr": "Madde listesi"
+            },
+            "value": "a bullet list"
+          },
+          {
+            "id": "table",
+            "label": {
+              "en": "Table",
+              "tr": "Tablo"
+            },
+            "value": "a table"
+          },
+          {
+            "id": "paragraph",
+            "label": {
+              "en": "Short text",
+              "tr": "Kısa metin"
+            },
+            "value": "a short paragraph"
+          },
+          {
+            "id": "steps",
+            "label": {
+              "en": "Step by step",
+              "tr": "Adım adım"
+            },
+            "value": "numbered steps"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "audience",
+        "impact": "medium",
+        "question": {
+          "en": "Who is it for?",
+          "tr": "Kimin için?"
+        },
+        "options": [
+          {
+            "id": "beginner",
+            "label": {
+              "en": "Beginner",
+              "tr": "Yeni başlayan"
+            },
+            "value": "a beginner"
+          },
+          {
+            "id": "pro",
+            "label": {
+              "en": "Professional",
+              "tr": "Profesyonel"
+            },
+            "value": "a professional"
+          },
+          {
+            "id": "exec",
+            "label": {
+              "en": "Executive",
+              "tr": "Yönetici"
+            },
+            "value": "an executive"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "length",
+        "impact": "medium",
+        "question": {
+          "en": "How long?",
+          "tr": "Ne uzunlukta?"
+        },
+        "options": [
+          {
+            "id": "short",
+            "label": {
+              "en": "Short",
+              "tr": "Kısa"
+            },
+            "value": "short"
+          },
+          {
+            "id": "medium",
+            "label": {
+              "en": "Medium",
+              "tr": "Orta"
+            },
+            "value": "medium length"
+          },
+          {
+            "id": "long",
+            "label": {
+              "en": "Detailed",
+              "tr": "Detaylı"
+            },
+            "value": "detailed"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "id": "tone",
+        "impact": "low",
+        "question": {
+          "en": "What tone?",
+          "tr": "Nasıl bir ton?"
+        },
+        "options": [
+          {
+            "id": "neutral",
+            "label": {
+              "en": "Neutral",
+              "tr": "Nötr"
+            },
+            "value": "neutral"
+          },
+          {
+            "id": "friendly",
+            "label": {
+              "en": "Friendly",
+              "tr": "Samimi"
+            },
+            "value": "friendly"
+          },
+          {
+            "id": "formal",
+            "label": {
+              "en": "Formal",
+              "tr": "Resmî"
+            },
+            "value": "formal"
+          }
+        ],
+        "default": "neutral"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "shorter",
+        "label": {
+          "en": "Shorter",
+          "tr": "Daha kısa"
+        },
+        "patch": {
+          "length": "short"
+        }
+      },
+      {
+        "id": "more-detail",
+        "label": {
+          "en": "More detail",
+          "tr": "Daha detaylı"
+        },
+        "patch": {
+          "length": "detailed"
+        }
+      },
+      {
+        "id": "table",
+        "label": {
+          "en": "As a table",
+          "tr": "Tablo olarak"
+        },
+        "patch": {
+          "format": "a table"
+        }
+      },
+      {
+        "id": "simpler",
+        "label": {
+          "en": "Simpler",
+          "tr": "Daha basit"
+        },
+        "patch": {
+          "audience": "a beginner"
+        }
+      },
+      {
+        "id": "formal",
+        "label": {
+          "en": "More formal",
+          "tr": "Daha resmî"
+        },
+        "patch": {
+          "tone": "formal"
+        }
+      },
+      {
+        "id": "examples",
+        "label": {
+          "en": "Add examples",
+          "tr": "Örnek ekle"
+        },
+        "instruction": "Ask for one concrete example per point."
+      },
+      {
+        "id": "steps",
+        "label": {
+          "en": "Step by step",
+          "tr": "Adım adım"
+        },
+        "patch": {
+          "format": "numbered steps"
+        }
+      }
+    ],
+    "checklist": [
+      "Role",
+      "Context",
+      "Task",
+      "Output format",
+      "Constraints"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 6000,
+        "message": "RouteAI limit: keep the prompt under 6000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Rol: [rol]. Bağlam: [bağlam]. Görev: [görev]. Format: [format], [uzunluk]. Kısıtlar: [kısıtlar]. Kitle: [kitle]. Ton: [ton].",
+      "dosDonts": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "cursor-task",
+    "version": 1,
+    "appliesTo": [
+      "cursor"
+    ],
+    "modality": "code",
+    "promptLanguage": "user",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "goal",
+        "impact": "high",
+        "question": {
+          "en": "What kind of change?",
+          "tr": "Nasıl bir değişiklik?"
+        },
+        "options": [
+          {
+            "id": "feature",
+            "label": {
+              "en": "New feature",
+              "tr": "Yeni özellik"
+            },
+            "value": "add a feature"
+          },
+          {
+            "id": "bugfix",
+            "label": {
+              "en": "Bug fix",
+              "tr": "Hata düzeltme"
+            },
+            "value": "fix a bug"
+          },
+          {
+            "id": "refactor",
+            "label": {
+              "en": "Refactor",
+              "tr": "Yeniden düzenleme"
+            },
+            "value": "refactor"
+          },
+          {
+            "id": "tests",
+            "label": {
+              "en": "Tests",
+              "tr": "Testler"
+            },
+            "value": "write tests"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "scope",
+        "impact": "high",
+        "question": {
+          "en": "How big is the change?",
+          "tr": "Değişiklik ne kadar büyük?"
+        },
+        "options": [
+          {
+            "id": "single",
+            "label": {
+              "en": "One file",
+              "tr": "Tek dosya"
+            },
+            "value": "a single file"
+          },
+          {
+            "id": "few",
+            "label": {
+              "en": "A few files",
+              "tr": "Birkaç dosya"
+            },
+            "value": "a few related files"
+          },
+          {
+            "id": "project",
+            "label": {
+              "en": "Across the project",
+              "tr": "Projenin geneli"
+            },
+            "value": "across the project"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "constraints",
+        "impact": "medium",
+        "question": {
+          "en": "Any hard constraint?",
+          "tr": "Uyulması gereken kural?"
+        },
+        "options": [
+          {
+            "id": "api",
+            "label": {
+              "en": "Don't change the public API",
+              "tr": "Dış API değişmesin"
+            },
+            "value": "do not change the public API"
+          },
+          {
+            "id": "style",
+            "label": {
+              "en": "Follow existing style",
+              "tr": "Mevcut stile uy"
+            },
+            "value": "follow the existing code style"
+          },
+          {
+            "id": "deps",
+            "label": {
+              "en": "No new dependencies",
+              "tr": "Yeni bağımlılık yok"
+            },
+            "value": "no new dependencies"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "verification",
+        "impact": "medium",
+        "question": {
+          "en": "How do we know it works?",
+          "tr": "Çalıştığını nasıl anlarız?"
+        },
+        "options": [
+          {
+            "id": "tests",
+            "label": {
+              "en": "Run tests",
+              "tr": "Testleri çalıştır"
+            },
+            "value": "run the test suite"
+          },
+          {
+            "id": "typecheck",
+            "label": {
+              "en": "Typecheck + lint",
+              "tr": "Tip kontrolü + lint"
+            },
+            "value": "run typecheck and lint"
+          },
+          {
+            "id": "manual",
+            "label": {
+              "en": "Manual check",
+              "tr": "Elle kontrol"
+            },
+            "value": "describe a manual check"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "context",
+        "impact": "low",
+        "question": {
+          "en": "What context can you give?",
+          "tr": "Hangi bağlamı verebilirsin?"
+        },
+        "options": [
+          {
+            "id": "error",
+            "label": {
+              "en": "Error message",
+              "tr": "Hata mesajı"
+            },
+            "value": "the error message"
+          },
+          {
+            "id": "files",
+            "label": {
+              "en": "File paths",
+              "tr": "Dosya yolları"
+            },
+            "value": "relevant file paths"
+          },
+          {
+            "id": "none",
+            "label": {
+              "en": "Nothing yet",
+              "tr": "Henüz yok"
+            },
+            "value": "no extra context"
+          }
+        ],
+        "default": "infer"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "add-tests",
+        "label": {
+          "en": "Require tests",
+          "tr": "Test şart"
+        },
+        "patch": {
+          "verification": "run the test suite"
+        }
+      },
+      {
+        "id": "small-steps",
+        "label": {
+          "en": "Smaller steps",
+          "tr": "Küçük adımlar"
+        },
+        "instruction": "Break the task into small, reviewable steps."
+      },
+      {
+        "id": "narrow",
+        "label": {
+          "en": "Narrower scope",
+          "tr": "Kapsamı daralt"
+        },
+        "patch": {
+          "scope": "a single file"
+        }
+      },
+      {
+        "id": "acceptance",
+        "label": {
+          "en": "Acceptance criteria",
+          "tr": "Kabul kriterleri"
+        },
+        "instruction": "Add explicit acceptance criteria as a checklist."
+      },
+      {
+        "id": "no-deps",
+        "label": {
+          "en": "No new dependencies",
+          "tr": "Yeni bağımlılık yok"
+        },
+        "patch": {
+          "constraints": "no new dependencies"
+        }
+      },
+      {
+        "id": "plan-first",
+        "label": {
+          "en": "Plan first",
+          "tr": "Önce plan"
+        },
+        "instruction": "Ask the agent to propose a plan and wait before editing."
+      }
+    ],
+    "checklist": [
+      "Goal in one sentence",
+      "Scope and files",
+      "Constraints",
+      "How to verify",
+      "Acceptance criteria"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 4000,
+        "message": "RouteAI limit: keep the prompt under 4000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [amaç]. Kapsam: [kapsam]. Bağlam: [bağlam]. Kurallar: [kısıtlar]. Doğrulama: [doğrulama]. Kabul kriterleri: [liste].",
+      "dosDonts": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "elevenlabs-voiceover",
+    "version": 1,
+    "appliesTo": [
+      "elevenlabs"
+    ],
+    "modality": "audio",
+    "promptLanguage": "user",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "language",
+        "impact": "high",
+        "question": {
+          "en": "Which language is the script in?",
+          "tr": "Metin hangi dilde?"
+        },
+        "options": [
+          {
+            "id": "tr",
+            "label": {
+              "en": "Turkish",
+              "tr": "Türkçe"
+            },
+            "value": "Turkish"
+          },
+          {
+            "id": "en",
+            "label": {
+              "en": "English",
+              "tr": "İngilizce"
+            },
+            "value": "English"
+          },
+          {
+            "id": "other",
+            "label": {
+              "en": "Another language",
+              "tr": "Başka bir dil"
+            },
+            "value": "another language"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "tone",
+        "impact": "high",
+        "question": {
+          "en": "What tone?",
+          "tr": "Nasıl bir ton?"
+        },
+        "options": [
+          {
+            "id": "calm",
+            "label": {
+              "en": "Calm",
+              "tr": "Sakin"
+            },
+            "value": "calm"
+          },
+          {
+            "id": "energetic",
+            "label": {
+              "en": "Energetic",
+              "tr": "Enerjik"
+            },
+            "value": "energetic"
+          },
+          {
+            "id": "warm",
+            "label": {
+              "en": "Warm",
+              "tr": "Sıcak"
+            },
+            "value": "warm"
+          },
+          {
+            "id": "authoritative",
+            "label": {
+              "en": "Authoritative",
+              "tr": "Otoriter"
+            },
+            "value": "authoritative"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "voice",
+        "impact": "medium",
+        "question": {
+          "en": "Which voice?",
+          "tr": "Hangi ses?"
+        },
+        "options": [
+          {
+            "id": "female",
+            "label": {
+              "en": "Female",
+              "tr": "Kadın"
+            },
+            "value": "female voice"
+          },
+          {
+            "id": "male",
+            "label": {
+              "en": "Male",
+              "tr": "Erkek"
+            },
+            "value": "male voice"
+          },
+          {
+            "id": "neutral",
+            "label": {
+              "en": "Neutral",
+              "tr": "Nötr"
+            },
+            "value": "neutral voice"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "pace",
+        "impact": "medium",
+        "question": {
+          "en": "Speaking pace?",
+          "tr": "Konuşma hızı?"
+        },
+        "options": [
+          {
+            "id": "slow",
+            "label": {
+              "en": "Slow",
+              "tr": "Yavaş"
+            },
+            "value": "slow"
+          },
+          {
+            "id": "normal",
+            "label": {
+              "en": "Normal",
+              "tr": "Normal"
+            },
+            "value": "normal"
+          },
+          {
+            "id": "fast",
+            "label": {
+              "en": "Fast",
+              "tr": "Hızlı"
+            },
+            "value": "fast"
+          }
+        ],
+        "default": "normal"
+      },
+      {
+        "id": "use",
+        "impact": "low",
+        "question": {
+          "en": "Where will it be used?",
+          "tr": "Nerede kullanılacak?"
+        },
+        "options": [
+          {
+            "id": "ad",
+            "label": {
+              "en": "Ad",
+              "tr": "Reklam"
+            },
+            "value": "ad"
+          },
+          {
+            "id": "course",
+            "label": {
+              "en": "E-learning",
+              "tr": "E-öğrenme"
+            },
+            "value": "e-learning"
+          },
+          {
+            "id": "audiobook",
+            "label": {
+              "en": "Audiobook",
+              "tr": "Sesli kitap"
+            },
+            "value": "audiobook"
+          },
+          {
+            "id": "social",
+            "label": {
+              "en": "Social video",
+              "tr": "Sosyal medya videosu"
+            },
+            "value": "social video"
+          }
+        ],
+        "default": "infer"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "slower",
+        "label": {
+          "en": "Slower",
+          "tr": "Daha yavaş"
+        },
+        "patch": {
+          "pace": "slow"
+        }
+      },
+      {
+        "id": "warmer",
+        "label": {
+          "en": "Warmer",
+          "tr": "Daha sıcak"
+        },
+        "patch": {
+          "tone": "warm"
+        }
+      },
+      {
+        "id": "energetic",
+        "label": {
+          "en": "More energetic",
+          "tr": "Daha enerjik"
+        },
+        "patch": {
+          "tone": "energetic"
+        }
+      },
+      {
+        "id": "pauses",
+        "label": {
+          "en": "Add pauses",
+          "tr": "Duraklama ekle"
+        },
+        "instruction": "Split long sentences and mark natural pauses in the script."
+      },
+      {
+        "id": "shorter",
+        "label": {
+          "en": "Shorter script",
+          "tr": "Daha kısa metin"
+        },
+        "instruction": "Shorten the script by about a third without losing key points."
+      },
+      {
+        "id": "formal",
+        "label": {
+          "en": "More formal",
+          "tr": "Daha resmî"
+        },
+        "instruction": "Use a more formal register."
+      }
+    ],
+    "checklist": [
+      "Final script text",
+      "Tone and pace",
+      "Voice choice",
+      "Pronunciation notes for names or numbers"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 5000,
+        "message": "RouteAI limit: keep the prompt under 5000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız]. Metin: [okunacak metin, kısa cümleler].",
+      "dosDonts": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "gamma",
+    "version": 1,
+    "appliesTo": [
+      "gamma-ai"
+    ],
+    "modality": "slides",
+    "promptLanguage": "user",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "audience",
+        "impact": "high",
+        "question": {
+          "en": "Who is the audience?",
+          "tr": "Sunum kime?"
+        },
+        "options": [
+          {
+            "id": "investors",
+            "label": {
+              "en": "Investors",
+              "tr": "Yatırımcılar"
+            },
+            "value": "investors"
+          },
+          {
+            "id": "team",
+            "label": {
+              "en": "My team",
+              "tr": "Ekibim"
+            },
+            "value": "internal team"
+          },
+          {
+            "id": "customers",
+            "label": {
+              "en": "Customers",
+              "tr": "Müşteriler"
+            },
+            "value": "customers"
+          },
+          {
+            "id": "students",
+            "label": {
+              "en": "Students",
+              "tr": "Öğrenciler"
+            },
+            "value": "students"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "length",
+        "impact": "high",
+        "question": {
+          "en": "How many slides?",
+          "tr": "Kaç slayt?"
+        },
+        "options": [
+          {
+            "id": "short",
+            "label": {
+              "en": "About 5",
+              "tr": "Yaklaşık 5"
+            },
+            "value": "5 slides"
+          },
+          {
+            "id": "medium",
+            "label": {
+              "en": "8-10",
+              "tr": "8-10"
+            },
+            "value": "8-10 slides"
+          },
+          {
+            "id": "long",
+            "label": {
+              "en": "15 or more",
+              "tr": "15 ve üzeri"
+            },
+            "value": "15 slides"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "id": "tone",
+        "impact": "medium",
+        "question": {
+          "en": "What tone?",
+          "tr": "Nasıl bir ton?"
+        },
+        "options": [
+          {
+            "id": "formal",
+            "label": {
+              "en": "Formal",
+              "tr": "Resmî"
+            },
+            "value": "formal"
+          },
+          {
+            "id": "friendly",
+            "label": {
+              "en": "Friendly",
+              "tr": "Samimi"
+            },
+            "value": "friendly"
+          },
+          {
+            "id": "bold",
+            "label": {
+              "en": "Bold",
+              "tr": "Cesur"
+            },
+            "value": "bold"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "visuals",
+        "impact": "medium",
+        "question": {
+          "en": "What visuals?",
+          "tr": "Hangi görseller?"
+        },
+        "options": [
+          {
+            "id": "photos",
+            "label": {
+              "en": "Photos",
+              "tr": "Fotoğraflar"
+            },
+            "value": "photos"
+          },
+          {
+            "id": "illustrations",
+            "label": {
+              "en": "Illustrations",
+              "tr": "İllüstrasyonlar"
+            },
+            "value": "illustrations"
+          },
+          {
+            "id": "minimal",
+            "label": {
+              "en": "Minimal",
+              "tr": "Sade"
+            },
+            "value": "minimal visuals"
+          },
+          {
+            "id": "charts",
+            "label": {
+              "en": "Charts",
+              "tr": "Grafikler"
+            },
+            "value": "data charts"
+          }
+        ],
+        "default": "infer"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "shorter",
+        "label": {
+          "en": "Fewer slides",
+          "tr": "Daha az slayt"
+        },
+        "patch": {
+          "length": "5 slides"
+        }
+      },
+      {
+        "id": "more-visual",
+        "label": {
+          "en": "More visual",
+          "tr": "Daha görsel"
+        },
+        "patch": {
+          "visuals": "photos"
+        }
+      },
+      {
+        "id": "more-data",
+        "label": {
+          "en": "More data",
+          "tr": "Daha fazla veri"
+        },
+        "instruction": "Add a slide with key numbers as placeholders to fill in (do not invent figures)."
+      },
+      {
+        "id": "investors",
+        "label": {
+          "en": "For investors",
+          "tr": "Yatırımcı odaklı"
+        },
+        "patch": {
+          "audience": "investors"
+        }
+      },
+      {
+        "id": "simpler",
+        "label": {
+          "en": "Simpler language",
+          "tr": "Daha sade dil"
+        },
+        "instruction": "Use shorter sentences and plain words."
+      },
+      {
+        "id": "notes",
+        "label": {
+          "en": "Speaker notes",
+          "tr": "Konuşmacı notları"
+        },
+        "instruction": "Ask for short speaker notes on each slide."
+      }
+    ],
+    "checklist": [
+      "Topic and goal of the deck",
+      "Audience",
+      "Slide count",
+      "Outline of sections",
+      "No invented numbers"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 4000,
+        "message": "RouteAI limit: keep the prompt under 4000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Bölümler: [taslak]. Ton: [ton]. Görseller: [görseller].",
+      "dosDonts": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "ideogram",
+    "version": 1,
+    "appliesTo": [
+      "ideogram-20"
+    ],
+    "modality": "image",
+    "promptLanguage": "en",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "text",
+        "impact": "high",
+        "question": {
+          "en": "Which exact text should appear in the image?",
+          "tr": "Görselde tam olarak hangi yazı olmalı?"
+        },
+        "options": [
+          {
+            "id": "name",
+            "label": {
+              "en": "A brand or shop name",
+              "tr": "Marka ya da dükkân adı"
+            },
+            "value": "the brand name"
+          },
+          {
+            "id": "headline",
+            "label": {
+              "en": "A headline",
+              "tr": "Bir başlık"
+            },
+            "value": "a short headline"
+          },
+          {
+            "id": "none",
+            "label": {
+              "en": "No text",
+              "tr": "Yazı yok"
+            },
+            "value": "no text"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "style",
+        "impact": "high",
+        "question": {
+          "en": "What kind of design?",
+          "tr": "Nasıl bir tasarım?"
+        },
+        "options": [
+          {
+            "id": "logo",
+            "label": {
+              "en": "Logo",
+              "tr": "Logo"
+            },
+            "value": "logo"
+          },
+          {
+            "id": "poster",
+            "label": {
+              "en": "Typographic poster",
+              "tr": "Tipografik poster"
+            },
+            "value": "typographic poster"
+          },
+          {
+            "id": "photo",
+            "label": {
+              "en": "Photo with text",
+              "tr": "Yazılı fotoğraf"
+            },
+            "value": "photo with text"
+          },
+          {
+            "id": "illustration",
+            "label": {
+              "en": "Illustration",
+              "tr": "İllüstrasyon"
+            },
+            "value": "illustration"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "subject",
+        "impact": "high",
+        "question": {
+          "en": "What should the image show?",
+          "tr": "Görselde ne olmalı?"
+        },
+        "options": [
+          {
+            "id": "person",
+            "label": {
+              "en": "A person",
+              "tr": "Bir kişi"
+            },
+            "value": "a person"
+          },
+          {
+            "id": "product",
+            "label": {
+              "en": "A product",
+              "tr": "Bir ürün"
+            },
+            "value": "a product"
+          },
+          {
+            "id": "place",
+            "label": {
+              "en": "A place",
+              "tr": "Bir mekân"
+            },
+            "value": "a place"
+          },
+          {
+            "id": "character",
+            "label": {
+              "en": "A character",
+              "tr": "Bir karakter"
+            },
+            "value": "a character"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "aspect",
+        "impact": "medium",
+        "question": {
+          "en": "Which format?",
+          "tr": "Hangi format?"
+        },
+        "options": [
+          {
+            "id": "square",
+            "label": {
+              "en": "Square 1:1",
+              "tr": "Kare 1:1"
+            },
+            "value": "1:1"
+          },
+          {
+            "id": "wide",
+            "label": {
+              "en": "Wide 16:9",
+              "tr": "Yatay 16:9"
+            },
+            "value": "16:9"
+          },
+          {
+            "id": "vertical",
+            "label": {
+              "en": "Vertical 9:16",
+              "tr": "Dikey 9:16"
+            },
+            "value": "9:16"
+          },
+          {
+            "id": "portrait",
+            "label": {
+              "en": "Portrait 4:5",
+              "tr": "Portre 4:5"
+            },
+            "value": "4:5"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "palette",
+        "impact": "low",
+        "question": {
+          "en": "Which colors?",
+          "tr": "Hangi renkler?"
+        },
+        "options": [
+          {
+            "id": "mono",
+            "label": {
+              "en": "Monochrome",
+              "tr": "Tek renk"
+            },
+            "value": "monochrome"
+          },
+          {
+            "id": "brand",
+            "label": {
+              "en": "My brand colors",
+              "tr": "Marka renklerim"
+            },
+            "value": "brand colors"
+          },
+          {
+            "id": "vibrant",
+            "label": {
+              "en": "Vibrant",
+              "tr": "Canlı"
+            },
+            "value": "vibrant colors"
+          },
+          {
+            "id": "pastel",
+            "label": {
+              "en": "Pastel",
+              "tr": "Pastel"
+            },
+            "value": "pastel colors"
+          }
+        ],
+        "default": "infer"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "bigger-text",
+        "label": {
+          "en": "Bigger text",
+          "tr": "Daha büyük yazı"
+        },
+        "instruction": "Make the text larger and the dominant element."
+      },
+      {
+        "id": "fewer-words",
+        "label": {
+          "en": "Fewer words",
+          "tr": "Daha az kelime"
+        },
+        "instruction": "Reduce the text to the fewest words possible."
+      },
+      {
+        "id": "square",
+        "label": {
+          "en": "Square",
+          "tr": "Kare"
+        },
+        "patch": {
+          "aspect": "1:1"
+        }
+      },
+      {
+        "id": "poster",
+        "label": {
+          "en": "Poster style",
+          "tr": "Poster stili"
+        },
+        "patch": {
+          "style": "typographic poster"
+        }
+      },
+      {
+        "id": "minimal",
+        "label": {
+          "en": "More minimal",
+          "tr": "Daha sade"
+        },
+        "instruction": "Remove secondary elements; keep only the essentials."
+      },
+      {
+        "id": "contrast",
+        "label": {
+          "en": "More contrast",
+          "tr": "Daha yüksek kontrast"
+        },
+        "instruction": "Increase contrast between text and background."
+      }
+    ],
+    "checklist": [
+      "Exact text written in quotes",
+      "Design type stated",
+      "Colors or palette stated",
+      "Layout described"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 1500,
+        "message": "RouteAI limit: keep the prompt under 1500 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [tasarım türü], \"[tam metin]\", [konu], [renkler], [yerleşim], [format].",
+      "dosDonts": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "image-natural",
+    "version": 1,
+    "appliesTo": [
+      "chatgpt-gpt-4o-image",
+      "dall-e-3",
+      "google-imagen-4",
+      "gemini-3-pro-image",
+      "flux1-pro"
+    ],
+    "modality": "image",
+    "promptLanguage": "en",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "subject",
+        "impact": "high",
+        "question": {
+          "en": "What should the image show?",
+          "tr": "Görselde ne olmalı?"
+        },
+        "options": [
+          {
+            "id": "person",
+            "label": {
+              "en": "A person",
+              "tr": "Bir kişi"
+            },
+            "value": "a person"
+          },
+          {
+            "id": "product",
+            "label": {
+              "en": "A product",
+              "tr": "Bir ürün"
+            },
+            "value": "a product"
+          },
+          {
+            "id": "place",
+            "label": {
+              "en": "A place",
+              "tr": "Bir mekân"
+            },
+            "value": "a place"
+          },
+          {
+            "id": "character",
+            "label": {
+              "en": "A character",
+              "tr": "Bir karakter"
+            },
+            "value": "a character"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "style",
+        "impact": "high",
+        "question": {
+          "en": "What visual style?",
+          "tr": "Nasıl bir görsel stil?"
+        },
+        "options": [
+          {
+            "id": "photo",
+            "label": {
+              "en": "Photo",
+              "tr": "Fotoğraf"
+            },
+            "value": "photorealistic photo"
+          },
+          {
+            "id": "illustration",
+            "label": {
+              "en": "Illustration",
+              "tr": "İllüstrasyon"
+            },
+            "value": "illustration"
+          },
+          {
+            "id": "render",
+            "label": {
+              "en": "3D render",
+              "tr": "3D render"
+            },
+            "value": "3D render"
+          },
+          {
+            "id": "painting",
+            "label": {
+              "en": "Painting",
+              "tr": "Resim / tablo"
+            },
+            "value": "painting"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "aspect",
+        "impact": "high",
+        "question": {
+          "en": "Which format?",
+          "tr": "Hangi format?"
+        },
+        "options": [
+          {
+            "id": "square",
+            "label": {
+              "en": "Square",
+              "tr": "Kare"
+            },
+            "value": "square"
+          },
+          {
+            "id": "landscape",
+            "label": {
+              "en": "Landscape",
+              "tr": "Yatay"
+            },
+            "value": "landscape"
+          },
+          {
+            "id": "portrait",
+            "label": {
+              "en": "Portrait",
+              "tr": "Dikey"
+            },
+            "value": "portrait"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "mood",
+        "impact": "medium",
+        "question": {
+          "en": "What mood?",
+          "tr": "Nasıl bir hava?"
+        },
+        "options": [
+          {
+            "id": "bright",
+            "label": {
+              "en": "Bright",
+              "tr": "Aydınlık"
+            },
+            "value": "bright and cheerful"
+          },
+          {
+            "id": "dramatic",
+            "label": {
+              "en": "Dark, dramatic",
+              "tr": "Karanlık, dramatik"
+            },
+            "value": "dark and dramatic"
+          },
+          {
+            "id": "soft",
+            "label": {
+              "en": "Soft, pastel",
+              "tr": "Yumuşak, pastel"
+            },
+            "value": "soft pastel"
+          },
+          {
+            "id": "vibrant",
+            "label": {
+              "en": "Vibrant",
+              "tr": "Canlı"
+            },
+            "value": "vibrant"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "background",
+        "impact": "low",
+        "question": {
+          "en": "What background?",
+          "tr": "Arka plan nasıl olsun?"
+        },
+        "options": [
+          {
+            "id": "plain",
+            "label": {
+              "en": "Plain",
+              "tr": "Düz"
+            },
+            "value": "plain background"
+          },
+          {
+            "id": "scene",
+            "label": {
+              "en": "In a scene",
+              "tr": "Bir sahnede"
+            },
+            "value": "in a natural scene"
+          }
+        ],
+        "default": "infer"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "more-detail",
+        "label": {
+          "en": "More detail",
+          "tr": "Daha detaylı"
+        },
+        "instruction": "Describe the scene in more concrete detail."
+      },
+      {
+        "id": "simpler",
+        "label": {
+          "en": "Simpler",
+          "tr": "Daha sade"
+        },
+        "instruction": "Make the composition simpler with fewer elements."
+      },
+      {
+        "id": "photoreal",
+        "label": {
+          "en": "Photorealistic",
+          "tr": "Fotogerçekçi"
+        },
+        "patch": {
+          "style": "photorealistic photo"
+        }
+      },
+      {
+        "id": "plain-bg",
+        "label": {
+          "en": "Plain background",
+          "tr": "Düz arka plan"
+        },
+        "patch": {
+          "background": "plain background"
+        }
+      },
+      {
+        "id": "landscape",
+        "label": {
+          "en": "Landscape",
+          "tr": "Yatay"
+        },
+        "patch": {
+          "aspect": "landscape"
+        }
+      },
+      {
+        "id": "brighter",
+        "label": {
+          "en": "Brighter",
+          "tr": "Daha aydınlık"
+        },
+        "patch": {
+          "mood": "bright and cheerful"
+        }
+      }
+    ],
+    "checklist": [
+      "Full-sentence description of the subject",
+      "Style stated",
+      "Composition and format stated",
+      "Lighting or mood stated"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 2000,
+        "message": "RouteAI limit: keep the prompt under 2000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Tam cümlelerle: [konu ve eylem]. [stil]. [kompozisyon ve format]. [ışık ve hava]. [arka plan].",
+      "dosDonts": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "midjourney",
+    "version": 1,
+    "appliesTo": [
+      "midjourney-v7"
+    ],
+    "modality": "image",
+    "promptLanguage": "en",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "subject",
+        "impact": "high",
+        "question": {
+          "en": "What should the image show?",
+          "tr": "Görselde ne olmalı?"
+        },
+        "options": [
+          {
+            "id": "person",
+            "label": {
+              "en": "A person",
+              "tr": "Bir kişi"
+            },
+            "value": "a person"
+          },
+          {
+            "id": "product",
+            "label": {
+              "en": "A product",
+              "tr": "Bir ürün"
+            },
+            "value": "a product"
+          },
+          {
+            "id": "place",
+            "label": {
+              "en": "A place",
+              "tr": "Bir mekân"
+            },
+            "value": "a place"
+          },
+          {
+            "id": "character",
+            "label": {
+              "en": "A character",
+              "tr": "Bir karakter"
+            },
+            "value": "a character"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "style",
+        "impact": "high",
+        "question": {
+          "en": "What visual style?",
+          "tr": "Nasıl bir görsel stil?"
+        },
+        "options": [
+          {
+            "id": "photo",
+            "label": {
+              "en": "Photo",
+              "tr": "Fotoğraf"
+            },
+            "value": "photorealistic photo"
+          },
+          {
+            "id": "illustration",
+            "label": {
+              "en": "Illustration",
+              "tr": "İllüstrasyon"
+            },
+            "value": "illustration"
+          },
+          {
+            "id": "render",
+            "label": {
+              "en": "3D render",
+              "tr": "3D render"
+            },
+            "value": "3D render"
+          },
+          {
+            "id": "painting",
+            "label": {
+              "en": "Painting",
+              "tr": "Resim / tablo"
+            },
+            "value": "painting"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "aspect",
+        "impact": "high",
+        "question": {
+          "en": "Which format?",
+          "tr": "Hangi format?"
+        },
+        "options": [
+          {
+            "id": "square",
+            "label": {
+              "en": "Square 1:1",
+              "tr": "Kare 1:1"
+            },
+            "value": "1:1"
+          },
+          {
+            "id": "wide",
+            "label": {
+              "en": "Wide 16:9",
+              "tr": "Yatay 16:9"
+            },
+            "value": "16:9"
+          },
+          {
+            "id": "vertical",
+            "label": {
+              "en": "Vertical 9:16",
+              "tr": "Dikey 9:16"
+            },
+            "value": "9:16"
+          },
+          {
+            "id": "portrait",
+            "label": {
+              "en": "Portrait 4:5",
+              "tr": "Portre 4:5"
+            },
+            "value": "4:5"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "mood",
+        "impact": "medium",
+        "question": {
+          "en": "What mood?",
+          "tr": "Nasıl bir hava?"
+        },
+        "options": [
+          {
+            "id": "bright",
+            "label": {
+              "en": "Bright",
+              "tr": "Aydınlık"
+            },
+            "value": "bright and cheerful"
+          },
+          {
+            "id": "dramatic",
+            "label": {
+              "en": "Dark, dramatic",
+              "tr": "Karanlık, dramatik"
+            },
+            "value": "dark and dramatic"
+          },
+          {
+            "id": "soft",
+            "label": {
+              "en": "Soft, pastel",
+              "tr": "Yumuşak, pastel"
+            },
+            "value": "soft pastel"
+          },
+          {
+            "id": "vibrant",
+            "label": {
+              "en": "Vibrant",
+              "tr": "Canlı"
+            },
+            "value": "vibrant"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "detail",
+        "impact": "low",
+        "question": {
+          "en": "How much detail?",
+          "tr": "Ne kadar detay?"
+        },
+        "options": [
+          {
+            "id": "minimal",
+            "label": {
+              "en": "Minimal",
+              "tr": "Sade"
+            },
+            "value": "minimal"
+          },
+          {
+            "id": "detailed",
+            "label": {
+              "en": "Highly detailed",
+              "tr": "Çok detaylı"
+            },
+            "value": "highly detailed"
+          }
+        ],
+        "default": "minimal"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "more-detail",
+        "label": {
+          "en": "More detail",
+          "tr": "Daha detaylı"
+        },
+        "instruction": "Add concrete visual detail (materials, lighting, textures) without changing the subject."
+      },
+      {
+        "id": "simpler",
+        "label": {
+          "en": "Simpler",
+          "tr": "Daha sade"
+        },
+        "instruction": "Make the image simpler and more minimal."
+      },
+      {
+        "id": "square",
+        "label": {
+          "en": "Square",
+          "tr": "Kare"
+        },
+        "patch": {
+          "aspect": "1:1"
+        }
+      },
+      {
+        "id": "vertical",
+        "label": {
+          "en": "Vertical",
+          "tr": "Dikey"
+        },
+        "patch": {
+          "aspect": "9:16"
+        }
+      },
+      {
+        "id": "warmer",
+        "label": {
+          "en": "Warmer light",
+          "tr": "Daha sıcak ışık"
+        },
+        "instruction": "Shift palette and lighting warmer."
+      },
+      {
+        "id": "photoreal",
+        "label": {
+          "en": "Photorealistic",
+          "tr": "Fotogerçekçi"
+        },
+        "patch": {
+          "style": "photorealistic photo"
+        }
+      }
+    ],
+    "checklist": [
+      "Concrete main subject",
+      "Style or medium stated",
+      "Lighting or mood stated",
+      "Aspect ratio set"
+    ],
+    "validators": [
+      {
+        "id": "aspect-ratio",
+        "type": "regex",
+        "value": "--ar \\d+:\\d+",
+        "message": "Add an aspect ratio parameter, e.g. --ar 16:9."
+      },
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 1500,
+        "message": "RouteAI limit: keep the prompt under 1500 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu], [stil/araç], [kompozisyon], [ışık ve hava], [ayrıntılar], ardından en-boy oranı.",
+      "dosDonts": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "runway",
+    "version": 1,
+    "appliesTo": [
+      "runway-gen-3"
+    ],
+    "modality": "video",
+    "promptLanguage": "en",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "subject",
+        "impact": "high",
+        "question": {
+          "en": "What is in the shot?",
+          "tr": "Çekimde ne var?"
+        },
+        "options": [
+          {
+            "id": "person",
+            "label": {
+              "en": "A person",
+              "tr": "Bir kişi"
+            },
+            "value": "a person"
+          },
+          {
+            "id": "product",
+            "label": {
+              "en": "A product",
+              "tr": "Bir ürün"
+            },
+            "value": "a product"
+          },
+          {
+            "id": "nature",
+            "label": {
+              "en": "Nature",
+              "tr": "Doğa"
+            },
+            "value": "a natural landscape"
+          },
+          {
+            "id": "abstract",
+            "label": {
+              "en": "Abstract",
+              "tr": "Soyut"
+            },
+            "value": "abstract shapes"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "camera",
+        "impact": "high",
+        "question": {
+          "en": "How should the camera move?",
+          "tr": "Kamera nasıl hareket etsin?"
+        },
+        "options": [
+          {
+            "id": "static",
+            "label": {
+              "en": "Static",
+              "tr": "Sabit"
+            },
+            "value": "static camera"
+          },
+          {
+            "id": "push-in",
+            "label": {
+              "en": "Slow push-in",
+              "tr": "Yavaş yaklaşma"
+            },
+            "value": "slow push-in"
+          },
+          {
+            "id": "orbit",
+            "label": {
+              "en": "Orbit",
+              "tr": "Etrafında dönme"
+            },
+            "value": "orbiting camera"
+          },
+          {
+            "id": "handheld",
+            "label": {
+              "en": "Handheld",
+              "tr": "Elde"
+            },
+            "value": "handheld camera"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "style",
+        "impact": "medium",
+        "question": {
+          "en": "What style?",
+          "tr": "Hangi stil?"
+        },
+        "options": [
+          {
+            "id": "cinematic",
+            "label": {
+              "en": "Cinematic",
+              "tr": "Sinematik"
+            },
+            "value": "cinematic"
+          },
+          {
+            "id": "documentary",
+            "label": {
+              "en": "Documentary",
+              "tr": "Belgesel"
+            },
+            "value": "documentary"
+          },
+          {
+            "id": "animation",
+            "label": {
+              "en": "Animation",
+              "tr": "Animasyon"
+            },
+            "value": "animated"
+          },
+          {
+            "id": "commercial",
+            "label": {
+              "en": "Commercial",
+              "tr": "Reklam"
+            },
+            "value": "commercial"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "lighting",
+        "impact": "medium",
+        "question": {
+          "en": "What lighting?",
+          "tr": "Nasıl ışık?"
+        },
+        "options": [
+          {
+            "id": "golden",
+            "label": {
+              "en": "Golden hour",
+              "tr": "Gün batımı"
+            },
+            "value": "golden hour light"
+          },
+          {
+            "id": "night",
+            "label": {
+              "en": "Night",
+              "tr": "Gece"
+            },
+            "value": "night"
+          },
+          {
+            "id": "studio",
+            "label": {
+              "en": "Studio",
+              "tr": "Stüdyo"
+            },
+            "value": "studio lighting"
+          },
+          {
+            "id": "overcast",
+            "label": {
+              "en": "Overcast",
+              "tr": "Kapalı hava"
+            },
+            "value": "overcast light"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "pace",
+        "impact": "low",
+        "question": {
+          "en": "What pace?",
+          "tr": "Tempo nasıl?"
+        },
+        "options": [
+          {
+            "id": "slow",
+            "label": {
+              "en": "Slow",
+              "tr": "Yavaş"
+            },
+            "value": "slow"
+          },
+          {
+            "id": "energetic",
+            "label": {
+              "en": "Energetic",
+              "tr": "Enerjik"
+            },
+            "value": "energetic"
+          }
+        ],
+        "default": "slow"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "slower",
+        "label": {
+          "en": "Slower",
+          "tr": "Daha yavaş"
+        },
+        "patch": {
+          "pace": "slow"
+        }
+      },
+      {
+        "id": "dynamic",
+        "label": {
+          "en": "More dynamic camera",
+          "tr": "Daha hareketli kamera"
+        },
+        "patch": {
+          "camera": "orbiting camera"
+        }
+      },
+      {
+        "id": "cinematic",
+        "label": {
+          "en": "Cinematic",
+          "tr": "Sinematik"
+        },
+        "patch": {
+          "style": "cinematic"
+        }
+      },
+      {
+        "id": "night",
+        "label": {
+          "en": "Night",
+          "tr": "Gece"
+        },
+        "patch": {
+          "lighting": "night"
+        }
+      },
+      {
+        "id": "simpler",
+        "label": {
+          "en": "Simpler scene",
+          "tr": "Daha sade sahne"
+        },
+        "instruction": "Reduce the scene to one subject and one action."
+      },
+      {
+        "id": "motion-detail",
+        "label": {
+          "en": "More motion detail",
+          "tr": "Hareketi detaylandır"
+        },
+        "instruction": "Describe the subject movement more precisely."
+      }
+    ],
+    "checklist": [
+      "One clear subject and action",
+      "Camera movement stated",
+      "Lighting stated",
+      "Style stated"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 1000,
+        "message": "RouteAI limit: keep the prompt under 1000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [kamera hareketi]: [konu] [eylem], [ortam]. [ışık]. [stil]. [tempo].",
+      "dosDonts": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "suno",
+    "version": 1,
+    "appliesTo": [
+      "suno-ai"
+    ],
+    "modality": "music",
+    "promptLanguage": "user",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "genre",
+        "impact": "high",
+        "question": {
+          "en": "Which genre?",
+          "tr": "Hangi tür?"
+        },
+        "options": [
+          {
+            "id": "pop",
+            "label": {
+              "en": "Pop",
+              "tr": "Pop"
+            },
+            "value": "pop"
+          },
+          {
+            "id": "rock",
+            "label": {
+              "en": "Rock",
+              "tr": "Rock"
+            },
+            "value": "rock"
+          },
+          {
+            "id": "hiphop",
+            "label": {
+              "en": "Hip-hop",
+              "tr": "Hip-hop"
+            },
+            "value": "hip-hop"
+          },
+          {
+            "id": "electronic",
+            "label": {
+              "en": "Electronic",
+              "tr": "Elektronik"
+            },
+            "value": "electronic"
+          },
+          {
+            "id": "acoustic",
+            "label": {
+              "en": "Acoustic",
+              "tr": "Akustik"
+            },
+            "value": "acoustic"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "mood",
+        "impact": "high",
+        "question": {
+          "en": "What mood?",
+          "tr": "Nasıl bir duygu?"
+        },
+        "options": [
+          {
+            "id": "upbeat",
+            "label": {
+              "en": "Upbeat",
+              "tr": "Neşeli"
+            },
+            "value": "upbeat"
+          },
+          {
+            "id": "melancholic",
+            "label": {
+              "en": "Melancholic",
+              "tr": "Hüzünlü"
+            },
+            "value": "melancholic"
+          },
+          {
+            "id": "epic",
+            "label": {
+              "en": "Epic",
+              "tr": "Destansı"
+            },
+            "value": "epic"
+          },
+          {
+            "id": "calm",
+            "label": {
+              "en": "Calm",
+              "tr": "Sakin"
+            },
+            "value": "calm"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "vocals",
+        "impact": "high",
+        "question": {
+          "en": "Vocals?",
+          "tr": "Vokal?"
+        },
+        "options": [
+          {
+            "id": "female",
+            "label": {
+              "en": "Female vocals",
+              "tr": "Kadın vokal"
+            },
+            "value": "female vocals"
+          },
+          {
+            "id": "male",
+            "label": {
+              "en": "Male vocals",
+              "tr": "Erkek vokal"
+            },
+            "value": "male vocals"
+          },
+          {
+            "id": "instrumental",
+            "label": {
+              "en": "Instrumental",
+              "tr": "Enstrümantal"
+            },
+            "value": "instrumental"
+          },
+          {
+            "id": "duet",
+            "label": {
+              "en": "Duet",
+              "tr": "Düet"
+            },
+            "value": "duet"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "tempo",
+        "impact": "medium",
+        "question": {
+          "en": "Tempo?",
+          "tr": "Tempo?"
+        },
+        "options": [
+          {
+            "id": "slow",
+            "label": {
+              "en": "Slow",
+              "tr": "Yavaş"
+            },
+            "value": "slow tempo"
+          },
+          {
+            "id": "mid",
+            "label": {
+              "en": "Medium",
+              "tr": "Orta"
+            },
+            "value": "mid tempo"
+          },
+          {
+            "id": "fast",
+            "label": {
+              "en": "Fast",
+              "tr": "Hızlı"
+            },
+            "value": "fast tempo"
+          }
+        ],
+        "default": "mid"
+      },
+      {
+        "id": "theme",
+        "impact": "medium",
+        "question": {
+          "en": "What is the song about?",
+          "tr": "Şarkı ne hakkında?"
+        },
+        "options": [
+          {
+            "id": "love",
+            "label": {
+              "en": "Love",
+              "tr": "Aşk"
+            },
+            "value": "love"
+          },
+          {
+            "id": "motivation",
+            "label": {
+              "en": "Motivation",
+              "tr": "Motivasyon"
+            },
+            "value": "motivation"
+          },
+          {
+            "id": "jingle",
+            "label": {
+              "en": "A brand jingle",
+              "tr": "Marka jingle'ı"
+            },
+            "value": "brand jingle"
+          },
+          {
+            "id": "story",
+            "label": {
+              "en": "A story",
+              "tr": "Bir hikâye"
+            },
+            "value": "a story"
+          }
+        ],
+        "default": "infer"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "instrumental",
+        "label": {
+          "en": "Instrumental",
+          "tr": "Enstrümantal"
+        },
+        "patch": {
+          "vocals": "instrumental"
+        }
+      },
+      {
+        "id": "faster",
+        "label": {
+          "en": "Faster",
+          "tr": "Daha hızlı"
+        },
+        "patch": {
+          "tempo": "fast tempo"
+        }
+      },
+      {
+        "id": "sadder",
+        "label": {
+          "en": "Sadder",
+          "tr": "Daha hüzünlü"
+        },
+        "patch": {
+          "mood": "melancholic"
+        }
+      },
+      {
+        "id": "energetic",
+        "label": {
+          "en": "More energy",
+          "tr": "Daha enerjik"
+        },
+        "instruction": "Increase energy: stronger drums and a bigger chorus."
+      },
+      {
+        "id": "short-lyrics",
+        "label": {
+          "en": "Shorter lyrics",
+          "tr": "Daha kısa sözler"
+        },
+        "instruction": "Shorten the lyrics to one verse and one chorus."
+      },
+      {
+        "id": "hook",
+        "label": {
+          "en": "Catchier chorus",
+          "tr": "Akılda kalan nakarat"
+        },
+        "instruction": "Make the chorus a short, repeatable hook."
+      }
+    ],
+    "checklist": [
+      "Genre",
+      "Mood",
+      "Vocal type",
+      "Theme or lyrics"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 3000,
+        "message": "RouteAI limit: keep the prompt under 3000 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Stil: [tür], [duygu], [vokal], [tempo]. Sözler: [tema].",
+      "dosDonts": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  },
+  {
+    "id": "text-to-video",
+    "version": 1,
+    "appliesTo": [
+      "google-veo-3",
+      "sora-2-openai"
+    ],
+    "modality": "video",
+    "promptLanguage": "en",
+    "sources": [],
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "slots": [
+      {
+        "id": "scene",
+        "impact": "high",
+        "question": {
+          "en": "What happens in the scene?",
+          "tr": "Sahnede ne oluyor?"
+        },
+        "options": [
+          {
+            "id": "person",
+            "label": {
+              "en": "A person doing something",
+              "tr": "Bir şey yapan bir kişi"
+            },
+            "value": "a person in action"
+          },
+          {
+            "id": "product",
+            "label": {
+              "en": "A product shot",
+              "tr": "Ürün çekimi"
+            },
+            "value": "a product shot"
+          },
+          {
+            "id": "landscape",
+            "label": {
+              "en": "A landscape",
+              "tr": "Bir manzara"
+            },
+            "value": "a landscape"
+          },
+          {
+            "id": "story",
+            "label": {
+              "en": "A short story moment",
+              "tr": "Kısa bir hikâye anı"
+            },
+            "value": "a short story moment"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "camera",
+        "impact": "high",
+        "question": {
+          "en": "How should it be filmed?",
+          "tr": "Nasıl çekilsin?"
+        },
+        "options": [
+          {
+            "id": "wide",
+            "label": {
+              "en": "Wide shot",
+              "tr": "Geniş plan"
+            },
+            "value": "wide shot"
+          },
+          {
+            "id": "close",
+            "label": {
+              "en": "Close-up",
+              "tr": "Yakın plan"
+            },
+            "value": "close-up"
+          },
+          {
+            "id": "tracking",
+            "label": {
+              "en": "Tracking shot",
+              "tr": "Takip çekimi"
+            },
+            "value": "tracking shot"
+          },
+          {
+            "id": "drone",
+            "label": {
+              "en": "Aerial",
+              "tr": "Havadan"
+            },
+            "value": "aerial shot"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "audio",
+        "impact": "high",
+        "question": {
+          "en": "What should we hear?",
+          "tr": "Ne duyulsun?"
+        },
+        "options": [
+          {
+            "id": "dialogue",
+            "label": {
+              "en": "Dialogue",
+              "tr": "Konuşma"
+            },
+            "value": "dialogue"
+          },
+          {
+            "id": "ambient",
+            "label": {
+              "en": "Ambient sound",
+              "tr": "Ortam sesi"
+            },
+            "value": "ambient sound"
+          },
+          {
+            "id": "music",
+            "label": {
+              "en": "Music",
+              "tr": "Müzik"
+            },
+            "value": "music"
+          },
+          {
+            "id": "silent",
+            "label": {
+              "en": "Nothing",
+              "tr": "Ses yok"
+            },
+            "value": "no audio"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "style",
+        "impact": "medium",
+        "question": {
+          "en": "What style?",
+          "tr": "Hangi stil?"
+        },
+        "options": [
+          {
+            "id": "cinematic",
+            "label": {
+              "en": "Cinematic",
+              "tr": "Sinematik"
+            },
+            "value": "cinematic"
+          },
+          {
+            "id": "realistic",
+            "label": {
+              "en": "Realistic",
+              "tr": "Gerçekçi"
+            },
+            "value": "realistic"
+          },
+          {
+            "id": "animated",
+            "label": {
+              "en": "Animated",
+              "tr": "Animasyon"
+            },
+            "value": "animated"
+          },
+          {
+            "id": "vintage",
+            "label": {
+              "en": "Vintage film",
+              "tr": "Eski film"
+            },
+            "value": "vintage film look"
+          }
+        ],
+        "default": "infer"
+      },
+      {
+        "id": "pace",
+        "impact": "low",
+        "question": {
+          "en": "What pace?",
+          "tr": "Tempo nasıl?"
+        },
+        "options": [
+          {
+            "id": "calm",
+            "label": {
+              "en": "Calm",
+              "tr": "Sakin"
+            },
+            "value": "calm"
+          },
+          {
+            "id": "fast",
+            "label": {
+              "en": "Fast",
+              "tr": "Hızlı"
+            },
+            "value": "fast-paced"
+          }
+        ],
+        "default": "calm"
+      }
+    ],
+    "refinements": [
+      {
+        "id": "add-dialogue",
+        "label": {
+          "en": "Add dialogue",
+          "tr": "Konuşma ekle"
+        },
+        "patch": {
+          "audio": "dialogue"
+        }
+      },
+      {
+        "id": "silent",
+        "label": {
+          "en": "No audio",
+          "tr": "Sessiz"
+        },
+        "patch": {
+          "audio": "no audio"
+        }
+      },
+      {
+        "id": "cinematic",
+        "label": {
+          "en": "Cinematic",
+          "tr": "Sinematik"
+        },
+        "patch": {
+          "style": "cinematic"
+        }
+      },
+      {
+        "id": "close-up",
+        "label": {
+          "en": "Close-up",
+          "tr": "Yakın plan"
+        },
+        "patch": {
+          "camera": "close-up"
+        }
+      },
+      {
+        "id": "more-detail",
+        "label": {
+          "en": "More detail",
+          "tr": "Daha detaylı"
+        },
+        "instruction": "Add concrete detail about setting, subject and light."
+      },
+      {
+        "id": "shorter",
+        "label": {
+          "en": "Tighter scene",
+          "tr": "Daha kısa sahne"
+        },
+        "instruction": "Keep a single continuous moment; remove extra beats."
+      }
+    ],
+    "checklist": [
+      "Subject and action",
+      "Setting",
+      "Camera framing",
+      "Audio intent",
+      "Style"
+    ],
+    "validators": [
+      {
+        "id": "length",
+        "type": "maxLength",
+        "value": 1500,
+        "message": "RouteAI limit: keep the prompt under 1500 characters."
+      }
+    ],
+    "body": {
+      "syntax": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [çekim/kamera]: [konu] [eylem], [ortam], [ışık]. [stil]. Ses: [ses].",
+      "dosDonts": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "examples": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+    }
+  }
+]
