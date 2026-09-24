@@ -242,6 +242,7 @@ RouteAI/
 ```bash
 npm run test
 npm run lint
+npm run eval -- --recommender=v1   # altın set (evals/golden.jsonl); sonuç evals/results/'a yazılır
 ```
 
 ---
