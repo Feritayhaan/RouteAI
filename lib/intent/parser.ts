@@ -1,6 +1,6 @@
 import { openai } from '../openai';
 import { ParsedIntent, IntentParsingError } from './types';
-import { detectCategory } from '../keywords';
+import { detectCategory, type Category } from '../keywords';
 
 const SYSTEM_PROMPT = `Sen RouteAI'in intent analyzer'isin. Kullanicinin istegini analiz edip yapilandirilmis JSON donduruyorsun.
 
@@ -337,8 +337,8 @@ export async function parseUserIntent(
 
     return normalized;
 
-  } catch (error: any) {
-    console.error('[Intent Parser Hatası]:', error.message);
+  } catch (error) {
+    console.error('[Intent Parser Hatası]:', error instanceof Error ? error.message : String(error));
 
     // 3. API Hata Verdiyse → kelime bazlı fallback
     const fallbackCategory = detectCategory(query);
@@ -406,12 +406,12 @@ export function extractConstraints(query: string): ParsedIntent['constraints'] {
 // Yardımcı Fonksiyon: Basit Intent Oluşturucu
 function createFallbackIntent(
   query: string,
-  category: string,
+  category: Category,
   queryType: { isMultiStep: boolean; isExplicitSimple: boolean; hints: string[] },
   constraints?: ParsedIntent['constraints']
 ): ParsedIntent {
   return {
-    primaryCategory: category as any,
+    primaryCategory: category,
     secondaryCategories: [],
     confidence: 0.7,
     userGoal: query,

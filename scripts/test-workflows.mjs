@@ -36,7 +36,7 @@ async function runTests() {
              type = 'error';
              mainData = chunk.error;
           }
-        } catch(e) {}
+        } catch {}
       }
 
       console.log(`Sonuç Tipi: ${type}`);

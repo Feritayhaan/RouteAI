@@ -3,7 +3,6 @@ import { describe, it } from 'node:test';
 import { ParsedIntent } from '../intent/types';
 import { Tool, getRankedToolsByIntent, getLocalized, resolveLocale, scoreTool } from '../toolsService';
 import { makePricing } from '../pricing';
-import * as toolsService from '../toolsService';
 
 const baseIntent: ParsedIntent = {
   primaryCategory: 'gorsel',

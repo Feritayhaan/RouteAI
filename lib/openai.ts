@@ -20,6 +20,6 @@ export function getOpenAIClient(): OpenAI {
 // Backwards-compatible export (getter ile lazy)
 export const openai = new Proxy({} as OpenAI, {
     get(_target, prop) {
-        return (getOpenAIClient() as any)[prop];
+        return Reflect.get(getOpenAIClient(), prop);
     },
 });
