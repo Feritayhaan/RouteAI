@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { analyzeIntent } from "@/lib/intent";
-import { generateWorkflow, formatWorkflowForApi } from "@/lib/workflow";
-import { searchTools } from "@/lib/vectorService";
-import { getTools, generateExplanation, getLocalized, resolveLocale } from "@/lib/toolsService";
-import { selectV1Tools } from "@/lib/recommendV1";
+import { formatWorkflowForApi } from "@/lib/workflow";
+import { generateExplanation, getLocalized, resolveLocale } from "@/lib/toolsService";
+import { recommendV1 } from "@/lib/recommendV1";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -60,57 +58,46 @@ export async function POST(req: NextRequest) {
     // Kullanıcı metni loglanmaz; teşhis için uzunluğu yeter.
     console.log('[API] İstek analiz ediliyor, uzunluk:', prompt.length);
 
-    // 1. Niyet Analizi ve Vektör Aramasını PARALEL çalıştır
-    const [intentResult, searchResults] = await Promise.all([
-      analyzeIntent(prompt),
-      searchTools(prompt, 8),
-    ]);
+    // ============================================================
+    // Niyet + arama + workflow dalı + aday seçimi lib/recommendV1.ts'te:
+    // scripts/run-queries.mjs, evals/run.mjs ve testler de aynı kodu çalıştırıyor.
+    // Burada kalan tek iş sonucu HTTP yanıtına çevirmek.
+    // ============================================================
+    const result = await recommendV1(prompt, pricingFilter);
 
-    // Eğer hata varsa erken dön (searchResults kullanılmaz)
-    if ('code' in intentResult) {
-      if (intentResult.code === 'LOW_CONFIDENCE') {
+    // Eğer hata varsa erken dön
+    if (result.kind === 'error') {
+      const intentError = result.error;
+      if (intentError.code === 'LOW_CONFIDENCE') {
         return NextResponse.json({
-          error: intentResult.message,
-          suggestions: intentResult.suggestions,
+          error: intentError.message,
+          suggestions: intentError.suggestions,
           isLowConfidence: true,
         }, { status: 200 });
       }
 
       return NextResponse.json({
-        error: intentResult.message,
-        suggestions: intentResult.suggestions,
+        error: intentError.message,
+        suggestions: intentError.suggestions,
       }, { status: 400 });
     }
 
-    const intent = intentResult;
+    const { intent } = result;
 
-    // ============================================================
-    // GÖREV 4: Workflow kontrolü — LAZY, sadece multi-step ise çağrılır
-    // ============================================================
-    if (intent.complexity === 'multi-step') {
-      // generateWorkflow sadece burada çağrılır, simple sorgularda hiç çalışmaz
-      const workflow = await generateWorkflow(intent, prompt);
-      if (workflow) {
-        return NextResponse.json({
-          type: 'workflow',
-          category: intent.primaryCategory,
-          workflow: formatWorkflowForApi(workflow, resolveLocale(intent.constraints?.language)),
-        });
-      }
-      // workflow null döndüyse simple recommendation'a düş
+    // Workflow — sadece multi-step niyette üretilir (lazy, recommendV1 içinde)
+    if (result.kind === 'workflow') {
+      return NextResponse.json({
+        type: 'workflow',
+        category: intent.primaryCategory,
+        workflow: formatWorkflowForApi(result.workflow, resolveLocale(intent.constraints?.language)),
+      });
     }
 
-    // ============================================================
-    // 3. VEKTÖR ARAMASI + EŞLEŞTİRME
-    // Aday seçimi, filtreler ve sıralama lib/recommendV1.ts'te: testler ve
-    // scripts/run-queries.mjs de aynı kodu çalıştırıyor.
-    // ============================================================
-    const allTools = await getTools();
-    const selection = selectV1Tools({ intent, searchResults, allTools, pricingFilter });
-
-    if (!selection) {
+    if (result.kind === 'empty') {
       return NextResponse.json({ error: "Bu istek için uygun araç bulunamadı" });
     }
+
+    const { searchResults, selection } = result;
 
     // ============================================================
     // GÖREV 5: Streaming NDJSON — ilk byte hızı maksimize

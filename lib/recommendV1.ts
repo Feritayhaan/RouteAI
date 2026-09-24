@@ -1,16 +1,23 @@
-// v1 öneri yolunun aday seçimi — TEK yer.
+// v1 öneri yolu — TEK yer.
 //
 // Bu mantık app/api/recommend/route.ts'in içindeydi ve scripts/run-queries.mjs
 // onun elle tutulan bir kopyasını taşıyordu. Route dosyası Next.js kuralı
 // gereği bu fonksiyonu dışarı açamadığı için test edilemiyordu; kopya da
-// zamanla kayıyordu. Artık route, bench scripti ve testler aynı kodu çalıştırır.
+// zamanla kayıyordu. Artık route, bench scripti, eval (evals/run.mjs) ve
+// testler aynı kodu çalıştırır.
 //
-// Kapsam: arama sonucu + niyet + katalog -> ana öneri ve alternatifler.
-// Niyet analizi, arama ve workflow dalı hâlâ çağıranda (route.ts).
+// İki katman:
+//  - recommendV1(): rate limit ve istek doğrulaması SONRASI tüm akış —
+//    niyet + arama + workflow dalı + aday seçimi. HTTP yanıtını kurmak
+//    çağıranın işi (route.ts); burası sadece sonucu döner.
+//  - selectV1Tools(): arama sonucu + niyet + katalog -> ana öneri ve alternatifler.
 
-import type { ParsedIntent } from './intent/types';
-import type { SearchResult } from './vectorService';
-import type { Tool } from './toolsService';
+import type { IntentParsingError, ParsedIntent } from './intent/types';
+import type { GeneratedWorkflow } from './workflow/workflowTypes';
+import { analyzeIntent } from './intent/index';
+import { generateWorkflow } from './workflow/workflowGenerator';
+import { searchTools, type SearchResult } from './vectorService';
+import { getTools, type Tool } from './toolsService';
 import { PricingFilter, getPricingModel, isPaidOnly, matchesPricingFilter } from './pricing';
 import { rankTools } from './ranking';
 
@@ -154,4 +161,46 @@ export function selectV1Tools({ intent, searchResults, allTools, pricingFilter }
     .slice(0, 3);
 
   return { main, alternatives, relaxedConstraint, usedFallback };
+}
+
+// ============================================================
+// Tüm v1 akışı: rate limit ve istek doğrulaması SONRASI.
+// ============================================================
+
+export type V1Result =
+  /** Niyet çıkarılamadı. LOW_CONFIDENCE = kullanıcıdan daha fazla ayrıntı istenir. */
+  | { kind: 'error'; error: IntentParsingError }
+  | { kind: 'workflow'; intent: ParsedIntent; workflow: GeneratedWorkflow }
+  /** Kısıtlar gevşetildiği halde uygun araç kalmadı. */
+  | { kind: 'empty'; intent: ParsedIntent; searchResults: SearchResult[] }
+  | { kind: 'simple'; intent: ParsedIntent; searchResults: SearchResult[]; selection: V1Selection };
+
+export async function recommendV1(prompt: string, pricingFilter?: PricingFilter): Promise<V1Result> {
+  // Niyet analizi ve arama PARALEL
+  const [intentResult, searchResults] = await Promise.all([
+    analyzeIntent(prompt),
+    searchTools(prompt, 8),
+  ]);
+
+  if ('code' in intentResult) {
+    return { kind: 'error', error: intentResult };
+  }
+  const intent = intentResult;
+
+  // Workflow LAZY: sadece multi-step niyette üretilir. null dönerse
+  // (şablon yok, AI üretimi de başarısız) tek araç önerisine düşülür.
+  if (intent.complexity === 'multi-step') {
+    const workflow = await generateWorkflow(intent, prompt);
+    if (workflow) {
+      return { kind: 'workflow', intent, workflow };
+    }
+  }
+
+  const allTools = await getTools();
+  const selection = selectV1Tools({ intent, searchResults, allTools, pricingFilter });
+  if (!selection) {
+    return { kind: 'empty', intent, searchResults };
+  }
+
+  return { kind: 'simple', intent, searchResults, selection };
 }
