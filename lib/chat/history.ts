@@ -29,6 +29,8 @@ function cardSummary(card: Card): string {
       return `[workflow ${card.templateId}]`;
     case 'prompt':
       return `[prompt built for ${card.productName}]`;
+    case 'prompt_question':
+      return `[asked details for a ${card.productName} prompt]`;
   }
 }
 
@@ -40,7 +42,8 @@ export function toApiMessages(messages: UIMessage[]): ApiMessage[] {
     const content = [text, ...cards.map(cardSummary)].filter(Boolean).join('\n').slice(0, 4000);
     if (!content) continue;
     const last = cards.at(-1);
-    out.push({ role: m.role, content, ...(m.role === 'assistant' && last ? { kind: last.type } : {}) });
+    const kind = last ? (last.type === 'prompt_question' ? 'prompt' : last.type) : undefined;
+    out.push({ role: m.role, content, ...(m.role === 'assistant' && kind ? { kind } : {}) });
   }
   return out;
 }

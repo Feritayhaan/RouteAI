@@ -55,13 +55,43 @@ function cards(locale: Locale): Card[] {
     },
     {
       type: "prompt",
-      productId: "example-a", productName: tr ? "Örnek Araç A" : "Example Tool A", productUrl: example("a"),
-      guideId: "mock", guideVersion: 1, draft: true,
-      prompt: "minimal flat logo for a neighborhood bakery named \"Maya's Oven\", warm terracotta and cream, hand-drawn wheat icon, readable serif wordmark, white background --ar 1:1",
-      settings: [{ key: "aspect ratio", value: "1:1" }, { key: "style", value: "flat / vector" }],
+      promptSessionId: "p_preview", productId: "example-a", productName: tr ? "Örnek Araç A" : "Example Tool A", productUrl: example("a"),
+      guideId: "midjourney", guideVersion: 1, draft: true, versionN: 1, refinementsLeft: 10,
+      filledBy: { user: 2, inferred: 1, default: 2 },
+      variants: [
+        {
+          id: "safe", negativePrompt: null, validation: { status: "passed", errors: [] },
+          prompt: "minimal flat logo for a neighborhood bakery named \"Maya's Oven\", warm terracotta and cream, hand-drawn wheat icon, readable serif wordmark, white background --ar 1:1",
+          settings: [{ key: "aspect ratio", value: "1:1" }],
+        },
+        {
+          id: "creative", negativePrompt: "photo, clutter", validation: { status: "unchecked", errors: [tr ? "En-boy oranı parametresi ekle." : "Add an aspect ratio parameter."] },
+          prompt: "playful badge logo for \"Maya's Oven\": a smiling loaf with a tiny chef hat, retro 70s lettering, sunset palette",
+          settings: [],
+        },
+      ],
+      assumptions: [
+        {
+          slotId: "mood", value: "bright and cheerful", why: tr ? "Belirtilmedi; fırın için sıcak bir hava seçtim." : "Not specified; picked a warm feel for a bakery.",
+          question: tr ? "Nasıl bir hava?" : "What mood?",
+          options: [{ id: "bright", label: tr ? "Aydınlık" : "Bright", value: "bright and cheerful" }, { id: "soft", label: tr ? "Yumuşak, pastel" : "Soft, pastel", value: "soft pastel" }],
+        },
+      ],
+      refinements: [
+        { id: "more-detail", label: tr ? "Daha detaylı" : "More detail", kind: "guide", slotId: null, value: null, instruction: "..." },
+        { id: "square", label: tr ? "Kare" : "Square", kind: "guide", slotId: "aspect", value: "1:1", instruction: null },
+        { id: "suggested-1", label: tr ? "Tek renk dene" : "Try one color", kind: "suggested", slotId: null, value: null, instruction: "..." },
+      ],
       howToUse: tr
         ? ["Promptu kopyala.", "Aracı aç ve yeni bir görsel oluştur.", "Beğendiğin sonucu büyüt ve indir."]
         : ["Copy the prompt.", "Open the tool and create a new image.", "Upscale and download the one you like."],
+    },
+    {
+      type: "prompt_question", promptSessionId: "p_preview_q", guideId: "midjourney", productName: tr ? "Örnek Araç A" : "Example Tool A",
+      questions: [
+        { slotId: "style", question: tr ? "Nasıl bir görsel stil?" : "What visual style?", options: [{ id: "photo", label: tr ? "Fotoğraf" : "Photo" }, { id: "illustration", label: tr ? "İllüstrasyon" : "Illustration" }], allowFreeText: true },
+        { slotId: "aspect", question: tr ? "Hangi format?" : "Which format?", options: [{ id: "square", label: tr ? "Kare 1:1" : "Square 1:1" }, { id: "wide", label: tr ? "Yatay 16:9" : "Wide 16:9" }], allowFreeText: true },
+      ],
     },
     { type: "recommendation", mode: "catalog", taskId: "3d.generate", noEvidence: true, items: [] },
   ]
@@ -80,12 +110,13 @@ export default function CardsPreview({ locale }: { locale: Locale }) {
     },
     { id: "a3", role: "assistant", status: "done", parts: [{ type: "card", card: all[2] }] },
     { id: "a4", role: "assistant", status: "done", parts: [{ type: "card", card: all[3] }] },
+    { id: "a4b", role: "assistant", status: "done", parts: [{ type: "card", card: all[4] }] },
     { id: "a5", role: "assistant", status: "error", parts: [] },
   ]
   const click = (id: string, name: string) => ({ productId: id, productName: name, taskId: "image.logo", clickedAt: 0 })
 
   return (
-    <ChatContext.Provider value={{ locale, dict, sessionId: "preview-session", onToolOpen: () => {}, send: () => {}, busy: false }}>
+    <ChatContext.Provider value={{ locale, dict, sessionId: "preview-session", onToolOpen: () => {}, onPromptCopied: () => {}, send: () => {}, busy: false }}>
       <Tooltip.Provider>
         <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6">
           <p className="rounded-xl border border-dashed border-amber-500 p-3 text-sm font-semibold text-amber-700 dark:text-amber-300">

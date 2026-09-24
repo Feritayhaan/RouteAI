@@ -8,6 +8,7 @@ import { useChatContext } from "./ChatContext"
 import RecommendationCard from "./RecommendationCard"
 import QuestionCard from "./QuestionCard"
 import PromptCard from "./PromptCard"
+import PromptQuestionCard from "./PromptQuestionCard"
 import WorkflowCard from "./WorkflowCard"
 
 function CardView({ card, active }: { card: Card; active: boolean }) {
@@ -18,6 +19,8 @@ function CardView({ card, active }: { card: Card; active: boolean }) {
       return <QuestionCard card={card} active={active} />
     case "prompt":
       return <PromptCard card={card} />
+    case "prompt_question":
+      return <PromptQuestionCard card={card} />
     case "workflow":
       return <WorkflowCard card={card} />
   }

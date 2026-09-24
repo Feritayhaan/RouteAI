@@ -15,6 +15,8 @@ export interface ChatContextValue {
   sessionId: string
   /** Kullanıcı bir aracı açtı: iş sonucu sorusu için kaydedilir. */
   onToolOpen: (tool: ToolOpen) => void
+  /** Prompt kopyalandı: iş sonucu kaydı bu prompt oturumuna bağlanır. */
+  onPromptCopied: (promptSessionId: string) => void
   /** Kart içinden kullanıcı mesajı gönderir (soru kartı cevabı). */
   send: (text: string) => void
   busy: boolean

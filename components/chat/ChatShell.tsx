@@ -53,9 +53,13 @@ export default function ChatShell({ locale }: { locale: Locale }) {
     recordToolClick(localStore(), { ...tool, clickedAt: Date.now(), ...(lastPromptSession.current ? { promptSessionId: lastPromptSession.current } : {}) })
   }, [])
 
+  const onPromptCopied = useCallback((promptSessionId: string) => {
+    lastPromptSession.current = promptSessionId
+  }, [])
+
   const ctx: ChatContextValue = useMemo(
-    () => ({ locale, dict, sessionId, onToolOpen, send: (t: string) => void send(t), busy }),
-    [locale, dict, sessionId, onToolOpen, send, busy]
+    () => ({ locale, dict, sessionId, onToolOpen, onPromptCopied, send: (t: string) => void send(t), busy }),
+    [locale, dict, sessionId, onToolOpen, onPromptCopied, send, busy]
   )
 
   const submit = (e?: FormEvent) => {
