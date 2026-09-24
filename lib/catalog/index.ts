@@ -9,17 +9,20 @@ import productsJson from '../../data/products.json';
 import modelsJson from '../../data/models.json';
 import briefsJson from '../../data/briefs.json';
 import reviewsJson from '../../data/reviews.json';
+import signalsJson from '../../data/signals.json';
 import type { z } from 'zod';
 import {
   briefsFileSchema,
   modelsFileSchema,
   productsFileSchema,
   reviewsFileSchema,
+  signalsFileSchema,
   tasksFileSchema,
   type Brief,
   type ExpertReview,
   type Model,
   type Product,
+  type Signal,
   type Task,
 } from './schema';
 
@@ -29,6 +32,7 @@ export interface Catalog {
   models: Model[];
   briefs: Brief[];
   reviews: ExpertReview[];
+  signals: Signal[];
   tasksById: Map<string, Task>;
   productsById: Map<string, Product>;
   /** Sadece status 'active' ürünler. */
@@ -51,12 +55,14 @@ export function buildCatalog(raw: {
   models: unknown;
   briefs: unknown;
   reviews: unknown;
+  signals: unknown;
 }): Catalog {
   const tasks = parse<Task[]>('tasks.json', tasksFileSchema, raw.tasks);
   const products = parse<Product[]>('products.json', productsFileSchema, raw.products);
   const models = parse<Model[]>('models.json', modelsFileSchema, raw.models);
   const briefs = parse<Brief[]>('briefs.json', briefsFileSchema, raw.briefs);
   const reviews = parse<ExpertReview[]>('reviews.json', reviewsFileSchema, raw.reviews);
+  const signals = parse<Signal[]>('signals.json', signalsFileSchema, raw.signals);
 
   const tasksById = new Map(tasks.map((t) => [t.id, t]));
   const productsById = new Map(products.map((p) => [p.id, p]));
@@ -70,7 +76,7 @@ export function buildCatalog(raw: {
     }
   }
 
-  return { tasks, products, models, briefs, reviews, tasksById, productsById, productsByTask, modelsById };
+  return { tasks, products, models, briefs, reviews, signals, tasksById, productsById, productsByTask, modelsById };
 }
 
 let cached: Catalog | null = null;
@@ -83,6 +89,7 @@ export function loadCatalog(): Catalog {
       models: modelsJson,
       briefs: briefsJson,
       reviews: reviewsJson,
+      signals: signalsJson,
     });
   }
   return cached;

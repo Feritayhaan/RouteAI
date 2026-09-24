@@ -36,7 +36,7 @@ describe('katalog (lib/catalog)', () => {
       rubric: { quality: 6, ease: 5, value: 4, speed: 5 }, notes: {}, reviewer: 'test', date: '2026-01-01',
     };
     assert.throws(
-      () => buildCatalog({ tasks: tasksJson, products: productsJson, models: [], briefs: briefsJson, reviews: [badReview] }),
+      () => buildCatalog({ tasks: tasksJson, products: productsJson, models: [], briefs: briefsJson, reviews: [badReview], signals: [] }),
       /reviews\.json geçersiz/
     );
   });
@@ -45,7 +45,7 @@ describe('katalog (lib/catalog)', () => {
     const products = structuredClone(productsJson) as { pricing: { free: boolean } }[];
     products[0].pricing.free = true; // Midjourney: model 'paid'
     assert.throws(
-      () => buildCatalog({ tasks: tasksJson, products, models: [], briefs: briefsJson, reviews: [] }),
+      () => buildCatalog({ tasks: tasksJson, products, models: [], briefs: briefsJson, reviews: [], signals: [] }),
       /products\.json geçersiz/
     );
   });

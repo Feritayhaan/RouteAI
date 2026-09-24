@@ -15,6 +15,7 @@ import {
   modelsFileSchema,
   productsFileSchema,
   reviewsFileSchema,
+  signalsFileSchema,
   tasksFileSchema,
 } from '../lib/catalog/schema.ts';
 import { isKnownArena } from '../lib/catalog/benchmarkKeys.ts';
@@ -52,6 +53,7 @@ const products = check('products.json', productsFileSchema);
 const models = check('models.json', modelsFileSchema);
 const briefs = check('briefs.json', briefsFileSchema);
 const reviews = check('reviews.json', reviewsFileSchema);
+const signals = check('signals.json', signalsFileSchema);
 
 uniqueIds('tasks.json', tasks);
 uniqueIds('products.json', products);
@@ -105,6 +107,16 @@ reviews.forEach((r, i) => {
   if (product && !product.tasks.includes(r.taskId)) warnings.push(`${where}: ürünün görev listesinde bu görev yok`);
 });
 
+// Sinyaller: ürün + görev mevcut, çift tekrar yok
+const signalKeys = new Set();
+for (const s of signals) {
+  const k = `${s.productId}/${s.taskId}`;
+  if (signalKeys.has(k)) errors.push(`signals.json: tekrar eden ${k}`);
+  signalKeys.add(k);
+  if (!productsById.has(s.productId)) errors.push(`signals.json ${k}: olmayan ürün`);
+  if (!taskIds.has(s.taskId)) errors.push(`signals.json ${k}: olmayan görev`);
+}
+
 // Golden set: görevler ve kabul edilen araçlar katalogla uyumlu
 const goldenPath = path.join(ROOT, 'evals/golden.jsonl');
 if (existsSync(goldenPath)) {
@@ -125,7 +137,7 @@ for (const { id, n } of counts) {
   if (n === 0) warnings.push(`aktif ürünü olmayan görev: ${id}`);
 }
 
-console.log(`[validate:catalog] ${tasks.length} görev, ${products.length} ürün (${active.length} aktif), ${models.length} model, ${briefs.length} brif, ${reviews.length} değerlendirme`);
+console.log(`[validate:catalog] ${tasks.length} görev, ${products.length} ürün (${active.length} aktif), ${models.length} model, ${briefs.length} brif, ${reviews.length} değerlendirme, ${signals.length} sinyal`);
 const thin = counts.filter((c) => c.n === 1).map((c) => c.id);
 if (thin.length) console.log(`[validate:catalog] tek aktif ürünlü görevler (${thin.length}): ${thin.join(', ')}`);
 for (const w of warnings) console.log(`UYARI: ${w}`);

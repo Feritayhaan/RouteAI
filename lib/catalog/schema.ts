@@ -192,6 +192,24 @@ export const expertReviewSchema = z.object({
 export type ExpertReview = z.infer<typeof expertReviewSchema>;
 
 // ------------------------------------------------------------------
+// Signal (data/signals.json) — kendi gözlemlerimizin toplamı.
+// Sadece scripts/aggregate-signals.mjs (P8) yazar.
+// ------------------------------------------------------------------
+
+const count = z.number().int().nonnegative();
+
+export const signalSchema = z.object({
+  productId: idSchema,
+  taskId: taskIdSchema,
+  outcomes: z.object({ yes: count, partial: count, no: count }),
+  comparisons: z.object({ wins: count, losses: count }),
+  votes: z.object({ up: count, down: count }),
+  /** En yeni gözlemin tarihi. */
+  lastAt: dateStringSchema,
+});
+export type Signal = z.infer<typeof signalSchema>;
+
+// ------------------------------------------------------------------
 // Dosya şemaları
 // ------------------------------------------------------------------
 
@@ -200,3 +218,4 @@ export const modelsFileSchema = z.array(modelSchema);
 export const productsFileSchema = z.array(productSchema);
 export const briefsFileSchema = z.array(briefSchema);
 export const reviewsFileSchema = z.array(expertReviewSchema);
+export const signalsFileSchema = z.array(signalSchema);
