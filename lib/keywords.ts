@@ -17,7 +17,10 @@ export const keywords: Record<Category, string[]> = {
     video: [
         "video", "film", "animasyon", "animation", "klip", "clip", "movie",
         "reel", "shorts", "video üret", "video yap", "video oluştur",
-        "video çek", "video düzenle", "text to video", "metinden video", "hareketli"
+        "video çek", "video düzenle", "text to video", "metinden video", "hareketli",
+        // Altyazı bir video işi. Bunlar olmadan "YouTube altyazı çevirme" hiçbir
+        // kategoriye eşleşmiyor ve LLM kademesine düşüyordu.
+        "altyazı", "altyazi", "subtitle", "subtitles", "caption", "captions"
     ],
     veri: ["veri", "analiz", "data", "excel", "chart", "istatistik", "statistics", "dashboard"],
     kod: ["kod", "code", "programlama", "coding", "yazılım", "software", "geliştirme", "development", "python", "javascript", "react", "github", "api", "function", "algoritma"]

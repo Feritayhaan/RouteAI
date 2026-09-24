@@ -9,7 +9,7 @@ for (const key of Object.keys(process.env)) {
 }
 
 const { detectCategory } = await import('../keywords');
-const { extractConstraints } = await import('../intent/parser');
+const { extractConstraints, parseUserIntent } = await import('../intent/parser');
 const { analyzeIntent } = await import('../intent/index');
 const { searchTools, searchTerms, wordsMatch } = await import('../vectorService');
 const { getTools } = await import('../toolsService');
@@ -47,6 +47,37 @@ describe('v1 yedek yolu: ana öneri', () => {
   it('"python kodumda hata var" -> ana önerinin kategorisi kod', async () => {
     const { main } = await mainRecommendation('python kodumda hata var');
     assert.strictEqual(main.category, 'kod');
+  });
+});
+
+describe('altyazı sorguları', () => {
+  it('LLM çağrılmadan (Kademe 1) video kategorisine düşer', async () => {
+    // LLM yolu gerçekten denenebilsin diye sahte bir anahtar verilir ve tüm ağ
+    // çağrıları yakalanır: Kademe 1 tutmazsa parser OpenAI'a istek atar ve
+    // `calls` boş kalmaz.
+    const originalFetch = globalThis.fetch;
+    const calls: string[] = [];
+    globalThis.fetch = (async (input: string | URL | Request) => {
+      calls.push(input instanceof Request ? input.url : String(input));
+      return new Response('{}', { status: 400 });
+    }) as typeof fetch;
+    process.env.OPENAI_API_KEY = 'sk-test-kullanilmamali';
+
+    try {
+      const categories: Record<string, string> = {};
+      for (const query of ['YouTube altyazı çevirme', 'youtube videosu için altyazı']) {
+        const intent = await parseUserIntent(query);
+        categories[query] = 'code' in intent ? intent.code : intent.primaryCategory;
+      }
+      assert.deepStrictEqual(calls, [], 'OpenAI çağrısı yapılmamalı');
+      assert.deepStrictEqual(categories, {
+        'YouTube altyazı çevirme': 'video',
+        'youtube videosu için altyazı': 'video',
+      });
+    } finally {
+      globalThis.fetch = originalFetch;
+      delete process.env.OPENAI_API_KEY;
+    }
   });
 });
 
