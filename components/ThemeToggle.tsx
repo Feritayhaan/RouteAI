@@ -7,7 +7,17 @@ import { Monitor, Sun, Moon } from "lucide-react"
 // Dinlenecek bir değişiklik yok: değer sadece sunucu/istemci ayrımından gelir.
 const subscribeNoop = () => () => {}
 
-export default function ThemeToggle() {
+interface ThemeLabels {
+    system: string
+    light: string
+    dark: string
+    /** "{name}" yer tutuculu erişilebilir ad, ör. "Tema: {name}" */
+    label: string
+}
+
+const DEFAULT_LABELS: ThemeLabels = { system: "Sistem", light: "Aydınlık", dark: "Karanlık", label: "Tema: {name}" }
+
+export default function ThemeToggle({ labels = DEFAULT_LABELS, inline = false }: { labels?: ThemeLabels; inline?: boolean } = {}) {
     // Tema yalnızca istemcide bilinir (next-themes). Sunucuda ve hidrasyon
     // sırasında false (SSR çıktısıyla aynı), sonra true. Eskiden useEffect
     // içinde setMounted(true) ile yapılıyordu; sonuç aynı, effect'te setState yok.
@@ -41,19 +51,20 @@ export default function ThemeToggle() {
     }
 
     const getLabel = () => {
-        if (theme === "system") return "Sistem"
-        if (theme === "light") return "Aydınlık"
-        return "Karanlık"
+        if (theme === "system") return labels.system
+        if (theme === "light") return labels.light
+        return labels.dark
     }
 
     return (
-        <div className="fixed top-6 right-6 z-40 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className={inline ? "relative" : "fixed top-6 right-6 z-40 animate-in fade-in slide-in-from-top-4 duration-500"}>
             <button
                 onClick={cycleTheme}
                 className="group relative bg-card/80 backdrop-blur-lg border border-border/50 rounded-2xl shadow-2xl p-3 
                            hover:bg-muted/80 hover:scale-105 active:scale-95
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
                            transition-all duration-300 ease-out"
-                aria-label={`Tema: ${getLabel()}`}
+                aria-label={labels.label.replace("{name}", getLabel())}
             >
                 {/* İkon container - animasyonlu */}
                 <div className="relative w-5 h-5 transition-transform duration-300 group-hover:rotate-12">

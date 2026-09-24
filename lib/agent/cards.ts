@@ -2,6 +2,7 @@
 // veriden çizer: ürün adı, puan, fiyat ve tarih sadece katalogdan gelir.
 
 import { z } from 'zod';
+import { toolPricingSchema } from '../catalog/schema';
 
 const reasonSchema = z.object({ code: z.string(), params: z.record(z.unknown()) });
 
@@ -21,8 +22,10 @@ export const recommendationItemSchema = z.object({
   confidence: z.enum(['high', 'medium', 'low']).nullable(),
   ownN: z.number().nullable(),
   benchmarkShare: z.number().nullable(),
+  /** Kanıt payları (0–1): kullanıcı sonuçları, uzman, benchmark. v1 yedeğinde null. */
+  shares: z.object({ users: z.number(), expert: z.number(), benchmark: z.number() }).nullable(),
   reasons: z.array(reasonSchema),
-  pricing: z.record(z.unknown()),
+  pricing: toolPricingSchema,
   dataDate: z.string().nullable(),
   sources: z.array(cardSourceSchema),
 });

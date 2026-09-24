@@ -25,6 +25,7 @@ function item(tool: Tool): RecommendationItem {
     confidence: null,
     ownN: null,
     benchmarkShare: null,
+    shares: null,
     reasons: [],
     pricing: { ...tool.pricing },
     dataDate: tool.pricing?.priceCheckedAt ?? null,

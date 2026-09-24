@@ -179,6 +179,7 @@ export function toRecommendationCard(result: SearchResult): RecommendationCard {
       confidence: item.score.confidence,
       ownN: item.score.ownN,
       benchmarkShare: item.score.benchmarkShare,
+      shares: { users: item.score.ownShare, expert: item.score.expertShare, benchmark: item.score.benchmarkShare },
       reasons: [...item.score.reasons, ...item.fitReasons],
       pricing: { ...item.product.pricing },
       dataDate: item.score.dataDate,

@@ -1,27 +1,34 @@
-import { Metadata } from "next"
-import HomeClient from "@/components/HomeClient"
+import type { Metadata } from "next"
+import ChatShell from "@/components/chat/ChatShell"
+import { getDictionary } from "@/lib/i18n"
+import { currentLocale } from "@/lib/i18n/server"
 
-export const metadata: Metadata = {
-  title: "RouteAI - Yapay Zeka Navigatörün",
-  description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
-  openGraph: {
-    title: "RouteAI - Yapay Zeka Navigatörün",
-    description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
-    type: "website",
-    locale: "tr_TR",
-    siteName: "RouteAI",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "RouteAI - Yapay Zeka Navigatörün",
-    description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+type Props = { searchParams: Promise<{ lang?: string | string[] }> }
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const locale = await currentLocale((await searchParams).lang)
+  const dict = getDictionary(locale)
+  return {
+    title: { absolute: dict.meta.title },
+    description: dict.meta.description,
+    alternates: { canonical: `/?lang=${locale}`, languages: { en: "/?lang=en", tr: "/?lang=tr" } },
+    openGraph: {
+      title: dict.meta.title,
+      description: dict.meta.description,
+      type: "website",
+      locale: dict.meta.ogLocale,
+      siteName: "RouteAI",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.meta.title,
+      description: dict.meta.description,
+    },
+    robots: { index: true, follow: true },
+  }
 }
 
-export default function Home() {
-  return <HomeClient />
+export default async function Home({ searchParams }: Props) {
+  const locale = await currentLocale((await searchParams).lang)
+  return <ChatShell key={locale} locale={locale} />
 }

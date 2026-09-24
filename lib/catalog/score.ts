@@ -61,6 +61,9 @@ export interface ScoreResult {
   ownN: number;
   /** Benchmark'ın paydadaki payı (0–1); kartta gösterilir. */
   benchmarkShare: number;
+  /** Uzman değerlendirmesinin ve kendi gözlemlerin payı (0–1); üçünün toplamı 1 (kanıt yoksa 0). */
+  expertShare: number;
+  ownShare: number;
   components: {
     B?: number;
     E?: number;
@@ -191,6 +194,8 @@ export function scoreProduct(product: Product, task: Task, ctx: ScoreContext): S
     hasEvidence,
     ownN: round(ownN, 2),
     benchmarkShare: round(benchmarkShare, 4),
+    expertShare: round(denominator > 0 ? ke / denominator : 0, 4),
+    ownShare: round(denominator > 0 ? ownN / denominator : 0, 4),
     components: {
       ...(B !== undefined ? { B: round(B, 4) } : {}),
       ...(E !== undefined ? { E: round(E, 4) } : {}),
