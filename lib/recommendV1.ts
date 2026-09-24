@@ -175,10 +175,14 @@ export type V1Result =
   | { kind: 'empty'; intent: ParsedIntent; searchResults: SearchResult[] }
   | { kind: 'simple'; intent: ParsedIntent; searchResults: SearchResult[]; selection: V1Selection };
 
-export async function recommendV1(prompt: string, pricingFilter?: PricingFilter): Promise<V1Result> {
+export async function recommendV1(
+  prompt: string,
+  pricingFilter?: PricingFilter,
+  options: { allowLLM?: boolean } = {}
+): Promise<V1Result> {
   // Niyet analizi ve arama PARALEL
   const [intentResult, searchResults] = await Promise.all([
-    analyzeIntent(prompt),
+    analyzeIntent(prompt, options),
     searchTools(prompt, 8),
   ]);
 
@@ -189,7 +193,9 @@ export async function recommendV1(prompt: string, pricingFilter?: PricingFilter)
 
   // Workflow LAZY: sadece multi-step niyette üretilir. null dönerse
   // (şablon yok, AI üretimi de başarısız) tek araç önerisine düşülür.
-  if (intent.complexity === 'multi-step') {
+  // allowLLM false iken workflow da atlanır: şablon bulunamazsa AI üretimine
+  // gidiyor, bu da OpenAI çağrısı demek.
+  if (intent.complexity === 'multi-step' && options.allowLLM !== false) {
     const workflow = await generateWorkflow(intent, prompt);
     if (workflow) {
       return { kind: 'workflow', intent, workflow };
