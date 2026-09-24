@@ -35,8 +35,9 @@ export async function getCachedIntent(
     const key = getCacheKey(query);
     const cached = await kv.get<ParsedIntent>(key);
     
+    // Kullanıcı metni loglanmaz; sadece uzunluğu.
     if (cached) {
-      console.log('[Intent Cache] HIT:', query);
+      console.log('[Intent Cache] HIT, sorgu uzunluğu:', query.length);
     }
     
     return cached;
@@ -53,7 +54,7 @@ export async function setCachedIntent(
   try {
     const key = getCacheKey(query);
     await kv.set(key, intent, { ex: CACHE_TTL });
-    console.log('[Intent Cache] SET:', query);
+    console.log('[Intent Cache] SET, sorgu uzunluğu:', query.length);
   } catch (error) {
     console.warn('[Intent Cache] Set error:', error);
   }

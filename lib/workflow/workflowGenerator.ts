@@ -125,7 +125,8 @@ export async function generateWorkflow(
     const template = findMatchingTemplate(userQuery, intent.workflowHints, intent);
 
     if (!template) {
-        console.log('[Workflow] No matching template found, trying AI generation for:', userQuery);
+        // Kullanıcı metni loglanmaz; sadece uzunluğu.
+        console.log('[Workflow] No matching template found, trying AI generation; query length:', userQuery.length);
         return generateWorkflowWithAI(intent, userQuery);
     }
 
@@ -307,7 +308,8 @@ async function generateWorkflowWithAI(
 
     const cached = await getCachedWorkflow(pseudoTemplateId, intent.primaryCategory, constraintsKey);
     if (cached) {
-        console.log('[Workflow AI] Cache HIT:', pseudoTemplateId);
+        // pseudoTemplateId sorgunun kendisinden türüyor: loglanmaz.
+        console.log('[Workflow AI] Cache HIT; query length:', userQuery.length);
         return cached;
     }
 
@@ -445,7 +447,7 @@ async function generateWorkflowWithAI(
     // Cache'e yaz (fire-and-forget)
     setCachedWorkflow(pseudoTemplateId, intent.primaryCategory, result, constraintsKey).catch(() => {});
 
-    console.log('[Workflow AI] Generated', result.totalSteps, 'steps for:', userQuery);
+    console.log('[Workflow AI] Generated', result.totalSteps, 'steps; query length:', userQuery.length);
     return result;
 }
 
