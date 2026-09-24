@@ -2,7 +2,7 @@
 //
 //   npm run eval                        # varsayılan: --recommender=v1
 //   npm run eval -- --recommender=v2-oracle   # görevi bilen RouteAI Skoru sıralaması
-//   npm run eval -- --recommender=v2
+//   npm run eval -- --recommender=v2          # sohbet ajanı (OPENAI_API_KEY gerekir, token harcar)
 //   npm run eval -- --recommender=v1 --verbose   # lib loglarını da göster
 //
 // Ne yapar: evals/golden.jsonl'daki her sorguyu seçilen öneri sistemine verir,
@@ -180,6 +180,10 @@ out(`  top3Hit      : ${pct(summary.top3Hit)}`);
 out(`  taskMatch    : ${summary.taskMatch.n === 0 ? 'n/a (adaptör görev döndürmüyor)' : pct(summary.taskMatch)}`);
 out(`  clarifyRate  : ${pct(summary.clarifyRate)}   (gereken satırlarda ${pct(summary.clarifyOnNeeded)}; gerekmeyenlerde ${pct(summary.clarifyOnClear)})`);
 out(`  ort. gecikme : ${summary.avgLatencyMs === null ? 'n/a' : `${summary.avgLatencyMs} ms`}`);
+if (summary.avgTokens !== null) out(`  ort. token   : ${summary.avgTokens}`);
+if (summary.confusedTasks.length > 0) {
+  out(`  karışan görevler: ${summary.confusedTasks.slice(0, 8).map((c) => `${c.pair} (${c.count})`).join(', ')}`);
+}
 
 const date = new Date().toISOString().slice(0, 10);
 const resultsDir = path.join(ROOT, 'evals/results');

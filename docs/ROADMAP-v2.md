@@ -49,3 +49,11 @@ Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var),
 - Formül notu: 90 iş sonucunda benchmark payı tam 10/100 = %10; "%10'un altı" 91'de başlıyor. Ağırlıklar değiştirilmedi; ifade ya da K_BENCHMARK Ferit'in kararı.
 - `searchCatalog` kısıt gevşetmesi sırası: maxMonthlyUsd → access → pricing → commercialUse; gevşetilenler `relaxedConstraint` dizisinde döner.
 
+## P5 notları
+- `/api/chat` (edge, fra1): NDJSON `text | card | done | error`. Akış mantığı `lib/agent/handler.ts`, döngü `lib/agent/loop.ts`, araçlar `lib/agent/tools.ts`. Model `OPENAI_MODEL` (varsayılan `gpt-4o-mini`), temperature 0.2, en fazla 700 çıktı token'ı, tur zaman aşımı 15 sn.
+- İstek mesajlarında isteğe bağlı `kind` alanı var; `kind: 'question'` olan asistan mesajları "konuşma başına en fazla 2 soru" bütçesine sayılır.
+- Bütçe: `OPENAI_MONTHLY_TOKEN_BUDGET` tanımsızsa sınır yok. Tanımlıysa ve KV okunamazsa güvenli tarafta kalınır (v1 yolu). v1 yedeği LLM çağırmaz (`allowLLM: false`).
+- Rate limiter tek pipeline: izin verilen istek 1 KV çağrısı (eskiden pencere başına 4–5), reddedilen 2.
+- v2 eval (`npm run eval -- --recommender=v2`) bu ortamda OPENAI_API_KEY olmadığı için koşulamadı; 40/40 skipped. Anahtarla koşulunca taskMatch hedefi ≥ %90; altındaysa özet satırındaki "karışan görevler"e göre `lib/agent/systemPrompt.ts` ve `data/tasks.json` açıklamaları iyileştirilecek (en fazla 3 tur).
+- get_workflow adım adları şablondan geldiği için şimdilik Türkçe (EN arayüzde de).
+

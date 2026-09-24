@@ -12,7 +12,7 @@
  * @typedef {{ id: string, query: string, lang: 'tr' | 'en', expectedTask: string,
  *   acceptableTools: string[], needsClarification: boolean, notes?: string }} GoldenRow
  * @typedef {{ task?: string, tools?: string[], clarification?: boolean,
- *   skipped?: string, detail?: object }} RecommenderOutput
+ *   skipped?: string, tokens?: number, detail?: object }} RecommenderOutput
  */
 
 /**
@@ -83,6 +83,7 @@ export function evaluateRow(golden, output, latencyMs = null) {
     top3Hit: scorable ? tools.slice(0, 3).some((t) => acceptable.has(t)) : null,
     taskMatch: !skipped && output.task ? output.task === golden.expectedTask : null,
     latencyMs: skipped ? null : latencyMs,
+    tokens: skipped ? null : output.tokens ?? null,
     detail: skipped ? null : output.detail ?? null,
   };
 }
@@ -113,6 +114,7 @@ export function summarize(rows) {
   const needed = evaluated.filter((r) => r.needsClarification);
   const clear = evaluated.filter((r) => !r.needsClarification);
   const latencies = evaluated.map((r) => r.latencyMs).filter((ms) => typeof ms === 'number');
+  const tokens = evaluated.map((r) => r.tokens).filter((n) => typeof n === 'number');
 
   return {
     total: rows.length,
@@ -129,5 +131,19 @@ export function summarize(rows) {
     avgLatencyMs: latencies.length > 0
       ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
       : null,
+    avgTokens: tokens.length > 0 ? Math.round(tokens.reduce((a, b) => a + b, 0) / tokens.length) : null,
+    /** En çok karışan (beklenen -> dönen) görev çiftleri. */
+    confusedTasks: confusedTasks(evaluated),
   };
+}
+
+/** @param {EvaluatedRow[]} rows */
+function confusedTasks(rows) {
+  const counts = new Map();
+  for (const r of rows) {
+    if (r.taskMatch !== false) continue;
+    const k = `${r.expectedTask} -> ${r.task}`;
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([pair, count]) => ({ pair, count }));
 }
