@@ -175,7 +175,7 @@ function detectQueryType(query: string): {
     /bütün.*süreç/i            // "bütün süreç" - entire process
   ];
 
-  let hasMultiStepIndicator = multiStepIndicators.some(p => p.test(query));
+  const hasMultiStepIndicator = multiStepIndicators.some(p => p.test(query));
 
   return {
     isMultiStep: hasMultiStepKeyword || hasMultiStepIndicator,

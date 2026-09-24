@@ -100,6 +100,11 @@ Tarayıcıda [http://localhost:3000](http://localhost:3000) adresine git.
 | `REDIS_URL` | Redis bağlantı URL'i (alternatif) | ⬜ |
 | `ADMIN_SECRET` | Admin endpoint'leri için gizli anahtar | ✅ |
 | `NEXT_PUBLIC_BASE_URL` | Uygulama base URL'i | ⬜ |
+| `VECTOR_SEARCH_ENABLED` | `true` ise Upstash Vector araması açılır; boş/tanımsız = kapalı (anahtar kelime araması). `UPSTASH_VECTOR_*` sadece bu açıkken kullanılır | ⬜ |
+| `OPENAI_MODEL` | v2 sohbet ajanının OpenAI modeli (P5'te devreye girer; şu an kullanılmıyor) | ⬜ |
+| `AA_API_KEY` | Artificial Analysis API anahtarı, gece model senkronu için (P3'te devreye girer; şu an kullanılmıyor) | ⬜ |
+
+Değerleri boş bir şablon: [`.env.local.example`](.env.local.example).
 
 ---
 
