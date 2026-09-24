@@ -1,6 +1,6 @@
 // Keyword mapping for category detection
 
-import { normalizeTr } from "./text";
+import { normalizeTr, tokenizeTr } from "./text";
 
 export type Category = "gorsel" | "metin" | "ses" | "arastirma" | "video" | "veri" | "kod";
 
@@ -17,7 +17,10 @@ export const keywords: Record<Category, string[]> = {
     video: [
         "video", "film", "animasyon", "animation", "klip", "clip", "movie",
         "reel", "shorts", "video üret", "video yap", "video oluştur",
-        "video çek", "video düzenle", "text to video", "metinden video", "hareketli"
+        "video çek", "video düzenle", "text to video", "metinden video", "hareketli",
+        // Altyazı bir video işi. Bunlar olmadan "YouTube altyazı çevirme" hiçbir
+        // kategoriye eşleşmiyor ve LLM kademesine düşüyordu.
+        "altyazı", "altyazi", "subtitle", "subtitles", "caption", "captions"
     ],
     veri: ["veri", "analiz", "data", "excel", "chart", "istatistik", "statistics", "dashboard"],
     kod: ["kod", "code", "programlama", "coding", "yazılım", "software", "geliştirme", "development", "python", "javascript", "react", "github", "api", "function", "algoritma"]
@@ -27,16 +30,43 @@ export const keywords: Record<Category, string[]> = {
 // "video" must always beat "gorsel" if the word "video" is present.
 const CATEGORY_PRIORITY: Category[] = ["video", "ses", "kod", "veri", "arastirma", "metin", "gorsel"];
 
+// Önek olarak eşleşince yaygın kelimeleri yakalayan anahtarlar: bunlar sadece
+// TAM kelime olarak sayılır. "art" önek olsaydı "artık", "artış", "article",
+// "artificial" gorsel sayılırdı.
+const WHOLE_WORD_ONLY = new Set(["art"]);
+
+/**
+ * Anahtar kelime sorgunun ardışık kelimeleriyle eşleşiyor mu?
+ *
+ * Eşleşme her zaman bir kelimenin BAŞINDAN başlar, kelime içinden asla:
+ * "freelancer" video'yu ("reel") ya da "startup" gorsel'i ("art") tetiklemez.
+ * Kelimenin sonu serbesttir, çünkü Türkçe ek alır: "videosu" -> "video",
+ * "kodumda" -> "kod", "reels" -> "reel". Çok kelimeli anahtarlar sıralı kelime
+ * dizisi olarak aranır: "pitch deck" iki komşu kelimedir.
+ */
+function matchesKeyword(queryWords: string[], keywordWords: string[], wholeWord: boolean): boolean {
+    for (let start = 0; start + keywordWords.length <= queryWords.length; start++) {
+        const matched = keywordWords.every((kw, i) => {
+            const word = queryWords[start + i];
+            return wholeWord ? word === kw : word.startsWith(kw);
+        });
+        if (matched) return true;
+    }
+    return false;
+}
+
 // Detect category from user query
 export function detectCategory(query: string): Category | null {
     // Diakritik-duyarsiz: "gorsel" yazan da "görsel" yazan da ayni kategoriye dussun.
     const normalizedQuery = normalizeTr(query);
+    const queryWords = tokenizeTr(query);
     const scores: Record<string, number> = {};
 
     for (const [category, keywordList] of Object.entries(keywords)) {
         let count = 0;
         for (const keyword of keywordList) {
-            if (normalizedQuery.includes(normalizeTr(keyword))) {
+            const keywordWords = tokenizeTr(keyword);
+            if (matchesKeyword(queryWords, keywordWords, WHOLE_WORD_ONLY.has(keywordWords.join(" ")))) {
                 count++;
             }
         }

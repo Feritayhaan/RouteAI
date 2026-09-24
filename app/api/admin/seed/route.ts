@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import { kv } from "@/lib/kv";
 import { updateTools, invalidateToolsCache, getLocalized, Tool, KV_TOOLS_KEY } from "@/lib/toolsService";
 import { getPricingModel } from "@/lib/pricing";
+import { requireAdmin } from "@/lib/adminAuth";
 import toolsDatabase from "@/lib/tools-database.json";
 
 export const maxDuration = 60; // Vercel hobby tier maks timeout engelleme (60 saniye)
@@ -82,11 +83,12 @@ async function seedVectorIndex(tools: Tool[]): Promise<number> {
     return successCount;
 }
 
-export async function GET(request: NextRequest) {
-    const adminSecret = request.headers.get('x-admin-key') || new URL(request.url).searchParams.get('key');
-    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
-        return Response.json({ error: 'Yetkisiz erişim' }, { status: 401 });
-    }
+// POST: bu uç yıkıcı bir iş yapar (KV'deki araç listesinin üzerine yazar,
+// bayrak açıksa vektör indeksini sıfırlar). GET olsaydı link önizleyicileri,
+// önbellekler ya da tarayıcı ön-yüklemesi onu kendiliğinden tetikleyebilirdi.
+export async function POST(request: NextRequest) {
+    const denied = await requireAdmin(request);
+    if (denied) return denied;
 
     let written = 0;
     let vectorSkipped = true;

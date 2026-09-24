@@ -76,8 +76,8 @@ cp .env.local.example .env.local   # veya mevcut .env.local dosyasını düzenle
 # 3. Geliştirme sunucusunu başlat
 npm run dev
 
-# 4. (İlk kurulumda) Vektör veritabanını doldur
-curl "http://localhost:3000/api/admin/seed?key=YOUR_ADMIN_SECRET"
+# 4. (İlk kurulumda) Araçları KV'ye yaz (VECTOR_SEARCH_ENABLED=true ise vektör indeksini de doldurur)
+curl -X POST -H "x-admin-key: YOUR_ADMIN_SECRET" http://localhost:3000/api/admin/seed
 ```
 
 Tarayıcıda [http://localhost:3000](http://localhost:3000) adresine git.
@@ -100,6 +100,11 @@ Tarayıcıda [http://localhost:3000](http://localhost:3000) adresine git.
 | `REDIS_URL` | Redis bağlantı URL'i (alternatif) | ⬜ |
 | `ADMIN_SECRET` | Admin endpoint'leri için gizli anahtar | ✅ |
 | `NEXT_PUBLIC_BASE_URL` | Uygulama base URL'i | ⬜ |
+| `VECTOR_SEARCH_ENABLED` | `true` ise Upstash Vector araması açılır; boş/tanımsız = kapalı (anahtar kelime araması). `UPSTASH_VECTOR_*` sadece bu açıkken kullanılır | ⬜ |
+| `OPENAI_MODEL` | v2 sohbet ajanının OpenAI modeli (P5'te devreye girer; şu an kullanılmıyor) | ⬜ |
+| `AA_API_KEY` | Artificial Analysis API anahtarı, gece model senkronu için (P3'te devreye girer; şu an kullanılmıyor) | ⬜ |
+
+Değerleri boş bir şablon: [`.env.local.example`](.env.local.example).
 
 ---
 
@@ -152,7 +157,9 @@ Content-Type: application/x-ndjson
 
 ---
 
-### `GET /api/update-tools?key=ADMIN_SECRET`
+> Admin uçları anahtarı **yalnızca** `x-admin-key` başlığından okur; `?key=` sorgu parametresi desteklenmez (URL'deki sır loglara ve tarayıcı geçmişine sızar).
+
+### `GET /api/update-tools`
 
 Mevcut araç sayısını ve kategori dağılımını döndürür.
 
@@ -160,13 +167,21 @@ Mevcut araç sayısını ve kategori dağılımını döndürür.
 
 ### `POST /api/update-tools`
 
-Araç veritabanına yeni araçlar ekler (şu an simülasyon modunda).
+Şimdilik `501 Not Implemented` döner; araç keşfi P8'de aday ürün akışıyla gelecek.
 
 **Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
 
-### `GET /api/admin/seed?key=ADMIN_SECRET`
+### `POST /api/admin/seed`
 
-Tüm araçları Upstash Vector veritabanına embedding'leriyle birlikte yükler. İlk kurulumda veya veritabanı sıfırlandığında çalıştırılmalıdır.
+`lib/tools-database.json`'daki araçları KV'ye yazar; `VECTOR_SEARCH_ENABLED=true` ise vektör indeksini sıfırlayıp embedding'lerle yeniden doldurur. Yıkıcı bir iş olduğu için yalnızca POST ile çalışır. İlk kurulumda veya veritabanı sıfırlandığında çalıştırılmalıdır.
+
+**Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
+
+### `GET /api/admin/feedback`
+
+Son 100 geri bildirim kaydını döndürür.
+
+**Headers:** `x-admin-key: YOUR_ADMIN_SECRET`
 
 ---
 

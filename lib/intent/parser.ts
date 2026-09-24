@@ -1,6 +1,6 @@
 import { openai } from '../openai';
 import { ParsedIntent, IntentParsingError } from './types';
-import { detectCategory } from '../keywords';
+import { detectCategory, type Category } from '../keywords';
 
 const SYSTEM_PROMPT = `Sen RouteAI'in intent analyzer'isin. Kullanicinin istegini analiz edip yapilandirilmis JSON donduruyorsun.
 
@@ -175,7 +175,7 @@ function detectQueryType(query: string): {
     /bütün.*süreç/i            // "bütün süreç" - entire process
   ];
 
-  let hasMultiStepIndicator = multiStepIndicators.some(p => p.test(query));
+  const hasMultiStepIndicator = multiStepIndicators.some(p => p.test(query));
 
   return {
     isMultiStep: hasMultiStepKeyword || hasMultiStepIndicator,
@@ -337,8 +337,8 @@ export async function parseUserIntent(
 
     return normalized;
 
-  } catch (error: any) {
-    console.error('[Intent Parser Hatası]:', error.message);
+  } catch (error) {
+    console.error('[Intent Parser Hatası]:', error instanceof Error ? error.message : String(error));
 
     // 3. API Hata Verdiyse → kelime bazlı fallback
     const fallbackCategory = detectCategory(query);
@@ -348,10 +348,15 @@ export async function parseUserIntent(
       return createFallbackIntent(query, fallbackCategory, queryType);
     }
 
+    // Hatanın ayrıntısı yukarıda sadece sunucu loguna yazıldı. Kullanıcıya
+    // iç yapılandırma (anahtar, .env) hakkında hiçbir şey söylenmez.
     return {
       code: 'API_ERROR',
-      message: 'Sistemsel bir sorun var (API Key Hatası). Ancak isteğini kategorize edemedim.',
-      suggestions: ['Lütfen .env dosyasındaki API anahtarını kontrol et.']
+      message: 'Şu an isteğini işleyemedim. Biraz sonra tekrar dene ya da ne yapmak istediğini birkaç kelimeyle yaz.',
+      suggestions: [
+        'Örnek: "Logo tasarımı yapmak istiyorum"',
+        'Örnek: "Blog yazısı yazmak için AI lazım"',
+      ],
     };
   }
 }
@@ -359,7 +364,7 @@ export async function parseUserIntent(
 // ================================================================
 // Yardımcı: Prompt'tan kısıtlamaları çıkar (LLM'siz)
 // ================================================================
-function extractConstraints(query: string): ParsedIntent['constraints'] {
+export function extractConstraints(query: string): ParsedIntent['constraints'] {
   const lower = query.toLowerCase();
   const constraints: ParsedIntent['constraints'] = {
     // Varsayilan 'freemium' = "tercih belirtilmedi". Eskiden 'free' idi ve
@@ -373,10 +378,11 @@ function extractConstraints(query: string): ParsedIntent['constraints'] {
     language: 'tr',
   };
 
-  // Pricing
-  if (/ücretsiz|bedava|free|para\s*vermeden|parasız/.test(lower)) {
+  // Pricing. "free" ve "pro" kelime sınırlı: "freelancer" ücretsiz,
+  // "GoPro" ücretli demek değil.
+  if (/ücretsiz|bedava|\bfree\b|para\s*vermeden|parasız/.test(lower)) {
     constraints.pricing = 'free';
-  } else if (/premium|profesyonel|paid|pro\b/.test(lower)) {
+  } else if (/premium|profesyonel|paid|\bpro\b/.test(lower)) {
     constraints.pricing = 'paid';
   }
 
@@ -400,12 +406,12 @@ function extractConstraints(query: string): ParsedIntent['constraints'] {
 // Yardımcı Fonksiyon: Basit Intent Oluşturucu
 function createFallbackIntent(
   query: string,
-  category: string,
+  category: Category,
   queryType: { isMultiStep: boolean; isExplicitSimple: boolean; hints: string[] },
   constraints?: ParsedIntent['constraints']
 ): ParsedIntent {
   return {
-    primaryCategory: category as any,
+    primaryCategory: category,
     secondaryCategories: [],
     confidence: 0.7,
     userGoal: query,

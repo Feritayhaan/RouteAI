@@ -9,26 +9,16 @@
 //
 // Neden HTTP'ye vurmuyoruz: checkRateLimit KV'ye ulasamayinca fail-closed
 // davranip 429 donuyor (kasitli bir guvenlik karari, dokunmuyoruz). Bu yuzden
-// rate limit SONRASI akis burada birebir tekrarlaniyor. Route degisirse bu
-// dosya da degismeli.
+// rate limit SONRASI akis burada tekrarlaniyor. Aday secimi/filtre/siralama
+// route ile ORTAK (lib/recommendV1.ts); burada kalan tek kopya niyet + arama +
+// workflow orkestrasyonu. Route'taki orkestrasyon degisirse bu dosya da degismeli.
 
 import { analyzeIntent } from '../lib/intent/index.ts';
 import { searchTools } from '../lib/vectorService.ts';
 import { generateWorkflow, formatWorkflowForApi } from '../lib/workflow/index.ts';
 import { getTools, generateExplanation, getLocalized, resolveLocale } from '../lib/toolsService.ts';
-import { getPricingModel, isPaidOnly, matchesPricingFilter, priceLabelOrUnknown } from '../lib/pricing.ts';
-import { rankTools } from '../lib/ranking.ts';
-
-// route.ts'ten birebir kopya
-const categoryOutputMap = {
-    video: ['video'],
-    gorsel: ['image'],
-    ses: ['audio'],
-    kod: ['code', 'text'],
-    metin: ['text'],
-    arastirma: ['text'],
-    veri: ['text', 'image'],
-};
+import { priceLabelOrUnknown } from '../lib/pricing.ts';
+import { selectV1Tools } from '../lib/recommendV1.ts';
 
 const QUERIES = [
     'web sitesi',
@@ -66,74 +56,10 @@ async function runQuery(prompt, pricingFilter) {
     }
 
     const allTools = await getTools();
-    const searchScores = new Map();
-    const candidates = [];
-    for (const result of searchResults) {
-        const tool = allTools.find((t) => t.name === result.metadata.name);
-        if (!tool || tool.deprecated) continue;
-        candidates.push(tool);
-        searchScores.set(tool.name, result.score);
-    }
+    const selection = selectV1Tools({ intent, searchResults, allTools, pricingFilter });
+    if (!selection) return { kind: 'empty', intent };
 
-    const filterByPricing = (list, relaxIntent) => {
-        let out = list;
-        if (pricingFilter && pricingFilter !== 'all') {
-            out = out.filter((t) => matchesPricingFilter(t.pricing, pricingFilter));
-        }
-        if (!relaxIntent) {
-            if (intent.constraints?.pricing === 'free') {
-                out = out.filter((t) => getPricingModel(t.pricing) === 'free');
-            } else if (intent.constraints?.pricing === 'paid') {
-                out = out.filter((t) => isPaidOnly(t.pricing));
-            }
-        }
-        return out;
-    };
-
-    const filterByOutputs = (list) => {
-        const expected = categoryOutputMap[intent.primaryCategory];
-        if (!expected) return list;
-        return list.filter((t) => !t.outputTypes || t.outputTypes.some((o) => expected.includes(o)));
-    };
-
-    const categoryPool = () =>
-        allTools.filter((t) => t.category === intent.primaryCategory && !t.deprecated);
-
-    let relaxedConstraint = null;
-    let usedFallback = false;
-    let recommendedTools = filterByOutputs(filterByPricing(candidates, false));
-
-    if (recommendedTools.length === 0) {
-        usedFallback = true;
-        recommendedTools = filterByOutputs(filterByPricing(categoryPool(), false));
-    }
-
-    if (recommendedTools.length === 0) {
-        relaxedConstraint = 'pricing';
-        recommendedTools = filterByOutputs(filterByPricing(candidates, true));
-        if (recommendedTools.length === 0) {
-            usedFallback = true;
-            recommendedTools = filterByOutputs(filterByPricing(categoryPool(), true));
-        }
-    }
-
-    if (recommendedTools.length === 0) return { kind: 'empty', intent };
-
-    recommendedTools = rankTools(recommendedTools, { searchScores });
-
-    const [main, ...rest] = recommendedTools;
-    const allowedCategories = new Set([
-        main.category,
-        intent.primaryCategory,
-        ...(intent.secondaryCategories ?? []),
-    ]);
-    const alternatives = rest
-        .filter(
-            (t) =>
-                allowedCategories.has(t.category) ||
-                t.secondaryCategories?.some((c) => allowedCategories.has(c))
-        )
-        .slice(0, 3);
+    const { main, alternatives, relaxedConstraint, usedFallback } = selection;
     const locale = resolveLocale(intent.constraints?.language);
 
     return {

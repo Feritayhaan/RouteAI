@@ -24,6 +24,25 @@ declare global {
   }
 }
 
+/** Bu sorgu + ana araç için localStorage'da kayıtlı puan; yoksa null. */
+function findStoredRating(response: ApiResponse | null, query: string): number | null {
+  if (!response || response.type === 'workflow') return null
+
+  try {
+    const existingRatings = localStorage.getItem('routeai-ratings')
+    if (!existingRatings) return null
+
+    const ratings = JSON.parse(existingRatings) as ToolRating[]
+    const previousRating = ratings.find(
+      (r: ToolRating) => r.query === query && r.toolName === response.main.toolName
+    )
+    return previousRating ? previousRating.rating : null
+  } catch (error) {
+    console.error('Rating yükleme hatası:', error)
+    return null
+  }
+}
+
 export default function HomeClient() {
   const [query, setQuery] = useState("")
   const [pricingFilter, setPricingFilter] = useState<"all" | "free" | "paid">("all")
@@ -178,25 +197,18 @@ export default function HomeClient() {
     }
   }
 
-  useEffect(() => {
-    if (!response || response.type === 'workflow') return
-
-    try {
-      const existingRatings = localStorage.getItem('routeai-ratings')
-      if (existingRatings) {
-        const ratings = JSON.parse(existingRatings) as ToolRating[]
-        const previousRating = ratings.find(
-          (r: ToolRating) => r.query === query && r.toolName === response.main.toolName
-        )
-
-        if (previousRating) {
-          setRating(previousRating.rating)
-        }
-      }
-    } catch (error) {
-      console.error('Rating yükleme hatası:', error)
+  // response ya da query değişince o öneri için kayıtlı puanı yükle. Eskiden
+  // useEffect içindeydi; şimdi React'in "önceki render'ın değerini sakla"
+  // kalıbıyla render sırasında: aynı tetikleyiciler, aynı sonuç, fazladan
+  // effect render'ı yok.
+  const [ratingSource, setRatingSource] = useState({ response, query })
+  if (ratingSource.response !== response || ratingSource.query !== query) {
+    setRatingSource({ response, query })
+    const previousRating = findStoredRating(response, query)
+    if (previousRating !== null) {
+      setRating(previousRating)
     }
-  }, [response, query])
+  }
 
   const handleStarClick = (star: number) => {
     setRating(star)

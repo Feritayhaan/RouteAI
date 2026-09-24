@@ -35,3 +35,15 @@ export function normalizeTr(s: string): string {
         .replace(/\s+/g, ' ')
         .trim();
 }
+
+/**
+ * Metni normalize edip kelimelere böler. Harf ve rakam dışındaki her şey
+ * (boşluk, noktalama, tire, kesme işareti) ayırıcıdır:
+ * "Beautiful.ai" -> ["beautiful", "ai"], "pitch deck'i" -> ["pitch", "deck", "i"].
+ *
+ * Kelime sınırıyla eşleştirme yapan her yer bunu kullanır; substring
+ * eşleştirmesi "freelancer" içinde "reel", "startup" içinde "art" buluyordu.
+ */
+export function tokenizeTr(s: string): string[] {
+    return normalizeTr(s).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+}

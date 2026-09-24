@@ -6,7 +6,6 @@ import { Tool, Locale, getToolsByCategory, getLocalized, resolveLocale, getTools
 import { ParsedIntent } from '../intent/types';
 import { makePricing } from '../pricing';
 import {
-    WorkflowTemplate,
     WorkflowStepTemplate,
     WorkflowStepRecommendation,
     GeneratedWorkflow,
@@ -125,7 +124,8 @@ export async function generateWorkflow(
     const template = findMatchingTemplate(userQuery, intent.workflowHints, intent);
 
     if (!template) {
-        console.log('[Workflow] No matching template found, trying AI generation for:', userQuery);
+        // Kullanıcı metni loglanmaz; sadece uzunluğu.
+        console.log('[Workflow] No matching template found, trying AI generation; query length:', userQuery.length);
         return generateWorkflowWithAI(intent, userQuery);
     }
 
@@ -145,7 +145,7 @@ export async function generateWorkflow(
     // SORUN 1: Tüm adımlar PARALEL çalışır (Promise.all)
     // ============================================================
     const steps = await Promise.all(
-        template.steps.map(step => generateStepRecommendation(step, intent, template))
+        template.steps.map(step => generateStepRecommendation(step, intent))
     );
 
     // Collect all unique categories
@@ -252,23 +252,8 @@ async function buildFallbackWorkflow(
         };
     });
 
-    const fakeTemplate: WorkflowTemplate = {
-        id: 'fallback',
-        name: userQuery,
-        nameEn: userQuery,
-        description: '',
-        triggers: [],
-        semanticDescription: '',
-        minConfidence: 0,
-        primaryCategories: [intent.primaryCategory],
-        steps: stepTemplates,
-        complexity: 'medium',
-        estimatedDuration: '1-3 saat',
-        tags: [],
-    };
-
     const steps = await Promise.all(
-        stepTemplates.map(step => generateStepRecommendation(step, intent, fakeTemplate))
+        stepTemplates.map(step => generateStepRecommendation(step, intent))
     );
 
     const categories = [...new Set(stepTemplates.map(s => s.category))] as Category[];
@@ -307,7 +292,8 @@ async function generateWorkflowWithAI(
 
     const cached = await getCachedWorkflow(pseudoTemplateId, intent.primaryCategory, constraintsKey);
     if (cached) {
-        console.log('[Workflow AI] Cache HIT:', pseudoTemplateId);
+        // pseudoTemplateId sorgunun kendisinden türüyor: loglanmaz.
+        console.log('[Workflow AI] Cache HIT; query length:', userQuery.length);
         return cached;
     }
 
@@ -377,26 +363,11 @@ async function generateWorkflowWithAI(
         optional: false,
     }));
 
-    const fakeTemplate: WorkflowTemplate = {
-        id: pseudoTemplateId,
-        name: aiResponse.workflowName,
-        nameEn: aiResponse.workflowName,
-        description: '',
-        triggers: [],
-        semanticDescription: '',
-        minConfidence: 0,
-        primaryCategories: [intent.primaryCategory],
-        steps: stepTemplates,
-        complexity: aiResponse.complexity,
-        estimatedDuration: aiResponse.estimatedDuration,
-        tags: [],
-    };
-
     // ── Her adım için araç önerisi paralel üret ───────────────────────────────
     const stepRecommendations = await Promise.all(
         stepTemplates.map(async (stepTemplate, idx) => {
             const suggestedName = aiResponse.steps[idx].suggestedTool;
-            const recommendation = await generateStepRecommendation(stepTemplate, intent, fakeTemplate);
+            const recommendation = await generateStepRecommendation(stepTemplate, intent);
 
             if (!suggestedName) return recommendation;
 
@@ -445,7 +416,7 @@ async function generateWorkflowWithAI(
     // Cache'e yaz (fire-and-forget)
     setCachedWorkflow(pseudoTemplateId, intent.primaryCategory, result, constraintsKey).catch(() => {});
 
-    console.log('[Workflow AI] Generated', result.totalSteps, 'steps for:', userQuery);
+    console.log('[Workflow AI] Generated', result.totalSteps, 'steps; query length:', userQuery.length);
     return result;
 }
 
@@ -454,8 +425,7 @@ async function generateWorkflowWithAI(
  */
 async function generateStepRecommendation(
     step: WorkflowStepTemplate,
-    intent: ParsedIntent,
-    template: WorkflowTemplate
+    intent: ParsedIntent
 ): Promise<WorkflowStepRecommendation> {
     // Get tools for this step's category
     const categoryTools = await getToolsByCategory(step.category);
@@ -549,7 +519,7 @@ function calculateStepScore(
     // ================================================================
     const expectedOutput = mediaTypeToOutputType[step.outputType];
     if (expectedOutput && tool.outputTypes) {
-        if (tool.outputTypes.includes(expectedOutput as any)) {
+        if ((tool.outputTypes as readonly string[]).includes(expectedOutput)) {
             score += 2; // Tam uyuşma — büyük bonus
         } else {
             score -= 1; // Uyuşmazlık — penaltı
@@ -558,7 +528,7 @@ function calculateStepScore(
 
     const expectedInput = mediaTypeToOutputType[step.inputType];
     if (expectedInput && tool.inputTypes) {
-        if (tool.inputTypes.includes(expectedInput as any)) {
+        if ((tool.inputTypes as readonly string[]).includes(expectedInput)) {
             score += 1; // inputType uyuşması — küçük bonus
         }
     }
@@ -616,7 +586,7 @@ function generateStepReasoning(
 
     // OutputType match reason
     const expectedOutput = mediaTypeToOutputType[step.outputType];
-    if (expectedOutput && tool.outputTypes?.includes(expectedOutput as any)) {
+    if (expectedOutput && (tool.outputTypes as readonly string[] | undefined)?.includes(expectedOutput)) {
         reasons.push(`${step.outputType} çıktısı üretiyor`);
     }
 

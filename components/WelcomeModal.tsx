@@ -1,21 +1,32 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import { X, Sparkles } from "lucide-react"
 
-export default function WelcomeModal() {
-  const [isOpen, setIsOpen] = useState(false)
+// "Hoş geldin görüldü" bilgisi localStorage'da; küçük bir dış kaynak (store)
+// olarak okunur. Eskiden useEffect içinde setIsOpen(true) ile yapılıyordu.
+const WELCOME_SEEN_KEY = "welcomeSeen"
+const listeners = new Set<() => void>()
 
-  useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem("welcomeSeen")
-    if (!hasSeenWelcome) {
-      setIsOpen(true)
-    }
-  }, [])
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
+  }
+}
+
+function hasSeenWelcome() {
+  return Boolean(localStorage.getItem(WELCOME_SEEN_KEY))
+}
+
+export default function WelcomeModal() {
+  // Sunucuda ve hidrasyon sırasında "görüldü" sayılır (modal kapalı, SSR
+  // çıktısıyla aynı); sonra localStorage'daki gerçek değer okunur.
+  const isOpen = !useSyncExternalStore(subscribe, hasSeenWelcome, () => true)
 
   const handleClose = () => {
-    localStorage.setItem("welcomeSeen", "true")
-    setIsOpen(false)
+    localStorage.setItem(WELCOME_SEEN_KEY, "true")
+    listeners.forEach((listener) => listener())
   }
 
   if (!isOpen) return null

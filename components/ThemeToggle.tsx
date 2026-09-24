@@ -1,16 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 import { Monitor, Sun, Moon } from "lucide-react"
 
-export default function ThemeToggle() {
-    const [mounted, setMounted] = useState(false)
-    const { theme, setTheme, resolvedTheme } = useTheme()
+// Dinlenecek bir değişiklik yok: değer sadece sunucu/istemci ayrımından gelir.
+const subscribeNoop = () => () => {}
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
+export default function ThemeToggle() {
+    // Tema yalnızca istemcide bilinir (next-themes). Sunucuda ve hidrasyon
+    // sırasında false (SSR çıktısıyla aynı), sonra true. Eskiden useEffect
+    // içinde setMounted(true) ile yapılıyordu; sonuç aynı, effect'te setState yok.
+    const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false)
+    const { theme, setTheme, resolvedTheme } = useTheme()
 
     if (!mounted) {
         return null
