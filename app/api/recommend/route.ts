@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { analyzeIntent } from "@/lib/intent";
 import { generateWorkflow, formatWorkflowForApi } from "@/lib/workflow";
 import { searchTools } from "@/lib/vectorService";
-import { getTools, generateExplanation, getLocalized, resolveLocale, Tool } from "@/lib/toolsService";
-import { getPricingModel, isPaidOnly, matchesPricingFilter } from "@/lib/pricing";
-import { rankTools } from "@/lib/ranking";
+import { getTools, generateExplanation, getLocalized, resolveLocale } from "@/lib/toolsService";
+import { selectV1Tools } from "@/lib/recommendV1";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -14,20 +13,6 @@ import { getClientIp } from "@/lib/getClientIp";
 // ============================================================
 export const runtime = 'edge';
 export const preferredRegion = 'fra1'; // Avrupa (Türkiye yakın)
-
-// ============================================================
-// Kategori → beklenen outputTypes haritası
-// Vector search yanlış kategori araç döndürürse filtrelemek için.
-// ============================================================
-const categoryOutputMap: Record<string, string[]> = {
-  video: ['video'],
-  gorsel: ['image'],
-  ses: ['audio'],
-  kod: ['code', 'text'],
-  metin: ['text'],
-  arastirma: ['text'],
-  veri: ['text', 'image'],
-};
 
 export async function POST(req: NextRequest) {
   try {
@@ -117,92 +102,15 @@ export async function POST(req: NextRequest) {
 
     // ============================================================
     // 3. VEKTÖR ARAMASI + EŞLEŞTİRME
+    // Aday seçimi, filtreler ve sıralama lib/recommendV1.ts'te: testler ve
+    // scripts/run-queries.mjs de aynı kodu çalıştırıyor.
     // ============================================================
     const allTools = await getTools();
+    const selection = selectV1Tools({ intent, searchResults, allTools, pricingFilter });
 
-    const searchScores = new Map<string, number>();
-    const candidates: Tool[] = [];
-    for (const result of searchResults) {
-      const tool = allTools.find(t => t.name === result.metadata.name);
-      // deprecated kayıtlar arama sonucundan da elenmeli. Kategori fallback'i
-      // (categoryPool) bunu zaten yapıyordu ama arama yolu yapmıyordu: karantina
-      // triyajıyla emekliye ayrılan araçlar buradan sızıyordu.
-      if (!tool || tool.deprecated) continue;
-      candidates.push(tool);
-      searchScores.set(tool.name, result.score);
-    }
-
-    // ============================================================
-    // Filtreler tek yerde tanımlı: hem arama dalında hem kategori
-    // fallback'inde AYNI kurallar çalışsın diye (eskiden kopyalanmıştı).
-    // ============================================================
-
-    // UI'dan gelen filtre + sorgunun kendi fiyat kısıtı.
-    // relaxIntent=true iken sorgu kısıtı düşer, UI filtresi ASLA düşmez:
-    // kullanıcının açıkça tıkladığı filtreyi gevşetme hakkımız yok.
-    const filterByPricing = (list: Tool[], relaxIntent: boolean): Tool[] => {
-      let out = list;
-
-      // "Ücretli" artık freemium'u KAPSAMIYOR (bkz. lib/pricing.ts)
-      if (pricingFilter && pricingFilter !== 'all') {
-        out = out.filter(t => matchesPricingFilter(t.pricing, pricingFilter));
-      }
-
-      if (!relaxIntent) {
-        // Kullanıcı "ücretsiz" dediyse freemium yeterli değil: ücretsiz
-        // sanıp ödeme duvarına çarpmak, az seçenek görmekten kötü.
-        if (intent.constraints?.pricing === 'free') {
-          out = out.filter(t => getPricingModel(t.pricing) === 'free');
-        } else if (intent.constraints?.pricing === 'paid') {
-          out = out.filter(t => isPaidOnly(t.pricing));
-        }
-      }
-
-      return out;
-    };
-
-    // outputTypes çapraz kontrolü: kategoriyle uyumlu çıktı veren araçları tut.
-    // Örn: "video üret" => sadece outputTypes 'video' olan araçlar kalsın.
-    const filterByOutputs = (list: Tool[]): Tool[] => {
-      const expected = categoryOutputMap[intent.primaryCategory];
-      if (!expected) return list;
-      return list.filter(t =>
-        !t.outputTypes || // outputTypes tanımlı değilse geç (legacy araç)
-        t.outputTypes.some(o => expected.includes(o))
-      );
-    };
-
-    const categoryPool = (): Tool[] =>
-      allTools.filter(t => t.category === intent.primaryCategory && !t.deprecated);
-
-    // ============================================================
-    // Aday seçimi: aramadan başla, boşalırsa sırayla gevşet.
-    // Kısıtı gevşetmek sessizce olmaz — meta'da relaxedConstraint ile bildirilir.
-    // ============================================================
-    let relaxedConstraint: 'pricing' | null = null;
-    let recommendedTools = filterByOutputs(filterByPricing(candidates, false));
-
-    if (recommendedTools.length === 0) {
-      // Arama ya boş döndü ya da bulduğu araçlar kategori/fiyat kısıtına
-      // uymuyor. Eskiden bu durumda kısıt SESSİZCE yok sayılıp kategori dışı
-      // araç ana öneri oluyordu ("YouTube altyazı" -> OpusClip, video aracı).
-      recommendedTools = filterByOutputs(filterByPricing(categoryPool(), false));
-    }
-
-    if (recommendedTools.length === 0) {
-      relaxedConstraint = 'pricing';
-      recommendedTools = filterByOutputs(filterByPricing(candidates, true));
-      if (recommendedTools.length === 0) {
-        recommendedTools = filterByOutputs(filterByPricing(categoryPool(), true));
-      }
-    }
-
-    if (recommendedTools.length === 0) {
+    if (!selection) {
       return NextResponse.json({ error: "Bu istek için uygun araç bulunamadı" });
     }
-
-    // Tek sıralama yolu: arama skoru > karantina cezası > strength > lastUpdated
-    recommendedTools = rankTools(recommendedTools, { searchScores });
 
     // ============================================================
     // GÖREV 5: Streaming NDJSON — ilk byte hızı maksimize
@@ -210,23 +118,7 @@ export async function POST(req: NextRequest) {
     // Chunk 2: alternatives → arkasından
     // Chunk 3: meta/debug → en sonda
     // ============================================================
-    const [main, ...rest] = recommendedTools;
-
-    // Alternatifler ana aracın ya da sorgunun kategorisiyle ilgili olmalı.
-    // Eskiden hiçbir filtreden geçmiyordu: "ses klonlama podcast" sorgusunda
-    // 1. alternatif GitHub Copilot (kod) çıkıyordu. 3'ten az kalırsa az
-    // gösteriyoruz — alakasız araçla doldurmak boşluktan kötü.
-    const allowedCategories = new Set<string>([
-      main.category,
-      intent.primaryCategory,
-      ...(intent.secondaryCategories ?? []),
-    ]);
-    const alternatives = rest
-      .filter(t =>
-        allowedCategories.has(t.category) ||
-        t.secondaryCategories?.some(c => allowedCategories.has(c))
-      )
-      .slice(0, 3);
+    const { main, alternatives, relaxedConstraint } = selection;
 
     const locale = resolveLocale(intent.constraints?.language);
     const encoder = new TextEncoder();
