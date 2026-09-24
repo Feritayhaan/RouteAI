@@ -27,3 +27,18 @@ Altın sette doğru görev ≥ %90, ilk 3'te kabul edilebilir araç ≥ %85. Lan
 - lib/recommendV1.ts P0'da oluşturuldu; P1 onu yeniden oluşturmaz, kullanır.
 - Anahtar kelime eşleşmesi: kelime başından önek eşleşmesi, Türkçe eklere izin verir; "art" tam kelime.
 - Admin uçları sadece x-admin-key başlığı; seed POST.
+
+## Baseline (v1)
+Koşu: 2026-09-24, `npm run eval -- --recommender=v1`. Sonuç: `evals/results/2026-09-24-v1.json`. Altın set: `evals/golden.jsonl` (40 sorgu, TASLAK; bkz. `evals/REVIEW.md`). Katalog `lib/tools-database.json` (56 aktif araç); KV ve vektör araması eval sürecinde kapalı.
+
+**Eksik ölçüm:** Koşu OPENAI_API_KEY olmadan yapıldı. LLM kademesine giden 25 sorgu (6 kelimeden uzun ya da anahtar kelimesi olmayan sorgular) skipped. Aşağıdaki sayılar sadece kural tabanlı kademede çözülen 15 kısa sorguyu kapsıyor ve iyimser. Anahtarla tekrar koşulup bu tablo güncellenmeli.
+
+| Metrik | v1 (anahtarsız) | Hedef (v2) |
+| --- | --- | --- |
+| top1Hit | 12/15 = %80.0 | — |
+| top3Hit | 13/15 = %86.7 | ≥ %85 |
+| taskMatch | n/a (v1 görev döndürmüyor) | ≥ %90 |
+| clarifyRate | 0/15 = %0 (netleştirme gereken 5 satırın hiçbirinde sormadı) | %15–%35 |
+| skipped | 25/40 | 0 |
+
+Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var), tr-06 "ürün fotoğrafı arka plan kaldır" (görsel üreticilere düştü), tr-19 "YouTube kanalım için ses lazım" (workflow'a düştü; ilk adımda NotebookLM).
