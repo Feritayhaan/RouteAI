@@ -1,0 +1,70 @@
+# Gece model senkronu: Artificial Analysis + LMArena -> data/models.json
+# Değişiklik varsa sync/models-<tarih> dalına commit atar ve PR açar
+# (PR gövdesi = data/sync-report.md). Merge kararı insanın.
+#
+# Gerekenler:
+#  - Repo secret: AA_API_KEY (yoksa Artificial Analysis atlanır, LMArena yine çalışır)
+#  - Settings > Actions > General > "Allow GitHub Actions to create and approve
+#    pull requests" açık olmalı; yoksa `gh pr create` 403 döner.
+# Not: GITHUB_TOKEN ile açılan PR başka workflow'ları tetiklemez.
+# Sadece GitHub'ın kendi action'ları kullanılıyor (actions/checkout, actions/setup-node).
+
+name: sync-models
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-models
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Modelleri senkronla
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}
+        run: npm run sync:models
+
+      - name: Kataloğu doğrula
+        run: npm run validate:catalog
+
+      - name: Değişiklik varsa PR aç
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- data/models.json; then
+            echo "data/models.json değişmedi; PR yok."
+            exit 0
+          fi
+          DATE=$(date -u +%Y-%m-%d)
+          BRANCH="sync/models-${DATE}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add data/models.json data/sync-report.md
+          git commit -m "sync: modeller ${DATE}"
+          git push --force-with-lease origin "$BRANCH"
+          if gh pr view "$BRANCH" --json state -q .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$BRANCH" --body-file data/sync-report.md
+          else
+            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
+              --title "sync: modeller ${DATE}" --body-file data/sync-report.md
+          fi

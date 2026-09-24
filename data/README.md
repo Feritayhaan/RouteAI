@@ -14,6 +14,9 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 | `briefs.json` | Uzman değerlendirmesi için sabit test brifleri. **Şu anki 30 brif TASLAK; Ferit onaylamalı.** | Elle |
 | `reviews.json` | Uzman değerlendirmeleri (rubrik). | Elle |
 | `migration-review.md` | v1 → v2 göçünde emin olunmayan görev eşlemeleri. | Göç scripti |
+| `model-aliases.json` | İki kaynakta farklı adla geçen modellerin elle eşlemesi (sadece emin olunanlar). | Elle |
+| `sync-report.md` | Son model senkronunun raporu: hatalar, yeni/kaybolan modeller, alias adayları, kullanılan alanlar. | Gece senkronu |
+| `link-review.md` | Ürün → model bağlantı önerileri; `[x]` işaretlenenler `--apply` ile products.json'a yazılır. | `scripts/link-products.mjs` |
 
 ### tasks.json
 

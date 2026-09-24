@@ -1,10 +1,14 @@
 // lib/tools-database.json (v1, 96 kayıt) -> data/products.json (v2 katalog).
 //
-//   node scripts/migrate-to-catalog.mjs
+//   node scripts/migrate-to-catalog.mjs          # products.json'u üretir
+//   node scripts/migrate-to-catalog.mjs --force  # elle düzenlenmiş products.json'un ÜZERİNE yazar
 //
 // İdempotent: aynı girdiyle her çalışmada aynı çıktıyı üretir (sıralama v1
 // dosyasındaki sırayla aynı, tarih/saat yazılmaz). v1 dosyasına DOKUNMAZ; v1
 // yolu (/api/recommend) aynen çalışmaya devam eder.
+//
+// Göç tek seferliktir: products.json sonradan elle ya da link-products --apply
+// ile değiştiyse (ör. models bağlandıysa) script üzerine yazmayı reddeder.
 //
 // Kurallar (P2):
 //  - deprecated olmayan kayıt -> status 'active', deprecated -> 'retired'
@@ -15,7 +19,7 @@
 //  - görev eşlemesi aşağıdaki ACTIVE_TASKS tablosunda; bestFor.en + description
 //    + category okunarak seçildi. `unsure` olanlar data/migration-review.md'ye yazılır.
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -180,7 +184,13 @@ for (const tool of v1) {
   if (!tool.deprecated) review.push({ tool, tasks, unsure, why });
 }
 
-writeFileSync(path.join(ROOT, 'data/products.json'), `${JSON.stringify(products, null, 2)}\n`);
+const productsPath = path.join(ROOT, 'data/products.json');
+const generated = `${JSON.stringify(products, null, 2)}\n`;
+if (existsSync(productsPath) && readFileSync(productsPath, 'utf8') !== generated && !process.argv.includes('--force')) {
+  console.error('[migrate] data/products.json göçten sonra değişmiş (elle düzenleme ya da model bağlantısı). Üzerine yazmak için --force.');
+  process.exit(1);
+}
+writeFileSync(productsPath, generated);
 
 // ------------------------------------------------------------------
 // data/migration-review.md
