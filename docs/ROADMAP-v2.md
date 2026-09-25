@@ -4,6 +4,14 @@
 Sohbet eden ajan: amacı anlar, gerekirse en fazla 2 seçenekli soru sorar, görev taksonomisinden bir görev seçer, katalogdan puanlı ürünleri alır, en iyi araç + 2 alternatifi güven seviyesi, fiyat, veri tarihi ve kaynakla önerir, seçilen araç için prompt rehberinden etkileşimli olarak prompt üretir: konuşmadan bilgileri çıkarır, gerekirse tek kartta en fazla 3 soru sorar, iki varyant (güvenli/yaratıcı) gösterir, kullanıcı butonlar ve serbest metinle iyileştirir. Global, en + tr.
 Kapsam dışı (lansman sonrası): hesaplar, ödeme, sponsorlu listeleme, mobil uygulama, Postgres, API-proxy.
 
+## Ürün kararı (2026-09-25, Ferit)
+RouteAI önce bir **navigasyon** aracı, sohbet botu değil:
+- Ana sayfa (`/`) yine eski navigasyon arayüzü (`components/HomeClient.tsx`, `/api/recommend`). Görünümü korunur.
+- Sohbet modu isteğe bağlı: `/chat` (ana sayfanın altındaki linkten).
+- Prompt oluşturucu, öneri kartında açıklamanın altında küçük bir kutu (`components/PromptBuilderBox.tsx` → `POST /api/prompt/start`). Sadece rehberi olan araçlarda görünür (`data/prompt-products.json`).
+- `/classic` → `/` kalıcı yönlendirme.
+Aşağıdaki "Ürün" tanımı sohbet modu için geçerli.
+
 ## Mimari
 - Katalog git'te JSON: data/tasks.json, data/models.json, data/products.json, data/reviews.json, data/briefs.json, data/signals.json, data/prompt-guides/*.md. Zod şeması lib/catalog/schema.ts.
 - Modeller her gece GitHub Action ile Artificial Analysis API ve LMArena (Hugging Face) verisinden güncellenir ve PR açılır. Ürünler seçilmiştir; yeni ürünler 'candidate' olarak PR ile gelir.
@@ -58,7 +66,7 @@ Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var),
 - get_workflow adım adları şablondan geldiği için şimdilik Türkçe (EN arayüzde de).
 
 ## P6 notları
-- Ana sayfa artık sohbet (`components/chat/ChatShell.tsx`); eski tek sorgu arayüzü `/classic` (noindex, sitemap'te yok). `/dev/cards` sadece geliştirmede açılan kart önizlemesi (örnek veri), üretimde 404.
+- (2026-09-25'te değişti: ana sayfa yine navigasyon, sohbet `/chat`'te; bkz. "Ürün kararı".) P6'da ana sayfa sohbet (`components/chat/ChatShell.tsx`) yapılmıştı; eski tek sorgu arayüzü `/classic`'teydi. `/dev/cards` sadece geliştirmede açılan kart önizlemesi (örnek veri), üretimde 404.
 - Dil: `proxy.ts` (Next 16'da middleware'in yeni adı) `?lang` -> Accept-Language -> en sırasıyla `x-routeai-locale` başlığını ekler; `<html lang>` ve metadata bundan. Sözlük `lib/i18n/{en,tr}.ts`; anahtar eşitliği tiple zorunlu.
 - Türkçe şablonlarda sayıya ek getiren kalıplardan ("%43'i") kaçınıldı: ek sayının okunuşuna göre değişiyor ("%43'ü"). Yeni şablon yazarken aynı kural.
 - `WorkflowDisplay`'deki "tahmini maliyet" bölümü sohbet kartına alınmadı: kaynaksız fiyat tahmini üretiyor (klasik arayüzde duruyor).

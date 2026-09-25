@@ -1,8 +1,12 @@
 # RouteAI
 
-Ne yapmak istediğini yazarsın; RouteAI sohbet ederek amacını netleştirir, kendi görev taksonomisinden bir görev seçer, katalogdaki ürünleri **RouteAI Skoru** ile sıralar ve en iyi aracı + 2 alternatifi güven seviyesi, fiyat, veri tarihi ve kaynakla önerir. Seçilen araç için prompt rehberinden etkileşimli olarak prompt yazar (iki varyant: güvenli / yaratıcı). İngilizce ve Türkçe.
+RouteAI bir **yapay zekâ navigatörü**: ne yapmak istediğini yazarsın, sana en uygun AI aracını ya da adım adım iş akışını (workflow) önerir.
 
-Eski tek sorgu arayüzü (v1, anahtar kelime + niyet analizi) `/classic` altında duruyor. Sohbet ajanı OpenAI'a ulaşamazsa ya da aylık bütçe dolarsa aynı v1 yoluna düşer.
+- **Ana sayfa (`/`), navigasyon:** Tek sorgu, fiyat filtresi (tümü / ücretsiz / ücretli), ana öneri + alternatifler ya da workflow. Arka uç `POST /api/recommend` (anahtar kelime + OpenAI niyet analizi, `lib/tools-database.json`). Türkçe.
+- **Prompt kutusu:** Önerilen aracın rehberi varsa (`data/prompt-guides/`, bugün 17 ürün) açıklamanın altında küçük bir "Bu araç için prompt yaz" kutusu çıkar. Açılınca amaç (varsayılan: arama metni) `POST /api/prompt/start`'a gider. Gerekirse tek bir soru kartı gelir; sonra iki varyantlı prompt kartı (güvenli / yaratıcı) açılır. Kartta iyileştirme, varsayım değiştirme, sürüm geçmişi ve kopyalama var.
+- **Sohbet modu (`/chat`, isteğe bağlı):** Ana sayfanın altındaki linkten açılır. En + tr. Katalogdaki ürünleri **RouteAI Skoru** ile sıralayan sohbet ajanı. OpenAI'a ulaşamazsa ya da aylık bütçe dolarsa v1 yoluna düşer.
+
+`/classic` adresi kalıcı olarak `/`'a yönlenir.
 
 ## Durum (dosyalardan, 2026-09-24)
 
@@ -26,7 +30,10 @@ Sonuç: benchmark, uzman ve kendi sinyal verisi olmadığı için **RouteAI Skor
 ## Mimari
 
 ```
-Tarayıcı (components/chat, lib/i18n)
+Ana sayfa / (components/HomeClient) ─► POST /api/recommend ─► lib/recommendV1 (v1: anahtar kelime + niyet analizi)
+   └─ öneri kartındaki prompt kutusu ─► POST /api/prompt/start ─► lib/promptBuilder (aşağıda)
+
+Sohbet modu /chat (components/chat, lib/i18n)
    │  NDJSON akışı                         ┌──────────── git'teki katalog (data/*.json) ───────────┐
    ▼                                       │ tasks · products · models · reviews · signals ·      │
 POST /api/chat  (edge, fra1)               │ briefs · candidates · prompt-guides                   │
@@ -106,7 +113,7 @@ Sohbet için en az `OPENAI_API_KEY` ve KV (`KV_REST_API_URL`, `KV_REST_API_TOKEN
 | `npm run lint` | ESLint |
 | `npm test` | Birim testleri (`node:test`, `lib/__tests__/*.test.ts`) |
 | `npm run validate:catalog` | Rehberleri derler, `data/` altındaki tüm katalog dosyalarını Zod + çapraz kontrollerle doğrular |
-| `npm run build:guides` | `data/prompt-guides/*.md` → `data/prompt-guides.json` |
+| `npm run build:guides` | `data/prompt-guides/*.md` → `data/prompt-guides.json` + `data/prompt-products.json` (prompt kutusu için araç adı → ürün) |
 | `npm run eval -- --recommender=v1\|v2-oracle\|v2` | Altın set değerlendirmesi → `evals/results/<tarih>-<recommender>.json` |
 | `npm run eval:prompts` | Prompt oluşturucu senaryoları (OpenAI gerekir) |
 | `npm run eval:simulate` | RouteAI Skoru'nun sentetik veriyle davranışı (gerçek veri değil) |
@@ -133,12 +140,13 @@ Adaylar (`status: candidate`) hiçbir zaman önerilmez; ürün `data/products.js
 | Uç | Açıklama | Rate limit |
 | --- | --- | --- |
 | `POST /api/chat` | Sohbet ajanı, NDJSON akışı (`text`, `card`, `done`, `error`) | 20/dk, 100/saat |
+| `POST /api/prompt/start` | Ana sayfadaki prompt kutusu: ürün + amaç → soru kartı ya da PromptCard | 30/dk, 200/saat |
 | `POST /api/prompt/answer` | Prompt soru kartının cevapları → PromptCard | 30/dk, 200/saat |
 | `POST /api/prompt/refine` | Hazır buton / varsayım değişikliği / serbest talimat → yeni versiyon | 30/dk, 200/saat |
 | `POST /api/outcome` | "İşini gördü mü?" ve karşılaştırma cevabı (oturum+ürün+görev başına tek kayıt) | 20/dk, 120/saat |
 | `POST /api/feedback` | Öneri oyu (oturum+ürün+görev başına son oy geçerli; v1 alanları da kabul) | 20/dk, 120/saat |
 | `POST /api/events` | Anonim olay sayaçları | 60/dk, 600/saat |
-| `POST /api/recommend` | v1 önerisi (`/classic`) | 10/dk, 60/saat |
+| `POST /api/recommend` | Navigasyon önerisi (ana sayfa, v1) | 10/dk, 60/saat |
 | `GET /api/admin/stats` | Son 30 gün ve ROADMAP metrikleri. Yerelde `?sample=1` sentetik veri (üretimde kapalı) | `x-admin-key` |
 | `GET /api/admin/feedback` | Son geri bildirimler | `x-admin-key` |
 | `POST /api/admin/seed` | v1 araçlarını KV'ye (ve açıksa vektöre) yazar — yıkıcı | `x-admin-key` |
@@ -162,14 +170,15 @@ v1 sayıları sadece kural tabanlı kademede çözülen kısa sorguları kapsar 
 
 ## Gizlilik
 
-`/privacy` (en/tr). Saklanan: anonim `sessionId` (sunucuda sadece hash'i), günlük olay sayaçları, oylar ve iş sonucu cevapları. Sohbet mesajları saklanmaz ve loglanmaz; IP sadece rate limit için en fazla yaklaşık 1 saat tutulur. İstisnalar: prompt oluşturucu oturumu (amaç, talimatlar, üretilen promptlar) 24 saat; `/classic`'te oy verilirse arama metni oyla birlikte saklanır. Sohbet metni yanıt üretmek için OpenAI'a gönderilir. Kodda nasıl doğrulandığı: `docs/privacy-verification.md`.
+`/privacy` (en/tr). Saklanan: anonim `sessionId` (sunucuda sadece hash'i), günlük olay sayaçları, oylar ve iş sonucu cevapları. Sohbet mesajları saklanmaz ve loglanmaz; IP sadece rate limit için en fazla yaklaşık 1 saat tutulur. İstisnalar: prompt oluşturucu oturumu (amaç, talimatlar, üretilen promptlar) 24 saat; ana sayfada beğendim/beğenmedim denirse arama metni oyla birlikte saklanır; yıldız puanları sadece tarayıcıda kalır. Yazılan metin (arama, sohbet, prompt amacı) OpenAI'a gönderilir. Kodda nasıl doğrulandığı: `docs/privacy-verification.md`.
 
 ## Proje yapısı (v2 parçaları)
 
 ```
 app/
-  page.tsx                 sohbet (components/chat)
-  classic/                 v1 arayüzü
+  page.tsx                 navigasyon (components/HomeClient, prompt kutusu components/PromptBuilderBox)
+  chat/                    isteğe bağlı sohbet modu (components/chat)
+  classic/                 / adresine kalıcı yönlendirme
   privacy/                 gizlilik sayfası
   api/chat, api/prompt/*, api/outcome, api/feedback, api/events, api/admin/stats
 lib/
