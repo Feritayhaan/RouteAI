@@ -2,7 +2,9 @@
 
 Gizlilik sayfası (`app/privacy`, metin `lib/i18n/privacy.ts`) bu dosyadaki bulgulara dayanıyor. Kod değişince tekrar kontrol et.
 
-## Nasıl doğrulandı (2026-09-24; 2026-09-25'te ana sayfa navigasyona döndü, tablo güncellendi)
+## Nasıl doğrulandı (2026-09-24; 2026-09-25'te sohbet kaldırıldı, ana sayfa navigasyon + prompt oluşturucu, tablo güncellendi)
+
+Arama metninin loglanmadığı: `app/api/recommend/route.ts`, `lib/intent/*`, `lib/workflow/*` logları sadece uzunluk, kategori ve şablon id basıyor (2026-09-25'te `grep console.` ile kontrol edildi).
 
 1. KV'ye yazan her çağrı tarandı:
    ```
@@ -16,10 +18,9 @@ Gizlilik sayfası (`app/privacy`, metin `lib/i18n/privacy.ts`) bu dosyadaki bulg
 
 | Yer | Ne saklanıyor | Süre | Kullanıcı metni? |
 | --- | --- | --- | --- |
-| `/api/chat` (`lib/agent/handler.ts`) | Sadece `usage:<ay>` ve `usage:day:<gün>` token sayaçları; log: görev, araç çağrı sayısı, gecikme, token | Aylık anahtar ~62 gün | **Hayır.** Mesajlar OpenAI'a gider, KV'ye ve loga yazılmaz |
-| Prompt oturumu `ps:<id>` (`lib/promptBuilder/store.ts`; sohbetteki `build_prompt` ve ana sayfadaki prompt kutusu, `/api/prompt/start`) | Amaç (goal), slot değerleri, serbest iyileştirme talimatı, üretilen promptlar | 24 saat | **Evet, 24 saat** (gizlilik sayfasında yazılı) |
+| Prompt oturumu `ps:<id>` (`lib/promptBuilder/store.ts`; ana sayfadaki prompt oluşturucu, `/api/prompt/start`) | Amaç (goal), slot değerleri, serbest iyileştirme talimatı, üretilen promptlar | 24 saat | **Evet, 24 saat** (gizlilik sayfasında yazılı) |
 | `/api/outcome` (`lib/signals/store.ts`) | Cevap (evet/kısmen/hayır), etiketler, ürün, görev, rehber sürümü; anahtar: oturum hash'i | ~400 gün | Hayır (serbest metin şemada yok) |
-| `/api/feedback`, sohbet biçimi | Oy, ürün, görev, oturum hash'i | ~400 gün | Hayır |
+| `/api/feedback`, v2 biçimi (şu an arayüzde kullanılmıyor) | Oy, ürün, görev, oturum hash'i | ~400 gün | Hayır |
 | `/api/feedback`, navigasyon biçimi (`fb:*`) | **Sorgu metni**, araç adı, oy | Süresiz | **Evet** (ana sayfa; sayfada yazılı) |
 | `/api/events` (`lib/analytics/store.ts`) | Gün + olay sayaçları, görev/rehber kodları; `ret:<gün>` kümesinde oturum hash'i | 120 gün / 30 gün | Hayır |
 | Rate limit (`lib/rateLimit.ts`) | Anahtarda **IP adresi** (`ratelimit:<uç>:<ip>:minute\|hour`) | Pencere + 10 sn (en fazla ~1 saat) | Hayır |

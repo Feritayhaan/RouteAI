@@ -59,10 +59,10 @@ Bugün: 40 görev, 56 aktif ürün, **0 model, 0 uzman değerlendirmesi, 0 sinya
 
 ## 5. Uygulama kontrolleri
 
-- [ ] Navigasyon uçtan uca (gerçek anahtarlarla): ana sayfada sorgu → öneri → "Bu araç için prompt yaz" → (soru kartı) → prompt kartı → iyileştir → kopyala. Rehberi olmayan araçta kutu çıkmamalı. Sohbet modu `/chat` linkinden açılmalı; `/classic` `/`'a yönlenmeli.
-- [ ] Rate limit testi: `/api/chat` 20/dk (429 + `Retry-After`, arayüzde geri sayım), `/api/prompt/*` 30/dk, `/api/events` 60/dk aşılınca 429.
+- [ ] Navigasyon uçtan uca (gerçek anahtarlarla): ana sayfada "Prompt da yaz" açık → sorgu → öneri + altında (soru kartı) → prompt kartı → iyileştir → kopyala. Sağdaki listeden araç değiştirince prompt o araç için gelmeli; rehberi olmayan önerilen araçta "rehber yok" mesajı çıkmalı. `/chat` ve `/api/chat` 404, `/classic` `/`'a yönlenmeli.
+- [ ] Rate limit testi: `/api/recommend` 10/dk, `/api/prompt/*` 30/dk, `/api/events` 60/dk aşılınca 429.
 - [ ] Bütçe testi: düşük `OPENAI_MONTHLY_TOKEN_BUDGET` ile v1'e düşüş; kartta "Quick keyword match … No score." / Türkçe karşılığı görünüyor.
-- [ ] Mobil kontrol: 360 px'de taşma yok (`docs/manual-test-p6.md` adımları), klavye ile gezinme, karanlık tema. (2026-09-25: `/privacy` en/tr, 404 en/tr ve sohbet footer'ı Playwright ile 360 px'de taşmasız: `docs/screenshots/p8-*-360.png`. Navigasyon ana sayfası, öneri kartı ve prompt kutusu 360 ve 1280 px'de taşmasız: `docs/screenshots/nav-*.png`. Bunlar sahte API cevaplarıyla alındı; öneri ve prompt metinleri örnek. Gerçek telefonda ve sohbet kartlarıyla tekrar bak.)
+- [ ] Mobil kontrol: 360 px'de taşma yok, klavye ile gezinme, karanlık tema. (2026-09-25: `/privacy` en/tr ve 404 en/tr 360 px'de taşmasız: `docs/screenshots/p8-*-360.png`. Tek ekran ana sayfa (prompt açık/kapalı, rehber yok durumu) 360 ve 1280 px, aydınlık ve karanlık temada taşmasız: `docs/screenshots/one-*.png`. Bunlar sahte API cevaplarıyla alındı; öneri ve prompt metinleri örnek. Gerçek telefonda tekrar bak.)
 - [ ] Gizlilik sayfası `/privacy?lang=en` ve `/privacy?lang=tr` açılıyor; footer linki var; `docs/privacy-verification.md`'deki kontroller yeniden yapıldı.
 - [ ] OG görseli: `/opengraph-image` açılıyor; bir paylaşım önizleme aracında görünüyor.
 - [ ] 404 (`/olmayan-sayfa`) ve 500 (hata sınırı, `app/error.tsx`) sayfaları iki dilde doğru.
