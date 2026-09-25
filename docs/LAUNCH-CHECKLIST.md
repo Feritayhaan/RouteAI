@@ -61,7 +61,7 @@ Bugün: 40 görev, 56 aktif ürün, **0 model, 0 uzman değerlendirmesi, 0 sinya
 
 - [ ] Rate limit testi: `/api/chat` 20/dk (429 + `Retry-After`, arayüzde geri sayım), `/api/prompt/*` 30/dk, `/api/events` 60/dk aşılınca 429.
 - [ ] Bütçe testi: düşük `OPENAI_MONTHLY_TOKEN_BUDGET` ile v1'e düşüş; kartta "Quick keyword match … No score." / Türkçe karşılığı görünüyor.
-- [ ] Mobil kontrol: 360 px'de taşma yok (`docs/manual-test-p6.md` adımları), klavye ile gezinme, karanlık tema.
+- [ ] Mobil kontrol: 360 px'de taşma yok (`docs/manual-test-p6.md` adımları), klavye ile gezinme, karanlık tema. (2026-09-25: `/privacy` en/tr, 404 en/tr ve ana sayfa footer'ı Playwright ile 360 px'de taşmasız: `docs/screenshots/p8-*-360.png`. Gerçek telefonda ve sohbet kartlarıyla tekrar bak.)
 - [ ] Gizlilik sayfası `/privacy?lang=en` ve `/privacy?lang=tr` açılıyor; footer linki var; `docs/privacy-verification.md`'deki kontroller yeniden yapıldı.
 - [ ] OG görseli: `/opengraph-image` açılıyor; bir paylaşım önizleme aracında görünüyor.
 - [ ] 404 (`/olmayan-sayfa`) ve 500 (hata sınırı, `app/error.tsx`) sayfaları iki dilde doğru.
