@@ -4,6 +4,7 @@ RouteAI bir **yapay zekâ navigatörü**: ne yapmak istediğini yazarsın, sana 
 
 - **Ana sayfa (`/`), navigasyon:** Tek sorgu, fiyat düğmesi (tek küçük düğme; her tıklamada tümü → ücretsiz → ücretli, tema düğmesiyle aynı görünüm), ana öneri + alternatifler ya da workflow. Arka uç `POST /api/recommend` (anahtar kelime + OpenAI niyet analizi, `lib/tools-database.json`). Türkçe.
 - **Prompt oluşturucu (aynı ekranda):** Fiyat düğmesinin solunda **"Prompt da yaz"** düğmesi, sağında **prompt aracı** listesi var. Liste varsayılan olarak "Önerilen araç"; rehberi olan 17 araçtan biri de seçilebilir. Düğme açıkken "Bana Yol Göster" önerinin hemen altında promptu da yazar: arama metni `POST /api/prompt/start`'a gider, gerekirse tek bir soru kartı, sonra iki varyantlı prompt kartı (güvenli / yaratıcı) gelir. Kartta iyileştirme, varsayım değiştirme, sürüm geçmişi ve kopyalama var. Önerilen aracın rehberi yoksa bunu söyler ve listeden araç seçmeyi önerir. Sonuç varken düğmeyi açmak ya da araç değiştirmek aramayı tekrarlamadan sadece promptu üretir; aynı arama ve araç için üretilen prompt tekrar üretilmez.
+- **Tek kaynak ve güncel model:** Ana sayfadaki araç adı, linki, fiyatı ve aktif/emekli durumu `data/products.json`'dan gelir (`lib/catalog/navigator.ts`). Adlar sürümsüz ("ChatGPT", "Claude"); kartta "Güncel model: X · Artificial Analysis/LMArena · tarih" satırı gece senkronundan otomatik hesaplanır (`modelRule`, ayrıntı `data/README.md`). Model listesi elle tutulmaz.
 - **Sohbet modu yok:** 2026-09-25'te siteden kaldırıldı (`/chat`, `/api/chat`). Ajan kodu (`lib/agent`) v2 eval'i için repoda duruyor.
 
 `/classic` adresi kalıcı olarak `/`'a yönlenir.
@@ -121,6 +122,7 @@ npm run dev                         # http://localhost:3000
 | `npm run sync:models` | Artificial Analysis + LMArena → `data/models.json` + `data/sync-report.md` |
 | `npm run aggregate:signals` | KV'den iş sonucu, karşılaştırma ve oyları **okur** → `data/signals.json` + `data/signals-anomalies.md` |
 | `npm run discover:tools` | Show HN + Product Hunt → `data/candidates.json` + `data/discovery-report.md` |
+| `npm run automerge:guard` | Gece PR'ı otomatik merge edilebilir mi (veri dışı dosya, ilk senkron, model sayısı düşüşü, kaybolan güncel model, sinyal anormalliği) |
 | `npm run check:prices` | Aktif ürünlerin `pricingUrl` sayfaları → `data/products.json`'da fiyat önerisi + `data/price-report.md` |
 | `npm run validate:db` / `bench` / `migrate:pricing` | v1 veritabanı (`lib/tools-database.json`) araçları |
 
@@ -130,7 +132,7 @@ Hepsi değişiklik varsa ayrı bir dala commit atar ve PR açar; merge kararı i
 
 | Workflow | Zaman (UTC) | Secret'lar |
 | --- | --- | --- |
-| `nightly-data` (`sync-models.yml`) | her gün 03:00 | `AA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_READ_ONLY_TOKEN` |
+| `nightly-data` (`sync-models.yml`; kontrollerden geçen PR otomatik merge edilir) | her gün 03:00 | `AA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_READ_ONLY_TOKEN` |
 | `discover-tools` | pazartesi 04:00 | `OPENAI_API_KEY`, `PRODUCT_HUNT_TOKEN` (ikisi de isteğe bağlı) |
 | `check-prices` | ayın 1'i 05:00 | `OPENAI_API_KEY` |
 

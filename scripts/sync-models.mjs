@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BENCHMARK_ARENAS } from '../lib/catalog/benchmarkKeys.ts';
+import { resolveCurrentModel } from '../lib/catalog/currentModel.ts';
 import {
   fetchArtificialAnalysis,
   fetchLmArena,
@@ -74,7 +75,15 @@ if (succeeded.size === 0) {
   }
 }
 
-const text = renderReport(report, { models, dryRun, wrote });
+// Ürün -> güncel model (kurala göre otomatik; sitede gösterilen bu). İnceleme için rapora eklenir.
+const productLines = ['', '## Ürün → güncel model (otomatik)', '', '| Ürün | Güncel model | Çıkış | Kaynak |', '| --- | --- | --- | --- |'];
+for (const p of read('data/products.json').filter((x) => x.status === 'active' && (x.modelRule || x.models?.length))) {
+  const cm = resolveCurrentModel(p, models);
+  productLines.push(cm
+    ? `| ${p.name} | ${cm.name} | ${cm.releaseDate ?? '—'} | ${cm.source}, ${cm.fetchedAt} |`
+    : `| ${p.name} | (eşleşen model yok) | — | — |`);
+}
+const text = `${renderReport(report, { models, dryRun, wrote }).trimEnd()}\n${productLines.join('\n')}\n`;
 if (dryRun) {
   process.stdout.write(text);
 } else {

@@ -11,6 +11,7 @@ RouteAI bir **navigasyon** aracı, sohbet botu değil. Site **tek ekran**:
 - Prompt oluşturucu aynı ekranda: fiyat düğmesinin solunda "Prompt da yaz" düğmesi, sağında prompt aracı listesi ("Önerilen araç" ya da rehberi olan 17 araçtan biri, `data/prompt-products.json`). Açıkken prompt önerinin altında çıkar (`components/PromptPanel.tsx` → `POST /api/prompt/start`).
 - Sohbet modu kaldırıldı (`/chat`, `/api/chat`, `ChatShell`). `lib/agent` v2 eval'i için repoda.
 - `/classic` → `/` kalıcı yönlendirme.
+- Model listesi elle tutulmaz (2026-09-25): ürün adları sürümsüz, `modelRule` ile güncel model gece senkronundan otomatik; ana sayfa ad/link/fiyat/durumu `data/products.json`'dan okur. Gece PR'ı katalog kontrolü + test + build + `automerge:guard` geçerse otomatik merge edilir; şüpheli durumda Ferit'i bekler.
 Aşağıdaki "Ürün" ve "Mimari" tanımları sohbet ajanı dönemine ait; ajan şu an sitede yok.
 
 ## Mimari

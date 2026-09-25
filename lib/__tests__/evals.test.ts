@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { evaluateRow, parseGolden, summarize } from '../../evals/metrics.mjs';
 import toolsDatabase from '../tools-database.json';
+import { withCatalog } from '../catalog/navigator';
 import tasksJson from '../../data/tasks.json';
 
 const golden = parseGolden(readFileSync(new URL('../../evals/golden.jsonl', import.meta.url), 'utf8'));
@@ -30,10 +31,9 @@ describe('altın set (evals/golden.jsonl)', () => {
     }
   });
 
-  it('acceptableTools katalogdaki deprecated olmayan araç adlarıyla birebir aynı', () => {
-    const active = new Set(
-      (toolsDatabase as { name: string; deprecated?: boolean }[]).filter((t) => !t.deprecated).map((t) => t.name)
-    );
+  it('acceptableTools ana sayfanın gösterdiği (katalog uygulanmış) aktif araç adlarıyla birebir aynı', () => {
+    type T = Parameters<typeof withCatalog>[0][number];
+    const active = new Set(withCatalog(toolsDatabase as unknown as T[]).filter((t) => !t.deprecated).map((t) => t.name));
     const unknown = golden.flatMap((r) => r.acceptableTools.filter((name) => !active.has(name)).map((name) => `${r.id}: ${name}`));
     assert.deepStrictEqual(unknown, []);
   });

@@ -1,7 +1,12 @@
 # Gece verisi: model senkronu (Artificial Analysis + LMArena -> data/models.json)
 # ve kendi sinyallerimiz (KV -> data/signals.json, SADECE okuma).
 # Değişiklik varsa sync/nightly-<tarih> dalına commit atar ve PR açar
-# (PR gövdesi = sync-report.md + signals-anomalies.md). Merge kararı insanın.
+# (PR gövdesi = sync-report.md + signals-anomalies.md).
+# Otomatik merge (Ferit'in kararı, 2026-09-25): katalog kontrolü, testler ve
+# build geçer VE scripts/automerge-guard.mjs uygun derse PR kendiliğinden
+# squash-merge edilir; Vercel siteyi yeniden yayınlar. Şüpheli durumda (ilk
+# senkron, veri dışı dosya, model sayısında >%20 düşüş, güncel modeli kaybolan
+# ürün, sinyal anormalliği) PR açık kalır ve sebep PR'a yorum olarak yazılır.
 #
 # Gerekenler:
 #  - Repo secret: AA_API_KEY (yoksa Artificial Analysis atlanır, LMArena yine çalışır)
@@ -54,6 +59,12 @@ jobs:
       - name: Kataloğu doğrula
         run: npm run validate:catalog
 
+      - name: Testler
+        run: npm test
+
+      - name: Build (site yeni veriyle derleniyor mu)
+        run: npm run build
+
       - name: Değişiklik varsa PR aç
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,6 +77,9 @@ jobs:
           BRANCH="sync/nightly-${DATE}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Otomatik merge kararı commit'ten ÖNCE (çalışma kopyası vs main)
+          if npm run --silent automerge:guard > /tmp/guard.txt 2>&1; then AUTO=1; else AUTO=0; fi
+          cat /tmp/guard.txt
           git checkout -b "$BRANCH"
           for f in data/models.json data/sync-report.md data/signals.json data/signals-anomalies.md; do
             if [ -f "$f" ]; then git add "$f"; fi
@@ -78,4 +92,10 @@ jobs:
           else
             gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
               --title "sync: gece verisi ${DATE}" --body-file /tmp/pr-body.md
+          fi
+          if [ "$AUTO" = "1" ]; then
+            gh pr merge "$BRANCH" --squash --delete-branch \
+              || gh pr comment "$BRANCH" --body "Otomatik merge denendi ama olmadı (dal koruması olabilir); elle merge et."
+          else
+            gh pr comment "$BRANCH" --body-file /tmp/guard.txt
           fi
