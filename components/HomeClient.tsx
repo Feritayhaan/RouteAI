@@ -8,6 +8,7 @@ import ThemeToggle from "@/components/ThemeToggle"
 import WorkflowDisplay from "@/components/WorkflowDisplay"
 import SimpleRecommendationDisplay from "@/components/SimpleRecommendationDisplay"
 import PromptPanel from "@/components/PromptPanel"
+import PricingToggle, { type PricingFilter } from "@/components/PricingToggle"
 import { getDictionary } from "@/lib/i18n"
 import { AUTO_TOOL, promptToolNames, resolvePromptTarget } from "@/lib/promptBuilder/products"
 import type { ApiResponse, SimpleRecommendation, WorkflowRecommendation } from "@/lib/types"
@@ -59,7 +60,7 @@ function recommendedTools(response: ApiResponse | null): string[] {
 
 export default function HomeClient() {
   const [query, setQuery] = useState("")
-  const [pricingFilter, setPricingFilter] = useState<"all" | "free" | "paid">("all")
+  const [pricingFilter, setPricingFilter] = useState<PricingFilter>("all")
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -368,42 +369,20 @@ export default function HomeClient() {
               </div>
             </div>
 
-            {/* Filtre satırı: solda prompt aç/kapa, ortada fiyat filtresi, sağda prompt aracı */}
-            <div className="grid grid-cols-2 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-3">
-            <div className="order-2 sm:order-1 flex justify-start sm:justify-end min-w-0">
+            {/* Filtre satırı: solda prompt aç/kapa, ortada fiyat düğmesi, sağda prompt aracı */}
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 md:gap-3">
               <button
                 type="button"
                 onClick={() => setPromptEnabled((v) => !v)}
                 aria-pressed={promptEnabled}
-                className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs md:text-sm font-medium shadow-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "bg-primary text-primary-foreground border-primary shadow-md" : "bg-card/80 dark:bg-card border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
+                className={`inline-flex h-11 md:h-12 items-center gap-1.5 rounded-2xl border px-2.5 sm:px-3 md:px-4 text-xs md:text-sm font-medium shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 dark:bg-card border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
               >
                 <Wand2 className="w-4 h-4" aria-hidden />
                 {dict.prompt.toggle}
               </button>
-            </div>
 
-            <div className="order-1 sm:order-2 col-span-2 sm:col-span-1 flex bg-card/80 dark:bg-card border border-border/50 rounded-xl p-1 shadow-sm w-full max-w-[360px] sm:w-[300px] md:w-[340px] mx-auto">
-              <button
-                onClick={() => setPricingFilter("all")}
-                className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "all" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
-              >
-                Tümü
-              </button>
-              <button
-                onClick={() => setPricingFilter("free")}
-                className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "free" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
-              >
-                Ücretsiz
-              </button>
-              <button
-                onClick={() => setPricingFilter("paid")}
-                className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "paid" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
-              >
-                Ücretli
-              </button>
-            </div>
+              <PricingToggle value={pricingFilter} onChange={setPricingFilter} />
 
-            <div className="order-3 flex justify-end sm:justify-start min-w-0">
               <select
                 value={promptTool}
                 onChange={(e) => {
@@ -412,14 +391,13 @@ export default function HomeClient() {
                 }}
                 aria-label={dict.prompt.toolLabel}
                 title={dict.prompt.toolLabel}
-                className={`w-full max-w-[200px] truncate rounded-xl border border-border/50 bg-card/80 dark:bg-card px-3 py-2 text-xs md:text-sm font-medium shadow-sm transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "text-foreground" : "text-muted-foreground"}`}
+                className={`h-11 md:h-12 w-[128px] sm:w-[160px] md:w-[190px] truncate rounded-2xl border border-border/50 bg-card/80 dark:bg-card px-2.5 sm:px-3 text-xs md:text-sm font-medium shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "text-foreground" : "text-muted-foreground"}`}
               >
                 <option value={AUTO_TOOL}>{dict.prompt.toolAuto}</option>
                 {PROMPT_TOOLS.map((name) => (
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
-            </div>
             </div>
 
             <Button
