@@ -38,6 +38,10 @@ if (!hasOpenAIKey) {
 
 let openaiCalls = 0;
 export const openaiCallCount = () => openaiCalls;
+// Anahtar varken başarısız OpenAI çağrıları (ağ hatası ya da HTTP >= 400).
+// Böyle bir satır yedek yoldan cevaplanır; ölçüme karışmasın diye 'skipped' sayılır.
+let openaiFailures = 0;
+export const openaiFailureCount = () => openaiFailures;
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (input, init) => {
   const url = input instanceof Request ? input.url : String(input);
@@ -54,6 +58,14 @@ globalThis.fetch = async (input, init) => {
         status: 401,
         headers: { 'content-type': 'application/json' },
       });
+    }
+    try {
+      const res = await realFetch(input, init);
+      if (res.status >= 400) openaiFailures++;
+      return res;
+    } catch (error) {
+      openaiFailures++;
+      throw error;
     }
   }
   return realFetch(input, init);

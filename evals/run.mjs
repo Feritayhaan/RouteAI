@@ -22,7 +22,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 // env.mjs İLK import: ortamı lib modülleri yüklenmeden hazırlar (bkz. o dosya).
-import { hasOpenAIKey, openaiCallCount, out, quietly, setVerbose } from './env.mjs';
+import { hasOpenAIKey, openaiCallCount, openaiFailureCount, out, quietly, setVerbose } from './env.mjs';
 import { evaluateRow, parseGolden, summarize } from './metrics.mjs';
 import { explainOracleMisses } from './oracleMisses.mjs';
 
@@ -58,6 +58,7 @@ out(`[eval] OpenAI anahtarı: ${hasOpenAIKey ? 'var (LLM çağrıları gerçek)'
 const rows = [];
 for (const g of golden) {
   const callsBefore = openaiCallCount();
+  const failuresBefore = openaiFailureCount();
   const started = performance.now();
   let output;
   try {
@@ -70,6 +71,8 @@ for (const g of golden) {
 
   if (!hasOpenAIKey && llmCalls > 0 && !output.skipped) {
     output = { ...output, skipped: 'needs OPENAI_API_KEY' };
+  } else if (hasOpenAIKey && openaiFailureCount() > failuresBefore && !output.skipped) {
+    output = { ...output, skipped: 'openai_error' };
   }
 
   const row = evaluateRow(g, output, latencyMs);
