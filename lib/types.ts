@@ -1,4 +1,5 @@
 import { PricingLike } from './pricing'
+import type { CurrentModel } from './catalog/currentModel'
 
 export interface RecommendationTool {
   toolName: string
@@ -10,6 +11,9 @@ export interface RecommendationTool {
   strength?: number
   why?: string
   promptSuggestion?: string
+  /** Katalogdaki ürün id'si ve gece senkronundan hesaplanan güncel model (varsa). */
+  productId?: string
+  currentModel?: CurrentModel | null
 }
 
 export interface WorkflowStep {

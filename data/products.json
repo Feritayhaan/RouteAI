@@ -1,7 +1,7 @@
 [
   {
     "id": "midjourney-v7",
-    "name": "Midjourney v7",
+    "name": "Midjourney",
     "url": "https://www.midjourney.com",
     "pricingUrl": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
     "description": {
@@ -13,6 +13,12 @@
       "image.logo"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "midjourney"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "paid",
       "free": false,
@@ -31,7 +37,7 @@
   },
   {
     "id": "chatgpt-gpt-4o-image",
-    "name": "ChatGPT (GPT-4o Image)",
+    "name": "ChatGPT (görsel)",
     "url": "https://chat.openai.com",
     "pricingUrl": "https://chatgpt.com/pricing/",
     "description": {
@@ -46,6 +52,14 @@
       "image.product-photo"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "OpenAI",
+      "include": [
+        "gpt image",
+        "gpt-image"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -64,7 +78,7 @@
   },
   {
     "id": "dall-e-3",
-    "name": "DALL-E 3",
+    "name": "DALL-E (OpenAI)",
     "url": "https://openai.com/dall-e-3",
     "description": {
       "en": "Photorealistic image generation integrated with ChatGPT",
@@ -75,6 +89,13 @@
       "image.product-photo"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "OpenAI",
+      "include": [
+        "dall"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -93,7 +114,7 @@
   },
   {
     "id": "google-imagen-4",
-    "name": "Google Imagen 4",
+    "name": "Google Imagen",
     "url": "https://deepmind.google/technologies/imagen-4/",
     "description": {
       "en": "Google's AI for fast, realistic image generation",
@@ -104,6 +125,13 @@
       "image.product-photo"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Google",
+      "include": [
+        "imagen"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -122,7 +150,7 @@
   },
   {
     "id": "adobe-firefly-image-4",
-    "name": "Adobe Firefly Image 4",
+    "name": "Adobe Firefly",
     "url": "https://firefly.adobe.com",
     "pricingUrl": "https://www.adobe.com/products/firefly/plans.html",
     "description": {
@@ -136,6 +164,12 @@
       "image.product-photo"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "firefly"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -153,7 +187,7 @@
   },
   {
     "id": "stable-diffusion-xl",
-    "name": "Stable Diffusion XL",
+    "name": "Stable Diffusion",
     "url": "https://stability.ai",
     "description": {
       "en": "Open-source, customizable image generation",
@@ -163,6 +197,14 @@
       "image.generate"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "stable diffusion",
+        "stable-diffusion",
+        "sdxl"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "free",
       "free": true,
@@ -180,7 +222,7 @@
   },
   {
     "id": "flux1-pro",
-    "name": "Flux.1 Pro",
+    "name": "FLUX (Black Forest Labs)",
     "url": "https://flux-ai.io",
     "description": {
       "en": "Fast, high-quality image generation",
@@ -191,6 +233,12 @@
       "image.product-photo"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "flux"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -238,7 +286,7 @@
   },
   {
     "id": "ideogram-20",
-    "name": "Ideogram 2.0",
+    "name": "Ideogram",
     "url": "https://ideogram.ai",
     "pricingUrl": "https://ideogram.ai/pricing",
     "description": {
@@ -251,6 +299,12 @@
       "design.social-graphic"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "ideogram"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -302,7 +356,7 @@
   },
   {
     "id": "chatgpt-gpt-5",
-    "name": "ChatGPT (GPT-5)",
+    "name": "ChatGPT",
     "url": "https://chat.openai.com",
     "pricingUrl": "https://chatgpt.com/pricing/",
     "description": {
@@ -324,6 +378,24 @@
       "docs.create"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "OpenAI",
+      "include": [
+        "gpt"
+      ],
+      "exclude": [
+        "mini",
+        "nano",
+        "oss",
+        "image",
+        "audio",
+        "realtime",
+        "codex",
+        "search",
+        "turbo"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -342,7 +414,7 @@
   },
   {
     "id": "claude-ai-claude-4",
-    "name": "Claude AI (Claude 4)",
+    "name": "Claude",
     "url": "https://claude.ai",
     "pricingUrl": "https://claude.com/pricing",
     "description": {
@@ -363,6 +435,17 @@
       "docs.create"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Anthropic",
+      "include": [
+        "claude"
+      ],
+      "exclude": [
+        "haiku",
+        "instant"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -381,7 +464,7 @@
   },
   {
     "id": "gemini-25-pro",
-    "name": "Gemini 2.5 Pro",
+    "name": "Gemini",
     "url": "https://gemini.google.com",
     "pricingUrl": "https://gemini.google/subscriptions/",
     "description": {
@@ -401,6 +484,22 @@
       "code.debug"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Google",
+      "include": [
+        "gemini"
+      ],
+      "exclude": [
+        "flash-lite",
+        "flash lite",
+        "nano",
+        "image",
+        "embedding",
+        "live",
+        "gemma"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -548,6 +647,17 @@
       "code.debug"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Anthropic",
+      "include": [
+        "claude"
+      ],
+      "exclude": [
+        "haiku",
+        "instant"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -579,6 +689,12 @@
       "audio.transcribe"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "eleven"
+      ],
+      "modality": "audio"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -608,6 +724,12 @@
       "audio.tts-voiceover"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "murf"
+      ],
+      "modality": "audio"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -625,7 +747,7 @@
   },
   {
     "id": "sora-2-openai",
-    "name": "Sora 2 (OpenAI)",
+    "name": "Sora (OpenAI)",
     "url": "https://openai.com/sora",
     "description": {
       "en": "The most advanced AI video generation model",
@@ -636,6 +758,13 @@
       "video.image-to-video"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "OpenAI",
+      "include": [
+        "sora"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -654,7 +783,7 @@
   },
   {
     "id": "google-veo-3",
-    "name": "Google Veo 3",
+    "name": "Google Veo",
     "url": "https://deepmind.google/technologies/veo/",
     "description": {
       "en": "Fast, high-quality AI video generation",
@@ -665,6 +794,13 @@
       "video.image-to-video"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Google",
+      "include": [
+        "veo"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -695,6 +831,13 @@
       "research.academic"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Perplexity",
+      "include": [
+        "sonar"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -939,7 +1082,7 @@
   },
   {
     "id": "runway-gen-3",
-    "name": "Runway Gen-3",
+    "name": "Runway",
     "url": "https://runwayml.com",
     "description": {
       "en": "AI tool for text-to-video and video editing",
@@ -951,6 +1094,13 @@
       "video.edit-short-social"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Runway",
+      "include": [
+        "gen"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -982,6 +1132,12 @@
       "video.edit-short-social"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "pika"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -1134,7 +1290,7 @@
   },
   {
     "id": "grok-41",
-    "name": "Grok 4.1",
+    "name": "Grok",
     "url": "https://grok.com",
     "pricingUrl": "https://grok.com/plans",
     "description": {
@@ -1147,6 +1303,19 @@
       "research.web"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "xAI",
+      "include": [
+        "grok"
+      ],
+      "exclude": [
+        "mini",
+        "imagine",
+        "image",
+        "code"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -1464,7 +1633,7 @@
   },
   {
     "id": "synthesia-30",
-    "name": "Synthesia 3.0",
+    "name": "Synthesia",
     "url": "https://www.synthesia.io",
     "pricingUrl": "https://www.synthesia.io/pricing",
     "description": {
@@ -2184,7 +2353,7 @@
   },
   {
     "id": "kling-ai-21",
-    "name": "Kling AI 2.1",
+    "name": "Kling AI",
     "url": "https://klingai.com",
     "pricingUrl": "https://app.klingai.com/global/membership/membership-plan",
     "description": {
@@ -2196,6 +2365,12 @@
       "video.image-to-video"
     ],
     "models": [],
+    "modelRule": {
+      "include": [
+        "kling"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -2240,7 +2415,7 @@
   },
   {
     "id": "luma-dream-machine-ray2",
-    "name": "Luma Dream Machine (Ray2)",
+    "name": "Luma Dream Machine",
     "url": "https://lumalabs.ai",
     "pricingUrl": "https://lumalabs.ai/learning-hub/pricing",
     "description": {
@@ -2252,6 +2427,13 @@
       "video.image-to-video"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Luma",
+      "include": [
+        "ray"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -2296,7 +2478,7 @@
   },
   {
     "id": "gemini-3-pro-image",
-    "name": "Gemini 3 Pro Image",
+    "name": "Gemini (görsel)",
     "url": "https://gemini.google.com",
     "pricingUrl": "https://gemini.google/subscriptions/",
     "description": {
@@ -2310,6 +2492,13 @@
       "design.social-graphic"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Google",
+      "include": [
+        "gemini"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -2508,6 +2697,21 @@
       "research.web"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Mistral",
+      "include": [
+        "mistral"
+      ],
+      "exclude": [
+        "small",
+        "tiny",
+        "ministral",
+        "codestral",
+        "embed",
+        "ocr"
+      ],
+      "modality": "text"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -2579,7 +2783,7 @@
   },
   {
     "id": "grok-imagine-v09-xai",
-    "name": "Grok Imagine v0.9 (xAI)",
+    "name": "Grok Imagine (xAI)",
     "url": "https://grok.com",
     "pricingUrl": "https://grok.com/plans",
     "description": {
@@ -2591,6 +2795,13 @@
       "video.image-to-video"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "xAI",
+      "include": [
+        "imagine"
+      ],
+      "modality": "video"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,

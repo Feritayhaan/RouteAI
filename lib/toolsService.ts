@@ -13,6 +13,8 @@ import {
     matchesPricingFilter,
 } from './pricing';
 import toolsDatabase from './tools-database.json';
+import { withCatalog } from './catalog/navigator';
+import type { CurrentModel } from './catalog/currentModel';
 
 // seed ucu yazdiktan sonra KV'yi GERI OKUYUP dogruluyor; anahtar iki yerde
 // ayri ayri yazilmasin diye disari aciliyor.
@@ -54,6 +56,9 @@ export interface Tool {
     features?: string[];
     lastUpdated?: string;
     deprecated?: boolean;
+    /** Katalogdaki ürün id'si ve güncel modeli (lib/catalog/navigator.ts ekler). */
+    productId?: string;
+    currentModel?: CurrentModel | null;
 
     // NEW: Workflow integration fields
     inputTypes?: ('text' | 'image' | 'audio' | 'video' | 'data' | 'code')[];
@@ -163,8 +168,9 @@ export async function getTools(): Promise<Tool[]> {
 
         if (tools && tools.length > 0) {
             console.log('[getTools] Tier 2: KV HIT -', tools.length, 'tools');
-            toolsCache = { data: tools, expiry: Date.now() + TOOLS_CACHE_TTL };
-            return tools;
+            const merged = withCatalog(tools);
+            toolsCache = { data: merged, expiry: Date.now() + TOOLS_CACHE_TTL };
+            return merged;
         }
     } catch (error) {
         console.warn('[getTools] Tier 2: KV unavailable:', error);
@@ -172,8 +178,9 @@ export async function getTools(): Promise<Tool[]> {
 
     // TIER 3: Static JSON fallback (always available, never fails)
     console.log('[getTools] Tier 3: BASE_TOOLS fallback -', BASE_TOOLS.length, 'tools');
-    toolsCache = { data: BASE_TOOLS, expiry: Date.now() + TOOLS_CACHE_TTL };
-    return BASE_TOOLS;
+    const merged = withCatalog(BASE_TOOLS);
+    toolsCache = { data: merged, expiry: Date.now() + TOOLS_CACHE_TTL };
+    return merged;
 }
 
 /**

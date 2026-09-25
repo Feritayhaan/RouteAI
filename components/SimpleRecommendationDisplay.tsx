@@ -6,6 +6,23 @@ import { priceLabelOrUnknown } from "@/lib/pricing"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
+import { SOURCES } from "@/lib/catalog/sources"
+import type { CurrentModel } from "@/lib/catalog/currentModel"
+
+/** "Güncel model: X · Artificial Analysis · 26 Eyl 2026" — kaynak adı görünür (lisans şartı). */
+function CurrentModelLine({ model }: { model: CurrentModel }) {
+  const source = SOURCES[model.source]
+  const date = new Date(`${model.fetchedAt}T00:00:00Z`).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
+  return (
+    <p className="text-[11px] md:text-xs text-muted-foreground">
+      Güncel model: <span className="font-semibold text-foreground/90">{model.name}</span>
+      {" · "}
+      <a href={source.leaderboardUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">{source.label}</a>
+      {" · "}
+      <span className="whitespace-nowrap">{date}</span>
+    </p>
+  )
+}
 
 export default function SimpleRecommendationDisplay({
   recommendation,
@@ -52,6 +69,7 @@ export default function SimpleRecommendationDisplay({
                     {recommendation.main.toolName}
                   </span>
                 </h2>
+                {recommendation.main.currentModel && <CurrentModelLine model={recommendation.main.currentModel} />}
 
                 {/* Rating */}
                 <div className="flex items-center gap-1.5 md:gap-2">
