@@ -1,6 +1,6 @@
 # Fiyat raporu
 
-Koşu: 2026-09-24. Değişen ve teyit edilen fiyatlar products.json'a önerildi; PR merge edilince geçerli.
+Koşu: 2026-09-25. Değişen ve teyit edilen fiyatlar products.json'a önerildi; PR merge edilince geçerli.
 
 ## Değişti (0)
 
@@ -14,65 +14,64 @@ Koşu: 2026-09-24. Değişen ve teyit edilen fiyatlar products.json'a önerildi;
 
 - yok
 
-## Hata (0)
+## Hata (46)
 
-- yok
+- Midjourney v7: OPENAI_API_KEY yok
+- ChatGPT (GPT-4o Image): OPENAI_API_KEY yok
+- Adobe Firefly Image 4: OPENAI_API_KEY yok
+- Leonardo AI: OPENAI_API_KEY yok
+- Ideogram 2.0: OPENAI_API_KEY yok
+- Canva AI (Magic Studio): OPENAI_API_KEY yok
+- ChatGPT (GPT-5): OPENAI_API_KEY yok
+- Claude AI (Claude 4): OPENAI_API_KEY yok
+- Gemini 2.5 Pro: OPENAI_API_KEY yok
+- Jasper AI: OPENAI_API_KEY yok
+- Copy.ai: OPENAI_API_KEY yok
+- GitHub Copilot: OPENAI_API_KEY yok
+- Cursor: OPENAI_API_KEY yok
+- Claude Code (Anthropic): OPENAI_API_KEY yok
+- ElevenLabs: OPENAI_API_KEY yok
+- Murf.ai: OPENAI_API_KEY yok
+- Perplexity AI: OPENAI_API_KEY yok
+- Elicit AI: OPENAI_API_KEY yok
+- Tableau: OPENAI_API_KEY yok
+- Microsoft Power BI: OPENAI_API_KEY yok
+- Gamma AI: OPENAI_API_KEY yok
+- Beautiful.ai: OPENAI_API_KEY yok
+- Suno AI: OPENAI_API_KEY yok
+- Udio: OPENAI_API_KEY yok
+- Pika Labs: OPENAI_API_KEY yok
+- Grok 4.1: OPENAI_API_KEY yok
+- World Labs Marble: OPENAI_API_KEY yok
+- NotebookLM: OPENAI_API_KEY yok
+- Synthesia 3.0: OPENAI_API_KEY yok
+- n8n AI Workflow Builder: OPENAI_API_KEY yok
+- Replit Agent: OPENAI_API_KEY yok
+- Windsurf (Codeium): OPENAI_API_KEY yok
+- OpusClip (Video Repurposing): OPENAI_API_KEY yok
+- Fathom (Meeting Assistant): OPENAI_API_KEY yok
+- Base44 (No-Code App Platform): OPENAI_API_KEY yok
+- Anyword (Copy AI): OPENAI_API_KEY yok
+- Writesonic (SEO Content): OPENAI_API_KEY yok
+- ClickUp Brain (Project AI): OPENAI_API_KEY yok
+- Simplified (Content & Design): OPENAI_API_KEY yok
+- Teal (Resume Builder AI): OPENAI_API_KEY yok
+- Kling AI 2.1: OPENAI_API_KEY yok
+- Luma Dream Machine (Ray2): OPENAI_API_KEY yok
+- Gemini 3 Pro Image: OPENAI_API_KEY yok
+- Microsoft Copilot Pro: OPENAI_API_KEY yok
+- Le Chat (Mistral): OPENAI_API_KEY yok
+- Grok Imagine v0.9 (xAI): OPENAI_API_KEY yok
 
-## pricingUrl yok (56)
+## pricingUrl yok (10)
 
-- Midjourney v7 (`midjourney-v7`)
-- ChatGPT (GPT-4o Image) (`chatgpt-gpt-4o-image`)
 - DALL-E 3 (`dall-e-3`)
 - Google Imagen 4 (`google-imagen-4`)
-- Adobe Firefly Image 4 (`adobe-firefly-image-4`)
 - Stable Diffusion XL (`stable-diffusion-xl`)
 - Flux.1 Pro (`flux1-pro`)
-- Leonardo AI (`leonardo-ai`)
-- Ideogram 2.0 (`ideogram-20`)
-- Canva AI (Magic Studio) (`canva-ai-magic-studio`)
-- ChatGPT (GPT-5) (`chatgpt-gpt-5`)
-- Claude AI (Claude 4) (`claude-ai-claude-4`)
-- Gemini 2.5 Pro (`gemini-25-pro`)
-- Jasper AI (`jasper-ai`)
-- Copy.ai (`copyai`)
-- GitHub Copilot (`github-copilot`)
-- Cursor (`cursor`)
-- Claude Code (Anthropic) (`claude-code-anthropic`)
-- ElevenLabs (`elevenlabs`)
-- Murf.ai (`murfai`)
 - Sora 2 (OpenAI) (`sora-2-openai`)
 - Google Veo 3 (`google-veo-3`)
-- Perplexity AI (`perplexity-ai`)
-- Elicit AI (`elicit-ai`)
-- Tableau (`tableau`)
-- Microsoft Power BI (`microsoft-power-bi`)
-- Gamma AI (`gamma-ai`)
-- Beautiful.ai (`beautifulai`)
 - Tome (`tome`)
-- Suno AI (`suno-ai`)
-- Udio (`udio`)
 - Runway Gen-3 (`runway-gen-3`)
-- Pika Labs (`pika-labs`)
-- Grok 4.1 (`grok-41`)
-- World Labs Marble (`world-labs-marble`)
-- NotebookLM (`notebooklm-deep-research`)
 - OpenAI Atlas (AI Browser) (`openai-atlas-ai-browser`)
-- Synthesia 3.0 (`synthesia-30`)
-- n8n AI Workflow Builder (`n8n-ai-workflow-builder`)
 - Adcreative.ai (`adcreativeai`)
-- Replit Agent (`replit-agent`)
-- Windsurf (Codeium) (`windsurf-codeium`)
-- OpusClip (Video Repurposing) (`opusclip-video-repurposing`)
-- Fathom (Meeting Assistant) (`fathom-meeting-assistant`)
-- Base44 (No-Code App Platform) (`base44-no-code-app-platform`)
-- Anyword (Copy AI) (`anyword-copy-ai`)
-- Writesonic (SEO Content) (`writesonic-seo-content`)
-- ClickUp Brain (Project AI) (`clickup-brain-project-ai`)
-- Simplified (Content & Design) (`simplified-content-and-design`)
-- Teal (Resume Builder AI) (`teal-resume-builder-ai`)
-- Kling AI 2.1 (`kling-ai-21`)
-- Luma Dream Machine (Ray2) (`luma-dream-machine-ray2`)
-- Gemini 3 Pro Image (`gemini-3-pro-image`)
-- Microsoft Copilot Pro (`microsoft-copilot-pro`)
-- Le Chat (Mistral) (`mistral-large-21`)
-- Grok Imagine v0.9 (xAI) (`grok-imagine-v09-xai`)

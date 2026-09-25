@@ -3,6 +3,7 @@
     "id": "midjourney-v7",
     "name": "Midjourney v7",
     "url": "https://www.midjourney.com",
+    "pricingUrl": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
     "description": {
       "en": "AI for cinematic-quality art and image generation",
       "tr": "Sinematik kalitede sanat ve görsel üretimi için yapay zeka"
@@ -32,6 +33,7 @@
     "id": "chatgpt-gpt-4o-image",
     "name": "ChatGPT (GPT-4o Image)",
     "url": "https://chat.openai.com",
+    "pricingUrl": "https://chatgpt.com/pricing/",
     "description": {
       "en": "Top AI for accurate text in images and UI design",
       "tr": "Metin doğruluğu ve UI tasarımı için en iyi yapay zeka"
@@ -122,6 +124,7 @@
     "id": "adobe-firefly-image-4",
     "name": "Adobe Firefly Image 4",
     "url": "https://firefly.adobe.com",
+    "pricingUrl": "https://www.adobe.com/products/firefly/plans.html",
     "description": {
       "en": "Brand-safe AI image editing and creation",
       "tr": "Marka güvenli AI görsel düzenleme ve oluşturma"
@@ -208,6 +211,7 @@
     "id": "leonardo-ai",
     "name": "Leonardo AI",
     "url": "https://leonardo.ai",
+    "pricingUrl": "https://leonardo.ai/pricing",
     "description": {
       "en": "Affordable AI image creation for teams",
       "tr": "Takımlar için uygun fiyatlı AI görsel oluşturma"
@@ -236,6 +240,7 @@
     "id": "ideogram-20",
     "name": "Ideogram 2.0",
     "url": "https://ideogram.ai",
+    "pricingUrl": "https://ideogram.ai/pricing",
     "description": {
       "en": "AI image tool with excellent text rendering",
       "tr": "Mükemmel metin render özellikli AI görsel aracı"
@@ -266,6 +271,7 @@
     "id": "canva-ai-magic-studio",
     "name": "Canva AI (Magic Studio)",
     "url": "https://www.canva.com",
+    "pricingUrl": "https://www.canva.com/en/pricing/",
     "description": {
       "en": "Design and editing platform with 25+ AI features",
       "tr": "25+ AI özellikli tasarım ve düzenleme platformu"
@@ -298,6 +304,7 @@
     "id": "chatgpt-gpt-5",
     "name": "ChatGPT (GPT-5)",
     "url": "https://chat.openai.com",
+    "pricingUrl": "https://chatgpt.com/pricing/",
     "description": {
       "en": "The most powerful all-purpose AI chat and writing assistant",
       "tr": "En güçlü çok amaçlı AI sohbet ve yazma asistanı"
@@ -337,6 +344,7 @@
     "id": "claude-ai-claude-4",
     "name": "Claude AI (Claude 4)",
     "url": "https://claude.ai",
+    "pricingUrl": "https://claude.com/pricing",
     "description": {
       "en": "Superior AI for long-text analysis and writing",
       "tr": "Uzun metin analizi ve yazma için üstün AI"
@@ -375,6 +383,7 @@
     "id": "gemini-25-pro",
     "name": "Gemini 2.5 Pro",
     "url": "https://gemini.google.com",
+    "pricingUrl": "https://gemini.google/subscriptions/",
     "description": {
       "en": "Google's multimodal AI platform",
       "tr": "Google'ın multimodal AI platformu"
@@ -412,6 +421,7 @@
     "id": "jasper-ai",
     "name": "Jasper AI",
     "url": "https://www.jasper.ai",
+    "pricingUrl": "https://www.jasper.ai/pricing",
     "description": {
       "en": "AI writing tool specialized in marketing content",
       "tr": "Pazarlama içeriği için özelleşmiş AI yazma aracı"
@@ -440,6 +450,7 @@
     "id": "copyai",
     "name": "Copy.ai",
     "url": "https://www.copy.ai",
+    "pricingUrl": "https://www.copy.ai/prices",
     "description": {
       "en": "Custom AI agents, workflow automation, enterprise focus",
       "tr": "Özel AI ajanları, iş akışı otomasyonu ve kurumsal odaklı içerik üretimi"
@@ -467,6 +478,7 @@
     "id": "github-copilot",
     "name": "GitHub Copilot",
     "url": "https://github.com/features/copilot",
+    "pricingUrl": "https://github.com/features/copilot/plans",
     "description": {
       "en": "AI code completion tool from Microsoft and OpenAI",
       "tr": "Microsoft ve OpenAI'nin AI kod tamamlama aracı"
@@ -495,6 +507,7 @@
     "id": "cursor",
     "name": "Cursor",
     "url": "https://cursor.com",
+    "pricingUrl": "https://cursor.com/pricing",
     "description": {
       "en": "Advanced AI code editor based on VS Code",
       "tr": "VS Code tabanlı gelişmiş AI kod editörü"
@@ -525,6 +538,7 @@
     "id": "claude-code-anthropic",
     "name": "Claude Code (Anthropic)",
     "url": "https://claude.ai",
+    "pricingUrl": "https://claude.com/pricing",
     "description": {
       "en": "Terminal-based deep code analysis tool",
       "tr": "Terminal tabanlı derin kod analizi aracı"
@@ -553,6 +567,7 @@
     "id": "elevenlabs",
     "name": "ElevenLabs",
     "url": "https://elevenlabs.io",
+    "pricingUrl": "https://elevenlabs.io/pricing",
     "description": {
       "en": "The most realistic AI voice cloning and TTS platform",
       "tr": "En gerçekçi AI ses klonlama ve TTS platformu"
@@ -584,6 +599,7 @@
     "id": "murfai",
     "name": "Murf.ai",
     "url": "https://murf.ai",
+    "pricingUrl": "https://murf.ai/pricing",
     "description": {
       "en": "Professional AI voiceover platform",
       "tr": "Profesyonel AI voiceover platformu"
@@ -669,6 +685,7 @@
     "id": "perplexity-ai",
     "name": "Perplexity AI",
     "url": "https://www.perplexity.ai",
+    "pricingUrl": "https://www.perplexity.ai/hub/pricing",
     "description": {
       "en": "AI-powered search and research engine",
       "tr": "AI destekli arama ve araştırma motoru"
@@ -697,6 +714,7 @@
     "id": "elicit-ai",
     "name": "Elicit AI",
     "url": "https://elicit.com",
+    "pricingUrl": "https://elicit.com/pricing",
     "description": {
       "en": "Academic paper analysis and literature review",
       "tr": "Akademik makale analizi ve literatür taraması"
@@ -724,6 +742,7 @@
     "id": "tableau",
     "name": "Tableau",
     "url": "https://www.tableau.com",
+    "pricingUrl": "https://www.tableau.com/pricing",
     "description": {
       "en": "Industry-standard data visualization platform",
       "tr": "Endüstri standardı veri görselleştirme platformu"
@@ -751,6 +770,7 @@
     "id": "microsoft-power-bi",
     "name": "Microsoft Power BI",
     "url": "https://powerbi.microsoft.com",
+    "pricingUrl": "https://www.microsoft.com/en-us/power-platform/products/power-bi/pricing",
     "description": {
       "en": "AI-powered BI tool for the Microsoft ecosystem",
       "tr": "Microsoft ekosistemi için AI destekli BI aracı"
@@ -778,6 +798,7 @@
     "id": "gamma-ai",
     "name": "Gamma AI",
     "url": "https://gamma.app",
+    "pricingUrl": "https://gamma.app/pricing",
     "description": {
       "en": "AI-powered presentation, document and website creation",
       "tr": "AI destekli sunum, döküman ve web sitesi oluşturma"
@@ -808,6 +829,7 @@
     "id": "beautifulai",
     "name": "Beautiful.ai",
     "url": "https://beautiful.ai",
+    "pricingUrl": "https://www.beautiful.ai/pricing",
     "description": {
       "en": "Smart presentation design with automatic layout",
       "tr": "Otomatik düzenlemeli akıllı sunum tasarımı"
@@ -862,6 +884,7 @@
     "id": "suno-ai",
     "name": "Suno AI",
     "url": "https://suno.ai",
+    "pricingUrl": "https://suno.com/pricing",
     "description": {
       "en": "AI music generator that creates full songs from text",
       "tr": "Metinden tam şarkı oluşturan AI müzik üreticisi"
@@ -890,6 +913,7 @@
     "id": "udio",
     "name": "Udio",
     "url": "https://udio.com",
+    "pricingUrl": "https://www.udio.com/pricing",
     "description": {
       "en": "High-quality AI music generation",
       "tr": "Yüksek kaliteli AI müzik üretimi"
@@ -947,6 +971,7 @@
     "id": "pika-labs",
     "name": "Pika Labs",
     "url": "https://pika.art",
+    "pricingUrl": "https://pika.art/pricing",
     "description": {
       "en": "Creative AI video generation and animation",
       "tr": "Yaratıcı AI video üretimi ve animasyon"
@@ -1111,6 +1136,7 @@
     "id": "grok-41",
     "name": "Grok 4.1",
     "url": "https://grok.com",
+    "pricingUrl": "https://grok.com/plans",
     "description": {
       "en": "1483 Elo (Thinking), 4.22% hallucination rate, #1 EQ-Bench3, E2E encryption on X Chat",
       "tr": "1483 Elo (Thinking), %4,22 halüsinasyon oranı, EQ-Bench3 birincisi ve uçtan uca şifreleme"
@@ -1194,6 +1220,7 @@
     "id": "world-labs-marble",
     "name": "World Labs Marble",
     "url": "https://marble.worldlabs.ai",
+    "pricingUrl": "https://marble.worldlabs.ai/pricing",
     "description": {
       "en": "First commercial 3D world model, Chisel editor, exports to Gaussian splats/meshes, Vision Pro/Quest 3 compatible",
       "tr": "İlk ticari 3D dünya modeli, Chisel editörü, Gaussian splat/mesh dışa aktarımı"
@@ -1248,6 +1275,7 @@
     "id": "notebooklm-deep-research",
     "name": "NotebookLM",
     "url": "https://notebooklm.google.com",
+    "pricingUrl": "https://notebooklm.google/plans",
     "description": {
       "en": "Autonomous research agent, browses hundreds of sites, generates comprehensive reports",
       "tr": "Otonom araştırma ajanı, yüzlerce siteyi tarar ve kapsamlı raporlar üretir"
@@ -1438,6 +1466,7 @@
     "id": "synthesia-30",
     "name": "Synthesia 3.0",
     "url": "https://www.synthesia.io",
+    "pricingUrl": "https://www.synthesia.io/pricing",
     "description": {
       "en": "Interactive video agents, live dialogue, 50+ avatars, 30+ language dubbing",
       "tr": "Etkileşimli video ajanları, canlı diyalog, 50+ avatar ve 30+ dilde dublaj"
@@ -1546,6 +1575,7 @@
     "id": "n8n-ai-workflow-builder",
     "name": "n8n AI Workflow Builder",
     "url": "https://n8n.io",
+    "pricingUrl": "https://n8n.io/pricing/",
     "description": {
       "en": "Natural language to automation, built-in data tables, native Python runner",
       "tr": "Doğal dilden otomasyona, yerleşik veri tabloları ve yerel Python çalıştırıcı"
@@ -1709,6 +1739,7 @@
     "id": "replit-agent",
     "name": "Replit Agent",
     "url": "https://replit.com",
+    "pricingUrl": "https://replit.com/pricing",
     "description": {
       "en": "200 min autonomous development, database integration, instant deployment",
       "tr": "200 dakika otonom geliştirme, veritabanı entegrasyonu ve anında dağıtım"
@@ -1737,6 +1768,7 @@
     "id": "windsurf-codeium",
     "name": "Windsurf (Codeium)",
     "url": "https://windsurf.com",
+    "pricingUrl": "https://windsurf.com/pricing",
     "description": {
       "en": "Free-forever tier, IDE-agnostic, persistent context memory",
       "tr": "Sonsuza dek ücretsiz katman, IDE bağımsız çalışma ve kalıcı bağlam belleği"
@@ -1792,6 +1824,7 @@
     "id": "opusclip-video-repurposing",
     "name": "OpusClip (Video Repurposing)",
     "url": "https://opusclip.com",
+    "pricingUrl": "https://www.opus.pro/pricing",
     "description": {
       "en": "Automatic short-form extraction, captions, multi-platform optimization",
       "tr": "Otomatik kısa video çıkarma, altyazı ve çoklu platform optimizasyonu"
@@ -1821,6 +1854,7 @@
     "id": "fathom-meeting-assistant",
     "name": "Fathom (Meeting Assistant)",
     "url": "https://www.fathom.video",
+    "pricingUrl": "https://www.fathom.ai/pricing",
     "description": {
       "en": "Real-time meeting notes, automatic action items, CRM integration",
       "tr": "Gerçek zamanlı toplantı notları, otomatik aksiyon maddeleri ve CRM entegrasyonu"
@@ -1902,6 +1936,7 @@
     "id": "base44-no-code-app-platform",
     "name": "Base44 (No-Code App Platform)",
     "url": "https://www.base44.ai",
+    "pricingUrl": "https://base44.com/pricing",
     "description": {
       "en": "GPT-5 chat integration, domain purchasing, version control",
       "tr": "GPT-5 sohbet entegrasyonu, alan adı satın alma ve sürüm kontrolü"
@@ -1957,6 +1992,7 @@
     "id": "anyword-copy-ai",
     "name": "Anyword (Copy AI)",
     "url": "https://www.anyword.com",
+    "pricingUrl": "https://www.anyword.com/pricing",
     "description": {
       "en": "Performance scoring, compliance checking, marketing-focused copy",
       "tr": "Performans skorlaması, uyumluluk kontrolü ve pazarlama odaklı metin yazımı"
@@ -1984,6 +2020,7 @@
     "id": "writesonic-seo-content",
     "name": "Writesonic (SEO Content)",
     "url": "https://writesonic.com",
+    "pricingUrl": "https://writesonic.com/pricing",
     "description": {
       "en": "SERP-based outline generator, longer-form editor, SEO features",
       "tr": "SERP tabanlı taslak üretici, uzun form editör ve SEO özellikleri"
@@ -2012,6 +2049,7 @@
     "id": "clickup-brain-project-ai",
     "name": "ClickUp Brain (Project AI)",
     "url": "https://clickup.com",
+    "pricingUrl": "https://clickup.com/brain/pricing",
     "description": {
       "en": "Project-level AI automation, task suggestions, workflow optimization",
       "tr": "Proje düzeyinde AI otomasyonu, görev önerileri ve iş akışı optimizasyonu"
@@ -2037,6 +2075,7 @@
     "id": "simplified-content-and-design",
     "name": "Simplified (Content & Design)",
     "url": "https://www.simplified.com",
+    "pricingUrl": "https://simplified.com/pricing",
     "description": {
       "en": "One-click content templates, integrated copywriting",
       "tr": "Tek tıkla içerik şablonları ve entegre metin yazarlığı"
@@ -2119,6 +2158,7 @@
     "id": "teal-resume-builder-ai",
     "name": "Teal (Resume Builder AI)",
     "url": "https://www.tealhq.com",
+    "pricingUrl": "https://www.tealhq.com/pricing",
     "description": {
       "en": "AI resume optimization, ATS optimization",
       "tr": "AI ile özgeçmiş ve ATS optimizasyonu"
@@ -2146,6 +2186,7 @@
     "id": "kling-ai-21",
     "name": "Kling AI 2.1",
     "url": "https://klingai.com",
+    "pricingUrl": "https://app.klingai.com/global/membership/membership-plan",
     "description": {
       "en": "3D Spatiotemporal Attention, Master mode at 1080p, best image-to-video",
       "tr": "3D uzamsal-zamansal dikkat, 1080p Master modu ve en iyi görselden videoya dönüşüm"
@@ -2201,6 +2242,7 @@
     "id": "luma-dream-machine-ray2",
     "name": "Luma Dream Machine (Ray2)",
     "url": "https://lumalabs.ai",
+    "pricingUrl": "https://lumalabs.ai/learning-hub/pricing",
     "description": {
       "en": "Modify with Instructions, Camera Motion Concepts, 4K upscale",
       "tr": "Talimatla düzenleme, Kamera Hareketi Konseptleri ve 4K büyütme"
@@ -2256,6 +2298,7 @@
     "id": "gemini-3-pro-image",
     "name": "Gemini 3 Pro Image",
     "url": "https://gemini.google.com",
+    "pricingUrl": "https://gemini.google/subscriptions/",
     "description": {
       "en": "4K generation, legible text rendering, Google Search grounding",
       "tr": "4K üretim, okunaklı metin render'ı ve Google Search ile temellendirme"
@@ -2368,6 +2411,7 @@
     "id": "microsoft-copilot-pro",
     "name": "Microsoft Copilot Pro",
     "url": "https://copilot.microsoft.com",
+    "pricingUrl": "https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/individuals",
     "description": {
       "en": "GPT-5 default in Copilot Chat, Work IQ intelligence layer",
       "tr": "Copilot Chat'te varsayılan GPT-5 ve Work IQ zeka katmanı"
@@ -2453,6 +2497,7 @@
     "id": "mistral-large-21",
     "name": "Le Chat (Mistral)",
     "url": "https://mistral.ai",
+    "pricingUrl": "https://mistral.ai/pricing/",
     "description": {
       "en": "Speculative editing, web search with citations, Canvas",
       "tr": "Spekülatif düzenleme, kaynakçalı web araması ve Canvas"
@@ -2536,6 +2581,7 @@
     "id": "grok-imagine-v09-xai",
     "name": "Grok Imagine v0.9 (xAI)",
     "url": "https://grok.com",
+    "pricingUrl": "https://grok.com/plans",
     "description": {
       "en": "Short videos with spoken characters and background music",
       "tr": "Konuşan karakterler ve arka plan müziği içeren kısa videolar"

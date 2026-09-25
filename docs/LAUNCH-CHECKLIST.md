@@ -30,7 +30,7 @@ Bugün: 40 görev, 56 aktif ürün, **0 model, 0 uzman değerlendirmesi, 0 sinya
 - [ ] `node scripts/link-products.mjs` → `data/link-review.md`'de doğru eşlemeler `[x]` ile işaretlendi → `node scripts/link-products.mjs --apply`; `data/products.json`'da `models` alanları dolu.
 - [ ] Uzman brief'leri (`data/briefs.json`, 30 taslak) ile en az her görevin ilk ürünleri için `data/reviews.json` dolduruldu.
 - [ ] `npm run validate:catalog` temiz (hata 0). Uyarılar okundu.
-- [ ] Aktif ürünlerin `pricingUrl` alanı dolduruldu (bugün 56 aktif üründen 0'ında var); ilk `check-prices` raporu okundu.
+- [ ] Aktif ürünlerin `pricingUrl` alanı: 46/56 dolu (2026-09-25, web aramasıyla resmi alan adından). Kalan 10 ürün ve katalog sorunları (ör. OpenAI Atlas kapanmış olabilir, Copilot Pro → Microsoft 365 Premium): `docs/catalog-review-2026-09-25.md`. İlk `check-prices` raporu okundu.
 - [ ] Artificial Analysis ve LMArena kullanım koşulları kaynakların kendi sayfalarından okundu; atıf (kaynak adı) kartlarda ve gizlilik sayfasında görünüyor.
 
 ## 3. Eval

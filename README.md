@@ -19,7 +19,7 @@ Bu tablo `data/` ve `evals/results/` altındaki dosyalardan okundu; dosyalar de�
 | Aday ürün | 0 | `data/candidates.json` |
 | Prompt rehberi | 10 (10'u taslak, 0'ı gözden geçirilmiş; hepsi KAYNAK GEREKLİ) | `data/prompt-guides/*.md` |
 | Rehbere bağlı ürün | 17 | `data/products.json` → `promptGuide` |
-| `pricingUrl` dolu aktif ürün | 0 | `data/products.json` |
+| `pricingUrl` dolu aktif ürün | 46 / 56 (eksikler: `docs/catalog-review-2026-09-25.md`) | `data/products.json` |
 
 Sonuç: benchmark, uzman ve kendi sinyal verisi olmadığı için **RouteAI Skoru bugün hiçbir ürünü önermiyor** (kanıt kuralı). Katalog dolana kadar sohbet ajanı "yeterli kanıt yok" der ya da v1'e düşer. Ayrıntı: `evals/results/v2-oracle-misses.md`.
 
