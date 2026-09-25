@@ -3,8 +3,9 @@ import { LOCALE_HEADER, resolveLocale } from "@/lib/i18n/locale";
 
 // Dili (?lang -> Accept-Language -> en) isteğe başlık olarak ekler; root
 // layout <html lang> ve metadata için okur. Sayfa istekleri dışında çalışmaz.
+// Ana sayfa (navigasyon arayüzü) sadece Türkçe: <html lang="tr">.
 export function proxy(request: NextRequest) {
-  const locale = resolveLocale({
+  const locale = request.nextUrl.pathname === "/" ? "tr" : resolveLocale({
     lang: request.nextUrl.searchParams.get("lang"),
     acceptLanguage: request.headers.get("accept-language"),
   });

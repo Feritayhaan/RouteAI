@@ -1,3 +1,4 @@
+import Link from "next/link"
 import type { Metadata } from "next"
 import { currentLocale } from "@/lib/i18n/server"
 import { format } from "@/lib/i18n"
@@ -16,7 +17,7 @@ export default async function PrivacyPage({ searchParams }: Props) {
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim()
   return (
     <main className="mx-auto w-full max-w-2xl space-y-6 px-4 py-10">
-      <a href={`/?lang=${locale}`} className="text-sm underline underline-offset-2">{t.back}</a>
+      <Link href="/" className="text-sm underline underline-offset-2">{t.back}</Link>
       <h1 className="text-3xl font-black">{t.title}</h1>
       <p>{t.intro}</p>
       {t.sections.map((s) => (

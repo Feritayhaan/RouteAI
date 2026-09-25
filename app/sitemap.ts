@@ -9,6 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: 'https://www.routeai.chat/chat',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+    {
       url: 'https://www.routeai.chat/privacy',
       lastModified: new Date(),
       changeFrequency: 'yearly',

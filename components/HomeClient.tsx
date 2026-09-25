@@ -400,6 +400,13 @@ export default function HomeClient() {
               />
             )
           )}
+
+          {/* İsteğe bağlı sohbet modu ve gizlilik */}
+          <p className="text-center text-xs text-muted-foreground/80">
+            <a href="/chat?lang=tr" className="underline underline-offset-2 hover:text-foreground">Sohbet modu (deneme)</a>
+            {" · "}
+            <a href="/privacy?lang=tr" className="underline underline-offset-2 hover:text-foreground">Gizlilik</a>
+          </p>
         </div>
       </main>
     </>

@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react"
 import * as Tooltip from "@radix-ui/react-tooltip"
 import { ArrowUp, Plus, Square } from "lucide-react"
@@ -82,9 +83,9 @@ export default function ChatShell({ locale }: { locale: Locale }) {
         <div className="flex min-h-dvh flex-col">
           <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur">
             <div className="mx-auto flex w-full max-w-3xl items-center gap-2 px-4 py-2">
-              <a href={`/?lang=${locale}`} className="mr-auto rounded-lg text-lg font-black tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <Link href="/" className="mr-auto rounded-lg text-lg font-black tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 RouteAI
-              </a>
+              </Link>
               {messages.length > 0 && (
                 <button
                   type="button"
@@ -98,7 +99,7 @@ export default function ChatShell({ locale }: { locale: Locale }) {
               )}
               <nav aria-label={dict.home.language}>
                 <a
-                  href={`/?lang=${otherLocale}`}
+                  href={`/chat?lang=${otherLocale}`}
                   hrefLang={otherLocale}
                   lang={otherLocale}
                   className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 text-sm font-semibold uppercase hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -185,7 +186,7 @@ export default function ChatShell({ locale }: { locale: Locale }) {
             <p className="mx-auto w-full max-w-3xl px-4 pb-2 text-center text-[11px] text-muted-foreground">
               <a href={`/privacy?lang=${locale}`} className="underline underline-offset-2 hover:text-foreground">{dict.home.privacy}</a>
               {" · "}
-              <a href="/classic" className="underline underline-offset-2 hover:text-foreground">{dict.home.classic}</a>
+              <Link href="/" className="underline underline-offset-2 hover:text-foreground">{dict.home.classic}</Link>
             </p>
           </div>
         </div>
