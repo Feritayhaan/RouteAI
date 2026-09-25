@@ -1,0 +1,19 @@
+{
+  "ChatGPT (GPT-4o Image)": "chatgpt-gpt-4o-image",
+  "ChatGPT (GPT-5)": "chatgpt-gpt-5",
+  "Claude AI (Claude 4)": "claude-ai-claude-4",
+  "Cursor": "cursor",
+  "DALL-E 3": "dall-e-3",
+  "ElevenLabs": "elevenlabs",
+  "Flux.1 Pro": "flux1-pro",
+  "Gamma AI": "gamma-ai",
+  "Gemini 2.5 Pro": "gemini-25-pro",
+  "Gemini 3 Pro Image": "gemini-3-pro-image",
+  "Google Imagen 4": "google-imagen-4",
+  "Google Veo 3": "google-veo-3",
+  "Ideogram 2.0": "ideogram-20",
+  "Midjourney v7": "midjourney-v7",
+  "Runway Gen-3": "runway-gen-3",
+  "Sora 2 (OpenAI)": "sora-2-openai",
+  "Suno AI": "suno-ai"
+}

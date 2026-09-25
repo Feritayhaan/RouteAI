@@ -32,7 +32,7 @@ export default function SimpleRecommendationDisplay({
 
         <div className="relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-6 lg:p-10 space-y-4 md:space-y-6 shadow-2xl">
           {/* Card Header */}
-          <div className="flex items-start justify-between gap-2 md:gap-4 pb-3 md:pb-4 border-b border-border/50">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 md:gap-4 pb-3 md:pb-4 border-b border-border/50">
             <div className="flex items-start gap-2 md:gap-4 flex-1 min-w-0">
               <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
                 <Rocket className="w-6 h-6 md:w-8 md:h-8 text-primary" />
@@ -87,7 +87,7 @@ export default function SimpleRecommendationDisplay({
               href={recommendation.main.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
+              className="self-start flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
             >
               <ExternalLink className="w-4 h-4" />
               <span>Araca Git</span>

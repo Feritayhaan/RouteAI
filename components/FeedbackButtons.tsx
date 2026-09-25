@@ -67,14 +67,14 @@ export default function FeedbackButtons(props: Target & { labels?: Labels; onVot
         <button
           onClick={() => sendVote("up")}
           aria-label={labels.up}
-          className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ThumbsUp className="w-4 h-4" />
         </button>
         <button
           onClick={() => sendVote("down")}
           aria-label={labels.down}
-          className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ThumbsDown className="w-4 h-4" />
         </button>

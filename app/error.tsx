@@ -3,6 +3,7 @@
 // Sayfa düzeyi hata sınırı. Dil <html lang>'den okunur (layout proxy başlığıyla yazar).
 // Hata ayrıntısı kullanıcıya gösterilmez; sadece digest (varsa) loglanır.
 
+import Link from "next/link"
 import { useEffect, useSyncExternalStore } from "react"
 import { getDictionary, isLocale, type Locale } from "@/lib/i18n"
 
@@ -31,12 +32,12 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
         >
           {t.retry}
         </button>
-        <a
-          href={`/?lang=${locale}`}
+        <Link
+          href="/"
           className="rounded-lg border border-border px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {t.home}
-        </a>
+        </Link>
       </div>
     </main>
   )

@@ -1,8 +1,12 @@
 # RouteAI
 
-Ne yapmak istediğini yazarsın; RouteAI sohbet ederek amacını netleştirir, kendi görev taksonomisinden bir görev seçer, katalogdaki ürünleri **RouteAI Skoru** ile sıralar ve en iyi aracı + 2 alternatifi güven seviyesi, fiyat, veri tarihi ve kaynakla önerir. Seçilen araç için prompt rehberinden etkileşimli olarak prompt yazar (iki varyant: güvenli / yaratıcı). İngilizce ve Türkçe.
+RouteAI bir **yapay zekâ navigatörü**: ne yapmak istediğini yazarsın, sana en uygun AI aracını ya da adım adım iş akışını (workflow) önerir.
 
-Eski tek sorgu arayüzü (v1, anahtar kelime + niyet analizi) `/classic` altında duruyor. Sohbet ajanı OpenAI'a ulaşamazsa ya da aylık bütçe dolarsa aynı v1 yoluna düşer.
+- **Ana sayfa (`/`), navigasyon:** Tek sorgu, fiyat filtresi (tümü / ücretsiz / ücretli), ana öneri + alternatifler ya da workflow. Arka uç `POST /api/recommend` (anahtar kelime + OpenAI niyet analizi, `lib/tools-database.json`). Türkçe.
+- **Prompt oluşturucu (aynı ekranda):** Fiyat filtresinin solunda **"Prompt da yaz"** düğmesi, sağında **prompt aracı** listesi var. Liste varsayılan olarak "Önerilen araç"; rehberi olan 17 araçtan biri de seçilebilir. Düğme açıkken "Bana Yol Göster" önerinin hemen altında promptu da yazar: arama metni `POST /api/prompt/start`'a gider, gerekirse tek bir soru kartı, sonra iki varyantlı prompt kartı (güvenli / yaratıcı) gelir. Kartta iyileştirme, varsayım değiştirme, sürüm geçmişi ve kopyalama var. Önerilen aracın rehberi yoksa bunu söyler ve listeden araç seçmeyi önerir. Sonuç varken düğmeyi açmak ya da araç değiştirmek aramayı tekrarlamadan sadece promptu üretir; aynı arama ve araç için üretilen prompt tekrar üretilmez.
+- **Sohbet modu yok:** 2026-09-25'te siteden kaldırıldı (`/chat`, `/api/chat`). Ajan kodu (`lib/agent`) v2 eval'i için repoda duruyor.
+
+`/classic` adresi kalıcı olarak `/`'a yönlenir.
 
 ## Durum (dosyalardan, 2026-09-24)
 
@@ -21,18 +25,22 @@ Bu tablo `data/` ve `evals/results/` altındaki dosyalardan okundu; dosyalar de�
 | Rehbere bağlı ürün | 17 | `data/products.json` → `promptGuide` |
 | `pricingUrl` dolu aktif ürün | 46 / 56 (eksikler: `docs/catalog-review-2026-09-25.md`) | `data/products.json` |
 
-Sonuç: benchmark, uzman ve kendi sinyal verisi olmadığı için **RouteAI Skoru bugün hiçbir ürünü önermiyor** (kanıt kuralı). Katalog dolana kadar sohbet ajanı "yeterli kanıt yok" der ya da v1'e düşer. Ayrıntı: `evals/results/v2-oracle-misses.md`.
+Sonuç: benchmark, uzman ve kendi sinyal verisi olmadığı için **RouteAI Skoru bugün hiçbir ürünü önermiyor** (kanıt kuralı). Ana sayfa bundan etkilenmez: öneriler v1 araç veritabanından (`lib/tools-database.json`) gelir; RouteAI Skoru şu an sadece v2 eval'inde kullanılıyor. Ayrıntı: `evals/results/v2-oracle-misses.md`.
 
 ## Mimari
 
 ```
-Tarayıcı (components/chat, lib/i18n)
-   │  NDJSON akışı                         ┌──────────── git'teki katalog (data/*.json) ───────────┐
-   ▼                                       │ tasks · products · models · reviews · signals ·      │
-POST /api/chat  (edge, fra1)               │ briefs · candidates · prompt-guides                   │
-   │  rate limit + aylık token bütçesi     └──────────▲───────────────────────▲───────────────────┘
-   ▼                                                  │ gece PR'ı             │ haftalık/aylık PR
-lib/agent: OpenAI tool calling (en fazla 6 araç)      │                       │
+Ana sayfa / (components/HomeClient) ─► POST /api/recommend ─► lib/recommendV1 (v1: anahtar kelime + niyet analizi)
+   └─ "Prompt da yaz" + araç listesi ─► components/PromptPanel ─► POST /api/prompt/start
+                                            ─► lib/promptBuilder: extract → plan → generate → validate
+                                               (oturum KV'de ps:<id>, 24 saat; /api/prompt/answer, /refine)
+
+Sitede kullanılmayan v2 altyapısı (eval ve gelecek için):
+lib/agent (eskiden /api/chat)              ┌──────────── git'teki katalog (data/*.json) ───────────┐
+   │  rate limit + aylık token bütçesi     │ tasks · products · models · reviews · signals ·      │
+   ▼                                       │ briefs · candidates · prompt-guides                   │
+OpenAI tool calling (en fazla 6 araç)      └──────────▲───────────────────────▲───────────────────┘
+                                                      │ gece PR'ı             │ haftalık/aylık PR
    ├─ search_catalog ─► lib/catalog/search ─► score.ts (RouteAI Skoru, deterministik)
    ├─ ask_user        (en fazla 2 soru)               │                       │
    ├─ get_workflow                                    │                       │
@@ -72,7 +80,7 @@ cp .env.local.example .env.local   # değerleri doldur
 npm run dev                         # http://localhost:3000
 ```
 
-Sohbet için en az `OPENAI_API_KEY` ve KV (`KV_REST_API_URL`, `KV_REST_API_TOKEN`) gerekir; rate limiter KV olmadan isteği reddeder (429).
+Öneri ve prompt için en az `OPENAI_API_KEY` ve KV (`KV_REST_API_URL`, `KV_REST_API_TOKEN`) gerekir; rate limiter KV olmadan isteği reddeder (429).
 
 ## Ortam değişkenleri
 
@@ -80,10 +88,10 @@ Sohbet için en az `OPENAI_API_KEY` ve KV (`KV_REST_API_URL`, `KV_REST_API_TOKEN
 
 | Değişken | Açıklama | Zorunlu |
 | --- | --- | --- |
-| `OPENAI_API_KEY` | Sohbet ajanı, prompt oluşturucu, v1 niyet analizi; workflow'larda keşif sınıflandırması ve fiyat çıkarımı | ✅ |
-| `OPENAI_MODEL` | Sohbet ajanının modeli. Boşsa `gpt-4o-mini` (`lib/agent/config.ts`) | ⬜ |
+| `OPENAI_API_KEY` | Prompt oluşturucu, navigasyon niyet analizi; workflow'larda keşif sınıflandırması ve fiyat çıkarımı | ✅ |
+| `OPENAI_MODEL` | Varsayılan model (prompt oluşturucu `OPENAI_PROMPT_MODEL` boşsa bunu kullanır; v2 eval ajanı). Boşsa `gpt-4o-mini` (`lib/agent/config.ts`) | ⬜ |
 | `OPENAI_PROMPT_MODEL` | Prompt oluşturucunun modeli. Boşsa `OPENAI_MODEL`, o da boşsa `gpt-4o-mini` | ⬜ |
-| `OPENAI_MONTHLY_TOKEN_BUDGET` | Aylık token bütçesi (sohbet + prompt oluşturucu). Kullanım KV'de `usage:<YYYY-MM>` ve `usage:day:<YYYY-MM-DD>`; aşılınca v1'e düşülür. Boş = sınır yok | ⬜ |
+| `OPENAI_MONTHLY_TOKEN_BUDGET` | Aylık token bütçesi (prompt oluşturucu). Kullanım KV'de `usage:<YYYY-MM>` ve `usage:day:<YYYY-MM-DD>`; aşılınca prompt oluşturucu 503 döner. Boş = sınır yok | ⬜ |
 | `UPSTASH_VECTOR_REST_URL` | Upstash Vector URL'i (sadece `VECTOR_SEARCH_ENABLED=true` iken) | ⬜ |
 | `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector token'ı (aynı koşul) | ⬜ |
 | `VECTOR_SEARCH_ENABLED` | `true` ise v1'de vektör araması; boş = anahtar kelime araması | ⬜ |
@@ -106,7 +114,7 @@ Sohbet için en az `OPENAI_API_KEY` ve KV (`KV_REST_API_URL`, `KV_REST_API_TOKEN
 | `npm run lint` | ESLint |
 | `npm test` | Birim testleri (`node:test`, `lib/__tests__/*.test.ts`) |
 | `npm run validate:catalog` | Rehberleri derler, `data/` altındaki tüm katalog dosyalarını Zod + çapraz kontrollerle doğrular |
-| `npm run build:guides` | `data/prompt-guides/*.md` → `data/prompt-guides.json` |
+| `npm run build:guides` | `data/prompt-guides/*.md` → `data/prompt-guides.json` + `data/prompt-products.json` (prompt aracı listesi: araç adı → ürün) |
 | `npm run eval -- --recommender=v1\|v2-oracle\|v2` | Altın set değerlendirmesi → `evals/results/<tarih>-<recommender>.json` |
 | `npm run eval:prompts` | Prompt oluşturucu senaryoları (OpenAI gerekir) |
 | `npm run eval:simulate` | RouteAI Skoru'nun sentetik veriyle davranışı (gerçek veri değil) |
@@ -132,13 +140,13 @@ Adaylar (`status: candidate`) hiçbir zaman önerilmez; ürün `data/products.js
 
 | Uç | Açıklama | Rate limit |
 | --- | --- | --- |
-| `POST /api/chat` | Sohbet ajanı, NDJSON akışı (`text`, `card`, `done`, `error`) | 20/dk, 100/saat |
+| `POST /api/prompt/start` | Ana sayfadaki prompt oluşturucu: ürün + amaç → soru kartı ya da PromptCard | 30/dk, 200/saat |
 | `POST /api/prompt/answer` | Prompt soru kartının cevapları → PromptCard | 30/dk, 200/saat |
 | `POST /api/prompt/refine` | Hazır buton / varsayım değişikliği / serbest talimat → yeni versiyon | 30/dk, 200/saat |
 | `POST /api/outcome` | "İşini gördü mü?" ve karşılaştırma cevabı (oturum+ürün+görev başına tek kayıt) | 20/dk, 120/saat |
 | `POST /api/feedback` | Öneri oyu (oturum+ürün+görev başına son oy geçerli; v1 alanları da kabul) | 20/dk, 120/saat |
 | `POST /api/events` | Anonim olay sayaçları | 60/dk, 600/saat |
-| `POST /api/recommend` | v1 önerisi (`/classic`) | 10/dk, 60/saat |
+| `POST /api/recommend` | Navigasyon önerisi (ana sayfa, v1) | 10/dk, 60/saat |
 | `GET /api/admin/stats` | Son 30 gün ve ROADMAP metrikleri. Yerelde `?sample=1` sentetik veri (üretimde kapalı) | `x-admin-key` |
 | `GET /api/admin/feedback` | Son geri bildirimler | `x-admin-key` |
 | `POST /api/admin/seed` | v1 araçlarını KV'ye (ve açıksa vektöre) yazar — yıkıcı | `x-admin-key` |
@@ -162,16 +170,16 @@ v1 sayıları sadece kural tabanlı kademede çözülen kısa sorguları kapsar 
 
 ## Gizlilik
 
-`/privacy` (en/tr). Saklanan: anonim `sessionId` (sunucuda sadece hash'i), günlük olay sayaçları, oylar ve iş sonucu cevapları. Sohbet mesajları saklanmaz ve loglanmaz; IP sadece rate limit için en fazla yaklaşık 1 saat tutulur. İstisnalar: prompt oluşturucu oturumu (amaç, talimatlar, üretilen promptlar) 24 saat; `/classic`'te oy verilirse arama metni oyla birlikte saklanır. Sohbet metni yanıt üretmek için OpenAI'a gönderilir. Kodda nasıl doğrulandığı: `docs/privacy-verification.md`.
+`/privacy` (en/tr). Saklanan: anonim `sessionId` (sunucuda sadece hash'i), günlük prompt olay sayaçları. Arama metni loglanmaz; IP sadece rate limit için en fazla yaklaşık 1 saat tutulur. İstisnalar: prompt oluşturucu oturumu (amaç, talimatlar, üretilen promptlar) 24 saat; ana sayfada beğendim/beğenmedim denirse arama metni oyla birlikte saklanır; yıldız puanları sadece tarayıcıda kalır. Yazılan metin (arama, prompt amacı) OpenAI'a gönderilir. Kodda nasıl doğrulandığı: `docs/privacy-verification.md`.
 
 ## Proje yapısı (v2 parçaları)
 
 ```
 app/
-  page.tsx                 sohbet (components/chat)
-  classic/                 v1 arayüzü
+  page.tsx                 tek ekran: navigasyon (components/HomeClient) + prompt (components/PromptPanel)
+  classic/                 / adresine kalıcı yönlendirme
   privacy/                 gizlilik sayfası
-  api/chat, api/prompt/*, api/outcome, api/feedback, api/events, api/admin/stats
+  api/recommend, api/prompt/*, api/feedback, api/outcome, api/events, api/admin/stats
 lib/
   agent/                   ajan döngüsü, araçlar, bütçe, v1'e düşüş
   catalog/                 şema, yükleme, RouteAI Skoru, uygunluk, arama

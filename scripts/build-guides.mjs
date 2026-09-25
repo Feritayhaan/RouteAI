@@ -1,4 +1,5 @@
-// data/prompt-guides/*.md -> data/prompt-guides.json (edge'de fs yok).
+// data/prompt-guides/*.md -> data/prompt-guides.json (edge'de fs yok)
+// + data/prompt-products.json (araç adı -> ürün id, navigasyon prompt kutusu için).
 //
 //   npm run build:guides        (prebuild ve validate:catalog da çağırır)
 //
@@ -78,3 +79,14 @@ if (errors.length > 0) {
 }
 writeFileSync(path.join(ROOT, 'data/prompt-guides.json'), `${JSON.stringify(guides, null, 2)}\n`);
 console.log(`[build-guides] ${guides.length} rehber -> data/prompt-guides.json (${guides.filter((g) => !g.reviewedBy).length} taslak)`);
+
+// Navigasyon arayüzünün prompt kutusu için küçük harita: araç adı -> ürün id
+// (sadece rehberi olan aktif ürünler; tarayıcıya tüm katalog gitmesin).
+const promptProducts = Object.fromEntries(
+  products
+    .filter((p) => p.status === 'active' && p.promptGuide && guideIds.has(p.promptGuide))
+    .map((p) => [p.name, p.id])
+    .sort(([a], [b]) => a.localeCompare(b, 'en'))
+);
+writeFileSync(path.join(ROOT, 'data/prompt-products.json'), `${JSON.stringify(promptProducts, null, 2)}\n`);
+console.log(`[build-guides] ${Object.keys(promptProducts).length} ürün -> data/prompt-products.json`);

@@ -2,12 +2,16 @@
 
 import { useState, useEffect, type KeyboardEvent } from "react"
 import { Button } from "@/components/ui/button"
-import { Sparkles, MessageCircle } from "lucide-react"
+import { Sparkles, MessageCircle, Wand2 } from "lucide-react"
 import WelcomeModal from "@/components/WelcomeModal"
 import ThemeToggle from "@/components/ThemeToggle"
 import WorkflowDisplay from "@/components/WorkflowDisplay"
 import SimpleRecommendationDisplay from "@/components/SimpleRecommendationDisplay"
+import PromptPanel from "@/components/PromptPanel"
+import { getDictionary } from "@/lib/i18n"
+import { AUTO_TOOL, promptToolNames, resolvePromptTarget } from "@/lib/promptBuilder/products"
 import type { ApiResponse, SimpleRecommendation, WorkflowRecommendation } from "@/lib/types"
+import type { PromptCard as PromptCardData, PromptQuestionCard as PromptQuestionData } from "@/lib/agent/cards"
 
 interface ToolRating {
   toolName: string;
@@ -43,6 +47,16 @@ function findStoredRating(response: ApiResponse | null, query: string): number |
   }
 }
 
+const dict = getDictionary("tr")
+const PROMPT_TOOLS = promptToolNames()
+
+/** Prompt için aday araçlar: tek öneride ana araç, workflow'da adımların ana araçları. */
+function recommendedTools(response: ApiResponse | null): string[] {
+  if (!response) return []
+  if (response.type === "workflow") return response.workflow.steps.map((s) => s.primary.toolName)
+  return response.main ? [response.main.toolName] : []
+}
+
 export default function HomeClient() {
   const [query, setQuery] = useState("")
   const [pricingFilter, setPricingFilter] = useState<"all" | "free" | "paid">("all")
@@ -51,6 +65,12 @@ export default function HomeClient() {
   const [error, setError] = useState<string | null>(null)
   const [rating, setRating] = useState(0)
   const [ratingFeedback, setRatingFeedback] = useState(false)
+  // Prompt oluşturucu: filtrenin solunda aç/kapa, sağında araç seçimi
+  const [promptEnabled, setPromptEnabled] = useState(false)
+  const [promptTool, setPromptTool] = useState(AUTO_TOOL)
+  const [submitted, setSubmitted] = useState<{ query: string; n: number } | null>(null)
+  // Aynı arama + araç için üretilmiş prompt: araç değiştirip geri dönünce yeniden üretilmez
+  const [promptCache] = useState(() => new Map<string, PromptCardData | PromptQuestionData>())
 
   const getRecommendation = async () => {
     if (!query.trim()) return
@@ -59,6 +79,7 @@ export default function HomeClient() {
     setError(null)
     setResponse(null)
     setRating(0)
+    setSubmitted((prev) => ({ query: query.trim(), n: (prev?.n ?? 0) + 1 }))
 
     try {
       const res = await fetch("/api/recommend", {
@@ -268,6 +289,15 @@ export default function HomeClient() {
   // Check if response is a workflow
   const isWorkflow = response?.type === 'workflow'
 
+  // Prompt: "Bana Yol Göster" sonrası, açıksa önerinin altında aynı ekranda.
+  // Araç 'Önerilen araç' ise sonucu bekler; belirli bir araç seçildiyse sonuçtan bağımsız.
+  const promptTarget = promptEnabled && submitted && !isLoading
+    ? resolvePromptTarget(promptTool, recommendedTools(response))
+    : null
+  const promptKey = promptTarget && submitted
+    ? `${"productId" in promptTarget ? promptTarget.productId : promptTarget.missing}|${submitted.query}|${submitted.n}`
+    : ""
+
   return (
     <>
       <WelcomeModal />
@@ -338,8 +368,21 @@ export default function HomeClient() {
               </div>
             </div>
 
-            {/* Pricing Filter Segmented Control */}
-            <div className="flex bg-card/80 dark:bg-card border border-border/50 rounded-xl p-1 shadow-sm max-w-[360px] mx-auto">
+            {/* Filtre satırı: solda prompt aç/kapa, ortada fiyat filtresi, sağda prompt aracı */}
+            <div className="grid grid-cols-2 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-3">
+            <div className="order-2 sm:order-1 flex justify-start sm:justify-end min-w-0">
+              <button
+                type="button"
+                onClick={() => setPromptEnabled((v) => !v)}
+                aria-pressed={promptEnabled}
+                className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs md:text-sm font-medium shadow-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "bg-primary text-primary-foreground border-primary shadow-md" : "bg-card/80 dark:bg-card border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
+              >
+                <Wand2 className="w-4 h-4" aria-hidden />
+                {dict.prompt.toggle}
+              </button>
+            </div>
+
+            <div className="order-1 sm:order-2 col-span-2 sm:col-span-1 flex bg-card/80 dark:bg-card border border-border/50 rounded-xl p-1 shadow-sm w-full max-w-[360px] sm:w-[300px] md:w-[340px] mx-auto">
               <button
                 onClick={() => setPricingFilter("all")}
                 className={`flex-1 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 ${pricingFilter === "all" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}`}
@@ -358,6 +401,25 @@ export default function HomeClient() {
               >
                 Ücretli
               </button>
+            </div>
+
+            <div className="order-3 flex justify-end sm:justify-start min-w-0">
+              <select
+                value={promptTool}
+                onChange={(e) => {
+                  setPromptTool(e.target.value)
+                  setPromptEnabled(true)
+                }}
+                aria-label={dict.prompt.toolLabel}
+                title={dict.prompt.toolLabel}
+                className={`w-full max-w-[200px] truncate rounded-xl border border-border/50 bg-card/80 dark:bg-card px-3 py-2 text-xs md:text-sm font-medium shadow-sm transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "text-foreground" : "text-muted-foreground"}`}
+              >
+                <option value={AUTO_TOOL}>{dict.prompt.toolAuto}</option>
+                {PROMPT_TOOLS.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+            </div>
             </div>
 
             <Button
@@ -400,6 +462,21 @@ export default function HomeClient() {
               />
             )
           )}
+
+          {/* Prompt (aynı ekranda, önerinin altında) */}
+          {promptTarget && submitted && (
+            <PromptPanel
+              key={promptKey}
+              target={promptTarget}
+              goal={submitted.query}
+              cached={promptCache.get(promptKey)}
+              onResult={(card) => promptCache.set(promptKey, card)}
+            />
+          )}
+
+          <p className="text-center text-xs text-muted-foreground/80">
+            <a href="/privacy?lang=tr" className="underline underline-offset-2 hover:text-foreground">Gizlilik</a>
+          </p>
         </div>
       </main>
     </>

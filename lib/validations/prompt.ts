@@ -15,3 +15,10 @@ export const promptRefineSchema = z.union([
   z.object({ promptSessionId, slotId, value: z.string().trim().min(1).max(200) }).strict(),
   z.object({ promptSessionId, instruction: z.string().trim().min(2).max(500) }).strict(),
 ]);
+
+/** Navigasyon arayüzünden prompt başlatma: ürün + kullanıcının amacı. */
+export const promptStartSchema = z.object({
+  productId: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(80),
+  goal: z.string().trim().min(2).max(1000),
+  locale: z.enum(["en", "tr"]).default("tr"),
+});

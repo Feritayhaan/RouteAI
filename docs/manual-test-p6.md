@@ -9,8 +9,8 @@ Playwright npm paketi projede kurulu değil (paket eklenmedi). Ekran görüntül
 
 ## 1. Dil seçimi
 
-1. Tarayıcı dili Türkçe iken `/` aç → başlık, örnek butonlar ve giriş kutusu Türkçe; sayfa kaynağında `<html lang="tr">`.
-2. `/?lang=en` → her şey İngilizce, `<html lang="en">`, sekme başlığı İngilizce.
+1. Tarayıcı dili Türkçe iken `/chat` aç → başlık, örnek butonlar ve giriş kutusu Türkçe; sayfa kaynağında `<html lang="tr">`.
+2. `/chat?lang=en` → her şey İngilizce, `<html lang="en">`, sekme başlığı İngilizce.
 3. Sağ üstteki `EN` / `TR` bağlantısı dili değiştirir.
 
 ## 2. Tam sohbet (TR)
@@ -34,7 +34,7 @@ Playwright npm paketi projede kurulu değil (paket eklenmedi). Ekran görüntül
 
 ## 3. Tam sohbet (EN)
 
-Aynı adımlar `/?lang=en` ile. Ajan kullanıcının dilinde cevap vermeli.
+Aynı adımlar `/chat?lang=en` ile. Ajan kullanıcının dilinde cevap vermeli.
 
 ## 4. İş sonucu ve karşılaştırma kartları
 
@@ -54,6 +54,6 @@ Aynı adımlar `/?lang=en` ile. Ajan kullanıcının dilinde cevap vermeli.
 - Tema butonu (sağ üst) sistem → aydınlık → karanlık; kartlar iki temada da okunur.
 - Ekran okuyucu: akan asistan metni `aria-live="polite"`; güven rozetinin açıklaması görünmez metin olarak da var.
 
-## 7. Klasik arayüz
+## 7. Navigasyon arayüzü (ana sayfa)
 
-`/classic` eski tek sorgu arayüzünü açar. Sayfa `noindex` ve sitemap'te yok.
+2026-09-25'ten beri `/` eski navigasyon arayüzünü açar; sohbet `/chat`'te. `/classic` 308 ile `/`'a yönlenir. Bu belgedeki sohbet adımlarını `/chat` adresinde uygula.
