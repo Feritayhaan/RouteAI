@@ -54,7 +54,7 @@ Bugün: 40 görev, 56 aktif ürün, **0 model, 0 uzman değerlendirmesi, 0 sinya
 
 ## 4. Prompt rehberleri
 
-- [ ] 10 rehberden gözden geçirilmiş (`reviewedBy` dolu) olan: **0 / 10**. Hepsi resmi dokümana erişilemediği için KAYNAK GEREKLİ; `docs/prompt-guides-review.md`'deki listeyle her rehberde kaynak eklenip gövde yazılmalı.
+- [ ] 10 rehberden gözden geçirilmiş (`reviewedBy` dolu) olan: **0 / 10**. Hepsi resmi dokümana erişilemediği için KAYNAK GEREKLİ; `docs/prompt-guides-review.md`'deki listeyle her rehberde kaynak eklenip gövde yazılmalı. Her rehber için resmi doküman linkleri aynı dosyada "Resmi kaynak adayları" bölümünde (2026-09-25).
 - [ ] En az 3 rehberde uçtan uca elle test: soru kartı → iki varyant → buton ile iyileştirme → varsayım değiştirme → serbest metin → kopyala.
 
 ## 5. Uygulama kontrolleri
