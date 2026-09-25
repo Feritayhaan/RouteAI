@@ -1,0 +1,81 @@
+# Gece verisi: model senkronu (Artificial Analysis + LMArena -> data/models.json)
+# ve kendi sinyallerimiz (KV -> data/signals.json, SADECE okuma).
+# Değişiklik varsa sync/nightly-<tarih> dalına commit atar ve PR açar
+# (PR gövdesi = sync-report.md + signals-anomalies.md). Merge kararı insanın.
+#
+# Gerekenler:
+#  - Repo secret: AA_API_KEY (yoksa Artificial Analysis atlanır, LMArena yine çalışır)
+#  - Repo secret: KV_REST_API_URL + KV_REST_API_READ_ONLY_TOKEN (yoksa sinyal adımı atlanır)
+#  - Settings > Actions > General > "Allow GitHub Actions to create and approve
+#    pull requests" açık olmalı; yoksa `gh pr create` 403 döner.
+# Not: GITHUB_TOKEN ile açılan PR başka workflow'ları tetiklemez.
+# Sadece GitHub'ın kendi action'ları kullanılıyor (actions/checkout, actions/setup-node).
+
+name: nightly-data
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: nightly-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Modelleri senkronla
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}
+        run: npm run sync:models
+
+      - name: Sinyalleri topla (KV'den sadece okuma)
+        env:
+          KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
+          KV_REST_API_READ_ONLY_TOKEN: ${{ secrets.KV_REST_API_READ_ONLY_TOKEN }}
+        run: npm run aggregate:signals
+
+      - name: Kataloğu doğrula
+        run: npm run validate:catalog
+
+      - name: Değişiklik varsa PR aç
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- data/models.json data/signals.json; then
+            echo "data/models.json ve data/signals.json değişmedi; PR yok."
+            exit 0
+          fi
+          DATE=$(date -u +%Y-%m-%d)
+          BRANCH="sync/nightly-${DATE}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          for f in data/models.json data/sync-report.md data/signals.json data/signals-anomalies.md; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
+          git commit -m "sync: gece verisi ${DATE}"
+          git push --force-with-lease origin "$BRANCH"
+          { cat data/sync-report.md; echo; cat data/signals-anomalies.md 2>/dev/null; } > /tmp/pr-body.md
+          if gh pr view "$BRANCH" --json state -q .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$BRANCH" --body-file /tmp/pr-body.md
+          else
+            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
+              --title "sync: gece verisi ${DATE}" --body-file /tmp/pr-body.md
+          fi

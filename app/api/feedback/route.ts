@@ -5,6 +5,7 @@ import { normalizeQuery } from "@/lib/intent/cache";
 import { feedbackRequestSchema, type FeedbackRecord } from "@/lib/validations/feedback";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
+import { saveVote } from "@/lib/signals/store";
 
 export const runtime = 'edge';
 export const preferredRegion = 'fra1';
@@ -51,15 +52,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { query, toolName, vote } = validationResult.data;
+    const { query, toolName, vote, sessionId, taskId, productId } = validationResult.data;
 
     // ts soneki her oyu ayri kayit yapar: ayni gun ayni sorguya gelen ikinci oy
     // birincisinin uzerine yazmaz. Faz 1'in tek isi veri toplamak.
     const ts = Date.now();
-    const queryHash = hashString(normalizeQuery(query));
-    const key = `fb:${new Date(ts).toISOString().slice(0, 10)}:${queryHash}:${ts}`;
-
-    const record: FeedbackRecord = { query, toolName, vote, ts };
+    const day = new Date(ts).toISOString().slice(0, 10);
+    let key: string;
+    let record: FeedbackRecord;
+    if (query) {
+      // v1 (klasik): her oy ayrı kayıt; sorgu metni saklanır (gizlilik sayfasında yazılı).
+      key = `fb:${day}:${hashString(normalizeQuery(query))}:${ts}`;
+      record = { query, toolName, vote, ts };
+    } else {
+      // v2 (sohbet): mesaj metni yok; oturum sadece hash olarak. Oturum + ürün +
+      // görev başına tek kayıt (son oy geçerli); RouteAI Skoru'na bu kayıt girer.
+      key = await saveVote({ sessionId: sessionId!, taskId: taskId!, productId: productId!, toolName, vote }, ts);
+      await kv.lrem(RECENT_KEY, 0, key);
+      await kv.lpush(RECENT_KEY, key);
+      await kv.ltrim(RECENT_KEY, 0, RECENT_MAX - 1);
+      return NextResponse.json({ success: true });
+    }
 
     await kv.set(key, record);
     await kv.lpush(RECENT_KEY, key);

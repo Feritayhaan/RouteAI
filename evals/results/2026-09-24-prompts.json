@@ -1,0 +1,155 @@
+{
+  "date": "2026-09-24",
+  "generatedAt": "2026-09-24T14:03:21.360Z",
+  "openaiKey": false,
+  "summary": {
+    "total": 20,
+    "evaluated": 0,
+    "skipped": 20,
+    "errors": 0,
+    "questionCorrect": {
+      "hits": 0,
+      "n": 0
+    },
+    "validatorsPass": {
+      "hits": 0,
+      "n": 0
+    },
+    "variantsDiffer": {
+      "hits": 0,
+      "n": 0
+    },
+    "languageOk": {
+      "hits": 0,
+      "n": 0
+    },
+    "refineReflected": {
+      "hits": 0,
+      "n": 0
+    },
+    "avgLatencyMs": null,
+    "avgTokens": null
+  },
+  "rows": [
+    {
+      "id": "mj-full",
+      "guideId": "midjourney",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "mj-missing",
+      "guideId": "midjourney",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "ideo-full",
+      "guideId": "ideogram",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "ideo-missing",
+      "guideId": "ideogram",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "img-full",
+      "guideId": "image-natural",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "img-missing",
+      "guideId": "image-natural",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "runway-full",
+      "guideId": "runway",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "runway-missing",
+      "guideId": "runway",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "t2v-full",
+      "guideId": "text-to-video",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "t2v-missing",
+      "guideId": "text-to-video",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "suno-full",
+      "guideId": "suno",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "suno-missing",
+      "guideId": "suno",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "el-full",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "el-missing",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "gamma-full",
+      "guideId": "gamma",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "gamma-missing",
+      "guideId": "gamma",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "cursor-full",
+      "guideId": "cursor-task",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "cursor-missing",
+      "guideId": "cursor-task",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "chat-full",
+      "guideId": "chat-general",
+      "expectQuestion": false,
+      "skipped": "needs OPENAI_API_KEY"
+    },
+    {
+      "id": "chat-missing",
+      "guideId": "chat-general",
+      "expectQuestion": true,
+      "skipped": "needs OPENAI_API_KEY"
+    }
+  ]
+}

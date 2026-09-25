@@ -1,6 +1,8 @@
-# Görev kimlikleri — TASLAK
+# Görev kimlikleri — TASLAK (P1)
 
-`evals/golden.jsonl`'daki `expectedTask` değerleri bu listeden gelir. Liste, ROADMAP'teki P2 planındaki 40 görevle birebir aynı; P2'de `data/tasks.json` bu kimliklerle kurulacak ve golden'daki değerler onunla eşitlenecek (P2 adım 7).
+> **P2'den itibaren kaynak `data/tasks.json`.** Bu dosya P1'deki taslak listedir; kimlikler `tasks.json` ile birebir aynı kaldı, golden'daki 40 `expectedTask` değerinin hepsi eşleşiyor (`npm run validate:catalog` ve `npm test` kontrol ediyor).
+
+`evals/golden.jsonl`'daki `expectedTask` değerleri bu listeden gelir. Liste, ROADMAP'teki P2 planındaki 40 görevle birebir aynı.
 
 Biçim: `grup.görev` (küçük harf, tire). Tanımlar tek satır; asıl etiket ve açıklamalar P2'de `tasks.json`'a yazılacak.
 

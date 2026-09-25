@@ -1,0 +1,4 @@
+{
+  "_comment": "Elle tutulan model adı eşlemesi. Anahtar: normalize edilmiş ad (küçük harf; boşluk, nokta, tire tekleşmiş), değer: kanonik model id'si. Sadece emin olunan eşlemeler; adaylar data/sync-report.md'deki 'Olası eşleşmeler' bölümünde.",
+  "aliases": {}
+}

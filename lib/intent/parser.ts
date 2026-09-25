@@ -184,8 +184,18 @@ function detectQueryType(query: string): {
   };
 }
 
+export interface ParseOptions {
+  /**
+   * false: Kademe 2 (LLM) hiç çağrılmaz; kural tabanlı çözülemeyen sorgu
+   * doğrudan kelime bazlı yedeğe düşer. Sohbet ajanı OpenAI'a ulaşamadığında
+   * ya da aylık bütçe dolduğunda v1'i bu kipte çalıştırır.
+   */
+  allowLLM?: boolean;
+}
+
 export async function parseUserIntent(
-  query: string
+  query: string,
+  options: ParseOptions = {}
 ): Promise<ParsedIntent | IntentParsingError> {
   // Pre-check for multi-step indicators using new smart detection
   const queryType = detectQueryType(query);
@@ -202,6 +212,10 @@ export async function parseUserIntent(
     if (keywordCategory && query.split(' ').length <= 6) {
       console.log('[Intent Parser] Kademe 1: Kural tabanlı -', keywordCategory);
       return createFallbackIntent(query, keywordCategory, queryType, constraintsFromKeywords);
+    }
+
+    if (options.allowLLM === false) {
+      return keywordFallbackIntent(query, queryType);
     }
 
     // ================================================================
@@ -341,24 +355,32 @@ export async function parseUserIntent(
     console.error('[Intent Parser Hatası]:', error instanceof Error ? error.message : String(error));
 
     // 3. API Hata Verdiyse → kelime bazlı fallback
-    const fallbackCategory = detectCategory(query);
-
-    if (fallbackCategory) {
-      console.log(`⚠️ API hatası sonrası "${fallbackCategory}" kategorisi tahmin edildi.`);
-      return createFallbackIntent(query, fallbackCategory, queryType);
-    }
-
-    // Hatanın ayrıntısı yukarıda sadece sunucu loguna yazıldı. Kullanıcıya
-    // iç yapılandırma (anahtar, .env) hakkında hiçbir şey söylenmez.
-    return {
-      code: 'API_ERROR',
-      message: 'Şu an isteğini işleyemedim. Biraz sonra tekrar dene ya da ne yapmak istediğini birkaç kelimeyle yaz.',
-      suggestions: [
-        'Örnek: "Logo tasarımı yapmak istiyorum"',
-        'Örnek: "Blog yazısı yazmak için AI lazım"',
-      ],
-    };
+    return keywordFallbackIntent(query, queryType);
   }
+}
+
+/** LLM'siz yedek: kelime bazlı kategori; o da yoksa API_ERROR. */
+function keywordFallbackIntent(
+  query: string,
+  queryType: { isMultiStep: boolean; isExplicitSimple: boolean; hints: string[] }
+): ParsedIntent | IntentParsingError {
+  const fallbackCategory = detectCategory(query);
+
+  if (fallbackCategory) {
+    console.log(`⚠️ LLM'siz yedek: "${fallbackCategory}" kategorisi tahmin edildi.`);
+    return createFallbackIntent(query, fallbackCategory, queryType);
+  }
+
+  // Hatanın ayrıntısı sadece sunucu loguna yazıldı. Kullanıcıya
+  // iç yapılandırma (anahtar, .env) hakkında hiçbir şey söylenmez.
+  return {
+    code: 'API_ERROR',
+    message: 'Şu an isteğini işleyemedim. Biraz sonra tekrar dene ya da ne yapmak istediğini birkaç kelimeyle yaz.',
+    suggestions: [
+      'Örnek: "Logo tasarımı yapmak istiyorum"',
+      'Örnek: "Blog yazısı yazmak için AI lazım"',
+    ],
+  };
 }
 
 // ================================================================

@@ -42,3 +42,48 @@ Koşu: 2026-09-24, `npm run eval -- --recommender=v1`. Sonuç: `evals/results/20
 | skipped | 25/40 | 0 |
 
 Iskalar: tr-05 "python kodumda hata var" (ana öneri n8n; ilk 3'te Copilot var), tr-06 "ürün fotoğrafı arka plan kaldır" (görsel üreticilere düştü), tr-19 "YouTube kanalım için ses lazım" (workflow'a düştü; ilk adımda NotebookLM).
+
+## P4 notları
+- v2-oracle (görev golden'dan doğru kabul, sadece RouteAI Skoru sıralaması), 2026-09-24: top3Hit 0/39. Neden veri: `data/models.json` boş (senkron henüz koşmadı, ürünlere model bağlı değil), uzman değerlendirmesi ve sinyal yok; RouteAI Skoru kanıtsız ürünü önermiyor. Ayrıntı: `evals/results/v2-oracle-misses.md`.
+- Simülasyon (sentetik, `npm run eval:simulate`): gözlem yokken sıra benchmark'a göre; ürün başına 10 iş sonucunda kendi kanıtı iyi olan ürün öne geçiyor. `evals/results/2026-09-24-v2-oracle-simulation.md`.
+- Formül notu: 90 iş sonucunda benchmark payı tam 10/100 = %10; "%10'un altı" 91'de başlıyor. Ağırlıklar değiştirilmedi; ifade ya da K_BENCHMARK Ferit'in kararı.
+- `searchCatalog` kısıt gevşetmesi sırası: maxMonthlyUsd → access → pricing → commercialUse; gevşetilenler `relaxedConstraint` dizisinde döner.
+
+## P5 notları
+- `/api/chat` (edge, fra1): NDJSON `text | card | done | error`. Akış mantığı `lib/agent/handler.ts`, döngü `lib/agent/loop.ts`, araçlar `lib/agent/tools.ts`. Model `OPENAI_MODEL` (varsayılan `gpt-4o-mini`), temperature 0.2, en fazla 700 çıktı token'ı, tur zaman aşımı 15 sn.
+- İstek mesajlarında isteğe bağlı `kind` alanı var; `kind: 'question'` olan asistan mesajları "konuşma başına en fazla 2 soru" bütçesine sayılır.
+- Bütçe: `OPENAI_MONTHLY_TOKEN_BUDGET` tanımsızsa sınır yok. Tanımlıysa ve KV okunamazsa güvenli tarafta kalınır (v1 yolu). v1 yedeği LLM çağırmaz (`allowLLM: false`).
+- Rate limiter tek pipeline: izin verilen istek 1 KV çağrısı (eskiden pencere başına 4–5), reddedilen 2.
+- v2 eval (`npm run eval -- --recommender=v2`) bu ortamda OPENAI_API_KEY olmadığı için koşulamadı; 40/40 skipped. Anahtarla koşulunca taskMatch hedefi ≥ %90; altındaysa özet satırındaki "karışan görevler"e göre `lib/agent/systemPrompt.ts` ve `data/tasks.json` açıklamaları iyileştirilecek (en fazla 3 tur).
+- get_workflow adım adları şablondan geldiği için şimdilik Türkçe (EN arayüzde de).
+
+## P6 notları
+- Ana sayfa artık sohbet (`components/chat/ChatShell.tsx`); eski tek sorgu arayüzü `/classic` (noindex, sitemap'te yok). `/dev/cards` sadece geliştirmede açılan kart önizlemesi (örnek veri), üretimde 404.
+- Dil: `proxy.ts` (Next 16'da middleware'in yeni adı) `?lang` -> Accept-Language -> en sırasıyla `x-routeai-locale` başlığını ekler; `<html lang>` ve metadata bundan. Sözlük `lib/i18n/{en,tr}.ts`; anahtar eşitliği tiple zorunlu.
+- Türkçe şablonlarda sayıya ek getiren kalıplardan ("%43'i") kaçınıldı: ek sayının okunuşuna göre değişiyor ("%43'ü"). Yeni şablon yazarken aynı kural.
+- `WorkflowDisplay`'deki "tahmini maliyet" bölümü sohbet kartına alınmadı: kaynaksız fiyat tahmini üretiyor (klasik arayüzde duruyor).
+- Kart kanıt payı çubuğu için skor sonucuna `expertShare` ve `ownShare` eklendi (formül değişmedi).
+- `/api/outcome`: oturum + ürün + görev başına tek kayıt, oturum kimliği sadece hash olarak (`lib/signals/store.ts`), IP ve mesaj metni saklanmaz. Anahtarlar `sig:outcome:index` ve `sig:comparison:index` kümelerinde; P8 toplar.
+- `next dev` bir AI ajanı altında çalışınca CLAUDE.md'ye kendi "agent rules" bloğunu ekliyor; geri alındı, commit edilmedi.
+- Yerelde sohbet için KV şart: KV yoksa rate limiter bilinçli olarak kapalı kalır ve `/api/chat` 429 döner.
+
+## P7 notları
+- Rehber formatı: `data/prompt-guides/<id>.md` (YAML alt kümesi frontmatter + 4 bölüm) -> `npm run build:guides` -> `data/prompt-guides.json` (edge için). `prebuild` ve `validate:catalog` bunu çağırır. Ayrıştırıcı `lib/promptBuilder/yaml.ts` (paket yok): satır içi eşleme, çok satırlı metin ve çapa desteklenmez, açık hata verir.
+- 10 taslak rehber, 17 ürüne bağlı. Resmi dokümana erişilemediği için hepsi KAYNAK GEREKLİ; `docs/prompt-guides-review.md` Ferit'in kontrol listesi.
+- Oturum KV'de `ps:<id>` (24 saat). Akış: extract (1 LLM çağrısı) -> plan (deterministik, en fazla 3 soru, oturum başına 1 soru kartı) -> generate (1 çağrı, safe + creative) -> validate (+ en fazla 1 onarım, sonra "kontrol edilmedi"). İyileştirme: hazır buton | varsayım değişikliği | serbest talimat; oturum başına 10.
+- `build_prompt` sonucu (soru ya da prompt kartı) ajanın turunu bitirir; prompt oluşturucunun token'ları sohbet bütçesine eklenir. `/api/prompt/answer` ve `/api/prompt/refine` ajan döngüsüne girmez; rate limit 'prompt', bütçe, 20 sn zaman aşımı.
+- Model: `OPENAI_PROMPT_MODEL`, yoksa `OPENAI_MODEL`. max_tokens: görsel/video/ses/müzik 600, metin/kod/sunum 1200.
+- Analitik çağrıları yerinde (`lib/analytics.ts`, şimdilik no-op): prompt_question_shown, prompt_generated, prompt_refined, prompt_copied. OutcomeCard, sohbette son kopyalanan promptSessionId'yi taşır.
+- `npm run eval:prompts`: 20 senaryo; bu ortamda anahtar yok, 20/20 skipped. Uçtan uca elle test (en az 3 rehber) OPENAI_API_KEY + KV ile yapılmalı; kart arayüzü `/dev/cards`'ta örnek veriyle görülebilir.
+
+
+## P8 notları
+- Sinyaller: `/api/outcome`, `/api/feedback` (v2 alanları sessionId + taskId + productId; eski v1 alanları hâlâ kabul) ve karşılaştırmalar KV'de `sessionId+productId+taskId` başına TEK kayıt (son cevap geçerli), `sig:*:index` setleriyle. İş sonucu kaydı son kopyalanan promptun `guideId`/`guideVersion`'ını taşır.
+- `npm run aggregate:signals` KV'yi SADECE okur (tercihen salt okunur token) → `data/signals.json` + `data/signals-anomalies.md`. Anormallik: bir ürün+görevde son 24 saatin olumlu sonuçları önceki 30 günün günlük ortalamasının 5 katından fazla (ve en az 5) ise o 24 saatin olumluları DAHİL EDİLMEZ, rapora yazılır. Gece workflow'u (`nightly-data`) PR'a ekler.
+- Analitik: istemci `trackEvent` → `POST /api/events` (rate limit 'events') → KV `ev:<gün>` (+ `:task`, `:guide`, `:refine`) HINCRBY sayaçları. Ham içerik, IP, mesaj metni yok. 7 gün geri dönüş: sessionId'nin hash'i (iki tuzlu FNV-1a, `lib/signals/store.ts` → `sessionHash`) `ret:<gün>` setine, 30 gün TTL.
+- `/api/admin/stats` (x-admin-key): son 30 gün, ROADMAP metrikleri, rehber bazında kopyalama oranı / ortalama iyileştirme / en çok kullanılan butonlar / kopyalamadan sonra işini gördü oranı, günlük token (`usage:day:<gün>`). Yerelde `?sample=1` sentetik veri (`lib/analytics/sample.ts`); `NODE_ENV=production`'da kapalı.
+- Keşif: `npm run discover:tools` (Show HN son 7 gün + PRODUCT_HUNT_TOKEN varsa Product Hunt) → ad ve alan adıyla mevcut ürünler ve adaylar düşülür → OpenAI varsa sınıflandırma → `data/candidates.json` (`status: candidate`, fiyat modeli `unknown`). Adaylar `searchCatalog`'a hiç girmez (ayrı dosya). Haftalık workflow PR açar.
+- Fiyat: `npm run check:prices` (aylık workflow) aktif ürünlerin `pricingUrl` sayfasından OpenAI ile {model, startingPrice, currency} çıkarır; model emin değilse ya da para birimi USD değilse sonuç "emin olunamadı" (dokunulmaz). Fark varsa products.json önerisi + `data/price-report.md` PR ile; priceCheckedAt PR merge edilince geçerli. 2026-09-25: 46/56 aktif üründe pricingUrl var (web aramasıyla, resmi alan adından; sayfalar bu ortamdan açılamadı). Ayrıntı: `docs/catalog-review-2026-09-25.md`.
+- Gizlilik: `/privacy` (en/tr), footer linki; kodda doğrulama `docs/privacy-verification.md`.
+- Lansman: `docs/LAUNCH-CHECKLIST.md`; 404 (`app/not-found.tsx`), hata sınırı (`app/error.tsx`), OG görseli (`app/opengraph-image.tsx`).
+- Doğrulanamayanlar (bu ortamda dış ağ ve anahtar yok): HN Algolia / Product Hunt / fiyat sayfası çağrıları gerçek API'ye karşı denenmedi (birim testler sahte cevaplarla), aggregate-signals gerçek KV'ye karşı koşmadı, v2 eval koşulmadı.

@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "next-themes"
+import { getDictionary } from "@/lib/i18n"
+import { currentLocale } from "@/lib/i18n/server"
 import "./globals.css"
 
 const geist = Geist({
@@ -17,22 +19,27 @@ const geistMono = Geist_Mono({
 })
 
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.routeai.chat"),
-  title: {
-    default: "RouteAI - Yapay Zeka Navigatörün",
-    template: "%s | RouteAI",
-  },
-  description: "Ne yapmak istediğini yaz, en uygun AI aracını veya adım adım iş akışını önerelim.",
+// Dil: proxy.ts -> x-routeai-locale başlığı (?lang -> Accept-Language -> en).
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await currentLocale())
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.routeai.chat"),
+    title: {
+      default: dict.meta.title,
+      template: "%s | RouteAI",
+    },
+    description: dict.meta.description,
+  }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await currentLocale()
   return (
-    <html lang="tr" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${geist.variable} ${geistMono.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"

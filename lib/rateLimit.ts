@@ -22,20 +22,79 @@ const RATE_LIMITS: Record<string, RateLimitConfig[]> = {
         { requests: 20, windowSeconds: 60 },    // 20 per minute
         { requests: 120, windowSeconds: 3600 }, // 120 per hour
     ],
+    chat: [
+        { requests: 20, windowSeconds: 60 },    // 20 per minute
+        { requests: 100, windowSeconds: 3600 }, // 100 per hour
+    ],
+    prompt: [
+        { requests: 30, windowSeconds: 60 },    // 30 per minute
+        { requests: 200, windowSeconds: 3600 }, // 200 per hour
+    ],
+    outcome: [
+        { requests: 20, windowSeconds: 60 },
+        { requests: 120, windowSeconds: 3600 },
+    ],
+    events: [
+        { requests: 60, windowSeconds: 60 },
+        { requests: 600, windowSeconds: 3600 },
+    ],
 };
+
+/** Rate limiter'ın kullandığı KV parçası (testte sahtesi verilir). */
+export interface RateLimitPipeline {
+    zremrangebyscore(key: string, min: number, max: number): RateLimitPipeline;
+    zadd(key: string, scoreMember: { score: number; member: string }): RateLimitPipeline;
+    zcard(key: string): RateLimitPipeline;
+    zrange(key: string, min: number, max: number, opts: { withScores: true }): RateLimitPipeline;
+    zrem(key: string, member: string): RateLimitPipeline;
+    expire(key: string, seconds: number): RateLimitPipeline;
+    exec(): Promise<unknown[]>;
+}
+
+export interface RateLimitStore {
+    pipeline(): RateLimitPipeline;
+}
+
+/** Her pencere için pipeline'a eklenen komut sayısı (sonuçları okurken). */
+const COMMANDS_PER_WINDOW = 5;
 
 /**
  * Sliding window rate limiter using Vercel KV.
  * Returns the most restrictive limit status.
+ *
+ * İstek başına TEK KV çağrısı: tüm pencerelerin komutları bir pipeline'da.
+ * İstek önce eklenir, sonra sayılır; limit aşıldıysa (nadir yol) ikinci bir
+ * pipeline ile aşılan pencereden itibaren geri alınır. Böylece davranış eski
+ * sıralı sürümle aynı kalır: limiti aşan pencere ve sonrakiler reddedilen
+ * isteği saymaz, öncekiler sayar. KV'ye ulaşılamazsa fail-closed.
  */
 export async function checkRateLimit(
     ip: string,
-    endpoint: string
+    endpoint: string,
+    deps: { store?: RateLimitStore; now?: () => number } = {}
 ): Promise<RateLimitResult> {
     const limits = RATE_LIMITS[endpoint] || RATE_LIMITS.recommend;
-    const now = Math.floor(Date.now() / 1000);
+    const store = deps.store ?? (kv as unknown as RateLimitStore);
+    const now = Math.floor((deps.now ?? Date.now)() / 1000);
 
     try {
+        const requestId = `${now}:${Math.random().toString(36).slice(2)}`;
+        const keys = limits.map((config) => {
+            const windowKey = config.windowSeconds === 60 ? "minute" : "hour";
+            return `ratelimit:${endpoint}:${ip}:${windowKey}`;
+        });
+
+        const pipeline = store.pipeline();
+        limits.forEach((config, i) => {
+            pipeline
+                .zremrangebyscore(keys[i], 0, now - config.windowSeconds)
+                .zadd(keys[i], { score: now, member: requestId })
+                .zcard(keys[i])
+                .zrange(keys[i], 0, 0, { withScores: true })
+                .expire(keys[i], config.windowSeconds + 10);
+        });
+        const results = await pipeline.exec();
+
         let mostRestrictive: RateLimitResult = {
             success: true,
             limit: limits[0].requests,
@@ -43,27 +102,19 @@ export async function checkRateLimit(
             reset: limits[0].windowSeconds,
         };
 
-        for (const config of limits) {
-            const windowKey = config.windowSeconds === 60 ? "minute" : "hour";
-            const key = `ratelimit:${endpoint}:${ip}:${windowKey}`;
+        for (let i = 0; i < limits.length; i++) {
+            const config = limits[i];
+            // Bu isteği de içeren sayım
+            const countWithThis = Number(results[i * COMMANDS_PER_WINDOW + 2]);
 
-            // Get current window data
-            const windowStart = now - config.windowSeconds;
+            if (countWithThis > config.requests) {
+                // Rate limited: bu ve sonraki pencerelerden isteği geri al
+                const undo = store.pipeline();
+                for (let j = i; j < limits.length; j++) undo.zrem(keys[j], requestId);
+                await undo.exec();
 
-            // Use a sorted set for sliding window
-            // Score = timestamp, Member = unique request ID
-            const requestId = `${now}:${Math.random().toString(36).slice(2)}`;
-
-            // Remove old entries outside the window
-            await kv.zremrangebyscore(key, 0, windowStart);
-
-            // Count current requests in window
-            const currentCount = await kv.zcard(key);
-
-            if (currentCount >= config.requests) {
-                // Rate limited - find when the oldest request expires
-                const oldestRequests = await kv.zrange(key, 0, 0, { withScores: true });
-                const oldestTimestamp = oldestRequests.length > 1
+                const oldestRequests = results[i * COMMANDS_PER_WINDOW + 3] as unknown[];
+                const oldestTimestamp = Array.isArray(oldestRequests) && oldestRequests.length > 1
                     ? Number(oldestRequests[1])
                     : now;
                 const resetIn = Math.max(1, (oldestTimestamp + config.windowSeconds) - now);
@@ -76,13 +127,7 @@ export async function checkRateLimit(
                 };
             }
 
-            // Add current request to the window
-            await kv.zadd(key, { score: now, member: requestId });
-
-            // Set TTL to auto-cleanup (window size + buffer)
-            await kv.expire(key, config.windowSeconds + 10);
-
-            const remaining = config.requests - currentCount - 1;
+            const remaining = config.requests - countWithThis;
             const resetIn = config.windowSeconds;
 
             // Track the most restrictive limit
@@ -99,7 +144,7 @@ export async function checkRateLimit(
         return mostRestrictive;
     } catch (error) {
         console.error('Rate limit KV error. Failing strict to prevent DDoS in Edge runtime:', error);
-        
+
         // Edge runtime'da in-memory state isolate'lar arası paylaşılamadığı için
         // KV'ye ulaşılamazsa güvenli kapalı kalma (fail-closed) uyguluyoruz.
         return {

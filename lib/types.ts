@@ -16,9 +16,11 @@ export interface WorkflowStep {
   order: number
   name: string
   description: string
-  category: string
+  /** v1 kategorisi; sohbet iş akışında yok (rozet gösterilmez). */
+  category?: string
   primary: RecommendationTool
-  alternative: RecommendationTool
+  /** Sohbet iş akışında alternatif yok. */
+  alternative?: RecommendationTool
   tips?: string[]
 }
 
