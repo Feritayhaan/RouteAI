@@ -6,7 +6,6 @@ import { priceLabelOrUnknown } from "@/lib/pricing"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
-import PromptBuilderBox from "./PromptBuilderBox"
 
 export default function SimpleRecommendationDisplay({
   recommendation,
@@ -113,9 +112,6 @@ export default function SimpleRecommendationDisplay({
                   </div>
                 </div>
               )}
-              <div className="pt-1">
-                <PromptBuilderBox toolName={recommendation.main.toolName} query={query} />
-              </div>
             </div>
 
             {recommendation.alternatives && recommendation.alternatives.length > 0 && (
