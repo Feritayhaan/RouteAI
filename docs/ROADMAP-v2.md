@@ -7,7 +7,8 @@ Kapsam dışı (lansman sonrası): hesaplar, ödeme, sponsorlu listeleme, mobil 
 ## Ürün kararı (2026-09-25, Ferit)
 RouteAI bir **navigasyon** aracı, sohbet botu değil. Site **tek ekran**:
 - Ana sayfa (`/`) eski navigasyon arayüzü (`components/HomeClient.tsx`, `/api/recommend`). Görünümü korunur.
-- Prompt oluşturucu aynı ekranda: fiyat filtresinin solunda "Prompt da yaz" düğmesi, sağında prompt aracı listesi ("Önerilen araç" ya da rehberi olan 17 araçtan biri, `data/prompt-products.json`). Açıkken prompt önerinin altında çıkar (`components/PromptPanel.tsx` → `POST /api/prompt/start`).
+- Fiyat filtresi tek küçük düğme (`components/PricingToggle.tsx`; tümü → ücretsiz → ücretli, tema düğmesiyle aynı görünüm).
+- Prompt oluşturucu aynı ekranda: fiyat düğmesinin solunda "Prompt da yaz" düğmesi, sağında prompt aracı listesi ("Önerilen araç" ya da rehberi olan 17 araçtan biri, `data/prompt-products.json`). Açıkken prompt önerinin altında çıkar (`components/PromptPanel.tsx` → `POST /api/prompt/start`).
 - Sohbet modu kaldırıldı (`/chat`, `/api/chat`, `ChatShell`). `lib/agent` v2 eval'i için repoda.
 - `/classic` → `/` kalıcı yönlendirme.
 Aşağıdaki "Ürün" ve "Mimari" tanımları sohbet ajanı dönemine ait; ajan şu an sitede yok.
