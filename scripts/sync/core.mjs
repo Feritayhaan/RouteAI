@@ -118,6 +118,17 @@ function daysBetween(a, b) {
   return Math.abs(Date.parse(b) - Date.parse(a)) / 86400000;
 }
 
+/**
+ * Boş/boşluk-only string'i "yok" say. 2026-09-28 gece koşusunda LMArena'nın
+ * bazı satırlarında organization alanı boş string ("") geldi (null/undefined
+ * değil); `??` bunu yakalamadığı için creator boş string olarak kalıp
+ * modelSchema'nın min(1) kuralını kırdı (8 model). Kaynak boş bıraktıysa
+ * 'unknown' — uydurma bir isim değil, mevcut tasarımdaki eksik-veri değeri.
+ */
+function nonEmpty(s) {
+  return typeof s === 'string' && s.trim() !== '' ? s : null;
+}
+
 // ------------------------------------------------------------------
 // Yeniden deneme (429 / 5xx) — scripts/sync-models.mjs'in fetchJson'ı kullanır
 // ------------------------------------------------------------------
@@ -202,7 +213,7 @@ export async function fetchArtificialAnalysis({ fetchJson, sleep, aaKey, arenas,
           key,
           rawName: String(rawName),
           displayName: String(row?.name ?? rawName),
-          creator: row?.model_creator?.name ?? null,
+          creator: nonEmpty(row?.model_creator?.name),
           modality: AA_MODALITY[endpoint],
           releaseDate: toDate(row?.release_date),
           pricing: endpoint === '/data/llms/models' ? aaPricing(row?.pricing, today) : null,
@@ -310,7 +321,7 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
         key: arena.key,
         rawName: String(rawName),
         displayName: String(rawName),
-        creator: f.organization ? row[f.organization] ?? null : null,
+        creator: f.organization ? nonEmpty(row[f.organization]) : null,
         modality: LMARENA_MODALITY[config],
         releaseDate: f.releaseDate ? toDate(row[f.releaseDate]) : null,
         pricing: null,
@@ -356,12 +367,12 @@ export function mergeModels({ oldModels, fresh, succeededSources, aliases, linke
     if (!id) continue;
     let model = byId.get(id);
     if (!model) {
-      model = { id, name: row.displayName, creator: row.creator ?? 'unknown', aliases: [], modalities: [], scores: [] };
+      model = { id, name: row.displayName, creator: nonEmpty(row.creator) ?? 'unknown', aliases: [], modalities: [], scores: [] };
       byId.set(id, model);
     }
     if (row.displayName !== model.name && !model.aliases.includes(row.displayName)) model.aliases.push(row.displayName);
     if (row.rawName !== model.name && row.rawName !== row.displayName && !model.aliases.includes(row.rawName)) model.aliases.push(row.rawName);
-    if (model.creator === 'unknown' && row.creator) model.creator = String(row.creator);
+    if (model.creator === 'unknown' && nonEmpty(row.creator)) model.creator = String(row.creator);
     if (row.modality && !model.modalities.includes(row.modality)) model.modalities.push(row.modality);
     if (row.releaseDate && !model.releaseDate) model.releaseDate = row.releaseDate;
     if (row.pricing) model.pricing = row.pricing;
