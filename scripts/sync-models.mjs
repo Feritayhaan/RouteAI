@@ -6,6 +6,9 @@
 // Ortam: AA_API_KEY (yoksa Artificial Analysis atlanır, eski AA verisi korunur).
 // Dayanıklılık: bir kaynak hata verirse o kaynağın eski verisi korunur;
 // hiçbir kaynaktan veri gelmezse data/models.json'a dokunulmaz.
+// Çıkış kodu (syncExitDecision): beklenen bir kaynaktan (LMArena; anahtar
+// tanımlıysa AA) hiç veri gelmezse 1. Rapor ve veri yine yazılır; gece işi
+// kırmızı kararı en sonda uygular.
 // İstekler arasında 1 sn beklenir. Mantık: scripts/sync/core.mjs.
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -19,6 +22,7 @@ import {
   mergeModels,
   newReport,
   renderReport,
+  syncExitDecision,
 } from './sync/core.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -83,10 +87,22 @@ for (const p of read('data/products.json').filter((x) => x.status === 'active' &
     ? `| ${p.name} | ${cm.name} | ${cm.releaseDate ?? '—'} | ${cm.source}, ${cm.fetchedAt} |`
     : `| ${p.name} | (eşleşen model yok) | — | — |`);
 }
-const text = `${renderReport(report, { models, dryRun, wrote }).trimEnd()}\n${productLines.join('\n')}\n`;
+const decision = syncExitDecision({
+  sources: [
+    { name: 'Artificial Analysis', needsKey: true, hasKey: Boolean(aaKey), gotData: Boolean(aaRows) },
+    { name: 'LMArena', needsKey: false, gotData: Boolean(lmRows) },
+  ],
+  errors: report.errors,
+});
+const text = `${renderReport(report, { models, dryRun, wrote, decision }).trimEnd()}\n${productLines.join('\n')}\n`;
 if (dryRun) {
   process.stdout.write(text);
 } else {
   writeFileSync(path.join(ROOT, 'data/sync-report.md'), text);
   console.log(`[sync-models] ${wrote ? `data/models.json yazıldı (${models.length} model)` : 'data/models.json değişmedi'}; rapor: data/sync-report.md (${report.errors.length} hata)`);
+  // Sadece sayı değil, hataların kendisi de logda görünsün.
+  for (const e of report.errors) console.log(`[sync-models] hata: ${e}`);
 }
+for (const r of decision.reasons) console.log(`[sync-models] ${r}`);
+console.log(`[sync-models] karar: ${decision.code === 0 ? 'başarılı' : 'BAŞARISIZ (çıkış kodu 1)'}`);
+process.exitCode = decision.code;

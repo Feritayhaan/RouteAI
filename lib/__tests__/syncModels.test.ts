@@ -7,7 +7,9 @@ import {
   newReport,
   normalizeModelKey,
   parseCi95,
+  renderReport,
   suggestModels,
+  syncExitDecision,
 } from '../../scripts/sync/core.mjs';
 
 // Sahte yanıtlar. Alan adları gerçek API'den DOĞRULANMADI; burada test edilen
@@ -153,6 +155,57 @@ describe('model senkronu: kaynaklar ve birleştirme', () => {
     const models = mergeModels({ oldModels: old, fresh: [], succeededSources: new Set(['lmarena']), aliases: {}, linkedModelIds: new Set(['linked']), today }, report);
     assert.deepStrictEqual(models.map((m) => m.id), ['linked']);
     assert.deepStrictEqual(report.disappeared, ['gone']);
+  });
+});
+
+describe('gece işi çıkış kararı (syncExitDecision)', () => {
+  const aa = (hasKey: boolean, gotData: boolean) => ({ name: 'Artificial Analysis', needsKey: true, hasKey, gotData });
+  const lm = (gotData: boolean) => ({ name: 'LMArena', needsKey: false, gotData });
+
+  it('kaynak yok: hiçbir kaynaktan veri gelmezse kırmızı', () => {
+    const d = syncExitDecision({ sources: [aa(true, false), lm(false)], errors: ['AA /data/llms/models: HTTP 503', "LMArena text: 'latest' split'i yok"] });
+    assert.strictEqual(d.code, 1);
+    assert.ok(d.reasons.includes('Artificial Analysis: veri gelmedi.'));
+    assert.ok(d.reasons.includes('LMArena: veri gelmedi.'));
+    assert.ok(d.reasons.some((r: string) => r.startsWith('2 hata')));
+    assert.deepStrictEqual(syncExitDecision({ sources: [], errors: [] }), { code: 1, reasons: ['Tanımlı veri kaynağı yok.'] });
+  });
+
+  it('anahtar yok: kaynak "atlandı" olur, hata sayılmaz', () => {
+    const ok = syncExitDecision({ sources: [aa(false, false), lm(true)], errors: [] });
+    assert.deepStrictEqual(ok, { code: 0, reasons: ['Artificial Analysis: anahtar tanımlı değil, atlandı (hata sayılmadı).'] });
+    // Anahtarsız KV (aggregate-signals): tek kaynak atlandı -> yine yeşil
+    assert.strictEqual(syncExitDecision({ sources: [{ name: 'KV sinyalleri', needsKey: true, hasKey: false, gotData: false }], errors: [] }).code, 0);
+    // Anahtar yokken anahtarsız kaynak da düşerse kırmızı; atlanan kaynak gerekçe olmaz
+    const bad = syncExitDecision({ sources: [aa(false, false), lm(false)], errors: [] });
+    assert.strictEqual(bad.code, 1);
+    assert.ok(!bad.reasons.includes('Artificial Analysis: veri gelmedi.'));
+    assert.ok(bad.reasons.includes('LMArena: veri gelmedi.'));
+  });
+
+  it('veri geldi: beklenen kaynakların hepsinden veri, hata yok -> yeşil, gerekçe yok', () => {
+    assert.deepStrictEqual(syncExitDecision({ sources: [aa(true, true), lm(true)], errors: [] }), { code: 0, reasons: [] });
+    assert.deepStrictEqual(syncExitDecision({ sources: [{ name: 'KV sinyalleri', needsKey: true, hasKey: true, gotData: true }], errors: [] }), { code: 0, reasons: [] });
+  });
+
+  it('kısmi hata: veri gelen kaynaktaki tekil hata yeşil kalır ama görünür; anahtarlı kaynak tümden düşerse kırmızı', () => {
+    const partial = syncExitDecision({ sources: [aa(true, true), lm(true)], errors: ["LMArena webdev: 'latest' split'i yok"] });
+    assert.strictEqual(partial.code, 0);
+    assert.deepStrictEqual(partial.reasons, ['Kısmi hata: 1 hata; beklenen kaynakların hepsinden veri geldi.']);
+
+    const oneDown = syncExitDecision({ sources: [aa(true, false), lm(true)], errors: ['AA /data/llms/models: HTTP 401'] });
+    assert.strictEqual(oneDown.code, 1);
+    assert.deepStrictEqual(oneDown.reasons, ['Artificial Analysis: veri gelmedi.', '1 hata.']);
+
+    const kvDown = syncExitDecision({ sources: [{ name: 'KV sinyalleri', needsKey: true, hasKey: true, gotData: false }], errors: ['KV okuma: fetch failed'] });
+    assert.strictEqual(kvDown.code, 1);
+  });
+
+  it('karar raporun başında görünür', () => {
+    const report = newReport();
+    const decision = syncExitDecision({ sources: [aa(false, false), lm(false)], errors: [] });
+    const text = renderReport(report, { models: [], dryRun: false, wrote: false, decision });
+    assert.match(text, /## Karar: BAŞARISIZ \(iş kırmızı biter\)\n\n- Artificial Analysis: anahtar tanımlı değil, atlandı \(hata sayılmadı\)\.\n- LMArena: veri gelmedi\./);
   });
 });
 
