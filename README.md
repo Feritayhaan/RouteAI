@@ -129,11 +129,13 @@ npm run dev                         # http://localhost:3000
 
 ## GitHub Actions
 
-Hepsi değişiklik varsa ayrı bir dala commit atar ve PR açar; merge kararı insanın. Repo ayarında *Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"* açık olmalı.
+Veri workflow'ları (`nightly-data`, `discover-tools`, `check-prices`) değişiklik varsa ayrı bir dala commit atar ve PR açar; merge kararı insanın. Repo ayarında *Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"* açık olmalı.
 
 | Workflow | Zaman (UTC) | Secret'lar |
 | --- | --- | --- |
-| `nightly-data` (`sync-models.yml`; kontrollerden geçen PR otomatik merge edilir) | her gün 03:00 | `AA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_READ_ONLY_TOKEN` |
+| `ci` (`ci.yml`): lint, `tsc --noEmit`, test, `validate:catalog`, build | her PR ve `main`'e push | yok |
+| `nightly-data` (`sync-models.yml`; kontrollerden geçen PR otomatik merge edilir). LMArena'dan ya da anahtarı tanımlı bir kaynaktan (AA, KV) hiç veri gelmezse iş kırmızı biter; anahtarı olmayan kaynak "atlandı" sayılır. Rapor iş özetinde | her gün 03:00 | `AA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_READ_ONLY_TOKEN` |
+| `eval` (`eval.yml`): `npm run eval` + `npm run eval:prompts`, gerçek OpenAI çağrılarıyla (token harcar). Özet iş özetinde, `evals/results/*.json` artifact. KV secret'ı verilmez | sadece elle (Actions → eval → Run workflow) | `OPENAI_API_KEY` |
 | `discover-tools` | pazartesi 04:00 | `OPENAI_API_KEY`, `PRODUCT_HUNT_TOKEN` (ikisi de isteğe bağlı) |
 | `check-prices` | ayın 1'i 05:00 | `OPENAI_API_KEY` |
 
