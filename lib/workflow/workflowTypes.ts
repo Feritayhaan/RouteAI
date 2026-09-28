@@ -5,11 +5,6 @@ import { Category } from '../keywords';
 import { Tool } from '../toolsService';
 
 /**
- * Media types that tools can accept as input or produce as output
- */
-export type MediaType = 'text' | 'image' | 'audio' | 'video' | 'data' | 'code' | 'document';
-
-/**
  * Template for a single step in a workflow
  */
 export interface WorkflowStepTemplate {
@@ -18,21 +13,15 @@ export interface WorkflowStepTemplate {
   description: string;
   category: Category;
 
-  // What this step needs and produces
-  inputType: MediaType;
-  outputType: MediaType;
-
-  // Hints for tool matching
-  capabilities: string[];
-
-  // Optional prompt template for this step
-  promptTemplate?: string | null;
+  /**
+   * Katalogdaki görev kimlikleri (data/tasks.json), öncelik sırasıyla. Adımın
+   * aracı bu görevleri yapabilen aktif ürünlerden seçilir; ilk görevin
+   * adayları önce gelir.
+   */
+  tasks: string[];
 
   // Tips for this step
   tips?: string[];
-
-  // Is this step optional?
-  optional?: boolean;
 }
 
 /**
@@ -56,12 +45,9 @@ export interface WorkflowTemplate {
   // Hangi kategoriler bu workflow'u tetikleyebilir
   primaryCategories: string[];
 
-  // The steps in this workflow
+  // The steps in this workflow (en fazla MAX_WORKFLOW_STEPS)
   steps: WorkflowStepTemplate[];
 
-  // Metadata
-  complexity: 'simple' | 'medium' | 'complex';
-  estimatedDuration: string;
   tags: string[];
 }
 
@@ -70,8 +56,6 @@ export interface WorkflowTemplate {
  */
 export interface StepToolRecommendation {
   tool: Tool;
-  score: number;
-  reasoning: string;
 }
 
 /**
@@ -82,15 +66,13 @@ export interface WorkflowStepRecommendation {
   name: string;
   description: string;
   category: Category;
+  /** Aracın seçildiği görev (adımın ilk görevi). */
+  taskId: string;
 
-  // Tool recommendations
   primary: StepToolRecommendation;
-  alternative: StepToolRecommendation;
+  /** Farklı bir ürün; görevde başka aday yoksa null. */
+  alternative: StepToolRecommendation | null;
 
-  // Prompt suggestion for this step
-  promptSuggestion?: string;
-
-  // Tips for this step
   tips?: string[];
 }
 
@@ -107,52 +89,8 @@ export interface GeneratedWorkflow {
   // Workflow steps with tool recommendations
   steps: WorkflowStepRecommendation[];
 
-  // Aggregate info
   totalSteps: number;
-  estimatedDuration: string;
-  complexity: 'simple' | 'medium' | 'complex';
 
   // Categories involved
   categories: Category[];
-}
-
-/**
- * API response format for workflows
- */
-export interface WorkflowApiResponse {
-  type: 'workflow';
-  category: Category;
-  workflow: {
-    name: string;
-    totalSteps: number;
-    estimatedDuration: string;
-    complexity: string;
-    steps: Array<{
-      order: number;
-      name: string;
-      description: string;
-      category: Category;
-      primary: {
-        toolName: string;
-        description: string;
-        url: string;
-        pricing: Tool['pricing'];
-        strength: number;
-        why: string;
-        promptSuggestion?: string;
-      };
-      alternative: {
-        toolName: string;
-        description: string;
-        url: string;
-        pricing: Tool['pricing'];
-        strength: number;
-      };
-    }>;
-  };
-  _debug?: {
-    intent: unknown;
-    confidence: number;
-    templateId: string;
-  };
 }

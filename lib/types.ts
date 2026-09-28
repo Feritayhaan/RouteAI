@@ -20,19 +20,19 @@ export interface WorkflowStep {
   order: number
   name: string
   description: string
-  /** v1 kategorisi; sohbet iş akışında yok (rozet gösterilmez). */
+  /** v1 kategorisi; sohbet iş akışında yok. */
   category?: string
+  /** Aracın seçildiği katalog görevi (data/tasks.json). */
+  taskId?: string
   primary: RecommendationTool
-  /** Sohbet iş akışında alternatif yok. */
-  alternative?: RecommendationTool
+  /** Farklı bir ürün; görevde başka aday yoksa null. Sohbet iş akışında yok. */
+  alternative?: RecommendationTool | null
   tips?: string[]
 }
 
 export interface WorkflowData {
   name: string
   totalSteps: number
-  estimatedDuration: string
-  complexity: string
   categories: string[]
   steps: WorkflowStep[]
 }

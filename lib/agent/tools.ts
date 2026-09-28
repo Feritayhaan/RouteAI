@@ -218,37 +218,10 @@ function searchSummary(result: SearchResult) {
   };
 }
 
-// Workflow şablonundaki adım -> görev (şablondaki sabit araç adları KULLANILMAZ).
-const STEP_TASK_RULES: [RegExp, string][] = [
-  [/logo/, 'image.logo'],
-  [/background removal|cutout/, 'image.background-remove'],
-  [/thumbnail|social media graphics|carousel|stories|color palette|layout|typography|comic lettering/, 'design.social-graphic'],
-  [/slide design|presentation/, 'slides.create'],
-  [/video generation|animation/, 'video.text-to-video'],
-  [/video editing|b-roll/, 'video.edit-short-social'],
-  [/voice synthesis|text to speech|dubbing|recording/, 'audio.tts-voiceover'],
-  [/noise reduction|mastering|mixing|audio editing/, 'audio.cleanup'],
-  [/music generation|beat making|melody|sound effects/, 'music.generate'],
-  [/translation|localization/, 'text.translate'],
-  [/proofreading/, 'text.rewrite-edit'],
-  [/charts|data viz|dashboard/, 'data.dashboard'],
-  [/data analysis|statistics/, 'data.spreadsheet-analysis'],
-  [/wireframe|ui components|mobile ui|prototype|design system|screen design|ux research/, 'code.app-builder'],
-  [/cover|album art|infographic|featured image|blog images|character design|concept art|illustration|image generation|scene|lifestyle/, 'image.generate'],
-  [/copywriting|hashtags|engagement/, 'text.marketing-copy'],
-  [/seo|research|trend analysis|strategy|analysis/, 'research.web'],
-  [/formatting|epub/, 'docs.create'],
-  [/writing|story|songwriting|lyrics|outline|planning|documentation|guidelines|content calendar|brief|concept|structure/, 'text.write-longform'],
-];
-const CATEGORY_TASK: Record<string, string> = {
-  gorsel: 'image.generate', metin: 'text.write-longform', ses: 'audio.tts-voiceover', video: 'video.text-to-video',
-  kod: 'code.assistant-ide', arastirma: 'research.web', veri: 'data.spreadsheet-analysis',
-};
-
+// Workflow şablonundaki adım -> görev: şablon görevi doğrudan taşır
+// (data/tasks.json kimliği); araç adı şablonda yazmaz.
 export function stepTaskId(step: WorkflowStepTemplate): string {
-  const text = `${step.capabilities.join(' ')} ${step.name}`.toLowerCase();
-  for (const [re, taskId] of STEP_TASK_RULES) if (re.test(text)) return taskId;
-  return CATEGORY_TASK[step.category] ?? 'chat.general-assistant';
+  return step.tasks[0];
 }
 
 function invalid(error: z.ZodError) {
@@ -313,14 +286,12 @@ export async function executeTool(name: string, rawArgs: string, ctx: ToolContex
           product: top
             ? { productId: top.product.id, name: top.product.name, url: top.product.url, q: top.score.q, confidence: top.score.confidence }
             : null,
-          promptTemplate: step.promptTemplate ?? null,
         };
       });
       const card: WorkflowCard = {
         type: 'workflow',
         templateId: template.id,
         name: ctx.locale === 'en' ? template.nameEn : template.name,
-        estimatedDuration: template.estimatedDuration,
         steps,
       };
       return {

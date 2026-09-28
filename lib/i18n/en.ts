@@ -124,9 +124,11 @@ export const en = {
     recommended: 'Recommended',
     alternative: 'Alternative',
     open: 'Open',
-    promptExample: 'Example prompt',
     tips: 'Tips',
     noProduct: 'No reliable catalog data for this step yet.',
+    writePrompt: 'Write a prompt for this step',
+    hidePrompt: 'Hide prompt',
+    stepGoal: 'This step: {step} ({description})',
   },
   outcome: {
     question: 'Did {product} do the job?',

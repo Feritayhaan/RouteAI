@@ -125,9 +125,11 @@ export const tr: Dictionary = {
     recommended: 'Önerilen',
     alternative: 'Alternatif',
     open: 'Git',
-    promptExample: 'Örnek prompt',
     tips: 'İpuçları',
     noProduct: 'Bu adım için katalogda henüz güvenilir veri yok.',
+    writePrompt: 'Bu adım için prompt yaz',
+    hidePrompt: 'Promptu gizle',
+    stepGoal: 'Bu adım: {step} ({description})',
   },
   outcome: {
     question: '{product} işini gördü mü?',

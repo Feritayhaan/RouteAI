@@ -1,1253 +1,327 @@
 // RouteAI Workflow Templates
-// Predefined multi-step workflows for common use cases
+//
+// İş akışı SADECE iş gerçekten farklı türde araçlar gerektirdiğinde çıkar
+// (metin + ses + görsel gibi). Tek araçla yapılan işlerin (sunum, blog, logo,
+// ürün fotoğrafı, çeviri, dashboard, mobil uygulama) şablonu yok: onlar tek
+// araç önerisine gider.
+//
+// Kurallar:
+//  - En fazla 3 adım.
+//  - Her adımın `tasks` alanı katalogdaki görev kimlikleridir (data/tasks.json).
+//    Araç adı şablona YAZILMAZ; adımın aracı o görevi yapabilen aktif ürünler
+//    arasından seçilir (workflowGenerator.ts).
+//  - Süre, maliyet ya da sayı yazılmaz: kaynağı olmayan bilgi gösterilmez.
+//  - Adım promptu şablonda durmaz; kullanıcı isterse o adımın aracı için
+//    prompt oluşturucu (lib/promptBuilder) kullanıcının amacına göre yazar.
 
 import { WorkflowTemplate } from './workflowTypes';
 import { ParsedIntent } from '../intent/types';
+import { hasTerm } from '../text';
 
-/**
- * Library of workflow templates
- * Each template defines a multi-step process with tool requirements per step
- */
+export const MAX_WORKFLOW_STEPS = 3;
+
 export const WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
-    // ============================================
-    // COMIC CREATION WORKFLOW
-    // ============================================
     {
         id: 'comic-creation',
-        name: 'Çizgi Roman Oluşturma',
-        nameEn: 'Comic Creation',
-        description: 'Hikaye yazımından bitmiş çizgi romana kadar tam süreç',
-        triggers: [
-            'comic', 'çizgi roman', 'manga', 'graphic novel',
-            'webtoon', 'karikatür hikaye', 'çizgi hikaye'
-        ],
-        semanticDescription: 'Kullanıcı sıfırdan bir çizgi roman, manga, webtoon veya grafik roman oluşturmak istiyor. Hikaye yazımı, karakter tasarımı, panel çizimi ve düzenleme adımlarını kapsayan çok aşamalı bir projedir.',
+        name: 'Çizgi Roman',
+        nameEn: 'Comic',
+        description: 'Hikayeden panellere çizgi roman',
+        triggers: ['çizgi roman', 'comic', 'manga', 'webtoon', 'graphic novel', 'çizgi hikaye'],
+        semanticDescription: 'Kullanıcı sıfırdan bir çizgi roman, manga ya da webtoon oluşturmak istiyor: hikaye ve senaryo, karakterler ve paneller.',
         minConfidence: 0.6,
         primaryCategories: ['gorsel', 'metin'],
-        complexity: 'complex',
-        estimatedDuration: '4-8 saat',
         tags: ['creative', 'visual', 'storytelling'],
         steps: [
             {
                 order: 1,
-                name: 'Hikaye & Konsept Geliştirme',
-                description: 'Ana hikaye, karakterler ve olay örgüsünü oluştur',
+                name: 'Hikaye ve senaryo',
+                description: 'Karakterleri, olay örgüsünü ve panel panel senaryoyu yaz',
                 category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['creative writing', 'story', 'character development'],
-                promptTemplate: `Bir [TÜR] çizgi roman için hikaye geliştirmek istiyorum.
-Tema: [TEMA]
-Hedef kitle: [HEDEf]
-
-Lütfen şunları oluştur:
-1. Ana karakterler (görsel tanımlarıyla birlikte)
-2. Hikaye özeti (başlangıç, gelişme, sonuç)
-3. Ana sahneler/anlar listesi ([X] sayfa için)`
+                tasks: ['text.write-longform'],
+                tips: ['Her karakterin görünüşünü tek paragrafta tarif et; çizim adımında aynen kullan.'],
             },
             {
                 order: 2,
-                name: 'Senaryo & Panel Dağılımı',
-                description: 'Panel bazlı detaylı senaryo oluştur',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['script writing', 'formatting', 'dialogue'],
-                promptTemplate: `Bu hikayeyi çizgi roman senaryo formatına dönüştür:
-
-Format:
-- Sayfa X, Panel Y
-- Görsel açıklama (kamera açısı dahil)
-- Diyalog/düşünce balonları
-- Ses efektleri
-
-Hedef: [X] sayfa, sayfa başına 4-6 panel`
-            },
-            {
-                order: 3,
-                name: 'Karakter Tasarımı',
-                description: 'Tutarlı karakter referans çizimleri oluştur',
+                name: 'Karakterler ve paneller',
+                description: 'Karakterleri tutarlı çiz, sahneleri panel panel üret',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['character design', 'concept art', 'illustration'],
-                promptTemplate: `Character reference sheet of [KARAKTER ADI], [GÖRSEL TANIM], 
-comic art style, full body front view, 3/4 view, expression sheet, 
-color palette, white background, detailed --ar 16:9`
+                tasks: ['image.generate'],
+                tips: ['Önce karakter referans sayfası üret, panellerde onu referans ver.', 'Tüm panellerde aynı stil tarifini kullan.'],
             },
-            {
-                order: 4,
-                name: 'Panel/Sahne Üretimi',
-                description: 'Her panel için görseller oluştur',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['image generation', 'scene composition', 'dynamic poses'],
-                promptTemplate: `Comic panel: [SAHNE AÇIKLAMASI], [SANAT STİLİ], 
-[KAMERA AÇISI], dramatic lighting, speech bubble space in [POZİSYON] --ar 3:4`,
-                tips: [
-                    'Karakter referanslarını --cref ile kullan (Midjourney)',
-                    'Her panel için tutarlı stil koru',
-                    'Diyalog balonları için boşluk bırak'
-                ]
-            },
-            {
-                order: 5,
-                name: 'Düzen & Yazı Ekleme',
-                description: 'Panelleri düzenle, diyalogları ekle, finalize et',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'document',
-                capabilities: ['layout', 'typography', 'design', 'comic lettering'],
-                promptTemplate: null,
-                tips: [
-                    'Diyalog ve anlatı için farklı fontlar kullan',
-                    'Konuşma balonlarını panele göre pozisyonla',
-                    'Baskı için PDF, web için PNG olarak dışa aktar'
-                ]
-            }
-        ]
+        ],
     },
-
-    // ============================================
-    // VIDEO PRODUCTION WORKFLOW
-    // ============================================
     {
         id: 'video-production',
-        name: 'Video Prodüksiyon',
-        nameEn: 'Video Production',
-        description: 'Senaryodan bitmiş videoya tam prodüksiyon süreci',
+        name: 'Tanıtım Videosu',
+        nameEn: 'Promo Video',
+        description: 'Senaryodan seslendirilmiş videoya',
         triggers: [
-            'video', 'film', 'video çek', 'video yap', 'reklam videosu',
-            'tanıtım filmi', 'youtube video', 'kısa film', 'video içerik'
+            'tanıtım videosu', 'tanıtım filmi', 'reklam videosu', 'kısa film', 'belgesel',
+            'promo video', 'short film', 'documentary',
         ],
-        semanticDescription: 'Kullanıcı profesyonel bir video üretmek istiyor. Senaryo yazımı, görsel üretimi, seslendirme ve müzik ekleme adımlarını kapsayan prodüksiyon sürecidir.',
+        semanticDescription: 'Kullanıcı senaryosu, görüntüsü ve seslendirmesi olan bir tanıtım videosu, reklam ya da kısa film üretmek istiyor.',
         minConfidence: 0.6,
         primaryCategories: ['video', 'ses'],
-        complexity: 'complex',
-        estimatedDuration: '3-6 saat',
-        tags: ['video', 'creative', 'marketing'],
+        tags: ['video', 'marketing'],
         steps: [
             {
                 order: 1,
-                name: 'Senaryo & Storyboard',
-                description: 'Video senaryosu ve görsel planı oluştur',
+                name: 'Senaryo',
+                description: 'Sahne sahne akışı ve anlatım metnini yaz',
                 category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['script writing', 'storyboard', 'creative writing'],
-                promptTemplate: `[SÜRE] dakikalık bir [TÜR] video için senaryo yaz.
-Konu: [KONU]
-Hedef kitle: [HEDEF]
-Ton: [TON]
-
-Çıktı formatı:
-- Sahne numarası
-- Süre
-- Görsel açıklama
-- Seslendirme/diyalog
-- Müzik/ses notları`
+                tasks: ['text.write-longform'],
             },
             {
                 order: 2,
-                name: 'Görsel Üretimi',
-                description: 'Video kareleri veya görseller oluştur',
+                name: 'Video sahneleri',
+                description: 'Senaryodaki sahneleri metinden videoya üret',
                 category: 'video',
-                inputType: 'text',
-                outputType: 'video',
-                capabilities: ['video generation', 'animation', 'visual effects'],
-                promptTemplate: `[SAHNE AÇIKLAMASI], cinematic, [KAMERA HAREKETİ], 
-professional lighting, [STİL], high quality --duration [X]s`
+                tasks: ['video.text-to-video'],
+                tips: ['Her sahneyi ayrı üret; kamera hareketini ve ışığı promptta belirt.'],
             },
             {
                 order: 3,
                 name: 'Seslendirme',
-                description: 'Profesyonel seslendirme veya TTS',
+                description: 'Anlatım metnini doğal bir sesle seslendir',
                 category: 'ses',
-                inputType: 'text',
-                outputType: 'audio',
-                capabilities: ['voice synthesis', 'text to speech', 'dubbing'],
-                promptTemplate: null,
-                tips: [
-                    'Senaryo metnini düz metin olarak hazırla',
-                    'Ses tonunu hedef kitleye göre seç',
-                    'Doğal duraklamalar için noktalama kullan'
-                ]
+                tasks: ['audio.tts-voiceover'],
+            },
+        ],
+    },
+    {
+        id: 'online-course',
+        name: 'Online Kurs',
+        nameEn: 'Online Course',
+        description: 'Ders metninden anlatımlı ders videosuna',
+        triggers: ['online kurs', 'video kurs', 'eğitim videosu', 'ders videosu', 'online course', 'video course'],
+        semanticDescription: 'Kullanıcı slaytlı ve anlatımlı ders videolarından oluşan bir online kurs hazırlamak istiyor.',
+        minConfidence: 0.6,
+        primaryCategories: ['video', 'metin'],
+        tags: ['education', 'video'],
+        steps: [
+            {
+                order: 1,
+                name: 'Ders planı ve metin',
+                description: 'Ders başlıklarını ve her dersin anlatım metnini yaz',
+                category: 'metin',
+                tasks: ['text.write-longform'],
             },
             {
-                order: 4,
-                name: 'Müzik & Ses Efektleri',
-                description: 'Arka plan müziği ve ses efektleri ekle',
-                category: 'ses',
-                inputType: 'text',
-                outputType: 'audio',
-                capabilities: ['music generation', 'sound effects', 'audio'],
-                promptTemplate: `[TÜR] tarzında, [MOOD] ruh halinde, [SÜRE] süresinde 
-enstrümantal müzik oluştur. Tempo: [BPM]`,
-                optional: true
-            }
-        ]
+                order: 2,
+                name: 'Slaytlar',
+                description: 'Her ders için slaytları hazırla',
+                category: 'metin',
+                tasks: ['slides.create'],
+            },
+            {
+                order: 3,
+                name: 'Anlatımlı video',
+                description: 'Slaytları sunan avatarlı ya da seslendirmeli ders videosunu oluştur',
+                category: 'video',
+                tasks: ['video.avatar-presenter', 'audio.tts-voiceover'],
+            },
+        ],
     },
-
-    // ============================================
-    // BRAND IDENTITY WORKFLOW
-    // ============================================
     {
         id: 'brand-identity',
-        name: 'Marka Kimliği Oluşturma',
+        name: 'Marka Kimliği',
         nameEn: 'Brand Identity',
-        description: 'Logodan renk paletine tam marka kimliği süreci',
+        description: 'İsimden logoya ve örnek tasarımlara',
         triggers: [
-            'brand identity', 'marka kimliği', 'branding', 'kurumsal kimlik',
-            'logo ve marka', 'marka oluştur', 'marka tasarımı', 'startup branding'
+            'marka kimliği', 'kurumsal kimlik', 'brand identity', 'branding',
+            'marka oluştur', 'marka tasarımı', 'logo ve marka',
         ],
-        semanticDescription: 'Kullanıcı bir marka veya şirket için baştan sona kurumsal kimlik oluşturmak istiyor. Logo, renk paleti, tipografi ve marka kılavuzu adımlarını kapsar.',
+        semanticDescription: 'Kullanıcı bir marka için baştan kurumsal kimlik oluşturmak istiyor: isim ve slogan, logo, renkler ve örnek tasarımlar.',
         minConfidence: 0.6,
         primaryCategories: ['gorsel', 'metin'],
-        complexity: 'complex',
-        estimatedDuration: '3-5 saat',
         tags: ['branding', 'design', 'business'],
         steps: [
             {
                 order: 1,
-                name: 'Marka Stratejisi & Araştırma',
-                description: 'Marka değerleri, hedef kitle ve pozisyonlama analizi',
+                name: 'İsim ve slogan',
+                description: 'Marka adı, konumlandırma ve slogan seçeneklerini çıkar',
                 category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['research', 'strategy', 'analysis'],
-                promptTemplate: `[MARKA ADI] için marka stratejisi oluştur:
-
-Sektör: [SEKTÖR]
-Hedef kitle: [HEDEF KİTLE]
-Rakipler: [RAKİPLER]
-
-Çıktılar:
-1. Marka değerleri ve misyon
-2. Hedef kitle personas
-3. Marka sesi ve tonu
-4. Farklılaştırıcı özellikler`
+                tasks: ['text.marketing-copy'],
             },
             {
                 order: 2,
-                name: 'Logo Tasarımı',
-                description: 'Ana logo ve varyasyonları oluştur',
+                name: 'Logo',
+                description: 'Marka karakterine uygun logo seçenekleri üret',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['logo design', 'branding', 'typography'],
-                promptTemplate: `Minimalist logo design for [MARKA ADI], [SEKTÖR] company,
-[STİL] style, [RENK TERCİHİ], professional, scalable, 
-white background, vector-ready --ar 1:1`
+                tasks: ['image.logo'],
+                tips: ['Küçük boyutta da okunabilen sade bir işaret seç.'],
             },
             {
                 order: 3,
-                name: 'Renk Paleti & Tipografi',
-                description: 'Marka renkleri ve yazı tipleri belirleme',
+                name: 'Renkler ve örnek tasarımlar',
+                description: 'Renk paleti ve yazı tipiyle sosyal medya, kartvizit gibi örnek uygulamalar hazırla',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['color palette', 'typography', 'design system'],
-                promptTemplate: `Brand color palette with 5 colors: primary, secondary, 
-accent, neutral, and highlight. [MOOD] feeling, [SEKTÖR] industry.
-Include HEX codes, color names, and usage guidelines.`,
-                tips: [
-                    'Ana renk + 2 yardımcı + nötr + vurgu',
-                    'Dijital ve baskı için renk kodları',
-                    'Erişilebilirlik kontrastı kontrol et'
-                ]
+                tasks: ['design.social-graphic'],
             },
-            {
-                order: 4,
-                name: 'Marka Kılavuzu',
-                description: 'Tüm elementleri birleştiren kullanım kılavuzu',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'document',
-                capabilities: ['documentation', 'guidelines', 'templates'],
-                promptTemplate: `[MARKA ADI] için marka kullanım kılavuzu oluştur:
-
-1. Logo kullanım kuralları (minimum boyut, boşluklar, yasak kullanımlar)
-2. Renk kullanımı (birincil ve ikincil renkler, gradyanlar)
-3. Tipografi kuralları (başlık, alt başlık, gövde metin)
-4. Ses ve ton örnekleri
-5. Sosyal medya şablonları`
-            }
-        ]
+        ],
     },
-
-    // ============================================
-    // PODCAST CREATION WORKFLOW
-    // ============================================
     {
         id: 'podcast-creation',
-        name: 'Podcast Oluşturma',
-        nameEn: 'Podcast Creation',
-        description: 'Konudan yayına hazır podcast bölümü',
-        triggers: [
-            'podcast', 'podcast yap', 'podcast bölümü', 'ses içerik',
-            'audio content', 'radyo programı', 'sesli içerik'
-        ],
-        semanticDescription: 'Kullanıcı bir podcast bölümü veya serisi hazırlamak istiyor. Konu araştırması, kayıt/seslendirme, ses düzenleme ve kapak görseli oluşturma adımlarını kapsar.',
+        name: 'Podcast',
+        nameEn: 'Podcast',
+        description: 'Bölüm metninden kapaklı bölüme',
+        triggers: ['podcast', 'podcast bölümü', 'radyo programı', 'sesli içerik'],
+        semanticDescription: 'Kullanıcı bir podcast bölümü ya da serisi hazırlamak istiyor: bölüm metni, seslendirme ve kapak görseli.',
         minConfidence: 0.5,
-        primaryCategories: ['ses', 'arastirma'],
-        complexity: 'medium',
-        estimatedDuration: '2-4 saat',
+        primaryCategories: ['ses', 'metin'],
         tags: ['audio', 'content', 'media'],
         steps: [
             {
                 order: 1,
-                name: 'Konu Araştırma & Senaryo',
-                description: 'Bölüm konusu araştır ve konuşma metni hazırla',
-                category: 'arastirma',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['research', 'script writing', 'content planning'],
-                promptTemplate: `[KONU] hakkında [SÜRE] dakikalık podcast bölümü için:
-
-1. Konu araştırması ve ana noktalar
-2. Bölüm yapısı (intro, ana bölümler, outro)
-3. Konuşma noktaları ve geçişler
-4. İlginç anekdotlar veya istatistikler`
-            },
-            {
-                order: 2,
-                name: 'Kayıt / Seslendirme',
-                description: 'Sesli içerik kaydet veya AI ile oluştur',
-                category: 'ses',
-                inputType: 'text',
-                outputType: 'audio',
-                capabilities: ['voice synthesis', 'recording', 'text to speech'],
-                tips: [
-                    'Doğal konuşma temposu için duraklamalar ekle',
-                    'Podcast formatına uygun samimi ton seç',
-                    'Intro ve outro için ayrı ses ayarları'
-                ]
-            },
-            {
-                order: 3,
-                name: 'Ses Düzenleme & Mastering',
-                description: 'Ses temizleme, düzenleme ve son rötuşlar',
-                category: 'ses',
-                inputType: 'audio',
-                outputType: 'audio',
-                capabilities: ['audio editing', 'noise reduction', 'mastering'],
-                tips: [
-                    'Arka plan gürültüsünü temizle',
-                    'Ses seviyelerini normalize et',
-                    'Intro müziği ve jingle ekle'
-                ]
-            },
-            {
-                order: 4,
-                name: 'Kapak Görseli & Dağıtım',
-                description: 'Podcast kapağı ve platform dağıtımı',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['cover art', 'design', 'social media'],
-                promptTemplate: `Podcast cover art for "[PODCAST ADI]", episode about [KONU],
-modern design, bold typography, [RENK ŞEMASI], 
-1:1 aspect ratio, podcast platform ready`,
-                optional: true
-            }
-        ]
-    },
-
-    // ============================================
-    // BLOG CONTENT WORKFLOW
-    // ============================================
-    {
-        id: 'blog-content',
-        name: 'Blog İçeriği Üretimi',
-        nameEn: 'Blog Content Creation',
-        description: 'SEO uyumlu, görsellerle zenginleştirilmiş blog yazısı',
-        triggers: [
-            'blog', 'blog yaz', 'blog yazısı', 'makale yaz', 'içerik üret',
-            'seo content', 'article', 'blog post', 'içerik pazarlama'
-        ],
-        semanticDescription: 'Kullanıcı SEO uyumlu bir blog yazısı veya makale oluşturmak istiyor. Araştırma, yazım ve görsel oluşturma adımlarını kapsar.',
-        minConfidence: 0.5,
-        primaryCategories: ['metin', 'arastirma'],
-        complexity: 'simple',
-        estimatedDuration: '1-2 saat',
-        tags: ['content', 'writing', 'marketing'],
-        steps: [
-            {
-                order: 1,
-                name: 'Araştırma & Anahat',
-                description: 'Konu araştırması ve yazı yapısı oluştur',
-                category: 'arastirma',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['research', 'seo', 'content planning'],
-                promptTemplate: `[KONU] hakkında SEO odaklı blog yazısı için:
-
-1. Anahtar kelime araştırması
-2. Rakip içerik analizi
-3. Başlık önerileri (5 farklı)
-4. Detaylı içerik anahattı
-5. Hedef kelime sayısı: [X] kelime`
-            },
-            {
-                order: 2,
-                name: 'İçerik Yazımı',
-                description: 'SEO uyumlu, akıcı blog yazısı',
+                name: 'Bölüm metni',
+                description: 'Konuyu, bölüm akışını ve konuşma metnini yaz',
                 category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['content writing', 'seo', 'copywriting'],
-                promptTemplate: `Bu anahat için [X] kelimelik blog yazısı yaz:
-
-[ANAHAT]
-
-Gereksinimler:
-- SEO için anahtar kelime yerleştirme
-- Okunabilir paragraflar (3-4 cümle)
-- H2 ve H3 başlıklar
-- Aksiyon çağrıları
-- Özet ve sonuç bölümü`
+                tasks: ['text.write-longform'],
+            },
+            {
+                order: 2,
+                name: 'Seslendirme',
+                description: 'Metni seslendir ya da kendi kaydını temizle',
+                category: 'ses',
+                tasks: ['audio.tts-voiceover'],
             },
             {
                 order: 3,
-                name: 'Görsel Oluşturma',
-                description: 'Blog için öne çıkan görsel ve içerik görselleri',
+                name: 'Kapak görseli',
+                description: 'Podcast platformları için kare kapak görseli üret',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['blog images', 'featured image', 'infographic'],
-                promptTemplate: `Blog header image for article about [KONU], 
-modern editorial style, [RENK ŞEMASI], professional, 
-no text overlay needed --ar 16:9`,
-                optional: true
-            }
-        ]
+                tasks: ['image.generate'],
+            },
+        ],
     },
-
-    // ============================================
-    // E-BOOK CREATION WORKFLOW
-    // ============================================
     {
         id: 'ebook-creation',
-        name: 'E-Kitap Oluşturma',
-        nameEn: 'E-book Creation',
-        description: 'Fikirden yayına hazır e-kitap',
-        triggers: [
-            'ebook', 'e-kitap', 'kitap yaz', 'kitap oluştur', 'dijital kitap',
-            'kindle', 'epub', 'pdf kitap'
-        ],
-        semanticDescription: 'Kullanıcı bir e-kitap veya dijital kitap yazmak ve yayınlamak istiyor. Anahat oluşturma, içerik yazımı, kapak tasarımı ve formatlama adımlarını kapsar.',
+        name: 'E-kitap',
+        nameEn: 'E-book',
+        description: 'Yazımdan kapağa e-kitap',
+        triggers: ['e-kitap', 'ebook', 'e-book', 'kitap yaz', 'kitap oluştur', 'dijital kitap', 'kindle', 'epub'],
+        semanticDescription: 'Kullanıcı bir e-kitap yazıp yayınlamak istiyor: bölüm planı, yazım ve kapak.',
         minConfidence: 0.6,
         primaryCategories: ['metin', 'gorsel'],
-        complexity: 'complex',
-        estimatedDuration: '8-20 saat',
         tags: ['writing', 'publishing', 'content'],
         steps: [
             {
                 order: 1,
-                name: 'Anahat & Bölüm Planı',
-                description: 'Kitap yapısı ve bölümleri planla',
+                name: 'Anahat ve yazım',
+                description: 'Bölüm planını çıkar, bölümleri yaz ve düzelt',
                 category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['outline', 'planning', 'structure'],
-                promptTemplate: `[KONU] hakkında bir e-kitap yazmak istiyorum.
-Hedef okuyucu: [HEDEF]
-Tahmini uzunluk: [X] bölüm
-
-Oluştur:
-1. Kitap başlığı önerileri (5 adet)
-2. Alt başlık
-3. Bölüm başlıkları ve kısa açıklamaları
-4. Her bölüm için anahtar noktalar`
+                tasks: ['text.write-longform'],
+                tips: ['Önce bölüm planını onayla, sonra bölümleri tek tek yazdır.'],
             },
             {
                 order: 2,
-                name: 'İçerik Yazımı',
-                description: 'Bölümleri detaylı şekilde yaz',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['long form writing', 'storytelling', 'educational content'],
-                promptTemplate: `Bu bölüm anahattını detaylı içeriğe dönüştür:
-
-Bölüm: [BÖLÜM ADI]
-Anahtar noktalar: [NOKTALAR]
-
-Gereksinimler:
-- [X] kelime civarı
-- Alt başlıklarla organize
-- Örnekler ve pratik tavsiyeler ekle
-- Sonraki bölüme geçiş cümlesi`
-            },
-            {
-                order: 3,
-                name: 'Kapak Tasarımı',
-                description: 'Profesyonel kitap kapağı oluştur',
+                name: 'Kapak',
+                description: 'Kitabın türüne uygun kapak görseli üret',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['book cover', 'design', 'typography'],
-                promptTemplate: `E-book cover design for "[KİTAP ADI]", 
-[TÜR] genre, [HEDEF KİTLE] audience,
-professional, modern typography, [RENK ŞEMASI],
-bestseller quality --ar 2:3`
+                tasks: ['image.generate'],
             },
-            {
-                order: 4,
-                name: 'Düzenleme & Formatlama',
-                description: 'Son düzenleme ve e-kitap formatına çevirme',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'document',
-                capabilities: ['editing', 'formatting', 'epub'],
-                tips: [
-                    'Tutarlı başlık stilleri kullan',
-                    'İçindekiler tablosu ekle',
-                    'Kindle ve EPUB formatlarında test et'
-                ]
-            }
-        ]
+        ],
     },
-
-    // ============================================
-    // YOUTUBE VIDEO WORKFLOW
-    // ============================================
     {
         id: 'youtube-video',
-        name: 'YouTube Video Üretimi',
-        nameEn: 'YouTube Video Production',
-        description: 'Thumbnail\'dan SEO\'ya tam YouTube workflow',
-        triggers: [
-            'youtube', 'youtube video', 'youtuber', 'youtube kanalı',
-            'youtube içerik', 'vlog', 'tutorial video'
-        ],
-        semanticDescription: 'Kullanıcı YouTube için video içerik üretmek istiyor. SEO araştırması, senaryo yazımı, thumbnail tasarımı, video üretimi ve yayınlama optimizasyonu adımlarını kapsar.',
+        name: 'YouTube Videosu',
+        nameEn: 'YouTube Video',
+        description: 'Senaryodan küçük resme YouTube videosu',
+        triggers: ['youtube', 'youtube video', 'youtube videosu', 'youtube kanalı', 'youtuber', 'vlog'],
+        semanticDescription: 'Kullanıcı YouTube için video hazırlamak istiyor: senaryo ve başlık, seslendirme ve küçük resim (thumbnail).',
         minConfidence: 0.6,
         primaryCategories: ['video', 'metin', 'gorsel'],
-        complexity: 'complex',
-        estimatedDuration: '4-8 saat',
         tags: ['youtube', 'video', 'content'],
         steps: [
             {
                 order: 1,
-                name: 'Konu & SEO Araştırması',
-                description: 'Viral potansiyelli konu ve anahtar kelimeler',
-                category: 'arastirma',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['seo', 'research', 'trend analysis'],
-                promptTemplate: `YouTube video için [NİŞ] alanında konu araştırması:
-
-1. Trend olan 5 video fikri
-2. Her fikir için: başlık, açıklama, etiketler
-3. Rakip analizi (üst 3 video)
-4. Potansiyel görüntülenme tahmini
-5. Hook (ilk 5 saniye) önerileri`
+                name: 'Senaryo ve başlık',
+                description: 'Video metnini, başlığı ve açıklamayı yaz',
+                category: 'metin',
+                tasks: ['text.write-longform'],
+                tips: ['İlk birkaç cümlede videonun ne vaat ettiğini söyle.'],
             },
             {
                 order: 2,
-                name: 'Script & Shot List',
-                description: 'Video senaryosu ve çekim planı',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['script writing', 'youtube', 'hook'],
-                promptTemplate: `[SÜRE] dakikalık YouTube video scripti:
-
-Konu: [KONU]
-Format: [TUTORIAL/VLOG/REVIEW/...]
-
-Script formatı:
-- HOOK (0-15 sn): İzleyiciyi yakala
-- INTRO (15-30 sn): Ne öğrenecekler
-- ANA İÇERİK: Bölümlere ayrılmış
-- CTA: Abone ol, beğen, yorum yap
-- OUTRO: Sonraki video teaser`
+                name: 'Seslendirme',
+                description: 'Video metnini seslendir',
+                category: 'ses',
+                tasks: ['audio.tts-voiceover'],
             },
             {
                 order: 3,
-                name: 'Thumbnail Tasarımı',
-                description: 'Tıklanabilir, dikkat çekici thumbnail',
+                name: 'Küçük resim',
+                description: 'Videonun küçük resmini (thumbnail) tasarla',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['thumbnail', 'youtube', 'click-worthy'],
-                promptTemplate: `YouTube thumbnail for video about [KONU],
-eye-catching, bold text "[KISA BAŞLIK]",
-expressive face or reaction, bright colors,
-high contrast, professional --ar 16:9`,
-                tips: [
-                    'Yüz ifadesi tıklama oranını artırır',
-                    '3 kelimeden fazla metin kullanma',
-                    'Kontrast renkler seç'
-                ]
+                tasks: ['design.social-graphic'],
+                tips: ['Az kelime, büyük yazı ve yüksek kontrast kullan.'],
             },
-            {
-                order: 4,
-                name: 'Video Üretimi',
-                description: 'B-roll, efektler ve kurgu',
-                category: 'video',
-                inputType: 'text',
-                outputType: 'video',
-                capabilities: ['video editing', 'b-roll', 'effects'],
-                tips: [
-                    'Her 5-7 saniyede görsel değişim yap',
-                    'Alt yazı ekle (izlenme %40 artar)',
-                    'Müzik seviyesini -20dB tut'
-                ]
-            },
-            {
-                order: 5,
-                name: 'SEO & Yayınlama',
-                description: 'Başlık, açıklama, etiketler ve zamanlama',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['seo', 'youtube optimization', 'scheduling'],
-                promptTemplate: `YouTube video SEO optimizasyonu:
-
-Video: [VIDEO KONUSU]
-
-Oluştur:
-1. SEO uyumlu başlık (60 karakter)
-2. Açıklama (timestamps dahil, 5000 karakter)
-3. 15 ilgili etiket
-4. Pinned yorum önerisi
-5. End screen ve card stratejisi`
-            }
-        ]
-    },
-
-    // ============================================
-    // LOGO DESIGN WORKFLOW (Simple)
-    // ============================================
-    {
-        id: 'logo-design',
-        name: 'Logo Tasarımı',
-        nameEn: 'Logo Design',
-        description: 'Profesyonel logo konseptinden finale',
-        triggers: [
-            'logo', 'logo tasarla', 'logo yap', 'logo oluştur',
-            'amblem', 'marka logosu', 'şirket logosu'
         ],
-        semanticDescription: 'Kullanıcı bir logo tasarlamak istiyor. Brief oluşturma, AI ile logo üretimi ve finalleştirme adımlarından oluşan basit bir süreçtir.',
-        minConfidence: 0.5,
-        primaryCategories: ['gorsel'],
-        complexity: 'simple',
-        estimatedDuration: '1-2 saat',
-        tags: ['design', 'branding', 'logo'],
-        steps: [
-            {
-                order: 1,
-                name: 'Konsept & Brief',
-                description: 'Logo gereksinimleri ve yön belirleme',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['branding', 'concept', 'brief'],
-                promptTemplate: `[MARKA/ŞİRKET ADI] için logo brief'i oluştur:
-
-Sektör: [SEKTÖR]
-Hedef kitle: [HEDEF]
-Rakipler: [RAKİPLER]
-Tercih edilen stil: [MİNİMAL/MODERN/KLASİK/OYUNSU]
-
-Çıktı:
-1. 3 farklı konsept yönü
-2. Her konsept için görsel tarifler
-3. Renk önerileri
-4. Tipografi stili`
-            },
-            {
-                order: 2,
-                name: 'Logo Üretimi',
-                description: 'AI ile logo varyasyonları oluştur',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['logo design', 'vector', 'branding'],
-                promptTemplate: `Minimalist logo for [MARKA ADI], [SEKTÖR],
-[KONSEPT AÇIKLAMASI], 
-clean lines, scalable, professional,
-[RENK] color scheme, white background,
-vector style --ar 1:1`,
-                tips: [
-                    'En az 3 farklı varyasyon oluştur',
-                    'Siyah-beyaz versiyonunu da test et',
-                    'Küçük boyutta okunabilirliği kontrol et'
-                ]
-            },
-            {
-                order: 3,
-                name: 'Varyasyonlar & Finalizasyon',
-                description: 'Renk varyasyonları ve dosya formatları',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'image',
-                capabilities: ['variations', 'color schemes', 'export'],
-                tips: [
-                    'Koyu/açık arka plan versiyonları',
-                    'SVG, PNG, PDF formatları hazırla',
-                    'Favicon boyutu (32x32) versiyonu'
-                ]
-            }
-        ]
     },
-
-    // ============================================
-    // SOCIAL MEDIA CAMPAIGN WORKFLOW
-    // ============================================
     {
         id: 'social-media-campaign',
         name: 'Sosyal Medya Kampanyası',
         nameEn: 'Social Media Campaign',
-        description: 'Planlı, tutarlı sosyal medya içerik paketi',
+        description: 'Metinlerden görsellere ve kısa videolara',
         triggers: [
-            'sosyal medya', 'social media', 'instagram', 'kampanya',
-            'sosyal medya içerik', 'post', 'içerik takvimi'
+            'sosyal medya kampanya', 'social media campaign', 'kampanya', 'instagram kampanya',
+            'sosyal medya', 'social media',
         ],
-        semanticDescription: 'Kullanıcı planlı bir sosyal medya kampanyası oluşturmak istiyor. Strateji, görsel şablonlar, carousel/story içerikleri ve copywriting adımlarından oluşur.',
+        semanticDescription: 'Kullanıcı planlı bir sosyal medya kampanyası yürütmek istiyor: paylaşım metinleri, görseller ve kısa videolar.',
         minConfidence: 0.5,
         primaryCategories: ['gorsel', 'metin'],
-        complexity: 'medium',
-        estimatedDuration: '3-5 saat',
         tags: ['social media', 'marketing', 'content'],
         steps: [
             {
                 order: 1,
-                name: 'Strateji & İçerik Takvimi',
-                description: 'Kampanya planı ve içerik takvimi oluştur',
+                name: 'Kampanya metinleri',
+                description: 'Kampanya fikrini, paylaşım metinlerini ve takvimi yaz',
                 category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['strategy', 'content calendar', 'planning'],
-                promptTemplate: `[MARKA] için [SÜRE] günlük sosyal medya kampanyası:
-
-Hedef: [HEDEF - satış/awareness/engagement]
-Platform: [INSTAGRAM/TWITTER/LINKEDIN/TIKTOK]
-Günlük post sayısı: [X]
-
-Oluştur:
-1. Kampanya teması ve hashtag'ler
-2. İçerik sütunları (eğitici, eğlenceli, satış, UGC)
-3. Günlük içerik takvimi
-4. Her post için copy önerileri`
+                tasks: ['text.marketing-copy'],
             },
             {
                 order: 2,
-                name: 'Görsel Şablonlar',
-                description: 'Tutarlı marka görselliğinde şablonlar',
+                name: 'Paylaşım görselleri',
+                description: 'Gönderi ve hikâye görsellerini tasarla',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['social media graphics', 'templates', 'design'],
-                promptTemplate: `Social media post template for [MARKA],
-[PLATFORM] optimized, [RENK ŞEMASI],
-modern, clean, branded, space for text,
-professional marketing aesthetic --ar 1:1`
+                tasks: ['design.social-graphic'],
             },
             {
                 order: 3,
-                name: 'Carousel & Story İçerikleri',
-                description: 'Carousel postlar ve hikaye görselleri',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['carousel', 'stories', 'swipe content'],
-                promptTemplate: `Instagram carousel slide [X/5], topic: [KONU],
-[MARKA] branding, educational infographic style,
-clean typography, [RENK] palette, 
-social media optimized --ar 1:1`,
-                tips: [
-                    'Carousel\'de 8-10 slide ideal',
-                    'Her slide tek bir fikir',
-                    'Son slide CTA içermeli'
-                ]
+                name: 'Kısa videolar',
+                description: 'Reels ve Shorts için kısa videolar hazırla',
+                category: 'video',
+                tasks: ['video.edit-short-social'],
             },
-            {
-                order: 4,
-                name: 'Copywriting & Hashtag\'ler',
-                description: 'Tüm postlar için metin ve hashtag\'ler',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['copywriting', 'hashtags', 'engagement'],
-                promptTemplate: `[X] adet [PLATFORM] postu için copy yaz:
-
-Her post için:
-1. Hook (ilk satır - dikkat çekici)
-2. Ana mesaj (değer/bilgi)
-3. CTA (call to action)
-4. 20-30 alakalı hashtag (niche + genel)
-5. Emoji kullanımı`
-            }
-        ]
-    },
-
-    // ============================================
-    // PRODUCT PHOTOGRAPHY WORKFLOW
-    // ============================================
-    {
-        id: 'product-photography',
-        name: 'Ürün Fotoğrafçılığı',
-        nameEn: 'Product Photography',
-        description: 'E-ticaret kalitesinde ürün görselleri',
-        triggers: [
-            'ürün fotoğraf', 'product photo', 'e-ticaret görsel',
-            'amazon', 'ürün çekim', 'product shot', 'ürün görseli'
         ],
-        semanticDescription: 'Kullanıcı e-ticaret veya pazarlama için ürün fotoğrafları oluşturmak istiyor. Arka plan kaldırma, lifestyle görselleri ve infografik oluşturma adımlarını kapsar.',
-        minConfidence: 0.5,
-        primaryCategories: ['gorsel'],
-        complexity: 'simple',
-        estimatedDuration: '1-3 saat',
-        tags: ['ecommerce', 'product', 'photography'],
-        steps: [
-            {
-                order: 1,
-                name: 'Arka Plan Kaldırma',
-                description: 'Temiz, beyaz arka plan oluştur',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'image',
-                capabilities: ['background removal', 'cutout', 'clean'],
-                tips: [
-                    'Amazon için beyaz arka plan zorunlu',
-                    'Gölge ekleme opsiyonel (floating look önler)',
-                    'En az 1000x1000px çözünürlük'
-                ]
-            },
-            {
-                order: 2,
-                name: 'Lifestyle Kompozisyon',
-                description: 'Ürünü kullanım senaryosunda göster',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'image',
-                capabilities: ['lifestyle', 'composition', 'scene generation'],
-                promptTemplate: `Product lifestyle shot: [ÜRÜN] in use,
-[SENARYO - mutfakta/ofiste/dışarıda],
-natural lighting, professional photography,
-aspirational, high-end aesthetic --ar 4:3`,
-                tips: [
-                    'Hedef kitleyi yansıtan ortam seç',
-                    'Ürün always focal point olmalı',
-                    '3-5 farklı lifestyle varyasyonu oluştur'
-                ]
-            },
-            {
-                order: 3,
-                name: 'Infografik & Özellik Görseli',
-                description: 'Ürün özelliklerini vurgulayan görsel',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'image',
-                capabilities: ['infographic', 'product features', 'callouts'],
-                tips: [
-                    'Maksimum 5 anahtar özellik göster',
-                    'İkonlar kullan, çok metin yazma',
-                    'Oklar ve çizgilerle işaretle'
-                ]
-            }
-        ]
     },
-
-    // ============================================
-    // MUSIC PRODUCTION WORKFLOW
-    // ============================================
     {
-        id: 'music-production',
-        name: 'Müzik Prodüksiyon',
-        nameEn: 'Music Production',
-        description: 'Orijinal müzik parçası oluşturma',
-        triggers: [
-            'müzik', 'şarkı', 'music', 'beat', 'melodi',
-            'müzik yap', 'şarkı yaz', 'jingle', 'soundtrack'
-        ],
-        semanticDescription: 'Kullanıcı orijinal bir müzik parçası, şarkı veya beat oluşturmak istiyor. Söz yazımı, melodi üretimi, ses düzenleme ve kapak tasarımı adımlarını kapsar.',
+        id: 'music-album',
+        name: 'Albüm / EP',
+        nameEn: 'Album / EP',
+        description: 'Şarkılardan albüm kapağına',
+        triggers: ['albüm', 'album', 'ep yap', 'ep hazırla', 'mixtape'],
+        semanticDescription: 'Kullanıcı birden fazla şarkıdan oluşan bir albüm ya da EP hazırlamak istiyor: şarkılar ve albüm kapağı.',
         minConfidence: 0.5,
-        primaryCategories: ['ses', 'metin'],
-        complexity: 'medium',
-        estimatedDuration: '2-4 saat',
+        primaryCategories: ['ses', 'gorsel'],
         tags: ['music', 'audio', 'creative'],
         steps: [
             {
                 order: 1,
-                name: 'Konsept & Şarkı Sözleri',
-                description: 'Tema, mood ve lyrics oluştur',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['songwriting', 'lyrics', 'creative writing'],
-                promptTemplate: `[TÜR] tarzında şarkı sözleri yaz:
-
-Tema: [TEMA]
-Mood: [MUTLU/HÜZÜNLÜ/ENERJİK/ROMANTIK]
-Yapı: Verse - Chorus - Verse - Chorus - Bridge - Chorus
-
-Gereksinimler:
-- Akılda kalıcı hook/nakarat
-- Kafiye şeması tutarlı
-- [DİL] dilinde
-- Yaklaşık [X] dakika`
-            },
-            {
-                order: 2,
-                name: 'Melodi & Beat Üretimi',
-                description: 'AI ile müzik oluştur',
+                name: 'Şarkılar',
+                description: 'Sözleri ve şarkıları üret',
                 category: 'ses',
-                inputType: 'text',
-                outputType: 'audio',
-                capabilities: ['music generation', 'beat making', 'melody'],
-                promptTemplate: `[TÜR] style instrumental track,
-[TEMPO] BPM, [KEY] key,
-[MOOD] atmosphere, [ENSTRÜMANlar],
-professional mix, radio ready`,
-                tips: [
-                    'Suno veya Udio kullan',
-                    'Lyrics ile birlikte generate et',
-                    'Birkaç varyasyon dene'
-                ]
-            },
-            {
-                order: 3,
-                name: 'Ses Düzenleme',
-                description: 'Mix, master ve son dokunuşlar',
-                category: 'ses',
-                inputType: 'audio',
-                outputType: 'audio',
-                capabilities: ['mixing', 'mastering', 'audio editing'],
-                tips: [
-                    'Loudness standardı: -14 LUFS (Spotify)',
-                    'Reference track ile karşılaştır',
-                    'WAV ve MP3 formatlarında export'
-                ]
-            },
-            {
-                order: 4,
-                name: 'Cover Art',
-                description: 'Albüm/single kapak görseli',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['album art', 'cover design', 'music visual'],
-                promptTemplate: `Album cover art for "[ŞARKI ADI]",
-[TÜR] music genre aesthetic,
-[MOOD] atmosphere, artistic, professional,
-minimal text, streaming platform ready --ar 1:1`,
-                optional: true
-            }
-        ]
-    },
-
-    // ============================================
-    // PRESENTATION WORKFLOW
-    // ============================================
-    {
-        id: 'presentation',
-        name: 'Sunum Oluşturma',
-        nameEn: 'Presentation Creation',
-        description: 'Etkileyici ve profesyonel sunum',
-        triggers: [
-            'sunum', 'presentation', 'slayt', 'powerpoint',
-            'pitch deck', 'keynote', 'prezentasyon'
-        ],
-        semanticDescription: 'Kullanıcı profesyonel bir sunum veya pitch deck hazırlamak istiyor. İçerik planı, slayt tasarımı ve finalizasyon adımlarını kapsar.',
-        minConfidence: 0.5,
-        primaryCategories: ['gorsel', 'metin'],
-        complexity: 'simple',
-        estimatedDuration: '1-3 saat',
-        tags: ['presentation', 'business', 'slides'],
-        steps: [
-            {
-                order: 1,
-                name: 'İçerik & Akış Planı',
-                description: 'Sunum yapısı ve ana mesajlar',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['presentation', 'outline', 'storytelling'],
-                promptTemplate: `[KONU] hakkında [X] slaytlık sunum için içerik:
-
-Hedef kitle: [HEDEF]
-Süre: [X] dakika
-Amaç: [İKNA/BİLGİLENDİR/EĞİT]
-
-Her slayt için:
-- Başlık
-- Ana mesaj (tek cümle)
-- Destekleyici noktalar (bullet)
-- Görsel önerisi`
+                tasks: ['music.generate'],
             },
             {
                 order: 2,
-                name: 'Slayt Tasarımı',
-                description: 'Görsel olarak etkileyici slaytlar',
+                name: 'Albüm kapağı',
+                description: 'Albümün havasına uygun kapak görseli üret',
                 category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['slide design', 'presentation graphics', 'infographic'],
-                promptTemplate: `Presentation slide design, topic: [KONU],
-modern corporate style, [RENK ŞEMASI],
-clean layout, data visualization,
-professional, minimal text --ar 16:9`,
-                tips: [
-                    'Bir slayt = bir fikir',
-                    'Maksimum 6 bullet point',
-                    'Büyük görseller, az metin'
-                ]
+                tasks: ['image.generate'],
             },
-            {
-                order: 3,
-                name: 'Son Düzenleme & Export',
-                description: 'Geçişler, animasyonlar ve dosya',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'document',
-                capabilities: ['presentation', 'animation', 'export'],
-                tips: [
-                    'Subtle animasyonlar yeterli',
-                    'PDF backup al',
-                    'Fontları embed et'
-                ]
-            }
-        ]
-    },
-
-    // ============================================
-    // TRANSLATION WORKFLOW
-    // ============================================
-    {
-        id: 'translation-localization',
-        name: 'Çeviri & Lokalizasyon',
-        nameEn: 'Translation & Localization',
-        description: 'Profesyonel çeviri ve kültürel uyarlama',
-        triggers: [
-            'çeviri', 'translation', 'localization', 'lokalizasyon',
-            'tercüme', 'dil çeviri', 'metin çevir'
         ],
-        semanticDescription: 'Kullanıcı bir metni profesyonelce çevirmek ve lokalize etmek istiyor. Kaynak analizi, çeviri ve kalite kontrol adımlarını kapsar.',
-        minConfidence: 0.5,
-        primaryCategories: ['metin'],
-        complexity: 'simple',
-        estimatedDuration: '1-4 saat',
-        tags: ['translation', 'language', 'localization'],
-        steps: [
-            {
-                order: 1,
-                name: 'Kaynak Analizi',
-                description: 'Metin analizi ve terminoloji çıkarma',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['analysis', 'terminology', 'glossary'],
-                promptTemplate: `Bu metni çeviri için analiz et:
-
-[METİN]
-
-Çıktı:
-1. Teknik terimler ve önerilen çeviriler
-2. Kültürel referanslar
-3. Ton ve stil notları
-4. Potansiyel zorluklar`
-            },
-            {
-                order: 2,
-                name: 'Çeviri',
-                description: 'Ana çeviri işlemi',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['translation', 'language', 'localization'],
-                promptTemplate: `Bu metni [KAYNAK DİL]'den [HEDEF DİL]'e çevir:
-
-[METİN]
-
-Gereksinimler:
-- Doğal ve akıcı dil
-- Terminoloji tutarlılığı
-- Ton korunmalı: [FORMAL/INFORMAL/TEKNİK]
-- Kültürel uyarlama gerektiğinde yap`
-            },
-            {
-                order: 3,
-                name: 'Review & QA',
-                description: 'Kalite kontrol ve son düzeltmeler',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['proofreading', 'qa', 'editing'],
-                tips: [
-                    'Native speaker review önerilir',
-                    'Terminoloji tutarlılığını kontrol et',
-                    'Biçimlendirme korunmalı'
-                ]
-            }
-        ]
     },
-
-    // ============================================
-    // DATA DASHBOARD WORKFLOW
-    // ============================================
-    {
-        id: 'data-dashboard',
-        name: 'Veri Dashboard Oluşturma',
-        nameEn: 'Data Dashboard Creation',
-        description: 'Veriden görsel dashboard',
-        triggers: [
-            'dashboard', 'veri analizi', 'data visualization',
-            'grafik', 'rapor', 'analytics', 'bi'
-        ],
-        semanticDescription: 'Kullanıcı verilerden anlamlı bir dashboard veya analitik rapor oluşturmak istiyor. Veri analizi, görselleştirme ve layout tasarımı adımlarını kapsar.',
-        minConfidence: 0.5,
-        primaryCategories: ['veri', 'gorsel'],
-        complexity: 'medium',
-        estimatedDuration: '2-5 saat',
-        tags: ['data', 'analytics', 'visualization'],
-        steps: [
-            {
-                order: 1,
-                name: 'Veri Analizi & Insights',
-                description: 'Veriyi analiz et ve önemli noktaları çıkar',
-                category: 'veri',
-                inputType: 'data',
-                outputType: 'text',
-                capabilities: ['data analysis', 'statistics', 'insights'],
-                promptTemplate: `Bu veri setini analiz et:
-
-[VERİ veya AÇIKLAMA]
-
-Çıktı:
-1. Temel metrikler ve istatistikler
-2. Önemli trendler
-3. Anomaliler veya dikkat çekici noktalar
-4. Dashboard için görselleştirme önerileri
-5. KPI tanımları`
-            },
-            {
-                order: 2,
-                name: 'Görselleştirme Tasarımı',
-                description: 'Grafik ve chart tasarımları',
-                category: 'veri',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['charts', 'graphs', 'data viz'],
-                tips: [
-                    'Doğru grafik tipi seç (trend=line, karşılaştırma=bar)',
-                    'Renk kodlaması tutarlı olsun',
-                    'Gereksiz dekorasyon ekleme (data-ink ratio)'
-                ]
-            },
-            {
-                order: 3,
-                name: 'Dashboard Layout',
-                description: 'Tüm elementleri bir araya getir',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'document',
-                capabilities: ['dashboard', 'layout', 'design'],
-                promptTemplate: `Dashboard layout design, [KONU] analytics,
-clean modern style, dark theme,
-KPI cards on top, main chart center,
-supporting charts below, professional BI aesthetic --ar 16:9`,
-                tips: [
-                    'En önemli metrikler üstte',
-                    'Filtreleme alanı kolay erişilebilir',
-                    'Responsive tasarım düşün'
-                ]
-            }
-        ]
-    },
-
-    // ============================================
-    // MOBILE APP DESIGN WORKFLOW
-    // ============================================
-    {
-        id: 'mobile-app-design',
-        name: 'Mobil Uygulama Tasarımı',
-        nameEn: 'Mobile App Design',
-        description: 'UI/UX tasarımından prototipe',
-        triggers: [
-            'mobil uygulama', 'app design', 'uygulama tasarla',
-            'mobile app', 'ios app', 'android app', 'ui design'
-        ],
-        semanticDescription: 'Kullanıcı bir mobil uygulama tasarlamak istiyor. UX araştırması, design system oluşturma, ekran tasarımları ve prototipleme adımlarını kapsar.',
-        minConfidence: 0.6,
-        primaryCategories: ['gorsel', 'kod'],
-        complexity: 'complex',
-        estimatedDuration: '5-10 saat',
-        tags: ['mobile', 'ui', 'ux', 'design'],
-        steps: [
-            {
-                order: 1,
-                name: 'UX Araştırma & Wireframe',
-                description: 'Kullanıcı akışları ve iskelet tasarım',
-                category: 'metin',
-                inputType: 'text',
-                outputType: 'text',
-                capabilities: ['ux research', 'wireframe', 'user flow'],
-                promptTemplate: `[UYGULAMA ADI] için UX dökümanı:
-
-Uygulama amacı: [AMAÇ]
-Hedef kullanıcı: [PERSONA]
-Ana özellikler: [ÖZELLİKLER]
-
-Çıktı:
-1. User persona
-2. Ana kullanıcı akışları (user flows)
-3. Ekran listesi ve hiyerarşisi
-4. Her ekran için wireframe açıklaması
-5. Navigation yapısı`
-            },
-            {
-                order: 2,
-                name: 'UI Design System',
-                description: 'Renk, tipografi, component kütüphanesi',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['design system', 'ui components', 'style guide'],
-                promptTemplate: `Mobile app design system for [UYGULAMA],
-[STIL - minimal/bold/playful],
-color palette, typography scale,
-button styles, input fields, cards,
-iOS/Android guidelines compliant --ar 3:4`
-            },
-            {
-                order: 3,
-                name: 'Ekran Tasarımları',
-                description: 'Tüm ekranların final tasarımı',
-                category: 'gorsel',
-                inputType: 'text',
-                outputType: 'image',
-                capabilities: ['mobile ui', 'screen design', 'app screens'],
-                promptTemplate: `Mobile app screen design: [EKRAN ADI],
-[UYGULAMA] app, [FONKSİYON],
-modern UI, [RENK ŞEMASI],
-iOS style, clean, intuitive --ar 9:19`,
-                tips: [
-                    'Touch target minimum 44px',
-                    'Safe area\'lere dikkat',
-                    'Gesture-friendly tasarım'
-                ]
-            },
-            {
-                order: 4,
-                name: 'Prototip & Handoff',
-                description: 'Tıklanabilir prototip ve geliştirici dökümanı',
-                category: 'gorsel',
-                inputType: 'image',
-                outputType: 'document',
-                capabilities: ['prototype', 'handoff', 'specs'],
-                tips: [
-                    'Figma veya Adobe XD kullan',
-                    'Tüm state\'leri (hover, active, disabled) göster',
-                    'Spacing ve sizing spec\'leri ekle'
-                ]
-            }
-        ]
-    }
 ];
 
 // ============================================
@@ -1263,19 +337,17 @@ export function scoreTemplate(
     prompt: string
 ): number {
     let score = 0;
-    const promptLower = prompt.toLowerCase();
 
-    // 1. Keyword (trigger) eşleşmesi (ağırlık: 0.4 per match)
-    const keywordMatches = template.triggers.filter(t =>
-        promptLower.includes(t.toLowerCase())
-    ).length;
+    // 1. Keyword (trigger) eşleşmesi (ağırlık: 0.4 per match). Kelime başına
+    // bağlı: "facebook" içinde "ebook" tetiklemez.
+    const keywordMatches = template.triggers.filter(t => hasTerm(prompt, t)).length;
     score += keywordMatches * 0.4;
 
     // 2. Kısmi kelime eşleşmesi (trigger'ların parçaları, ağırlık: 0.15)
     for (const trigger of template.triggers) {
         const words = trigger.toLowerCase().split(' ');
         for (const word of words) {
-            if (word.length > 3 && promptLower.includes(word)) {
+            if (word.length > 3 && hasTerm(prompt, word)) {
                 score += 0.15;
             }
         }

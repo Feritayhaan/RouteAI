@@ -114,7 +114,7 @@ for (const r of results) {
         console.log(`  sorgu kategorisi : ${r.intent.primaryCategory} (guven ${r.intent.confidence})`);
         console.log(`  WORKFLOW         : ${r.data.name} (${r.data.totalSteps} adim)`);
         for (const s of r.data.steps) {
-            console.log(`    ${s.order}. ${s.name}: ${s.primary.toolName} (alt: ${s.alternative.toolName})`);
+            console.log(`    ${s.order}. ${s.name}: ${s.primary.toolName} (alt: ${s.alternative?.toolName ?? "-"})`);
         }
     } else {
         console.log(`  ${r.kind.toUpperCase()}: ${r.message ?? r.code ?? ''}`);

@@ -4,4 +4,3 @@
 export * from './workflowTypes';
 export * from './workflowTemplates';
 export * from './workflowGenerator';
-export * from './cache';

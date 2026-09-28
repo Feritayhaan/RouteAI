@@ -1,6 +1,7 @@
 import { openai } from '../openai';
 import { ParsedIntent, IntentParsingError } from './types';
 import { detectCategory, type Category } from '../keywords';
+import { hasTerm } from '../text';
 
 const SYSTEM_PROMPT = `Sen RouteAI'in intent analyzer'isin. Kullanicinin istegini analiz edip yapilandirilmis JSON donduruyorsun.
 
@@ -29,35 +30,33 @@ const SYSTEM_PROMPT = `Sen RouteAI'in intent analyzer'isin. Kullanicinin istegin
 4. Guven skoru ver (0-1 arasi)
 5. Neden bu kategoriyi sectigini acikla
 
-**WORKFLOW/KARMASIKLIK TESPITI (COK ONEMLI):**
-Kullanicinin istegi birden fazla adim veya arac gerektiriyorsa multi-step olarak isaretle!
+**İŞ AKIŞI (complexity) TESPİTİ:**
+Varsayılan "simple": çoğu istek tek bir araçla yapılır. "multi-step" SADECE iş farklı türde en az iki araç gerektiriyorsa (ör. metin + ses + görsel) VE kullanıcı projenin tamamını istiyorsa kullanılır.
 
-Cok adimli gorev ornekleri (HEPSINDE complexity: "multi-step" OLMALI):
-- "Cizgi roman olustur" -> Hikaye + senaryo + karakter + panel + duzenleme = multi-step (5 adim)
-- "Video kursu yap" -> Senaryo + slayt + kayit + kurgu = multi-step (4 adim)
-- "Marka kimligi olustur" -> Arastirma + logo + renkler + kilavuz = multi-step (4 adim)
-- "Podcast yap" -> Senaryo + kayit + kurgu + dagitim = multi-step (4 adim)
-- "Blog yazisi yaz" -> Arastirma + yazim + gorsel = multi-step (3 adim)
-- "Sunum hazirla" -> Icerik + slayt tasarim + export = multi-step (3 adim)
-- "E-kitap yaz" -> Anahat + yazim + kapak + formatlama = multi-step (4 adim)
-- "YouTube video" -> Konu + script + thumbnail + video + SEO = multi-step (5 adim)
-- "Sosyal medya kampanyasi" -> Strateji + gorseller + copy = multi-step (4 adim)
-- "Muzik yap" -> Sozler + melodi + mix + cover = multi-step (4 adim)
-- "Mobil uygulama tasarla" -> UX + design system + ekranlar + prototip = multi-step (4 adim)
-- "Dashboard olustur" -> Analiz + gorsellestirme + layout = multi-step (3 adim)
+multi-step örnekleri:
+- "Çizgi roman oluştur" -> hikaye (metin) + çizim (görsel)
+- "Podcast başlatmak istiyorum" -> bölüm metni + seslendirme + kapak
+- "YouTube videosu hazırla" -> senaryo + seslendirme + küçük resim
+- "Marka kimliği oluştur" -> isim/slogan + logo + örnek tasarımlar
+- "E-kitap yaz" -> yazım + kapak
+- "Albüm/EP hazırla" -> şarkılar + kapak
+- "Sosyal medya kampanyası" -> metinler + görseller + kısa videolar
+- "Online kurs hazırla" -> ders metni + slaytlar + anlatımlı video
+- "Tanıtım videosu yap" -> senaryo + video + seslendirme
 
-Basit gorev ornekleri (complexity: "simple"):
-- "Logo tasarla" -> Tek adim = simple
-- "Bir gorsel olustur" -> Tek adim = simple
-- "Email yaz" -> Tek adim = simple
-- "Ses kaydi duzenle" -> Tek adim = simple
-- "Ceviri yap" -> Tek adim veya simple
+simple örnekleri (tek araç yeter):
+- "Sunum hazırla", "Pitch deck" -> sunum aracı
+- "Blog yazısı yaz", "Makale yaz", "Email yaz", "Çeviri yap" -> metin aracı
+- "Müzik yap", "Şarkı yap" -> müzik aracı
+- "Logo tasarla", "Görsel oluştur", "Ürün fotoğrafı" -> görsel aracı
+- "Dashboard oluştur", "Veri analizi" -> veri aracı
+- "Mobil uygulama yap", "Web sitesi yap" -> uygulama oluşturucu
+- Bir projenin TEK parçası: "podcast kapağı", "YouTube küçük resmi", "podcast kaydındaki gürültüyü temizle", "e-kitap kapağı" -> simple
 
-Multi-step gorevler icin:
-- complexity: "multi-step" ayarla
-- estimatedSteps: Tahmini adim sayisini belirt (2-6 arasi)
-- workflowHints: Ana adimlari icerik olarak belirt (orn: ["hikaye", "gorsel", "duzenleme"])
-- secondaryCategories: Tum gerekli kategorileri ekle
+multi-step ise:
+- estimatedSteps: 2 ya da 3
+- workflowHints: adımlar (ör: ["senaryo", "seslendirme", "kapak"])
+- secondaryCategories: gereken kategoriler
 
 **Onemli Kurallar:**
 - Belirsiz sorgularda confidence dusuk olsun (< 0.5)
@@ -70,24 +69,47 @@ Multi-step gorevler icin:
 // WORKFLOW DETECTION LOGIC 
 // ===========================================
 
-// ONLY truly complex, multi-stage projects should be workflows
-// These require multiple different tools across different categories
+// Sadece farklı türde araçlar gerektiren projeler workflow olur. Her anahtar
+// kelimenin karşılığında bir şablon var (lib/workflow/workflowTemplates.ts).
+// Eşleşme kelime başına bağlı (hasTerm): "facebook" içinde "ebook" sayılmaz.
 const MULTI_STEP_KEYWORDS = [
-  // Comic/Graphic Novel - needs story + art + layout (truly complex)
   'çizgi roman', 'comic', 'manga', 'webtoon', 'graphic novel',
-  // Full brand identity - needs strategy + logo + guidelines (complex)
   'marka kimliği', 'brand identity', 'kurumsal kimlik',
-  // Full video production - needs script + video + audio (complex)
-  'video kurs', 'online kurs', 'eğitim videosu', 'kısa film', 'belgesel', 'tanıtım filmi',
-  // E-book/Book - needs outline + writing + cover + formatting (complex)
-  'e-kitap', 'ebook', 'kitap yaz',
-  // YouTube channel/series - needs strategy + content + SEO (complex)
-  'youtube kanalı', 'içerik stratejisi',
-  // Mobile app design - needs UX + UI + prototype (complex)
-  'mobil uygulama tasarımı', 'app tasarla', 'uygulama tasarla',
-  // Full music production with album - needs lyrics + production + cover (complex)
-  'albüm yap', 'ep yap'
+  'tanıtım filmi', 'tanıtım videosu', 'reklam videosu', 'kısa film', 'belgesel', 'short film', 'documentary', 'promo video',
+  'video kurs', 'online kurs', 'eğitim videosu', 'online course', 'video course',
+  'e-kitap', 'ebook', 'e-book', 'kitap yaz',
+  'youtube kanalı', 'youtube videosu', 'youtube video',
+  'podcast',
+  'sosyal medya kampanya', 'social media campaign',
+  'albüm', 'album', 'ep yap', 'ep hazırla',
 ];
+
+// Bir projenin TEK parçası ya da mevcut malzeme üzerinde tek işlem: proje
+// kelimesi geçse de tek araç yeter ("podcast kapağı", "YouTube videosu için
+// altyazı", "podcast kaydındaki gürültü").
+const PART_TERMS = [
+  'kapak', 'kapağ', 'logo', 'thumbnail', 'küçük resim', 'intro', 'jingle', 'müzik', 'şarkı',
+  'seslendirme', 'altyazı', 'transkript', 'döküm', 'çeviri', 'çevir', 'senaryo', 'slogan',
+  'afiş', 'poster', 'banner', 'karakter', 'düzenle', 'temizle', 'gürültü', 'klip', 'özet',
+  'başlık', 'hashtag', 'fikir', 'isim',
+  'cover', 'music', 'song', 'voice', 'subtitle', 'caption', 'transcri', 'translat', 'script',
+  'character', 'edit', 'clean', 'noise', 'echo', 'clip', 'summar', 'title', 'idea', 'name',
+];
+// "ses" tek başına kelime olarak (sesli, sesini değil).
+const PART_WORD = /(^|[^\p{L}\p{N}])ses([^\p{L}\p{N}]|$)/iu;
+
+// Projenin kendisi olan parçalar: "müzik albümü" bir parça değil, albümün kendisi.
+const MUSIC_TERMS = ['müzik', 'şarkı', 'music', 'song'];
+const PROJECT_CONTENT: Record<string, string[]> = {
+  'albüm': MUSIC_TERMS, 'album': MUSIC_TERMS, 'ep yap': MUSIC_TERMS, 'ep hazırla': MUSIC_TERMS,
+};
+
+/** Sorgu, proje kelimesine rağmen projenin tek parçasını mı istiyor? */
+function asksForSinglePart(query: string, keyword: string): boolean {
+  if (PART_WORD.test(query)) return true;
+  const content = PROJECT_CONTENT[keyword] ?? [];
+  return PART_TERMS.some((term) => !content.includes(term) && hasTerm(query, term));
+}
 
 // Simple queries that should ALWAYS return single tool recommendation
 // These are explicit "what tool should I use" or single-action requests
@@ -153,9 +175,10 @@ function detectQueryType(query: string): {
   }
 
   // Check 3: Does it contain MULTI-STEP keywords? (only truly complex)
+  // Projenin tek parçası istendiyse proje kelimesi sayılmaz.
   let hasMultiStepKeyword = false;
   for (const keyword of MULTI_STEP_KEYWORDS) {
-    if (lowerQuery.includes(keyword.toLowerCase())) {
+    if (hasTerm(query, keyword) && !asksForSinglePart(query, keyword)) {
       hasMultiStepKeyword = true;
       hints.push(keyword);
     }
