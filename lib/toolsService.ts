@@ -355,6 +355,10 @@ export async function getRankedToolsByIntent(
 }
 
 export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
+    // Sadece doğrulanabilir gerekçe: sorgudaki işle eşleşme ve kullanıcı
+    // ücretsiz istediyse katalogdaki fiyat modeli. "Sektörün en iyisi" / "Çok
+    // yüksek kaliteli" kaynağı olmayan strength sayısından, "Yeni başlayanlar
+    // için uygun" ise her sorguya yazılan varsayılan seviyeden üretiliyordu.
     const reasons: string[] = [];
 
     const bestFor = getLocalized(tool, 'bestFor', resolveLocale(intent.constraints?.language));
@@ -362,24 +366,15 @@ export function generateExplanation(intent: ParsedIntent, tool: Tool): string {
         bestFor.some(bf => bf.toLowerCase().includes(k.toLowerCase()))
     );
     if (matchingKeywords.length > 0) {
-        reasons.push(`"${matchingKeywords[0]}" konusunda uzman`);
+        reasons.push(`"${matchingKeywords[0]}" işine uygun`);
     }
 
-    if (intent.constraints?.pricing === 'free' && getPricingModel(tool.pricing) === 'free') {
-        reasons.push('Ücretsiz kullanılabiliyor');
-    }
-
-    if (tool.strength > 9.5) {
-        reasons.push('Sektörün en iyisi');
-    } else if (tool.strength > 9) {
-        reasons.push('Çok yüksek kaliteli');
-    }
-
-    if (intent.constraints?.expertise === 'beginner' && hasFreeTier(tool.pricing)) {
-        reasons.push('Yeni başlayanlar için uygun');
+    if (intent.constraints?.pricing === 'free') {
+        if (getPricingModel(tool.pricing) === 'free') reasons.push('ücretsiz');
+        else if (hasFreeTier(tool.pricing)) reasons.push('ücretsiz planı var');
     }
 
     return reasons.length > 0
         ? `Bu aracı seçtim çünkü: ${reasons.join(', ')}.`
-        : `${tool.name} bu kategori için en iyi seçeneklerden biri.`;
+        : 'Sorgundaki işe en yakın eşleşen araç.';
 }

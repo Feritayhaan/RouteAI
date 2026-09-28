@@ -183,3 +183,23 @@ describe('recommendV1: route ile ortak akış', () => {
     }
   });
 });
+
+describe('denetim düzeltmeleri (2026-09-28)', () => {
+  it('"profesyonel" ücretli demek değil; "ücretli" ve "premium" öyle', () => {
+    assert.notStrictEqual(extractConstraints('profesyonel logo').pricing, 'paid');
+    assert.strictEqual(extractConstraints('profesyonel logo').expertise, 'advanced');
+    assert.strictEqual(extractConstraints('ücretli logo aracı').pricing, 'paid');
+    assert.strictEqual(extractConstraints('premium video').pricing, 'paid');
+  });
+
+  it('gerekçe metninde kaynaksız üstünlük iddiası yok', async () => {
+    const { generateExplanation } = await import('../toolsService');
+    for (const query of ['müzik yap', 'logo tasarla', 'sunum hazırla', 'dashboard', 'ücretsiz video']) {
+      const result = await recommendV1(query, 'all');
+      assert.strictEqual(result.kind, 'simple', query);
+      if (result.kind !== 'simple') continue;
+      const why = generateExplanation(result.intent, result.selection.main);
+      assert.doesNotMatch(why, /en iyisi|yüksek kaliteli|yeni başlayan/i, `${query}: ${why}`);
+    }
+  });
+});

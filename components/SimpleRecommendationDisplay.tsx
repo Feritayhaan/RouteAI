@@ -24,6 +24,13 @@ function CurrentModelLine({ model }: { model: CurrentModel }) {
   )
 }
 
+/** Sorgudaki fiyat koşulu tutmayınca gösterilen not (sunucu koşulu gevşetti). */
+const RELAXED_NOTE: Record<string, string> = {
+  free: "Bu iş için tamamen ücretsiz bir araç bulamadım; ücretsiz planı olan ya da ücretli seçenekleri gösteriyorum. Fiyatlar kartta.",
+  paid: "Bu iş için sadece ücretli bir araç bulamadım; ücretsiz planı olan seçenekleri de gösteriyorum.",
+  other: "Sorgundaki fiyat koşuluna tam uyan araç bulamadım; en yakın seçenekleri gösteriyorum.",
+}
+
 export default function SimpleRecommendationDisplay({
   recommendation,
   query,
@@ -113,6 +120,11 @@ export default function SimpleRecommendationDisplay({
           </div>
 
           <div className="space-y-3 md:space-y-4">
+            {recommendation.relaxedPricing && (
+              <p role="status" className="text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-800 dark:text-amber-300">
+                {RELAXED_NOTE[recommendation.relaxedPricing] ?? RELAXED_NOTE.other}
+              </p>
+            )}
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
                 Ana öneri
