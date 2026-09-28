@@ -58,7 +58,10 @@
         "blog yazmak istiyorum",
         "yazı yazdır",
         "senaryo",
-        "video senaryosu"
+        "video senaryosu",
+        "şiir",
+        "hikaye",
+        "öykü"
       ],
       "en": [
         "blog post",
@@ -67,7 +70,9 @@
         "write a blog",
         "content writing",
         "video script",
-        "write a script for"
+        "write a script for",
+        "poem",
+        "story"
       ]
     }
   },
@@ -142,7 +147,11 @@
         "pazarlama metni",
         "kampanya metni",
         "ürün açıklaması yaz",
-        "reklam yazısı"
+        "reklam yazısı",
+        "açıklama yaz",
+        "açıklaması yaz",
+        "için açıklama",
+        "gönderi metni"
       ],
       "en": [
         "ad copy",
@@ -150,7 +159,8 @@
         "campaign copy",
         "write a slogan",
         "product description",
-        "marketing"
+        "marketing",
+        "caption"
       ]
     }
   },
@@ -454,14 +464,21 @@
         "sohbet asistanı",
         "yapay zeka ile sohbet",
         "her konuda soru sor",
-        "chatbot ile konuş"
+        "chatbot ile konuş",
+        "ödev",
+        "matematik",
+        "soru çöz",
+        "diyet",
+        "yemek tarifi"
       ],
       "en": [
         "general assistant",
         "chatbot",
         "ai assistant",
         "chat with ai",
-        "ask anything"
+        "ask anything",
+        "homework",
+        "math"
       ]
     }
   },
@@ -698,7 +715,10 @@
         "slayt hazırla",
         "pitch deck",
         "powerpoint hazırla",
-        "sunu yap"
+        "sunu yap",
+        "powerpoint",
+        "ppt",
+        "slayt"
       ],
       "en": [
         "create slides",
@@ -706,7 +726,10 @@
         "pitch deck",
         "make a powerpoint",
         "slide deck",
-        "slides for"
+        "slides for",
+        "powerpoint",
+        "ppt",
+        "slides"
       ]
     }
   },
@@ -772,7 +795,12 @@
         "fatura şablonu",
         "teklif belgesi",
         "belge şablonu",
-        "sözleşme şablonu"
+        "sözleşme şablonu",
+        "dilekçe",
+        "ön yazı",
+        "özgeçmiş",
+        "fatura",
+        "sözleşme"
       ],
       "en": [
         "create a resume",
@@ -780,7 +808,10 @@
         "invoice template",
         "proposal document",
         "document template",
-        "resume"
+        "resume",
+        "cover letter",
+        "invoice",
+        "contract"
       ]
     }
   },
@@ -851,7 +882,8 @@
         "fotogerçekçi görsel",
         "illüstrasyon çiz",
         "kapak",
-        "kapağ"
+        "kapağ",
+        "profil fotoğrafı"
       ],
       "en": [
         "generate an image",
@@ -862,7 +894,8 @@
         "image",
         "picture",
         "cover art",
-        "cover"
+        "cover",
+        "profile picture"
       ]
     }
   },
@@ -998,7 +1031,12 @@
         "resimden nesne sil",
         "görsele nesne ekle",
         "stil değiştir görsel",
-        "görsel düzenleme"
+        "görsel düzenleme",
+        "anime yap",
+        "animeye çevir",
+        "fotoğrafı düzenle",
+        "fotoğrafımı düzenle",
+        "karikatür"
       ],
       "en": [
         "edit an image",
@@ -1006,7 +1044,9 @@
         "remove object from photo",
         "add object to image",
         "change image style",
-        "photo editing"
+        "photo editing",
+        "make it anime",
+        "cartoon"
       ]
     }
   },
@@ -1133,7 +1173,11 @@
         "arka planı sil",
         "arkaplan kaldırma",
         "arka planını değiştir",
-        "background sil"
+        "background sil",
+        "arka planını sil",
+        "arka planını kaldır",
+        "arkaplanı sil",
+        "arkaplanını sil"
       ],
       "en": [
         "remove background",
@@ -1166,14 +1210,20 @@
         "resmi büyüt",
         "çözünürlük artır",
         "görseli netleştir",
-        "upscale"
+        "upscale",
+        "netleştir",
+        "çözünürlüğünü artır",
+        "bulanık fotoğraf",
+        "kalitesini artır"
       ],
       "en": [
         "upscale image",
         "increase resolution",
         "enlarge photo",
         "sharpen image",
-        "image upscaling"
+        "image upscaling",
+        "sharpen",
+        "enhance photo"
       ]
     }
   },
@@ -1235,7 +1285,15 @@
         "sosyal medya banner",
         "gönderi görseli",
         "instagram için",
-        "sosyal medya"
+        "sosyal medya",
+        "thumbnail",
+        "küçük resim",
+        "afiş",
+        "poster",
+        "kartvizit",
+        "davetiye",
+        "broşür",
+        "el ilanı"
       ],
       "en": [
         "social media graphic",
@@ -1244,7 +1302,12 @@
         "social banner",
         "create a post design",
         "instagram",
-        "social media"
+        "social media",
+        "thumbnail",
+        "poster",
+        "flyer",
+        "business card",
+        "invitation"
       ]
     }
   },
@@ -1349,7 +1412,9 @@
         "resmi videoya çevir",
         "görseli hareketlendir",
         "fotoğraftan video",
-        "video"
+        "video",
+        "hareketlendir",
+        "canlandır"
       ],
       "en": [
         "image to video",
@@ -1515,7 +1580,10 @@
         "dijital sunucu video",
         "ai avatar anlatım",
         "avatar",
-        "video"
+        "video",
+        "konuştur",
+        "konuşan fotoğraf",
+        "konuşan avatar"
       ],
       "en": [
         "avatar presenter video",
@@ -1524,7 +1592,8 @@
         "digital presenter",
         "avatar narrates a script",
         "avatar",
-        "video"
+        "video",
+        "talking photo"
       ]
     }
   },
@@ -1627,14 +1696,21 @@
         "metinden ses üret",
         "profesyonel seslendirme",
         "video için seslendirme",
-        "ses lazım"
+        "ses lazım",
+        "sese çevir",
+        "metni sese",
+        "yazıyı sese",
+        "sesli oku",
+        "metni seslendir"
       ],
       "en": [
         "voiceover",
         "text to speech",
         "professional voiceover",
         "narration for video",
-        "ai voice narration"
+        "ai voice narration",
+        "read aloud",
+        "tts"
       ]
     }
   },
@@ -1736,7 +1812,12 @@
         "yankı gider",
         "kaydı iyileştir",
         "arka plan gürültüsünü sil",
-        "gürültü"
+        "gürültü",
+        "sesini temizle",
+        "sesi temizle",
+        "kaydımı temizle",
+        "kaydı temizle",
+        "gürültüyü"
       ],
       "en": [
         "audio cleanup",
@@ -1886,8 +1967,8 @@
       "tr": "Kod asistanı (editör)"
     },
     "description": {
-      "en": "AI help inside your code editor: autocomplete, chat and edits.",
-      "tr": "Kod editörünün içinde yapay zekâ desteği: tamamlama, sohbet, düzenleme."
+      "en": "Writing code and building software in any programming language (Python, C#, JavaScript…) with AI help in your code editor: autocomplete, chat and edits.",
+      "tr": "Herhangi bir programlama diliyle (Python, C#, JavaScript…) kod yazmak ve yazılım geliştirmek; kod editöründe yapay zekâ yardımı: tamamlama, sohbet ve düzenleme."
     },
     "modality": "code",
     "benchmark": [
@@ -1943,7 +2024,20 @@
         "ide içinde yapay zeka",
         "kod tamamlama",
         "vs code için ai",
-        "otomatik tamamlama"
+        "otomatik tamamlama",
+        "kod yaz",
+        "program yaz",
+        "programı yap",
+        "yazılım geliştir",
+        "c#",
+        "c++",
+        "python",
+        "javascript",
+        "typescript",
+        "php",
+        "sql",
+        "botu yap",
+        "bot yap"
       ],
       "en": [
         "ide autocomplete",
@@ -1952,7 +2046,15 @@
         "coding assistant in editor",
         "ai pair programmer",
         "autocomplete",
-        "vs code"
+        "vs code",
+        "write code",
+        "programming",
+        "python code",
+        "discord bot",
+        "c#",
+        "python",
+        "javascript",
+        "typescript"
       ]
     }
   },
@@ -2033,7 +2135,10 @@
         "kod hatası düzelt",
         "neden çalışmıyor kod",
         "debug",
-        "hata"
+        "hata",
+        "hata veriyor",
+        "hatası veriyor",
+        "hata var"
       ],
       "en": [
         "debug this code",
@@ -2052,8 +2157,8 @@
       "tr": "Uygulama oluşturucu"
     },
     "description": {
-      "en": "Building an app by describing it, without writing code.",
-      "tr": "Kod yazmadan, tarif ederek uygulama yapma."
+      "en": "Building an app by describing it, without writing code (for people who do not program).",
+      "tr": "Kod yazmadan, anlatarak uygulama oluşturmak (programlama bilmeyenler için)."
     },
     "modality": "code",
     "benchmark": [
@@ -2099,7 +2204,11 @@
         "mobil uygulama yap kod bilmeden",
         "uygulama oluşturucu",
         "mobil uygulama",
-        "uygulama yap"
+        "uygulama yap",
+        "kod yazmayı bilmiyorum",
+        "kod bilmiyorum",
+        "kodlama bilmeden",
+        "uygulaması yap"
       ],
       "en": [
         "no-code app builder",
@@ -2108,7 +2217,9 @@
         "create an app by describing it",
         "no code mobile app",
         "mobile app",
-        "build an app"
+        "build an app",
+        "make an app",
+        "create an app"
       ]
     }
   },
