@@ -1,17 +1,23 @@
 "use client"
 
+import { ExternalLink } from "lucide-react"
 import { RecommendationTool } from "@/lib/types"
-import { getPricingModel, priceLabelOrUnknown, pricingModelLabel } from "@/lib/pricing"
+import { PRICE_UNVERIFIED_LABEL, getPricingModel, isPriceVerified, priceLabelOrUnknown, pricingModelLabel } from "@/lib/pricing"
 
 // TEK rozet. Eskiden free/freemium/paidOnly bayraklarinin her biri ayri rozet
 // basiyordu; freemium araclarda "Free" ve "Freemium" yan yana cikip kullaniciyi
 // yaniltiyordu. Model tek oldugu icin rozet de tek.
-export default function PricingBadges({ pricing }: { pricing?: RecommendationTool['pricing'] }) {
+//
+// Tutar sadece son 60 gun icinde dogrulandiysa gosterilir (lib/pricing
+// PRICE_STALE_AFTER_DAYS). Tarihsiz ya da eski tutar gosterilmez: yerine
+// "Fiyat dogrulanmadi" ve varsa urunun fiyat sayfasi.
+export default function PricingBadges({ pricing, pricingUrl }: { pricing?: RecommendationTool['pricing']; pricingUrl?: string }) {
   if (!pricing) return null
 
   const model = getPricingModel(pricing)
   // Ucretsizde fiyat cipi rozeti tekrar etmis olur.
-  const priceLabel = model === 'free' ? null : priceLabelOrUnknown(pricing)
+  const showAmount = model !== 'free'
+  const verified = isPriceVerified(pricing)
 
   return (
     <div className="flex flex-wrap gap-1.5">
@@ -19,17 +25,29 @@ export default function PricingBadges({ pricing }: { pricing?: RecommendationToo
         {pricingModelLabel(pricing)}
       </span>
 
-      {priceLabel !== null && (
+      {showAmount && verified && (
         <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold">
-          {priceLabel}
+          {priceLabelOrUnknown(pricing)}
         </span>
       )}
 
-      {/* Uyari degil tarih: DB'deki en yeni fiyat verisi 2025-12-31, yani hicbir
-          fiyat "taze" degil. "Fiyat guncel olmayabilir" rozeti 96 aracin
-          hepsinde cikip sinyal tasimayi birakiyordu. Tarihi gosterip kararı
-          kullaniciya birakiyoruz. */}
-      {pricing.priceCheckedAt && (
+      {showAmount && !verified && (pricingUrl ? (
+        <a
+          href={pricingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-[10px] font-semibold text-amber-800 dark:text-amber-300 hover:underline"
+        >
+          {PRICE_UNVERIFIED_LABEL}
+          <ExternalLink className="w-2.5 h-2.5" aria-hidden />
+        </a>
+      ) : (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-[10px] font-semibold text-amber-800 dark:text-amber-300">
+          {PRICE_UNVERIFIED_LABEL}
+        </span>
+      ))}
+
+      {verified && pricing.priceCheckedAt && (
         <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted/40 text-[10px] text-muted-foreground/70">
           {new Date(pricing.priceCheckedAt).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })} verisi
         </span>

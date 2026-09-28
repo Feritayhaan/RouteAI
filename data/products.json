@@ -5,8 +5,8 @@
     "url": "https://www.midjourney.com",
     "pricingUrl": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
     "description": {
-      "en": "AI for cinematic-quality art and image generation",
-      "tr": "Sinematik kalitede sanat ve görsel üretimi için yapay zeka"
+      "en": "AI tool that generates artistic and photorealistic images from text prompts.",
+      "tr": "Metin tarifinden sanatsal ve fotogerçekçi görseller üreten yapay zekâ aracı."
     },
     "tasks": [
       "image.generate",
@@ -41,8 +41,8 @@
     "url": "https://chat.openai.com",
     "pricingUrl": "https://chatgpt.com/pricing/",
     "description": {
-      "en": "Top AI for accurate text in images and UI design",
-      "tr": "Metin doğruluğu ve UI tasarımı için en iyi yapay zeka"
+      "en": "Generates and edits images inside ChatGPT, including text within images.",
+      "tr": "ChatGPT içinde metinden görsel üretir ve görselleri düzenler; görselin içine yazı da yerleştirebilir."
     },
     "tasks": [
       "image.generate",
@@ -81,8 +81,8 @@
     "name": "DALL-E (OpenAI)",
     "url": "https://openai.com/dall-e-3",
     "description": {
-      "en": "Photorealistic image generation integrated with ChatGPT",
-      "tr": "ChatGPT ile entegre fotogerçekçi görsel üretimi"
+      "en": "OpenAI's text-to-image model, available in ChatGPT and via the API.",
+      "tr": "OpenAI'ın metinden görsel üreten modeli; ChatGPT ve API üzerinden kullanılır."
     },
     "tasks": [
       "image.generate",
@@ -117,8 +117,8 @@
     "name": "Google Imagen",
     "url": "https://deepmind.google/technologies/imagen-4/",
     "description": {
-      "en": "Google's AI for fast, realistic image generation",
-      "tr": "Hızlı ve gerçekçi görsel üretimi için Google AI"
+      "en": "Google's text-to-image model, available in Gemini and Google Cloud.",
+      "tr": "Google'ın metinden görsel üreten modeli; Gemini ve Google Cloud üzerinden kullanılır."
     },
     "tasks": [
       "image.generate",
@@ -154,8 +154,8 @@
     "url": "https://firefly.adobe.com",
     "pricingUrl": "https://www.adobe.com/products/firefly/plans.html",
     "description": {
-      "en": "Brand-safe AI image editing and creation",
-      "tr": "Marka güvenli AI görsel düzenleme ve oluşturma"
+      "en": "Adobe's image generation and editing tool; works with Photoshop and Adobe Express.",
+      "tr": "Adobe'nin görsel üretme ve düzenleme aracı; Photoshop ve Adobe Express ile birlikte çalışır."
     },
     "tasks": [
       "image.generate",
@@ -190,8 +190,8 @@
     "name": "Stable Diffusion",
     "url": "https://stability.ai",
     "description": {
-      "en": "Open-source, customizable image generation",
-      "tr": "Açık kaynak, özelleştirilebilir görsel üretimi"
+      "en": "Open-source image generation model you can run locally or through services and customize.",
+      "tr": "Açık kaynak görsel üretim modeli; kendi bilgisayarında ya da servisler üzerinden çalıştırılıp özelleştirilebilir."
     },
     "tasks": [
       "image.generate"
@@ -225,8 +225,8 @@
     "name": "FLUX (Black Forest Labs)",
     "url": "https://flux-ai.io",
     "description": {
-      "en": "Fast, high-quality image generation",
-      "tr": "Hızlı ve yüksek kaliteli görsel üretimi"
+      "en": "Black Forest Labs' family of text-to-image models.",
+      "tr": "Black Forest Labs'in metinden görsel üreten model ailesi."
     },
     "tasks": [
       "image.generate",
@@ -261,14 +261,22 @@
     "url": "https://leonardo.ai",
     "pricingUrl": "https://leonardo.ai/pricing",
     "description": {
-      "en": "Affordable AI image creation for teams",
-      "tr": "Takımlar için uygun fiyatlı AI görsel oluşturma"
+      "en": "Platform that combines image generation, editing and upscaling tools.",
+      "tr": "Görsel üretme, düzenleme ve büyütme araçlarını bir arada sunan platform."
     },
     "tasks": [
       "image.generate",
       "image.upscale"
     ],
     "models": [],
+    "modelRule": {
+      "creator": "Leonardo",
+      "include": [
+        "lucid",
+        "phoenix"
+      ],
+      "modality": "image"
+    },
     "pricing": {
       "model": "freemium",
       "free": false,
@@ -290,8 +298,8 @@
     "url": "https://ideogram.ai",
     "pricingUrl": "https://ideogram.ai/pricing",
     "description": {
-      "en": "AI image tool with excellent text rendering",
-      "tr": "Mükemmel metin render özellikli AI görsel aracı"
+      "en": "Generates images from text, with a focus on legible text inside images (logos, posters).",
+      "tr": "Metinden görsel üretir; görselin içine okunaklı yazı yerleştirmeye odaklanır (logo, afiş)."
     },
     "tasks": [
       "image.generate",
@@ -327,8 +335,8 @@
     "url": "https://www.canva.com",
     "pricingUrl": "https://www.canva.com/en/pricing/",
     "description": {
-      "en": "Design and editing platform with 25+ AI features",
-      "tr": "25+ AI özellikli tasarım ve düzenleme platformu"
+      "en": "AI features built into Canva's design tool: image generation, background removal and writing.",
+      "tr": "Canva'nın tasarım aracına yerleşik yapay zekâ özellikleri: görsel üretme, arka plan kaldırma, metin yazma."
     },
     "tasks": [
       "design.social-graphic",
@@ -360,8 +368,8 @@
     "url": "https://chat.openai.com",
     "pricingUrl": "https://chatgpt.com/pricing/",
     "description": {
-      "en": "The most powerful all-purpose AI chat and writing assistant",
-      "tr": "En güçlü çok amaçlı AI sohbet ve yazma asistanı"
+      "en": "OpenAI's general-purpose chat assistant for writing, Q&A, file analysis and coding.",
+      "tr": "OpenAI'ın genel amaçlı sohbet asistanı: yazma, soru-cevap, dosya analizi ve kodlama."
     },
     "tasks": [
       "chat.general-assistant",
@@ -418,8 +426,8 @@
     "url": "https://claude.ai",
     "pricingUrl": "https://claude.com/pricing",
     "description": {
-      "en": "Superior AI for long-text analysis and writing",
-      "tr": "Uzun metin analizi ve yazma için üstün AI"
+      "en": "Anthropic's general-purpose chat assistant for long documents, writing and coding.",
+      "tr": "Anthropic'in genel amaçlı sohbet asistanı: uzun belge analizi, yazma ve kodlama."
     },
     "tasks": [
       "chat.general-assistant",
@@ -468,8 +476,8 @@
     "url": "https://gemini.google.com",
     "pricingUrl": "https://gemini.google/subscriptions/",
     "description": {
-      "en": "Google's multimodal AI platform",
-      "tr": "Google'ın multimodal AI platformu"
+      "en": "Google's general-purpose AI assistant; works with text, images and files and connects to Google services.",
+      "tr": "Google'ın genel amaçlı yapay zekâ asistanı; metin, görsel ve dosyalarla çalışır, Google hizmetlerine bağlanır."
     },
     "tasks": [
       "chat.general-assistant",
@@ -522,8 +530,8 @@
     "url": "https://www.jasper.ai",
     "pricingUrl": "https://www.jasper.ai/pricing",
     "description": {
-      "en": "AI writing tool specialized in marketing content",
-      "tr": "Pazarlama içeriği için özelleşmiş AI yazma aracı"
+      "en": "AI writing tool for marketing teams: ads, blogs and campaign copy.",
+      "tr": "Pazarlama ekipleri için yapay zekâ yazma aracı: reklam, blog ve kampanya metinleri."
     },
     "tasks": [
       "text.marketing-copy",
@@ -551,8 +559,8 @@
     "url": "https://www.copy.ai",
     "pricingUrl": "https://www.copy.ai/prices",
     "description": {
-      "en": "Custom AI agents, workflow automation, enterprise focus",
-      "tr": "Özel AI ajanları, iş akışı otomasyonu ve kurumsal odaklı içerik üretimi"
+      "en": "AI platform for marketing and sales copy and the workflows around it.",
+      "tr": "Pazarlama ve satış metinleri yazan, bu işler için otomasyon akışları kuran yapay zekâ platformu."
     },
     "tasks": [
       "text.marketing-copy"
@@ -579,8 +587,8 @@
     "url": "https://github.com/features/copilot",
     "pricingUrl": "https://github.com/features/copilot/plans",
     "description": {
-      "en": "AI code completion tool from Microsoft and OpenAI",
-      "tr": "Microsoft ve OpenAI'nin AI kod tamamlama aracı"
+      "en": "AI assistant added to your code editor: code completion, chat and edits.",
+      "tr": "Kod editörüne eklenen yapay zekâ asistanı: kod tamamlama, sohbet ve düzenleme."
     },
     "tasks": [
       "code.assistant-ide",
@@ -608,8 +616,8 @@
     "url": "https://cursor.com",
     "pricingUrl": "https://cursor.com/pricing",
     "description": {
-      "en": "Advanced AI code editor based on VS Code",
-      "tr": "VS Code tabanlı gelişmiş AI kod editörü"
+      "en": "AI code editor based on VS Code: chat, code completion and multi-file edits.",
+      "tr": "VS Code tabanlı yapay zekâlı kod editörü: sohbet, kod tamamlama ve birden fazla dosyada düzenleme."
     },
     "tasks": [
       "code.assistant-ide",
@@ -639,8 +647,8 @@
     "url": "https://claude.ai",
     "pricingUrl": "https://claude.com/pricing",
     "description": {
-      "en": "Terminal-based deep code analysis tool",
-      "tr": "Terminal tabanlı derin kod analizi aracı"
+      "en": "Anthropic's terminal coding agent: reads and edits your codebase and runs commands.",
+      "tr": "Anthropic'in terminalden çalışan kod ajanı: kod tabanını okur, düzenler ve komut çalıştırır."
     },
     "tasks": [
       "code.agent-cli",
@@ -679,8 +687,8 @@
     "url": "https://elevenlabs.io",
     "pricingUrl": "https://elevenlabs.io/pricing",
     "description": {
-      "en": "The most realistic AI voice cloning and TTS platform",
-      "tr": "En gerçekçi AI ses klonlama ve TTS platformu"
+      "en": "Voice platform for text-to-speech, voice cloning, dubbing and transcription.",
+      "tr": "Metinden ses, ses klonlama, dublaj ve konuşmayı yazıya dökme araçları sunan ses platformu."
     },
     "tasks": [
       "audio.tts-voiceover",
@@ -717,8 +725,8 @@
     "url": "https://murf.ai",
     "pricingUrl": "https://murf.ai/pricing",
     "description": {
-      "en": "Professional AI voiceover platform",
-      "tr": "Profesyonel AI voiceover platformu"
+      "en": "Text-to-speech voiceover tool for videos and presentations.",
+      "tr": "Videolar ve sunumlar için metinden seslendirme yapan araç."
     },
     "tasks": [
       "audio.tts-voiceover"
@@ -750,8 +758,8 @@
     "name": "Sora (OpenAI)",
     "url": "https://openai.com/sora",
     "description": {
-      "en": "The most advanced AI video generation model",
-      "tr": "En gelişmiş AI video üretim modeli"
+      "en": "OpenAI's model that generates video from text and images.",
+      "tr": "OpenAI'ın metinden ve görselden video üreten modeli."
     },
     "tasks": [
       "video.text-to-video",
@@ -786,8 +794,8 @@
     "name": "Google Veo",
     "url": "https://deepmind.google/technologies/veo/",
     "description": {
-      "en": "Fast, high-quality AI video generation",
-      "tr": "Hızlı ve yüksek kaliteli AI video üretimi"
+      "en": "Google's model that generates video with sound from text and images.",
+      "tr": "Google'ın metinden ve görselden sesli video üreten modeli."
     },
     "tasks": [
       "video.text-to-video",
@@ -823,8 +831,8 @@
     "url": "https://www.perplexity.ai",
     "pricingUrl": "https://www.perplexity.ai/hub/pricing",
     "description": {
-      "en": "AI-powered search and research engine",
-      "tr": "AI destekli arama ve araştırma motoru"
+      "en": "Search assistant that answers questions from the web with citations.",
+      "tr": "Soruları web'de arayıp kaynak göstererek yanıtlayan arama asistanı."
     },
     "tasks": [
       "research.web",
@@ -836,7 +844,7 @@
       "include": [
         "sonar"
       ],
-      "modality": "text"
+      "modality": "research"
     },
     "pricing": {
       "model": "freemium",
@@ -859,8 +867,8 @@
     "url": "https://elicit.com",
     "pricingUrl": "https://elicit.com/pricing",
     "description": {
-      "en": "Academic paper analysis and literature review",
-      "tr": "Akademik makale analizi ve literatür taraması"
+      "en": "Finds and summarizes academic papers and supports literature reviews.",
+      "tr": "Akademik makaleleri bulur, özetler ve literatür taramasına yardım eder."
     },
     "tasks": [
       "research.academic"
@@ -887,8 +895,8 @@
     "url": "https://www.tableau.com",
     "pricingUrl": "https://www.tableau.com/pricing",
     "description": {
-      "en": "Industry-standard data visualization platform",
-      "tr": "Endüstri standardı veri görselleştirme platformu"
+      "en": "Data visualization and dashboard platform (Salesforce).",
+      "tr": "Veri görselleştirme ve dashboard oluşturma platformu (Salesforce)."
     },
     "tasks": [
       "data.dashboard"
@@ -915,8 +923,8 @@
     "url": "https://powerbi.microsoft.com",
     "pricingUrl": "https://www.microsoft.com/en-us/power-platform/products/power-bi/pricing",
     "description": {
-      "en": "AI-powered BI tool for the Microsoft ecosystem",
-      "tr": "Microsoft ekosistemi için AI destekli BI aracı"
+      "en": "Microsoft's data visualization and reporting tool; works with Excel and Microsoft 365.",
+      "tr": "Microsoft'un veri görselleştirme ve raporlama aracı; Excel ve Microsoft 365 ile çalışır."
     },
     "tasks": [
       "data.dashboard"
@@ -943,8 +951,8 @@
     "url": "https://gamma.app",
     "pricingUrl": "https://gamma.app/pricing",
     "description": {
-      "en": "AI-powered presentation, document and website creation",
-      "tr": "AI destekli sunum, döküman ve web sitesi oluşturma"
+      "en": "AI tool for creating presentations, documents and simple web pages.",
+      "tr": "Yapay zekâyla sunum, belge ve basit web sayfası oluşturma aracı."
     },
     "tasks": [
       "slides.create",
@@ -974,8 +982,8 @@
     "url": "https://beautiful.ai",
     "pricingUrl": "https://www.beautiful.ai/pricing",
     "description": {
-      "en": "Smart presentation design with automatic layout",
-      "tr": "Otomatik düzenlemeli akıllı sunum tasarımı"
+      "en": "Presentation tool that adjusts slide layouts automatically.",
+      "tr": "Slayt düzenini otomatik ayarlayan sunum aracı."
     },
     "tasks": [
       "slides.create"
@@ -1001,8 +1009,8 @@
     "name": "Tome",
     "url": "https://tome.app",
     "description": {
-      "en": "Create storytelling presentations with AI",
-      "tr": "Yapay zeka ile hikaye anlatımlı sunumlar oluştur"
+      "en": "AI tool for creating narrative-style presentations.",
+      "tr": "Yapay zekâyla anlatı odaklı sunumlar oluşturma aracı."
     },
     "tasks": [
       "slides.create"
@@ -1029,8 +1037,8 @@
     "url": "https://suno.ai",
     "pricingUrl": "https://suno.com/pricing",
     "description": {
-      "en": "AI music generator that creates full songs from text",
-      "tr": "Metinden tam şarkı oluşturan AI müzik üreticisi"
+      "en": "Music tool that generates songs with vocals or instrumentals from a description.",
+      "tr": "Metin tarifinden sözlü ya da enstrümantal şarkı üreten müzik aracı."
     },
     "tasks": [
       "music.generate"
@@ -1058,8 +1066,8 @@
     "url": "https://udio.com",
     "pricingUrl": "https://www.udio.com/pricing",
     "description": {
-      "en": "High-quality AI music generation",
-      "tr": "Yüksek kaliteli AI müzik üretimi"
+      "en": "Tool that generates songs and music from a description.",
+      "tr": "Metin tarifinden şarkı ve müzik üreten araç."
     },
     "tasks": [
       "music.generate"
@@ -1085,8 +1093,8 @@
     "name": "Runway",
     "url": "https://runwayml.com",
     "description": {
-      "en": "AI tool for text-to-video and video editing",
-      "tr": "Metinden videoya ve video düzenleme AI aracı"
+      "en": "Tools for generating video from text and images and for editing video.",
+      "tr": "Metinden ve görselden video üretme ile video düzenleme araçları."
     },
     "tasks": [
       "video.text-to-video",
@@ -1123,8 +1131,8 @@
     "url": "https://pika.art",
     "pricingUrl": "https://pika.art/pricing",
     "description": {
-      "en": "Creative AI video generation and animation",
-      "tr": "Yaratıcı AI video üretimi ve animasyon"
+      "en": "Tool that generates short videos and animations from text and images.",
+      "tr": "Metinden ve görselden kısa video ve animasyon üreten araç."
     },
     "tasks": [
       "video.text-to-video",
@@ -1294,8 +1302,8 @@
     "url": "https://grok.com",
     "pricingUrl": "https://grok.com/plans",
     "description": {
-      "en": "1483 Elo (Thinking), 4.22% hallucination rate, #1 EQ-Bench3, E2E encryption on X Chat",
-      "tr": "1483 Elo (Thinking), %4,22 halüsinasyon oranı, EQ-Bench3 birincisi ve uçtan uca şifreleme"
+      "en": "xAI's chat assistant, connected to X (Twitter), with web search.",
+      "tr": "xAI'ın sohbet asistanı; X (Twitter) ile bağlantılı, web araması yapabilir."
     },
     "tasks": [
       "chat.general-assistant",
@@ -1391,8 +1399,8 @@
     "url": "https://marble.worldlabs.ai",
     "pricingUrl": "https://marble.worldlabs.ai/pricing",
     "description": {
-      "en": "First commercial 3D world model, Chisel editor, exports to Gaussian splats/meshes, Vision Pro/Quest 3 compatible",
-      "tr": "İlk ticari 3D dünya modeli, Chisel editörü, Gaussian splat/mesh dışa aktarımı"
+      "en": "Creates explorable 3D worlds from text or images; scenes can be exported.",
+      "tr": "Metinden ya da görselden keşfedilebilir 3D dünyalar oluşturur; sahneler dışa aktarılabilir."
     },
     "tasks": [
       "3d.generate"
@@ -1446,8 +1454,8 @@
     "url": "https://notebooklm.google.com",
     "pricingUrl": "https://notebooklm.google/plans",
     "description": {
-      "en": "Autonomous research agent, browses hundreds of sites, generates comprehensive reports",
-      "tr": "Otonom araştırma ajanı, yüzlerce siteyi tarar ve kapsamlı raporlar üretir"
+      "en": "Google's tool that answers questions and prepares reports from your documents and web research.",
+      "tr": "Google'ın, yüklediğin belgelere ve web araştırmasına dayanarak soru yanıtlayan ve rapor hazırlayan aracı."
     },
     "tasks": [
       "research.document-qa",
@@ -1609,8 +1617,8 @@
     "name": "OpenAI Atlas (AI Browser)",
     "url": "https://atlas.openai.com",
     "description": {
-      "en": "AI-native Chromium browser, Agent Mode for task automation, Ask ChatGPT sidebar",
-      "tr": "AI yerlisi Chromium tarayıcı, görev otomasyonu için Agent Mode ve Ask ChatGPT yan paneli"
+      "en": "Web browser with ChatGPT built in, including an agent mode that can act on pages.",
+      "tr": "ChatGPT yerleşik web tarayıcısı; sayfalar üzerinde işlem yapabilen ajan modu vardır."
     },
     "tasks": [
       "research.web"
@@ -1637,8 +1645,8 @@
     "url": "https://www.synthesia.io",
     "pricingUrl": "https://www.synthesia.io/pricing",
     "description": {
-      "en": "Interactive video agents, live dialogue, 50+ avatars, 30+ language dubbing",
-      "tr": "Etkileşimli video ajanları, canlı diyalog, 50+ avatar ve 30+ dilde dublaj"
+      "en": "Turns scripts into videos presented by AI avatars, in many languages.",
+      "tr": "Metni yapay zekâ avatarının sunduğu videoya çeviren araç; birçok dilde seslendirme yapar."
     },
     "tasks": [
       "video.avatar-presenter"
@@ -1746,8 +1754,8 @@
     "url": "https://n8n.io",
     "pricingUrl": "https://n8n.io/pricing/",
     "description": {
-      "en": "Natural language to automation, built-in data tables, native Python runner",
-      "tr": "Doğal dilden otomasyona, yerleşik veri tabloları ve yerel Python çalıştırıcı"
+      "en": "Workflow automation tool that connects apps; you can describe the workflow in plain language.",
+      "tr": "Uygulamaları birbirine bağlayan iş akışı otomasyon aracı; akışı doğal dilde tarif ederek kurabilirsin."
     },
     "tasks": [
       "automation.workflow"
@@ -1854,8 +1862,8 @@
     "name": "Adcreative.ai",
     "url": "https://www.adcreative.ai",
     "description": {
-      "en": "Campaign-specific creative generation, conversion-optimized designs",
-      "tr": "Kampanyaya özel reklam kreatifi üretimi ve dönüşüm odaklı tasarımlar"
+      "en": "Tool that generates ad creatives (visuals and copy) for campaigns.",
+      "tr": "Reklam kampanyaları için görsel ve metin kreatifi üreten araç."
     },
     "tasks": [
       "design.social-graphic",
@@ -1910,8 +1918,8 @@
     "url": "https://replit.com",
     "pricingUrl": "https://replit.com/pricing",
     "description": {
-      "en": "200 min autonomous development, database integration, instant deployment",
-      "tr": "200 dakika otonom geliştirme, veritabanı entegrasyonu ve anında dağıtım"
+      "en": "AI agent that builds, runs and deploys apps and websites from your description.",
+      "tr": "Uygulama ve siteleri anlatarak kuran, çalıştıran ve yayına alan yapay zekâ ajanı."
     },
     "tasks": [
       "code.app-builder",
@@ -1939,8 +1947,8 @@
     "url": "https://windsurf.com",
     "pricingUrl": "https://windsurf.com/pricing",
     "description": {
-      "en": "Free-forever tier, IDE-agnostic, persistent context memory",
-      "tr": "Sonsuza dek ücretsiz katman, IDE bağımsız çalışma ve kalıcı bağlam belleği"
+      "en": "AI code editor that understands your codebase for chat and edits.",
+      "tr": "Kod tabanını anlayarak sohbet ve düzenleme yapan yapay zekâlı kod editörü."
     },
     "tasks": [
       "code.assistant-ide",
@@ -1995,8 +2003,8 @@
     "url": "https://opusclip.com",
     "pricingUrl": "https://www.opus.pro/pricing",
     "description": {
-      "en": "Automatic short-form extraction, captions, multi-platform optimization",
-      "tr": "Otomatik kısa video çıkarma, altyazı ve çoklu platform optimizasyonu"
+      "en": "Cuts long videos into short clips, adds captions and formats them for social media.",
+      "tr": "Uzun videolardan kısa klipler çıkarır, altyazı ekler ve sosyal medya formatlarına uyarlar."
     },
     "tasks": [
       "video.repurpose-clips",
@@ -2025,8 +2033,8 @@
     "url": "https://www.fathom.video",
     "pricingUrl": "https://www.fathom.ai/pricing",
     "description": {
-      "en": "Real-time meeting notes, automatic action items, CRM integration",
-      "tr": "Gerçek zamanlı toplantı notları, otomatik aksiyon maddeleri ve CRM entegrasyonu"
+      "en": "Records video meetings and produces summaries and action items.",
+      "tr": "Görüntülü toplantıları kaydeder; özet ve aksiyon maddelerini çıkarır."
     },
     "tasks": [
       "audio.meeting-notes"
@@ -2107,8 +2115,8 @@
     "url": "https://www.base44.ai",
     "pricingUrl": "https://base44.com/pricing",
     "description": {
-      "en": "GPT-5 chat integration, domain purchasing, version control",
-      "tr": "GPT-5 sohbet entegrasyonu, alan adı satın alma ve sürüm kontrolü"
+      "en": "No-code app builder: describe the app and it builds it.",
+      "tr": "Uygulamayı anlatarak kurduğun, kod yazmadan çalışan uygulama oluşturucu."
     },
     "tasks": [
       "code.app-builder",
@@ -2163,8 +2171,8 @@
     "url": "https://www.anyword.com",
     "pricingUrl": "https://www.anyword.com/pricing",
     "description": {
-      "en": "Performance scoring, compliance checking, marketing-focused copy",
-      "tr": "Performans skorlaması, uyumluluk kontrolü ve pazarlama odaklı metin yazımı"
+      "en": "Writes marketing copy and helps compare copy variants.",
+      "tr": "Pazarlama metinleri yazan ve metin varyantlarını karşılaştırmaya yardım eden araç."
     },
     "tasks": [
       "text.marketing-copy"
@@ -2191,8 +2199,8 @@
     "url": "https://writesonic.com",
     "pricingUrl": "https://writesonic.com/pricing",
     "description": {
-      "en": "SERP-based outline generator, longer-form editor, SEO features",
-      "tr": "SERP tabanlı taslak üretici, uzun form editör ve SEO özellikleri"
+      "en": "SEO-focused blog and article writing tool.",
+      "tr": "SEO odaklı blog ve makale yazma aracı."
     },
     "tasks": [
       "text.write-longform",
@@ -2220,8 +2228,8 @@
     "url": "https://clickup.com",
     "pricingUrl": "https://clickup.com/brain/pricing",
     "description": {
-      "en": "Project-level AI automation, task suggestions, workflow optimization",
-      "tr": "Proje düzeyinde AI otomasyonu, görev önerileri ve iş akışı optimizasyonu"
+      "en": "AI features for project and task management inside ClickUp.",
+      "tr": "ClickUp içinde proje ve görev yönetimi için yapay zekâ özellikleri."
     },
     "tasks": [],
     "models": [],
@@ -2246,8 +2254,8 @@
     "url": "https://www.simplified.com",
     "pricingUrl": "https://simplified.com/pricing",
     "description": {
-      "en": "One-click content templates, integrated copywriting",
-      "tr": "Tek tıkla içerik şablonları ve entegre metin yazarlığı"
+      "en": "Tool that combines content templates, copywriting and design.",
+      "tr": "İçerik şablonları, metin yazımı ve tasarımı bir arada sunan araç."
     },
     "tasks": [
       "design.social-graphic",
@@ -2329,8 +2337,8 @@
     "url": "https://www.tealhq.com",
     "pricingUrl": "https://www.tealhq.com/pricing",
     "description": {
-      "en": "AI resume optimization, ATS optimization",
-      "tr": "AI ile özgeçmiş ve ATS optimizasyonu"
+      "en": "Resume builder that tailors your resume to job postings.",
+      "tr": "Özgeçmiş hazırlama ve iş ilanına göre uyarlama aracı."
     },
     "tasks": [
       "docs.create"
@@ -2357,8 +2365,8 @@
     "url": "https://klingai.com",
     "pricingUrl": "https://app.klingai.com/global/membership/membership-plan",
     "description": {
-      "en": "3D Spatiotemporal Attention, Master mode at 1080p, best image-to-video",
-      "tr": "3D uzamsal-zamansal dikkat, 1080p Master modu ve en iyi görselden videoya dönüşüm"
+      "en": "Kuaishou's model that generates video from text and images.",
+      "tr": "Kuaishou'nun metinden ve görselden video üreten modeli."
     },
     "tasks": [
       "video.text-to-video",
@@ -2419,8 +2427,8 @@
     "url": "https://lumalabs.ai",
     "pricingUrl": "https://lumalabs.ai/learning-hub/pricing",
     "description": {
-      "en": "Modify with Instructions, Camera Motion Concepts, 4K upscale",
-      "tr": "Talimatla düzenleme, Kamera Hareketi Konseptleri ve 4K büyütme"
+      "en": "Luma AI's tool for generating and editing video from text and images.",
+      "tr": "Luma AI'ın metinden ve görselden video üreten ve düzenleyen aracı."
     },
     "tasks": [
       "video.text-to-video",
@@ -2482,8 +2490,8 @@
     "url": "https://gemini.google.com",
     "pricingUrl": "https://gemini.google/subscriptions/",
     "description": {
-      "en": "4K generation, legible text rendering, Google Search grounding",
-      "tr": "4K üretim, okunaklı metin render'ı ve Google Search ile temellendirme"
+      "en": "Google's image generation and editing inside Gemini, including text within images.",
+      "tr": "Gemini içinde Google'ın görsel üretme ve düzenleme aracı; görselin içine yazı da yerleştirebilir."
     },
     "tasks": [
       "image.generate",
@@ -2602,8 +2610,8 @@
     "url": "https://copilot.microsoft.com",
     "pricingUrl": "https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/individuals",
     "description": {
-      "en": "GPT-5 default in Copilot Chat, Work IQ intelligence layer",
-      "tr": "Copilot Chat'te varsayılan GPT-5 ve Work IQ zeka katmanı"
+      "en": "AI assistant that works inside Microsoft 365 apps (Word, Excel, PowerPoint, Outlook).",
+      "tr": "Microsoft 365 uygulamalarında (Word, Excel, PowerPoint, Outlook) çalışan yapay zekâ asistanı."
     },
     "tasks": [
       "chat.general-assistant",
@@ -2688,8 +2696,8 @@
     "url": "https://mistral.ai",
     "pricingUrl": "https://mistral.ai/pricing/",
     "description": {
-      "en": "Speculative editing, web search with citations, Canvas",
-      "tr": "Spekülatif düzenleme, kaynakçalı web araması ve Canvas"
+      "en": "Mistral AI's chat assistant with web search and document work.",
+      "tr": "Mistral AI'ın sohbet asistanı; web araması yapabilir ve belgeler üzerinde çalışır."
     },
     "tasks": [
       "chat.general-assistant",
@@ -2787,8 +2795,8 @@
     "url": "https://grok.com",
     "pricingUrl": "https://grok.com/plans",
     "description": {
-      "en": "Short videos with spoken characters and background music",
-      "tr": "Konuşan karakterler ve arka plan müziği içeren kısa videolar"
+      "en": "xAI's tool for short videos with sound from text or images.",
+      "tr": "xAI'ın metinden ya da görselden sesli kısa video üreten aracı."
     },
     "tasks": [
       "video.text-to-video",

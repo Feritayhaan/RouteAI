@@ -69,7 +69,7 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
 
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 space-y-1.5">
-              <PricingBadges pricing={step.primary.pricing} />
+              <PricingBadges pricing={step.primary.pricing} pricingUrl={step.primary.pricingUrl} />
               {step.primary.description && (
                 <p className="text-xs text-foreground/80">{step.primary.description}</p>
               )}
@@ -102,7 +102,7 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
               ) : (
                 <span className="font-semibold text-foreground">{step.alternative.toolName}</span>
               )}
-              <PricingBadges pricing={step.alternative.pricing} />
+              <PricingBadges pricing={step.alternative.pricing} pricingUrl={step.alternative.pricingUrl} />
             </p>
           )}
 

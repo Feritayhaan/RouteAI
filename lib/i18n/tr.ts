@@ -67,6 +67,7 @@ export const tr: Dictionary = {
     free: 'Ücretsiz',
     perMonth: '${price}/ay\'dan başlayan',
     unknown: 'Fiyat bilinmiyor',
+    unverified: 'Fiyat doğrulanmadı',
   },
   reasons: {
     outcome_success: 'İşini gördü diyenler: %{pct} ({n} kullanıcı)',

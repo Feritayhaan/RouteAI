@@ -2,7 +2,7 @@
 
 import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
-import { priceLabelOrUnknown } from "@/lib/pricing"
+import { displayPriceLabel } from "@/lib/pricing"
 import { format, getDictionary } from "@/lib/i18n"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
@@ -48,7 +48,7 @@ export default function SimpleRecommendationDisplay({
     if (!main.pricing && !main.confidence) return null
     return (
       <div className="flex flex-wrap items-center gap-1.5">
-        {main.pricing && <PricingBadges pricing={main.pricing} />}
+        {main.pricing && <PricingBadges pricing={main.pricing} pricingUrl={main.pricingUrl} />}
         {editor ? <EditorPickBadge dict={dict} /> : main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
       </div>
     )
@@ -172,7 +172,7 @@ export default function SimpleRecommendationDisplay({
                       {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
                           ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
                       <span className="shrink-0 text-xs text-muted-foreground">
-                        {priceLabelOrUnknown(alt.pricing)}
+                        {displayPriceLabel(alt.pricing)}
                       </span>
                     </a>
                   ))}
@@ -195,7 +195,7 @@ export default function SimpleRecommendationDisplay({
                       className="text-sm flex justify-between items-center gap-3 hover:underline"
                     >
                       <span className="min-w-0 break-words">{alt.toolName}</span>
-                      <span className="shrink-0 text-xs text-muted-foreground">{priceLabelOrUnknown(alt.pricing)}</span>
+                      <span className="shrink-0 text-xs text-muted-foreground">{displayPriceLabel(alt.pricing)}</span>
                     </a>
                   ))}
                 </div>

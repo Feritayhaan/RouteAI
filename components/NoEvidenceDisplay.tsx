@@ -6,6 +6,7 @@
 
 import { ExternalLink, Info } from "lucide-react"
 import { priceText, type Dictionary } from "@/lib/i18n"
+import { getPricingModel, isPriceVerified } from "@/lib/pricing"
 import type { NoEvidenceRecommendation } from "@/lib/types"
 
 export default function NoEvidenceDisplay({ result, dict }: { result: NoEvidenceRecommendation; dict: Dictionary }) {
@@ -41,7 +42,9 @@ export default function NoEvidenceDisplay({ result, dict }: { result: NoEvidence
                       {dict.v3.unverified}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{priceText(dict, p.pricing)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {getPricingModel(p.pricing) === "free" || isPriceVerified(p.pricing) ? priceText(dict, p.pricing) : dict.price.unverified}
+                  </p>
                 </div>
                 {p.url && (
                   <a

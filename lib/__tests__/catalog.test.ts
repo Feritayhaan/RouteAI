@@ -73,3 +73,27 @@ describe('editör seçimleri (data/editor-picks.json)', () => {
     }), /aktif bir ürün değil/);
   });
 });
+
+describe('ürün açıklamaları (P14): tarafsız, kaynaksız sayı yok', () => {
+  // Üstünlük iddiası ve fiyat iddiası kaynaksızdır; sayı (Elo, %, "200 dakika")
+  // kaynağı ve tarihiyle data/ altında durmadıkça açıklamaya yazılmaz.
+  const BANNED = /\b(en iyi|en güçlü|en gelişmiş|en gerçekçi|en hızlı|en popüler|gelişmiş|üstün|mükemmel|lider|endüstri standardı|uygun fiyatlı|sonsuza dek ücretsiz|best|top|most|leading|superior|excellent|advanced|powerful|industry-standard|affordable|free-forever|state-of-the-art|cutting-edge)\b/i;
+
+  // Rakam içeren ürün/kavram ADLARI iddia değildir.
+  const NAMES_WITH_DIGITS = /\b3D\b|Microsoft 365/g;
+
+  it('aktif ürünlerde tr ve en dolu, farklı; üstünlük/fiyat iddiası yok; ad dışında rakam yok', () => {
+    const problems: string[] = [];
+    for (const p of loadCatalog().products.filter((x) => x.status === 'active')) {
+      const { tr, en } = p.description;
+      if (!tr.trim() || !en.trim()) problems.push(`${p.id}: boş açıklama`);
+      if (tr.trim() === en.trim()) problems.push(`${p.id}: en çevrilmemiş`);
+      for (const text of [tr, en]) {
+        const m = text.match(BANNED);
+        if (m) problems.push(`${p.id}: "${m[0]}"`);
+        if (/\d/.test(text.replace(NAMES_WITH_DIGITS, ''))) problems.push(`${p.id}: kaynaksız sayı: ${text}`);
+      }
+    }
+    assert.deepStrictEqual(problems, []);
+  });
+});

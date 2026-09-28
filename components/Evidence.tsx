@@ -96,7 +96,8 @@ export function DataLine({ tool, dict, locale = "tr" }: { tool: RecommendationTo
 
 /** "Neden" kutusu: gerekçe kodları metne (reasonText) + veri satırı. */
 export function ReasonsBox({ tool, dict, locale = "tr" }: { tool: RecommendationTool; dict: Dictionary; locale?: string }) {
-  const reasons = [...(tool.reasons ?? [])]
+  // price_stale gösterilmez: fiyat çipi zaten "Fiyat doğrulanmadı" diyor.
+  const reasons = [...(tool.reasons ?? [])].filter((r) => r.code !== "price_stale")
     .sort((a, b) => rank(a.code) - rank(b.code))
     .map((r) => reasonText(dict, r))
     .filter((t): t is string => t !== null)

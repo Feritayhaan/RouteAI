@@ -66,6 +66,7 @@ export const en = {
     free: 'Free',
     perMonth: 'from ${price}/mo',
     unknown: 'Price unknown',
+    unverified: 'Price not verified',
   },
   reasons: {
     outcome_success: '{pct}% of {n} users said it did the job',

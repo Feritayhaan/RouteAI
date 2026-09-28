@@ -19,6 +19,8 @@ export interface RecommendationTool {
   /** Gevsek sema: KV'de migration oncesi kayitlar hala olabilir. Okurken
    *  lib/pricing.ts helper'larini kullan, bayraklari elle yorumlama. */
   pricing?: PricingLike
+  /** Ürünün fiyat sayfası: fiyat doğrulanmamışsa kart buraya yönlendirir. */
+  pricingUrl?: string
   strength?: number
   why?: string
   promptSuggestion?: string
@@ -104,7 +106,7 @@ export type ApiResponse = SimpleRecommendation | WorkflowRecommendation | Clarif
 type Locale = 'en' | 'tr'
 
 function productTool(p: Product, locale: Locale): RecommendationTool {
-  return { toolName: p.name, description: p.description[locale], url: p.url, pricing: p.pricing, productId: p.id }
+  return { toolName: p.name, description: p.description[locale], url: p.url, pricing: p.pricing, productId: p.id, ...(p.pricingUrl ? { pricingUrl: p.pricingUrl } : {}) }
 }
 
 function itemTool(i: V3Item, locale: Locale): RecommendationTool {
