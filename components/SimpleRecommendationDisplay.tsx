@@ -7,7 +7,7 @@ import { format, getDictionary } from "@/lib/i18n"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
-import { ConfidenceBadge, ReasonsBox } from "./Evidence"
+import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox } from "./Evidence"
 import { SOURCES } from "@/lib/catalog/sources"
 import type { CurrentModel } from "@/lib/catalog/currentModel"
 
@@ -43,12 +43,13 @@ export default function SimpleRecommendationDisplay({
   query: string
 }) {
   const { main } = recommendation
+  const editor = main.basis === "editor"
   const renderPricingBadges = () => {
     if (!main.pricing && !main.confidence) return null
     return (
       <div className="flex flex-wrap items-center gap-1.5">
         {main.pricing && <PricingBadges pricing={main.pricing} />}
-        {main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
+        {editor ? <EditorPickBadge dict={dict} /> : main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
       </div>
     )
   }
@@ -84,6 +85,9 @@ export default function SimpleRecommendationDisplay({
                 )}
                 {renderPricingBadges()}
 
+                {recommendation.taskLabel && (
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-primary">{dict.v3.pick}</p>
+                )}
                 <h2 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight break-words">
                   <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                     {main.toolName}
@@ -129,7 +133,9 @@ export default function SimpleRecommendationDisplay({
               <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground">
                 {main.description}
               </p>
-              {main.reasons ? (
+              {editor ? (
+                <EditorReasonsBox tool={main} dict={dict} />
+              ) : main.reasons ? (
                 <ReasonsBox tool={main} dict={dict} />
               ) : main.why && (
                 <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
@@ -168,6 +174,28 @@ export default function SimpleRecommendationDisplay({
                       <span className="shrink-0 text-xs text-muted-foreground">
                         {priceLabelOrUnknown(alt.pricing)}
                       </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {recommendation.unverified && recommendation.unverified.length > 0 && (
+              <div className="mt-4 border-t border-border/50 pt-3">
+                <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase">
+                  {dict.v3.otherTools}
+                </div>
+                <div className="flex flex-col gap-2">
+                  {recommendation.unverified.map((alt) => (
+                    <a
+                      key={alt.toolName}
+                      href={alt.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm flex justify-between items-center gap-3 hover:underline"
+                    >
+                      <span className="min-w-0 break-words">{alt.toolName}</span>
+                      <span className="shrink-0 text-xs text-muted-foreground">{priceLabelOrUnknown(alt.pricing)}</span>
                     </a>
                   ))}
                 </div>

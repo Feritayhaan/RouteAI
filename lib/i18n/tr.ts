@@ -43,7 +43,7 @@ export const tr: Dictionary = {
     best: 'En uygun',
     alternatives: 'Alternatifler',
     openTool: 'Aracı aç',
-    confidence: { high: 'Yüksek güven', medium: 'Orta güven', low: 'Düşük güven' },
+    confidence: { high: 'Yüksek güven', medium: 'Orta güven', low: 'Az veri' },
     confidenceHint: {
       high: 'Son 30 günde 30+ RouteAI kullanıcı sonucuna dayanıyor.',
       medium: '10+ RouteAI kullanıcı sonucuna ya da güncel benchmark + uzman değerlendirmesine dayanıyor.',
@@ -54,6 +54,7 @@ export const tr: Dictionary = {
     noSources: 'benchmark kaynağı yok',
     sourceUsers: 'RouteAI kullanıcıları',
     sourceExpert: 'RouteAI uzman değerlendirmesi',
+    sourceEditor: 'RouteAI editör seçimi',
     relaxed: 'Tüm kısıtlarına uyan araç yoktu; şunu gevşettim: {constraints}.',
     constraint: { pricing: 'fiyat', maxMonthlyUsd: 'bütçe', access: 'platform', commercialUse: 'ticari kullanım' },
     share: 'Sıralamanın dayanağı: RouteAI kullanıcı sonuçları %{users} · benchmark %{benchmark}.',
@@ -142,6 +143,11 @@ export const tr: Dictionary = {
     unverifiedList: 'Doğrulanmadı: {tools}',
     filteredEmpty: 'Seçtiğin fiyat filtresine uyan doğrulanmış araç yok. Filtreyi değiştirip tekrar dene.',
     stepFiltered: 'Fiyat filtrene uyan doğrulanmış araç yok',
+    pick: 'RouteAI tavsiyesi',
+    editorPick: 'Editör seçimi',
+    editorPickHint: 'Bu iş için henüz kullanıcı sonucu ya da benchmark yok; aracı RouteAI ekibi seçti. Sen ve diğer kullanıcılar denedikçe sıralama gerçek sonuçlarla güncellenir.',
+    editorNoData: 'Henüz RouteAI kullanıcı sonucu yok; denedikçe sıralama gerçek sonuçlarla güncellenecek.',
+    otherTools: 'Diğer araçlar (henüz doğrulanmadı)',
   },
   outcome: {
     question: '{product} işini gördü mü?',

@@ -241,6 +241,24 @@ export const signalSchema = z.object({
 export type Signal = z.infer<typeof signalSchema>;
 
 // ------------------------------------------------------------------
+// EditorPick (data/editor-picks.json) — "RouteAI tavsiyesi": görevde henüz
+// kanıt (benchmark, uzman değerlendirmesi, kullanıcı sonucu) yokken öne
+// çıkarılan araç. Puan DEĞİLDİR, sıralama iddiası taşımaz; kartta "editör
+// seçimi" olarak açıkça yazılır ve kanıt gelince RouteAI Skoru öne geçer.
+// ------------------------------------------------------------------
+
+export const editorPickSchema = z.object({
+  taskId: taskIdSchema,
+  productId: idSchema,
+  /** Tarafsız işlev tanımı; üstünlük iddiası ve fiyat yazılmaz. */
+  reason: localeTextSchema,
+  by: z.string().min(1),
+  date: dateStringSchema,
+});
+export type EditorPick = z.infer<typeof editorPickSchema>;
+export const editorPicksFileSchema = z.array(editorPickSchema);
+
+// ------------------------------------------------------------------
 // Candidate (data/candidates.json) — keşiften gelen adaylar. searchCatalog
 // bu dosyayı HİÇ okumaz; Ferit products.json'a status 'active' ile taşır.
 // ------------------------------------------------------------------

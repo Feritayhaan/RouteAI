@@ -42,7 +42,7 @@ export const en = {
     best: 'Best match',
     alternatives: 'Alternatives',
     openTool: 'Open tool',
-    confidence: { high: 'High confidence', medium: 'Medium confidence', low: 'Low confidence' },
+    confidence: { high: 'High confidence', medium: 'Medium confidence', low: 'Limited data' },
     confidenceHint: {
       high: 'Based on 30+ recent RouteAI user results.',
       medium: 'Based on 10+ RouteAI user results, or fresh benchmarks plus an expert review.',
@@ -53,6 +53,7 @@ export const en = {
     noSources: 'no benchmark source',
     sourceUsers: 'RouteAI users',
     sourceExpert: 'RouteAI expert review',
+    sourceEditor: 'RouteAI editor pick',
     relaxed: 'No tool matched all your constraints, so I relaxed: {constraints}.',
     constraint: { pricing: 'price', maxMonthlyUsd: 'budget', access: 'platform', commercialUse: 'commercial use' },
     share: '{users}% of this ranking comes from RouteAI results, {benchmark}% from benchmarks.',
@@ -141,6 +142,11 @@ export const en = {
     unverifiedList: 'Not verified: {tools}',
     filteredEmpty: 'No verified tool matches the price filter you picked. Change the filter and try again.',
     stepFiltered: 'No verified tool matches your price filter',
+    pick: 'RouteAI pick',
+    editorPick: 'Editor pick',
+    editorPickHint: 'There are no user results or benchmarks for this job yet, so the RouteAI team picked this tool. The ranking updates with real results as people try it.',
+    editorNoData: 'No RouteAI user results yet; the ranking will update with real results as people try it.',
+    otherTools: 'Other tools (not verified yet)',
   },
   outcome: {
     question: 'Did {product} do the job?',

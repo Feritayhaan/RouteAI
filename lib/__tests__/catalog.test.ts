@@ -50,3 +50,26 @@ describe('katalog (lib/catalog)', () => {
     );
   });
 });
+
+describe('editör seçimleri (data/editor-picks.json)', () => {
+  it('gerçek dosya yüklenir; her seçim o görevde aktif bir ürün, görev başına tek', async () => {
+    const { loadCatalog } = await import('../catalog/index');
+    const c = loadCatalog();
+    const seen = new Set<string>();
+    for (const p of c.editorPicks) {
+      const product = c.productsById.get(p.productId);
+      assert.ok(product && product.status === 'active' && product.tasks.includes(p.taskId), `${p.taskId} -> ${p.productId}`);
+      assert.ok(!seen.has(p.taskId));
+      seen.add(p.taskId);
+    }
+  });
+
+  it('görevde olmayan ürünü seçen dosya yüklemede patlar', async () => {
+    const { buildCatalog, loadCatalog } = await import('../catalog/index');
+    const real = loadCatalog();
+    assert.throws(() => buildCatalog({
+      tasks: real.tasks, products: real.products, models: [], briefs: real.briefs, reviews: [], signals: [],
+      editorPicks: [{ taskId: 'code.website-builder', productId: 'suno-ai', reason: { en: 'x', tr: 'x' }, by: 't', date: '2026-09-28' }],
+    }), /aktif bir ürün değil/);
+  });
+});

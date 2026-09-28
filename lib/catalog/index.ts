@@ -10,15 +10,18 @@ import modelsJson from '../../data/models.json';
 import briefsJson from '../../data/briefs.json';
 import reviewsJson from '../../data/reviews.json';
 import signalsJson from '../../data/signals.json';
+import editorPicksJson from '../../data/editor-picks.json';
 import type { z } from 'zod';
 import {
   briefsFileSchema,
+  editorPicksFileSchema,
   modelsFileSchema,
   productsFileSchema,
   reviewsFileSchema,
   signalsFileSchema,
   tasksFileSchema,
   type Brief,
+  type EditorPick,
   type ExpertReview,
   type Model,
   type Product,
@@ -33,6 +36,8 @@ export interface Catalog {
   briefs: Brief[];
   reviews: ExpertReview[];
   signals: Signal[];
+  /** Kanıtsız görevde öne çıkarılan araç ("RouteAI tavsiyesi"); görev başına en fazla bir. */
+  editorPicks: EditorPick[];
   tasksById: Map<string, Task>;
   productsById: Map<string, Product>;
   /** Sadece status 'active' ürünler. */
@@ -56,6 +61,7 @@ export function buildCatalog(raw: {
   briefs: unknown;
   reviews: unknown;
   signals: unknown;
+  editorPicks?: unknown;
 }): Catalog {
   const tasks = parse<Task[]>('tasks.json', tasksFileSchema, raw.tasks);
   const products = parse<Product[]>('products.json', productsFileSchema, raw.products);
@@ -63,6 +69,7 @@ export function buildCatalog(raw: {
   const briefs = parse<Brief[]>('briefs.json', briefsFileSchema, raw.briefs);
   const reviews = parse<ExpertReview[]>('reviews.json', reviewsFileSchema, raw.reviews);
   const signals = parse<Signal[]>('signals.json', signalsFileSchema, raw.signals);
+  const editorPicks = parse<EditorPick[]>('editor-picks.json', editorPicksFileSchema, raw.editorPicks ?? []);
 
   const tasksById = new Map(tasks.map((t) => [t.id, t]));
   const productsById = new Map(products.map((p) => [p.id, p]));
@@ -76,7 +83,18 @@ export function buildCatalog(raw: {
     }
   }
 
-  return { tasks, products, models, briefs, reviews, signals, tasksById, productsById, productsByTask, modelsById };
+  // Seçim sadece o görevde aktif bir katalog ürünü olabilir (katalogda olmayan araç önerilmez).
+  const seenPick = new Set<string>();
+  for (const pick of editorPicks) {
+    const product = productsById.get(pick.productId);
+    if (!product || product.status !== 'active' || !product.tasks.includes(pick.taskId)) {
+      throw new Error(`[catalog] data/editor-picks.json: ${pick.taskId} -> ${pick.productId} bu görevde aktif bir ürün değil`);
+    }
+    if (seenPick.has(pick.taskId)) throw new Error(`[catalog] data/editor-picks.json: ${pick.taskId} için birden fazla seçim`);
+    seenPick.add(pick.taskId);
+  }
+
+  return { tasks, products, models, briefs, reviews, signals, editorPicks, tasksById, productsById, productsByTask, modelsById };
 }
 
 let cached: Catalog | null = null;
@@ -90,6 +108,7 @@ export function loadCatalog(): Catalog {
       briefs: briefsJson,
       reviews: reviewsJson,
       signals: signalsJson,
+      editorPicks: editorPicksJson,
     });
   }
   return cached;
