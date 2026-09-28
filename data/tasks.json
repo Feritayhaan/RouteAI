@@ -48,7 +48,27 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "blog yazısı",
+        "makale yaz",
+        "uzun metin yaz",
+        "içerik yaz",
+        "blog yazmak istiyorum",
+        "yazı yazdır",
+        "senaryo"
+      ],
+      "en": [
+        "blog post",
+        "write an article",
+        "long-form content",
+        "write a blog",
+        "content writing",
+        "video script",
+        "write a script for"
+      ]
+    }
   },
   {
     "id": "text.marketing-copy",
@@ -113,7 +133,25 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "reklam metni",
+        "slogan",
+        "pazarlama metni",
+        "kampanya metni",
+        "ürün açıklaması yaz",
+        "reklam yazısı"
+      ],
+      "en": [
+        "ad copy",
+        "marketing copy",
+        "campaign copy",
+        "write a slogan",
+        "product description",
+        "marketing"
+      ]
+    }
   },
   {
     "id": "text.email",
@@ -171,7 +209,26 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "e-posta yaz",
+        "mail yaz",
+        "e-posta yanıtla",
+        "mail cevapla",
+        "e-posta taslağı",
+        "eposta",
+        "e-posta"
+      ],
+      "en": [
+        "write email",
+        "write an email",
+        "reply to email",
+        "email draft",
+        "compose an email",
+        "email"
+      ]
+    }
   },
   {
     "id": "text.summarize",
@@ -229,7 +286,24 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "özetle",
+        "özet çıkar",
+        "özet",
+        "kısa özet",
+        "ana noktaları çıkar"
+      ],
+      "en": [
+        "summarize",
+        "summarize this",
+        "key points",
+        "condense text",
+        "tl;dr",
+        "summary"
+      ]
+    }
   },
   {
     "id": "text.translate",
@@ -287,7 +361,23 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "çevir",
+        "çeviri",
+        "tercüme et",
+        "tercüme",
+        "metni çevir"
+      ],
+      "en": [
+        "translate",
+        "translation",
+        "translate this text",
+        "translate to english",
+        "translate document"
+      ]
+    }
   },
   {
     "id": "text.rewrite-edit",
@@ -313,7 +403,24 @@
     "slots": [],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "yeniden yaz",
+        "metni düzelt",
+        "düzeltme yap",
+        "tonunu değiştir",
+        "daha akıcı yaz",
+        "yazımı düzelt"
+      ],
+      "en": [
+        "rewrite this",
+        "proofread",
+        "edit my text",
+        "change the tone",
+        "paraphrase"
+      ]
+    }
   },
   {
     "id": "chat.general-assistant",
@@ -339,7 +446,23 @@
     "slots": [],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "genel asistan",
+        "sohbet asistanı",
+        "yapay zeka ile sohbet",
+        "her konuda soru sor",
+        "chatbot ile konuş"
+      ],
+      "en": [
+        "general assistant",
+        "chatbot",
+        "ai assistant",
+        "chat with ai",
+        "ask anything"
+      ]
+    }
   },
   {
     "id": "research.web",
@@ -386,7 +509,25 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "web araştırması",
+        "internette araştır",
+        "kaynak göstererek araştır",
+        "kaynakçalı araştırma",
+        "web'de araştır",
+        "araştır"
+      ],
+      "en": [
+        "web research",
+        "research online",
+        "cite sources",
+        "research with citations",
+        "search the web for",
+        "research"
+      ]
+    }
   },
   {
     "id": "research.academic",
@@ -440,7 +581,25 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "akademik araştırma",
+        "literatür taraması",
+        "tezim",
+        "akademik makale",
+        "bilimsel makale",
+        "tez için"
+      ],
+      "en": [
+        "academic research",
+        "literature review",
+        "find academic papers",
+        "research papers",
+        "scholarly articles",
+        "my thesis"
+      ]
+    }
   },
   {
     "id": "research.document-qa",
@@ -462,7 +621,26 @@
     "slots": [],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "belgeyle soru cevap",
+        "pdf'e soru sor",
+        "yüklediğim belge hakkında soru",
+        "dosya hakkında soru sor",
+        "belgemi analiz et",
+        "pdf"
+      ],
+      "en": [
+        "document q&a",
+        "ask questions about a pdf",
+        "ask about my document",
+        "query my file",
+        "chat with pdf",
+        "pdf",
+        "uploaded"
+      ]
+    }
   },
   {
     "id": "slides.create",
@@ -511,7 +689,25 @@
     ],
     "outputTypes": [
       "document"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "sunum hazırla",
+        "sunum",
+        "slayt hazırla",
+        "pitch deck",
+        "powerpoint hazırla",
+        "sunu yap"
+      ],
+      "en": [
+        "create slides",
+        "presentation",
+        "pitch deck",
+        "make a powerpoint",
+        "slide deck",
+        "slides for"
+      ]
+    }
   },
   {
     "id": "docs.create",
@@ -567,7 +763,25 @@
     ],
     "outputTypes": [
       "document"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "özgeçmiş hazırla",
+        "cv hazırla",
+        "fatura şablonu",
+        "teklif belgesi",
+        "belge şablonu",
+        "sözleşme şablonu"
+      ],
+      "en": [
+        "create a resume",
+        "build a cv",
+        "invoice template",
+        "proposal document",
+        "document template",
+        "resume"
+      ]
+    }
   },
   {
     "id": "image.generate",
@@ -625,7 +839,30 @@
     ],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "görsel üret",
+        "resim oluştur",
+        "görsel oluştur",
+        "görsel",
+        "resim",
+        "fotogerçekçi görsel",
+        "illüstrasyon çiz",
+        "kapak"
+      ],
+      "en": [
+        "generate an image",
+        "create an image",
+        "ai image",
+        "photorealistic image",
+        "draw an illustration",
+        "image",
+        "picture",
+        "cover art",
+        "cover"
+      ]
+    }
   },
   {
     "id": "image.logo",
@@ -676,7 +913,24 @@
     ],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "logo tasarla",
+        "logo yap",
+        "logo",
+        "marka logosu",
+        "logo oluştur",
+        "amblem"
+      ],
+      "en": [
+        "design a logo",
+        "create a logo",
+        "logo",
+        "brand logo",
+        "logo design"
+      ]
+    }
   },
   {
     "id": "image.edit",
@@ -734,7 +988,25 @@
     ],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "görseli düzenle",
+        "fotoğraf düzenle",
+        "resimden nesne sil",
+        "görsele nesne ekle",
+        "stil değiştir görsel",
+        "görsel düzenleme"
+      ],
+      "en": [
+        "edit an image",
+        "edit this photo",
+        "remove object from photo",
+        "add object to image",
+        "change image style",
+        "photo editing"
+      ]
+    }
   },
   {
     "id": "image.product-photo",
@@ -785,7 +1057,23 @@
     ],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "ürün fotoğrafı",
+        "ürün görseli oluştur",
+        "ürün çekimi",
+        "e-ticaret ürün görseli",
+        "ürün fotosu"
+      ],
+      "en": [
+        "product photo",
+        "product shot",
+        "product photography",
+        "ecommerce product image",
+        "product mockup"
+      ]
+    }
   },
   {
     "id": "image.background-remove",
@@ -836,7 +1124,23 @@
     ],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "arka plan kaldır",
+        "arka planı sil",
+        "arkaplan kaldırma",
+        "arka planını değiştir",
+        "background sil"
+      ],
+      "en": [
+        "remove background",
+        "background removal",
+        "remove the background",
+        "replace background",
+        "transparent background"
+      ]
+    }
   },
   {
     "id": "image.upscale",
@@ -853,7 +1157,23 @@
     "slots": [],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "görsel büyüt",
+        "resmi büyüt",
+        "çözünürlük artır",
+        "görseli netleştir",
+        "upscale"
+      ],
+      "en": [
+        "upscale image",
+        "increase resolution",
+        "enlarge photo",
+        "sharpen image",
+        "image upscaling"
+      ]
+    }
   },
   {
     "id": "design.social-graphic",
@@ -904,7 +1224,27 @@
     ],
     "outputTypes": [
       "image"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "sosyal medya görseli",
+        "instagram postu",
+        "hikaye tasarımı",
+        "sosyal medya banner",
+        "gönderi görseli",
+        "instagram için",
+        "sosyal medya"
+      ],
+      "en": [
+        "social media graphic",
+        "instagram post design",
+        "story design",
+        "social banner",
+        "create a post design",
+        "instagram",
+        "social media"
+      ]
+    }
   },
   {
     "id": "video.text-to-video",
@@ -955,7 +1295,25 @@
     ],
     "outputTypes": [
       "video"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "metinden video üret",
+        "video üret",
+        "sinematik video",
+        "yapay zeka video üretimi",
+        "sıfırdan video oluştur",
+        "video"
+      ],
+      "en": [
+        "text to video",
+        "generate a video",
+        "ai video generation",
+        "cinematic video",
+        "video from text",
+        "video"
+      ]
+    }
   },
   {
     "id": "video.image-to-video",
@@ -981,7 +1339,26 @@
     "slots": [],
     "outputTypes": [
       "video"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "görselden video",
+        "fotoğrafı canlandır",
+        "resmi videoya çevir",
+        "görseli hareketlendir",
+        "fotoğraftan video",
+        "video"
+      ],
+      "en": [
+        "image to video",
+        "animate a photo",
+        "turn image into video",
+        "bring photo to life",
+        "animate this image",
+        "video",
+        "animate"
+      ]
+    }
   },
   {
     "id": "video.edit-short-social",
@@ -1028,7 +1405,27 @@
     ],
     "outputTypes": [
       "video"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "reels videosu",
+        "shorts videosu",
+        "tiktok videosu",
+        "kısa sosyal medya videosu",
+        "kısa video düzenle",
+        "reels",
+        "video"
+      ],
+      "en": [
+        "reels video",
+        "shorts video",
+        "tiktok video",
+        "short social video",
+        "edit a short video",
+        "reels",
+        "video"
+      ]
+    }
   },
   {
     "id": "video.subtitles",
@@ -1070,7 +1467,27 @@
     ],
     "outputTypes": [
       "video"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "altyazı ekle",
+        "altyazı çevirisi",
+        "altyazı",
+        "videoya altyazı",
+        "caption ekle",
+        "video"
+      ],
+      "en": [
+        "add subtitles",
+        "subtitle translation",
+        "video captions",
+        "generate subtitles",
+        "add captions",
+        "subtitles",
+        "video",
+        "captions"
+      ]
+    }
   },
   {
     "id": "video.avatar-presenter",
@@ -1087,7 +1504,27 @@
     "slots": [],
     "outputTypes": [
       "video"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "avatar sunuculu video",
+        "yapay zeka avatar video",
+        "avatar ile sunum videosu",
+        "dijital sunucu video",
+        "ai avatar anlatım",
+        "avatar",
+        "video"
+      ],
+      "en": [
+        "avatar presenter video",
+        "ai avatar video",
+        "talking avatar",
+        "digital presenter",
+        "avatar narrates a script",
+        "avatar",
+        "video"
+      ]
+    }
   },
   {
     "id": "video.repurpose-clips",
@@ -1104,7 +1541,29 @@
     "slots": [],
     "outputTypes": [
       "video"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "uzun videodan klip",
+        "podcastten klip çıkar",
+        "videodan kısa klip",
+        "uzun videoyu klip yap",
+        "podcast klip",
+        "klip çıkar",
+        "video",
+        "klip"
+      ],
+      "en": [
+        "clips from long videos",
+        "repurpose podcast into clips",
+        "turn video into clips",
+        "extract clips",
+        "podcast to clips",
+        "video",
+        "clip",
+        "clips"
+      ]
+    }
   },
   {
     "id": "audio.tts-voiceover",
@@ -1158,7 +1617,23 @@
     ],
     "outputTypes": [
       "audio"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "seslendirme",
+        "metinden ses üret",
+        "profesyonel seslendirme",
+        "video için seslendirme",
+        "ses lazım"
+      ],
+      "en": [
+        "voiceover",
+        "text to speech",
+        "professional voiceover",
+        "narration for video",
+        "ai voice narration"
+      ]
+    }
   },
   {
     "id": "audio.voice-clone",
@@ -1180,7 +1655,25 @@
     "slots": [],
     "outputTypes": [
       "audio"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "ses klonlama",
+        "kendi sesimi klonla",
+        "ses klonu oluştur",
+        "sesimin kopyasını",
+        "ses klonlamak istiyorum",
+        "klon"
+      ],
+      "en": [
+        "voice cloning",
+        "clone my voice",
+        "create a voice clone",
+        "synthetic voice copy",
+        "clone this voice",
+        "clone"
+      ]
+    }
   },
   {
     "id": "audio.transcribe",
@@ -1197,7 +1690,25 @@
     "slots": [],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "transkript çıkar",
+        "sesi yazıya dök",
+        "döküm yap",
+        "konuşmayı metne çevir",
+        "yazıya çevir kayıt",
+        "transkript",
+        "yazıya dök"
+      ],
+      "en": [
+        "transcribe",
+        "transcription",
+        "convert speech to text",
+        "transcribe this recording",
+        "audio to text"
+      ]
+    }
   },
   {
     "id": "audio.cleanup",
@@ -1214,7 +1725,25 @@
     "slots": [],
     "outputTypes": [
       "audio"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "ses temizle",
+        "gürültü temizle",
+        "yankı gider",
+        "kaydı iyileştir",
+        "arka plan gürültüsünü sil",
+        "gürültü"
+      ],
+      "en": [
+        "audio cleanup",
+        "remove background noise",
+        "remove echo",
+        "clean up recording",
+        "noise reduction",
+        "hiss"
+      ]
+    }
   },
   {
     "id": "audio.meeting-notes",
@@ -1263,7 +1792,26 @@
     ],
     "outputTypes": [
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "toplantı notu",
+        "toplantıyı özetle",
+        "aksiyon maddesi çıkar",
+        "toplantı kaydı özeti",
+        "zoom notlarım",
+        "toplantı",
+        "aksiyon"
+      ],
+      "en": [
+        "meeting notes",
+        "summarize the meeting",
+        "action items",
+        "meeting transcript summary",
+        "record my meeting",
+        "meeting"
+      ]
+    }
   },
   {
     "id": "music.generate",
@@ -1305,7 +1853,27 @@
     ],
     "outputTypes": [
       "audio"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "müzik üret",
+        "şarkı yap",
+        "fon müziği",
+        "jingle üret",
+        "telifsiz müzik",
+        "müzik",
+        "şarkı"
+      ],
+      "en": [
+        "generate music",
+        "make a song",
+        "background music",
+        "create a jingle",
+        "royalty-free music",
+        "music",
+        "song"
+      ]
+    }
   },
   {
     "id": "code.assistant-ide",
@@ -1363,7 +1931,26 @@
     ],
     "outputTypes": [
       "code"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "editörde kod tamamlama",
+        "kod editörü eklentisi",
+        "ide içinde yapay zeka",
+        "kod tamamlama",
+        "vs code için ai",
+        "otomatik tamamlama"
+      ],
+      "en": [
+        "ide autocomplete",
+        "ai in vs code",
+        "code completion",
+        "coding assistant in editor",
+        "ai pair programmer",
+        "autocomplete",
+        "vs code"
+      ]
+    }
   },
   {
     "id": "code.agent-cli",
@@ -1389,7 +1976,25 @@
     "slots": [],
     "outputTypes": [
       "code"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "terminalden kod ajanı",
+        "kod tabanında çalışan ajan",
+        "terminal kod asistanı",
+        "komut satırı kod ajanı",
+        "cli kod ajanı",
+        "terminalden"
+      ],
+      "en": [
+        "coding agent in terminal",
+        "cli coding agent",
+        "agent that edits my codebase",
+        "terminal ai coding",
+        "autonomous coding agent",
+        "terminal"
+      ]
+    }
   },
   {
     "id": "code.debug",
@@ -1415,7 +2020,26 @@
     "slots": [],
     "outputTypes": [
       "code"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "hata ayıkla",
+        "kodumda hata var",
+        "bug bul",
+        "kod hatası düzelt",
+        "neden çalışmıyor kod",
+        "debug",
+        "hata"
+      ],
+      "en": [
+        "debug this code",
+        "fix this bug",
+        "find the error in code",
+        "why does my code fail",
+        "debugging help",
+        "debug"
+      ]
+    }
   },
   {
     "id": "code.app-builder",
@@ -1462,7 +2086,27 @@
     ],
     "outputTypes": [
       "code"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "kod yazmadan uygulama yap",
+        "kodsuz uygulama oluştur",
+        "no-code uygulama",
+        "mobil uygulama yap kod bilmeden",
+        "uygulama oluşturucu",
+        "mobil uygulama",
+        "uygulama yap"
+      ],
+      "en": [
+        "no-code app builder",
+        "build an app without coding",
+        "app builder",
+        "create an app by describing it",
+        "no code mobile app",
+        "mobile app",
+        "build an app"
+      ]
+    }
   },
   {
     "id": "code.website-builder",
@@ -1509,7 +2153,25 @@
     ],
     "outputTypes": [
       "code"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "web sitesi yap",
+        "web sitesi yapmak istiyorum",
+        "website oluştur",
+        "site kur",
+        "web sayfası oluştur",
+        "web sitesi"
+      ],
+      "en": [
+        "website builder",
+        "build a website",
+        "create a website",
+        "make a website",
+        "i want to make a website",
+        "website"
+      ]
+    }
   },
   {
     "id": "data.spreadsheet-analysis",
@@ -1527,7 +2189,27 @@
     "outputTypes": [
       "data",
       "text"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "excel analizi",
+        "tablo verisini analiz et",
+        "excel verisi analiz",
+        "tabloyu analiz et",
+        "satış verisi analizi",
+        "excel",
+        "tablo"
+      ],
+      "en": [
+        "spreadsheet analysis",
+        "analyze excel data",
+        "analyze my spreadsheet",
+        "excel data analysis",
+        "analyze this csv",
+        "spreadsheet",
+        "excel"
+      ]
+    }
   },
   {
     "id": "data.dashboard",
@@ -1569,7 +2251,25 @@
     ],
     "outputTypes": [
       "data"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "dashboard oluştur",
+        "interaktif dashboard",
+        "iş raporu hazırla",
+        "bi raporu",
+        "dashboard hazırla",
+        "dashboard"
+      ],
+      "en": [
+        "build a dashboard",
+        "interactive dashboard",
+        "business intelligence report",
+        "bi dashboard",
+        "create a dashboard",
+        "dashboard"
+      ]
+    }
   },
   {
     "id": "automation.workflow",
@@ -1611,7 +2311,26 @@
     ],
     "outputTypes": [
       "data"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "iş akışı otomasyonu",
+        "uygulamaları birbirine bağla",
+        "otomatik iş akışı kur",
+        "tekrarlayan işi otomatikleştir",
+        "workflow otomasyonu",
+        "otomatik gönder",
+        "otomatik"
+      ],
+      "en": [
+        "workflow automation",
+        "connect apps automatically",
+        "automate repetitive tasks",
+        "automation workflow",
+        "automate this process",
+        "automatically send"
+      ]
+    }
   },
   {
     "id": "3d.generate",
@@ -1653,6 +2372,24 @@
     ],
     "outputTypes": [
       "3d"
-    ]
+    ],
+    "keywords": {
+      "tr": [
+        "3d model üret",
+        "3 boyutlu model oluştur",
+        "3d sahne üret",
+        "metinden 3d model",
+        "3d nesne oluştur",
+        "3d model"
+      ],
+      "en": [
+        "3d model generation",
+        "generate a 3d model",
+        "create a 3d scene",
+        "text to 3d",
+        "3d object generation",
+        "3d model"
+      ]
+    }
   }
 ]

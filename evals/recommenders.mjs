@@ -21,6 +21,8 @@ import { loadCatalog } from '../lib/catalog/index.ts';
 import { runAgent } from '../lib/agent/loop.ts';
 import { openAIChatClient } from '../lib/agent/client.ts';
 import { agentModel } from '../lib/agent/config.ts';
+import { classifyTask } from '../lib/intent/taskClassifier.ts';
+import { hasOpenAIKey } from './env.mjs';
 
 /** v1: /api/recommend ile aynı akış (lib/recommendV1.ts). UI filtresi yok = 'all'. */
 async function v1(query) {
@@ -121,4 +123,27 @@ async function v2(query, golden) {
   };
 }
 
-export const recommenders = { v1, 'v2-oracle': v2Oracle, v2 };
+/**
+ * task: SADECE görev sınıflandırma doğruluğu (P11). Ürün önermez, tools
+ * hep boş — top1Hit/top3Hit bu adaptörde anlamsız, taskMatch'e bakılır.
+ *
+ * OPENAI_API_KEY yoksa (bu ortamda hasOpenAIKey=false) allowLLM:false
+ * verilir: LLM'e HİÇ gidilmez, hiçbir satır 'skipped' sayılmaz — dönen
+ * taskMatch kural katmanının TEK BAŞINA doğruluğunu raporlar (P11 kabul:
+ * ≥ %80). Anahtar varsa (eval.yml) allowLLM:true: belirsiz sorgular LLM'e
+ * gider, taskMatch bütün sistemi ölçer (P11 kabul: ≥ %90).
+ */
+async function task(query) {
+  const r = await classifyTask(query, { allowLLM: hasOpenAIKey });
+  if ('clarify' in r) {
+    return { tools: [], clarification: true, detail: { kind: 'clarify', clarify: r.clarify } };
+  }
+  return {
+    task: r.taskId,
+    tools: [],
+    clarification: false,
+    detail: { kind: r.source, confidence: r.confidence, alternatives: r.alternatives },
+  };
+}
+
+export const recommenders = { v1, 'v2-oracle': v2Oracle, v2, task };
