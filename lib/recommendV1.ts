@@ -191,18 +191,18 @@ export async function recommendV1(
   }
   const intent = intentResult;
 
-  // Workflow LAZY: sadece multi-step niyette üretilir. null dönerse
-  // (şablon yok, AI üretimi de başarısız) tek araç önerisine düşülür.
-  // allowLLM false iken workflow da atlanır: şablon bulunamazsa AI üretimine
-  // gidiyor, bu da OpenAI çağrısı demek.
+  // Workflow LAZY: sadece multi-step niyette ve eşleşen şablon varsa üretilir.
+  // null dönerse (şablon yok, bir adıma fiyat filtresine uyan araç yok) tek
+  // araç önerisine düşülür. allowLLM false iken (ajan yedeği) workflow
+  // atlanır: o yol sadece tek araç kartı gösterir.
+  const allTools = await getTools();
   if (intent.complexity === 'multi-step' && options.allowLLM !== false) {
-    const workflow = await generateWorkflow(intent, prompt);
+    const workflow = await generateWorkflow(intent, prompt, { pricingFilter, tools: allTools });
     if (workflow) {
       return { kind: 'workflow', intent, workflow };
     }
   }
 
-  const allTools = await getTools();
   const selection = selectV1Tools({ intent, searchResults, allTools, pricingFilter });
   if (!selection) {
     return { kind: 'empty', intent, searchResults };

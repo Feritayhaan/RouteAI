@@ -110,7 +110,6 @@ export const workflowCardSchema = z.object({
   type: z.literal('workflow'),
   templateId: z.string(),
   name: z.string(),
-  estimatedDuration: z.string(),
   steps: z.array(z.object({
     order: z.number(),
     name: z.string(),
@@ -123,7 +122,6 @@ export const workflowCardSchema = z.object({
       q: z.number(),
       confidence: z.enum(['high', 'medium', 'low']),
     }).nullable(),
-    promptTemplate: z.string().nullable(),
   })),
 });
 export type WorkflowCard = z.infer<typeof workflowCardSchema>;

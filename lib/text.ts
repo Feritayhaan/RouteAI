@@ -47,3 +47,18 @@ export function normalizeTr(s: string): string {
 export function tokenizeTr(s: string): string[] {
     return normalizeTr(s).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
 }
+
+/**
+ * term, metinde bir kelimenin BAŞINDAN itibaren geçiyor mu? Diakritik ve
+ * büyük/küçük harf duyarsız. Kelime sonu serbest (Türkçe ekler: "podcastimi"),
+ * başı değil: "facebook" içinde "ebook", "freelancer" içinde "reel" bulunmaz.
+ */
+export function hasTerm(text: string, term: string): boolean {
+    const t = normalizeTr(text);
+    const k = normalizeTr(term);
+    if (!k) return false;
+    for (let i = t.indexOf(k); i !== -1; i = t.indexOf(k, i + 1)) {
+        if (i === 0 || !/[\p{L}\p{N}]/u.test(t[i - 1])) return true;
+    }
+    return false;
+}

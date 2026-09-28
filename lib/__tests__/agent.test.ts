@@ -87,12 +87,9 @@ describe('ajan araçları: argüman doğrulaması', () => {
     assert.ok(r.card.steps.every((s) => real.search.tasksById.has(s.taskId)));
   });
 
-  it('şablon adımı -> görev eşlemesi', () => {
-    const step = (capabilities: string[], category = 'metin') => ({ order: 1, name: '', description: '', category, inputType: 'text', outputType: 'text', capabilities }) as Parameters<typeof stepTaskId>[0];
-    assert.strictEqual(stepTaskId(step(['logo design', 'branding'])), 'image.logo');
-    assert.strictEqual(stepTaskId(step(['music generation', 'beat making'])), 'music.generate');
-    assert.strictEqual(stepTaskId(step(['voice synthesis', 'text to speech'])), 'audio.tts-voiceover');
-    assert.strictEqual(stepTaskId(step(['something new'], 'video')), 'video.text-to-video');
+  it('şablon adımı -> görev: şablondaki ilk görev', () => {
+    const step = { order: 1, name: '', description: '', category: 'ses', tasks: ['audio.tts-voiceover', 'music.generate'] } as Parameters<typeof stepTaskId>[0];
+    assert.strictEqual(stepTaskId(step), 'audio.tts-voiceover');
   });
 });
 

@@ -292,7 +292,9 @@ export default function HomeClient() {
 
   // Prompt: "Bana Yol Göster" sonrası, açıksa önerinin altında aynı ekranda.
   // Araç 'Önerilen araç' ise sonucu bekler; belirli bir araç seçildiyse sonuçtan bağımsız.
-  const promptTarget = promptEnabled && submitted && !isLoading
+  // İş akışında 'Önerilen araç' seçiliyse prompt adımın içinde açılır (WorkflowDisplay).
+  const stepPrompts = isWorkflow && promptTool === AUTO_TOOL
+  const promptTarget = promptEnabled && submitted && !isLoading && !stepPrompts
     ? resolvePromptTarget(promptTool, recommendedTools(response))
     : null
   const promptKey = promptTarget && submitted
@@ -428,7 +430,12 @@ export default function HomeClient() {
           {/* Response Display */}
           {response && !isLoading && (
             isWorkflow ? (
-              <WorkflowDisplay workflow={(response as WorkflowRecommendation).workflow} />
+              <WorkflowDisplay
+                key={submitted?.n}
+                workflow={(response as WorkflowRecommendation).workflow}
+                goal={submitted?.query ?? query}
+                autoPrompt={promptEnabled && stepPrompts}
+              />
             ) : (
               <SimpleRecommendationDisplay
                 key={`${query}-${(response as SimpleRecommendation).main.toolName}`}

@@ -25,6 +25,11 @@ const PRODUCTS = new Map((productsJson as Product[]).map((p) => [p.id, p]));
 const MODELS = modelsJson as Model[];
 const CURRENT = new Map<string, CurrentModel | null>();
 
+/** Ürünün katalogdaki görevleri (data/products.json); katalogda yoksa boş. */
+export function productTasks(productId: string): string[] {
+  return PRODUCTS.get(productId)?.tasks ?? [];
+}
+
 function currentModelOf(product: Product, models: Model[]): CurrentModel | null {
   if (models !== MODELS) return resolveCurrentModel(product, models);
   if (!CURRENT.has(product.id)) CURRENT.set(product.id, resolveCurrentModel(product, MODELS));
