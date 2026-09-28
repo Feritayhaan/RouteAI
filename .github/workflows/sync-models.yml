@@ -8,6 +8,12 @@
 # senkron, veri dışı dosya, model sayısında >%20 düşüş, güncel modeli kaybolan
 # ürün, sinyal anormalliği) PR açık kalır ve sebep PR'a yorum olarak yazılır.
 #
+# Sessiz başarı yok (scripts/sync/core.mjs → syncExitDecision): LMArena'dan ya da
+# anahtarı tanımlı bir kaynaktan (AA, KV) hiç veri gelmezse iş KIRMIZI biter.
+# Anahtarı olmayan kaynak "atlandı" sayılır. Kırmızı karar en sonda uygulanır:
+# gelen kısmi veri yine PR'a gider ama otomatik merge edilmez. Rapor
+# (sync-report.md + signals-anomalies.md) her koşuda iş özetinde görünür.
+#
 # Gerekenler:
 #  - Repo secret: AA_API_KEY (yoksa Artificial Analysis atlanır, LMArena yine çalışır)
 #  - Repo secret: KV_REST_API_URL + KV_REST_API_READ_ONLY_TOKEN (yoksa sinyal adımı atlanır)
@@ -45,16 +51,55 @@ jobs:
 
       - run: npm ci
 
+      # Rapor dosyaları repoda da durabilir; iş özetine sadece bu koşuda yazılanlar girsin.
+      - name: Başlangıç işareti
+        run: touch "$RUNNER_TEMP/nightly-start"
+
       - name: Modelleri senkronla
+        id: sync
+        continue-on-error: true # kırmızı karar son adımda uygulanır
         env:
           AA_API_KEY: ${{ secrets.AA_API_KEY }}
         run: npm run sync:models
 
       - name: Sinyalleri topla (KV'den sadece okuma)
+        id: signals
+        continue-on-error: true # kırmızı karar son adımda uygulanır
         env:
           KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
           KV_REST_API_READ_ONLY_TOKEN: ${{ secrets.KV_REST_API_READ_ONLY_TOKEN }}
         run: npm run aggregate:signals
+
+      - name: Raporu iş özetine yaz
+        if: always()
+        env:
+          SYNC_OUTCOME: ${{ steps.sync.outcome }}
+          SIGNALS_OUTCOME: ${{ steps.signals.outcome }}
+        run: |
+          START="$RUNNER_TEMP/nightly-start"
+          {
+            if [ -f data/sync-report.md ] && [ data/sync-report.md -nt "$START" ]; then
+              cat data/sync-report.md
+            else
+              echo "# Model senkron raporu"
+              echo
+              echo "data/sync-report.md bu koşuda yazılmadı (adım sonucu: ${SYNC_OUTCOME}). Ayrıntı: 'Modelleri senkronla' adımının logu."
+            fi
+            echo
+            echo "---"
+            echo
+            if [ -f data/signals-anomalies.md ] && [ data/signals-anomalies.md -nt "$START" ]; then
+              cat data/signals-anomalies.md
+            elif [ "$SIGNALS_OUTCOME" = "success" ]; then
+              echo "# Sinyaller"
+              echo
+              echo "Atlandı: KV_REST_API_URL + KV_REST_API_READ_ONLY_TOKEN secret'ı tanımlı değil (hata sayılmaz)."
+            else
+              echo "# Sinyaller"
+              echo
+              echo "HATA: KV okunamadı (adım sonucu: ${SIGNALS_OUTCOME}); data/signals.json değiştirilmedi. Ayrıntı: 'Sinyalleri topla' adımının logu."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Kataloğu doğrula
         run: npm run validate:catalog
@@ -68,6 +113,8 @@ jobs:
       - name: Değişiklik varsa PR aç
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SYNC_OUTCOME: ${{ steps.sync.outcome }}
+          SIGNALS_OUTCOME: ${{ steps.signals.outcome }}
         run: |
           if git diff --quiet -- data/models.json data/signals.json; then
             echo "data/models.json ve data/signals.json değişmedi; PR yok."
@@ -79,6 +126,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Otomatik merge kararı commit'ten ÖNCE (çalışma kopyası vs main)
           if npm run --silent automerge:guard > /tmp/guard.txt 2>&1; then AUTO=1; else AUTO=0; fi
+          # Bir kaynak kırmızı bittiyse kısmi veri PR'a gider ama otomatik merge edilmez.
+          if [ "$SYNC_OUTCOME" != "success" ] || [ "$SIGNALS_OUTCOME" != "success" ]; then
+            AUTO=0
+            { echo "Otomatik merge edilmedi: gece işi kırmızı (senkron: ${SYNC_OUTCOME}, sinyaller: ${SIGNALS_OUTCOME}); kararın gerekçesi data/sync-report.md → 'Karar' ve iş özetinde."
+              echo
+              cat /tmp/guard.txt
+            } > /tmp/guard-full.txt
+            mv /tmp/guard-full.txt /tmp/guard.txt
+          fi
           cat /tmp/guard.txt
           git checkout -b "$BRANCH"
           for f in data/models.json data/sync-report.md data/signals.json data/signals-anomalies.md; do
@@ -99,3 +155,13 @@ jobs:
           else
             gh pr comment "$BRANCH" --body-file /tmp/guard.txt
           fi
+
+      # Sessiz başarı yok: senkron ya da sinyal adımı kırmızı kararla bittiyse iş de kırmızı.
+      - name: Kaynak kararı
+        if: steps.sync.outcome == 'failure' || steps.signals.outcome == 'failure'
+        env:
+          SYNC_OUTCOME: ${{ steps.sync.outcome }}
+          SIGNALS_OUTCOME: ${{ steps.signals.outcome }}
+        run: |
+          echo "::error::Gece verisi eksik: senkron=${SYNC_OUTCOME}, sinyaller=${SIGNALS_OUTCOME}. Gerekçe iş özetinde (data/sync-report.md → Karar)."
+          exit 1

@@ -1,0 +1,116 @@
+# Elle eval: altın set (npm run eval) + prompt oluşturucu (npm run eval:prompts),
+# gerçek OpenAI çağrılarıyla. Token harcar; bu yüzden sadece elle (workflow_dispatch).
+# KV secret'ı bilerek VERİLMEZ: eval KV'ye dokunmamalı (evals/env.mjs KV
+# değişkenlerini ayrıca siler, katalog git'teki JSON'dan okunur).
+# Çıktı: özet satırları iş özetinde; bu koşunun evals/results/*.json dosyaları
+# (ve tam loglar) artifact olarak.
+#
+# Secret: OPENAI_API_KEY (yoksa iş baştan kırmızı biter; anahtarsız her LLM sorgusu skipped olurdu).
+# Sadece GitHub'ın kendi action'ları kullanılıyor (checkout, setup-node, upload-artifact).
+
+name: eval
+
+on:
+  workflow_dispatch:
+    inputs:
+      recommenders:
+        description: "npm run eval -- --recommender=<ad>; birden fazlaysa boşlukla (ör. 'v1 v2-oracle')"
+        type: string
+        default: v1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eval
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      RECOMMENDERS: ${{ inputs.recommenders }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Anahtar kontrolü
+        id: key
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret'ı tanımlı değil; eval anlamsız olurdu (LLM sorguları skipped)."
+            exit 1
+          fi
+          touch "$RUNNER_TEMP/eval-start"
+
+      - name: Altın set (npm run eval)
+        run: |
+          set -o pipefail
+          for r in $RECOMMENDERS; do
+            case "$r" in
+              *[!a-z0-9-]*) echo "::error::geçersiz recommender adı: $r"; exit 1 ;;
+            esac
+            npm run --silent eval -- --recommender="$r" 2>&1 | tee -a "$RUNNER_TEMP/eval.log"
+          done
+
+      - name: Prompt oluşturucu (npm run eval:prompts)
+        if: ${{ !cancelled() && steps.key.outcome == 'success' }}
+        run: |
+          set -o pipefail
+          npm run --silent eval:prompts 2>&1 | tee "$RUNNER_TEMP/eval-prompts.log"
+
+      - name: Özeti iş özetine yaz
+        if: ${{ !cancelled() && steps.key.outcome == 'success' }}
+        run: |
+          {
+            echo "# Eval ($(date -u +%Y-%m-%d))"
+            echo
+            echo "## Altın set (recommender: ${RECOMMENDERS})"
+            echo
+            echo '```text'
+            if [ -f "$RUNNER_TEMP/eval.log" ]; then
+              # recommender başına: başlık satırları + ÖZET bloğu (tablo artifact'ta)
+              awk '/^\[eval\] (recommender=|OpenAI)/ { print; next } /ÖZET \(/ { p = 1 } p { print } /^\[eval\] sonuç yazıldı/ { p = 0; print "" }' "$RUNNER_TEMP/eval.log"
+            else
+              echo "eval çalışmadı (adım logu)."
+            fi
+            echo '```'
+            echo
+            echo "## Prompt oluşturucu (eval:prompts)"
+            echo
+            echo '```text'
+            if [ -f "$RUNNER_TEMP/eval-prompts.log" ]; then
+              grep -E '^(ÖZET:|\[eval:prompts\])' "$RUNNER_TEMP/eval-prompts.log" || true
+            else
+              echo "eval:prompts çalışmadı (adım logu)."
+            fi
+            echo '```'
+            echo
+            echo "Tam tablo ve sonuç dosyaları: bu koşunun 'eval-results' artifact'ı."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Bu koşunun sonuç dosyalarını topla
+        if: ${{ !cancelled() && steps.key.outcome == 'success' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/eval-results"
+          find evals/results -maxdepth 1 -name '*.json' -newer "$RUNNER_TEMP/eval-start" -exec cp {} "$RUNNER_TEMP/eval-results/" \;
+          for f in "$RUNNER_TEMP"/eval.log "$RUNNER_TEMP"/eval-prompts.log; do
+            if [ -f "$f" ]; then cp "$f" "$RUNNER_TEMP/eval-results/"; fi
+          done
+          ls -l "$RUNNER_TEMP/eval-results"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.key.outcome == 'success' }}
+        with:
+          name: eval-results
+          path: ${{ runner.temp }}/eval-results/
+          if-no-files-found: warn
+          retention-days: 90

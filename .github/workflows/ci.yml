@@ -1,0 +1,48 @@
+# PR kontrolü: her PR'da ve main'e push'ta lint, tip kontrolü, testler,
+# katalog doğrulaması ve build. Secret KULLANMAZ: testler canlı servislere
+# (OpenAI, KV, Artificial Analysis, LMArena) dokunmuyor.
+# Node sürümü sync-models.yml ile aynı tutulur.
+# Sadece GitHub'ın kendi action'ları kullanılıyor (actions/checkout, actions/setup-node).
+
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tip kontrolü
+        run: npx tsc --noEmit
+
+      - name: Testler
+        run: npm test
+
+      - name: Kataloğu doğrula
+        run: npm run validate:catalog
+
+      - name: Build
+        run: npm run build

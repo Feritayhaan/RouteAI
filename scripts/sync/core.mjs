@@ -463,9 +463,49 @@ export function newReport() {
   return { errors: [], warnings: [], skipped: [], fieldUse: [], sample: {}, added: [], disappeared: [], fetchedAt: {} };
 }
 
-export function renderReport(report, { models, dryRun, wrote }) {
+// ------------------------------------------------------------------
+// Gece işinin çıkış kararı (sync-models ve aggregate-signals ortak kuralı)
+// ------------------------------------------------------------------
+
+/**
+ * Sessiz başarı yok: beklenen bir kaynaktan hiç veri gelmediyse iş kırmızı biter.
+ *  - Beklenen kaynak = anahtar gerektirmeyen (LMArena) ya da anahtarı tanımlı olan (AA_API_KEY, KV).
+ *  - Anahtar gerektiren ama anahtarı tanımlı olmayan kaynak "atlandı": hata sayılmaz.
+ *  - Veri gelen kaynaklardaki tekil hatalar (kısmi hata) işi kırmızı yapmaz; gerekçede görünür.
+ * `gotData`: okuma başarılı ve kullanılabilir yanıt geldi (boş kayıt listesi de veridir).
+ *
+ * @param {{ sources: { name: string, needsKey: boolean, hasKey?: boolean, gotData: boolean }[], errors: string[] }} input
+ * @returns {{ code: 0 | 1, reasons: string[] }}
+ */
+export function syncExitDecision({ sources, errors }) {
+  const reasons = [];
+  let code = 0;
+  if (sources.length === 0) {
+    return { code: 1, reasons: ['Tanımlı veri kaynağı yok.'] };
+  }
+  for (const s of sources) {
+    if (s.needsKey && !s.hasKey) {
+      reasons.push(`${s.name}: anahtar tanımlı değil, atlandı (hata sayılmadı).`);
+    } else if (!s.gotData) {
+      code = 1;
+      reasons.push(`${s.name}: veri gelmedi.`);
+    }
+  }
+  if (errors.length > 0) {
+    reasons.push(code === 1
+      ? `${errors.length} hata.`
+      : `Kısmi hata: ${errors.length} hata; beklenen kaynakların hepsinden veri geldi.`);
+  }
+  return { code, reasons };
+}
+
+export function renderReport(report, { models, dryRun, wrote, decision }) {
   const lines = ['# Model senkron raporu', ''];
   lines.push(`Durum: ${dryRun ? 'DRY RUN (dosya yazılmadı)' : wrote ? 'data/models.json güncellendi' : 'data/models.json DEĞİŞTİRİLMEDİ'}`);
+  if (decision) {
+    lines.push('', `## Karar: ${decision.code === 0 ? 'başarılı' : 'BAŞARISIZ (iş kırmızı biter)'}`, '');
+    lines.push(...(decision.reasons.length ? decision.reasons.map((r) => `- ${r}`) : ['- Beklenen kaynakların hepsinden veri geldi, hata yok.']));
+  }
   lines.push('', '## Kaynaklar', '');
   for (const [src, at] of Object.entries(report.fetchedAt)) lines.push(`- ${src}: ${at ?? 'başarısız / atlandı — eski veri korundu'}`);
   for (const s of report.skipped) lines.push(`- ${s}`);
