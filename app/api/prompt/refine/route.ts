@@ -4,7 +4,10 @@ import { refinePromptSession } from "@/lib/promptBuilder/service";
 import { handlePromptRequest } from "@/lib/promptBuilder/http";
 
 // Prompt iyileştirme: hazır buton | varsayım değişikliği | serbest talimat -> yeni PromptCard.
-export const runtime = "edge";
+// Node: düşünen modelle (OPENAI_PROMPT_MODEL) tur 25 sn'yi aşabilir; edge'de yanıt
+// 25 sn içinde başlamak zorunda. Zaman aşımı: lib/promptBuilder/deps.ts.
+export const runtime = "nodejs";
+export const maxDuration = 60;
 export const preferredRegion = "fra1";
 
 export function POST(req: NextRequest) {

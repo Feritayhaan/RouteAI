@@ -92,7 +92,8 @@ npm run dev                         # http://localhost:3000
 | --- | --- | --- |
 | `OPENAI_API_KEY` | Prompt oluşturucu, navigasyon niyet analizi; workflow'larda keşif sınıflandırması ve fiyat çıkarımı | ✅ |
 | `OPENAI_MODEL` | Varsayılan model (prompt oluşturucu `OPENAI_PROMPT_MODEL` boşsa bunu kullanır; v2 eval ajanı). Boşsa `gpt-4o-mini` (`lib/agent/config.ts`) | ⬜ |
-| `OPENAI_PROMPT_MODEL` | Prompt oluşturucunun modeli. Boşsa `OPENAI_MODEL`, o da boşsa `gpt-4o-mini` | ⬜ |
+| `OPENAI_PROMPT_MODEL` | Prompt oluşturucunun modeli. Boşsa `OPENAI_MODEL`, o da boşsa `gpt-4o-mini`. Düşünen modeller (o-serisi, `gpt-5`, `gpt-5-mini`…) desteklenir: `max_completion_tokens` + `reasoning_effort`, zaman aşımı 50 sn (`lib/promptBuilder/llm.ts`, `deps.ts`) | ⬜ |
+| `OPENAI_PROMPT_REASONING_EFFORT` | Sadece düşünen modelde: `none`, `minimal`, `low`, `medium`, `high`. Boş ya da geçersizse `low` (tüm düşünen modeller destekler; `none`/`minimal` her modelde yok) | ⬜ |
 | `OPENAI_MONTHLY_TOKEN_BUDGET` | Aylık token bütçesi (prompt oluşturucu). Kullanım KV'de `usage:<YYYY-MM>` ve `usage:day:<YYYY-MM-DD>`; aşılınca prompt oluşturucu 503 döner. Boş = sınır yok | ⬜ |
 | `UPSTASH_VECTOR_REST_URL` | Upstash Vector URL'i (sadece `VECTOR_SEARCH_ENABLED=true` iken) | ⬜ |
 | `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector token'ı (aynı koşul) | ⬜ |

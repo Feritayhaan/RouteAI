@@ -29,6 +29,7 @@ const deps = () => ({
   store: memoryPromptStore(),
   guides,
   products: loadCatalog().products,
+  tasksById: loadCatalog().tasksById,
   now: Date.now,
   newId: newPromptSessionId,
   signal: AbortSignal.timeout(60_000),

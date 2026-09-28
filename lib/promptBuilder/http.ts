@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { checkRateLimit } from "../rateLimit";
 import { getClientIp } from "../getClientIp";
 import { isOverBudget, kvUsageStore, recordUsage } from "../agent/budget";
-import { defaultPromptDeps, PROMPT_TIMEOUT_MS } from "./deps";
+import { defaultPromptDeps, promptTimeoutMs } from "./deps";
 import type { PromptDeps, PromptResult } from "./service";
 
 const STATUS: Record<string, number> = {
@@ -40,7 +40,7 @@ export async function handlePromptRequest<T>(
   if (await isOverBudget(usage)) return NextResponse.json({ error: "budget" }, { status: 503 });
 
   const abort = new AbortController();
-  const timer = setTimeout(() => abort.abort(), PROMPT_TIMEOUT_MS);
+  const timer = setTimeout(() => abort.abort(), promptTimeoutMs());
   const started = Date.now();
   try {
     const result = await run(parsed.data, defaultPromptDeps(abort.signal));

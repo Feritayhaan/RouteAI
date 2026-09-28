@@ -14,6 +14,8 @@ import { MAX_REFINEMENTS } from '../promptBuilder/types';
 import { loadCatalog } from '../catalog/index';
 import { makeBuildPromptTool } from '../promptBuilder/agentTool';
 import { fallbackGuideId, resolveGuideId } from '../promptBuilder/fallback';
+import { buildChatRequest, isReasoningModel, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
+import { PROMPT_TIMEOUT_MS, promptTimeoutMs, REASONING_PROMPT_TIMEOUT_MS } from '../promptBuilder/deps';
 import { promptAnswerSchema, promptRefineSchema } from '../validations/prompt';
 
 describe('YAML alt kümesi', () => {
@@ -449,5 +451,58 @@ describe('prompt istek sınırları', () => {
     assert.ok(!promptRefineSchema.safeParse({ promptSessionId: id, slotId: 'mood', value: 'x'.repeat(301) }).success);
     assert.ok(promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(300) } }).success);
     assert.ok(!promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(301) } }).success);
+  });
+});
+
+describe('düşünen model desteği (lib/promptBuilder/llm.ts)', () => {
+  const req = { name: 'prompt_generation', system: 'sys', user: 'u', schema: { type: 'object' }, maxTokens: 1800, temperature: 0.4 };
+
+  it('o-serisi ve gpt-5 düşünen model; gpt-5 sohbet sürümü ve gpt-4 ailesi değil', () => {
+    for (const m of ['o1', 'o3-mini', 'o4-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5.1', 'openai/gpt-5-nano', ' GPT-5 ']) assert.ok(isReasoningModel(m), m);
+    for (const m of ['gpt-4o-mini', 'gpt-4.1', 'gpt-5-chat-latest', 'omni-moderation-latest']) assert.ok(!isReasoningModel(m), m);
+  });
+
+  it('düşünen model: developer rolü, max_completion_tokens (düşünme payı dahil), reasoning_effort; temperature yok', () => {
+    const body = buildChatRequest('gpt-5-mini', req, 'low');
+    assert.strictEqual(body.messages[0].role, 'developer');
+    assert.deepStrictEqual(
+      { max_completion_tokens: (body as { max_completion_tokens?: number }).max_completion_tokens, reasoning_effort: (body as { reasoning_effort?: string }).reasoning_effort },
+      { max_completion_tokens: 1800 + REASONING_ALLOWANCE.low, reasoning_effort: 'low' }
+    );
+    assert.ok(!('temperature' in body) && !('max_tokens' in body));
+    assert.strictEqual(body.response_format.json_schema.strict, true);
+  });
+
+  it('normal model: system rolü, max_tokens ve temperature (eski davranış)', () => {
+    const body = buildChatRequest('gpt-4o-mini', req, 'low');
+    assert.strictEqual(body.messages[0].role, 'system');
+    assert.deepStrictEqual({ max_tokens: (body as { max_tokens?: number }).max_tokens, temperature: (body as { temperature?: number }).temperature }, { max_tokens: 1800, temperature: 0.4 });
+    assert.ok(!('max_completion_tokens' in body) && !('reasoning_effort' in body));
+  });
+
+  it('düşünme düzeyi ortam değişkeninden; boş ya da geçersizse low. Zaman aşımı modele göre', () => {
+    const old = process.env.OPENAI_PROMPT_REASONING_EFFORT;
+    try {
+      delete process.env.OPENAI_PROMPT_REASONING_EFFORT;
+      assert.strictEqual(promptReasoningEffort(), 'low');
+      process.env.OPENAI_PROMPT_REASONING_EFFORT = ' Medium ';
+      assert.strictEqual(promptReasoningEffort(), 'medium');
+      process.env.OPENAI_PROMPT_REASONING_EFFORT = 'çok';
+      assert.strictEqual(promptReasoningEffort(), 'low');
+    } finally {
+      if (old === undefined) delete process.env.OPENAI_PROMPT_REASONING_EFFORT;
+      else process.env.OPENAI_PROMPT_REASONING_EFFORT = old;
+    }
+    assert.strictEqual(promptTimeoutMs('gpt-4o-mini'), PROMPT_TIMEOUT_MS);
+    assert.strictEqual(promptTimeoutMs('o4-mini'), REASONING_PROMPT_TIMEOUT_MS);
+    assert.ok(REASONING_PROMPT_TIMEOUT_MS < 60_000, 'route maxDuration (60 sn) altında');
+  });
+
+  it('prompt uçları Node çalışma zamanında, maxDuration 60', () => {
+    for (const r of ['start', 'answer', 'refine']) {
+      const src = readFileSync(`app/api/prompt/${r}/route.ts`, 'utf8');
+      assert.match(src, /export const runtime = "nodejs";/, r);
+      assert.match(src, /export const maxDuration = 60;/, r);
+    }
   });
 });
