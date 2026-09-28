@@ -125,6 +125,8 @@ export async function POST(req: NextRequest) {
               pricing: main.pricing,
               strength: main.strength,
               why: explanation,
+              productId: main.productId,
+              currentModel: main.currentModel ?? null,
             },
           };
           controller.enqueue(encoder.encode(JSON.stringify(mainChunk) + '\n'));
@@ -138,6 +140,8 @@ export async function POST(req: NextRequest) {
               url: t.url,
               pricing: t.pricing,
               strength: t.strength,
+              productId: t.productId,
+              currentModel: t.currentModel ?? null,
             })),
           };
           controller.enqueue(encoder.encode(JSON.stringify(alternativesChunk) + '\n'));

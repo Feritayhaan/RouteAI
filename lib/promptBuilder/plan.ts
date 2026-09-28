@@ -6,7 +6,7 @@
 
 import type { Guide, GuideSlot } from './guideSchema';
 import type { ExtractedSlot } from './extract';
-import type { SlotState } from './types';
+import type { DynamicQuestion, SlotState } from './types';
 
 export const MAX_QUESTIONS_PER_CARD = 3;
 export const MIN_CONFIDENCE = 0.6;
@@ -53,12 +53,14 @@ export function planSlots(guide: Guide, extracted: Record<string, ExtractedSlot>
 /**
  * Soru kartı cevapları: seçenek id'si -> seçeneğin değeri (user),
  * 'auto' -> varsayılan (default), başka metin -> serbest cevap (user).
+ * Slot için girişe göre üretilmiş soru varsa önce onun seçeneklerine bakılır.
  */
 export function applyAnswers(
   guide: Guide,
   slots: Record<string, SlotState>,
   answers: Record<string, string>,
-  asked: string[]
+  asked: string[],
+  overrides: Record<string, DynamicQuestion> = {}
 ): Record<string, SlotState> {
   const next = { ...slots };
   for (const slotId of asked) {
@@ -69,7 +71,7 @@ export function applyAnswers(
       next[slotId] = { value: defaultValue(slot), source: 'default' };
       continue;
     }
-    const option = slot.options.find((o) => o.id === answer);
+    const option = overrides[slotId]?.options.find((o) => o.id === answer) ?? slot.options.find((o) => o.id === answer);
     next[slotId] = { value: option ? option.value : answer.slice(0, 200), source: 'user' };
   }
   return next;

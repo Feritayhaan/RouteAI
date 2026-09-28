@@ -47,6 +47,15 @@ export interface PromptVersion {
   createdAt: string;
 }
 
+/**
+ * Kullanıcının ilk girişine göre üretilmiş soru (rehberdeki sabit sorunun
+ * yerine). Seçenek değeri doğrudan prompta girer (rehberin prompt dilinde).
+ */
+export interface DynamicQuestion {
+  question: string;
+  options: { id: string; label: string; value: string }[];
+}
+
 export interface PromptSession {
   id: string;
   productId: string;
@@ -59,6 +68,8 @@ export interface PromptSession {
   questionAsked: boolean;
   /** Soru kartında sorulan slotlar (cevap bekleniyor). */
   pendingQuestions: string[];
+  /** Girişe göre üretilmiş sorular (slotId -> soru); yoksa rehberdeki sabit soru. */
+  questionOverrides?: Record<string, DynamicQuestion>;
   versions: PromptVersion[];
   refinementCount: number;
 }

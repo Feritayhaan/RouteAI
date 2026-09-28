@@ -5,6 +5,7 @@ import { Category } from '../keywords';
 import { Tool, Locale, getToolsByCategory, getLocalized, resolveLocale, getTools } from '../toolsService';
 import { ParsedIntent } from '../intent/types';
 import { makePricing } from '../pricing';
+import { withCatalog } from '../catalog/navigator';
 import {
     WorkflowStepTemplate,
     WorkflowStepRecommendation,
@@ -625,15 +626,17 @@ function createFallbackRecommendation(
     category: Category,
     type: 'primary' | 'alternative'
 ): StepToolRecommendation {
-    const fallbackTool: Tool = {
-        name: type === 'primary' ? 'ChatGPT (GPT-5)' : 'Claude AI (Claude 4)',
+    // Ad, link ve fiyat katalogdan (data/products.json) gelir; burada sürüm ya da fiyat yazılmaz.
+    const [fallbackTool] = withCatalog<Tool>([{
+        id: type === 'primary' ? 'chatgpt-gpt-5' : 'claude-ai-claude-4',
+        name: type === 'primary' ? 'ChatGPT' : 'Claude',
         category: category,
         description: { tr: 'Genel amaçlı AI asistanı', en: '' },
         url: type === 'primary' ? 'https://chat.openai.com' : 'https://claude.ai',
-        pricing: makePricing('freemium', 20),
+        pricing: makePricing('freemium'), // yer tutucu; katalogdaki fiyat üzerine yazılır
         bestFor: { en: ['general purpose', 'content creation', 'writing'], tr: [] },
         strength: 9.5,
-    };
+    }]);
 
     return {
         tool: fallbackTool,

@@ -9,8 +9,8 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 | Dosya | Ne | Kim yazar |
 | --- | --- | --- |
 | `tasks.json` | Görev taksonomisi (40 görev). Sıralamanın birimi (ürün, görev) çiftidir. | Elle |
-| `products.json` | Seçilmiş ürünler. `status`: `active` (önerilir), `candidate` (keşiften gelen aday, önerilmez), `retired` (emekli). | Elle; ilk hali `scripts/migrate-to-catalog.mjs` |
-| `models.json` | Modeller ve benchmark puanları (Artificial Analysis, LMArena). | Gece senkronu (P3), PR ile |
+| `products.json` | Seçilmiş ürünler. `status`: `active` (önerilir), `candidate` (keşiften gelen aday, önerilmez), `retired` (emekli). **Ana sayfanın tek kaynağı:** gösterilen ad, link, fiyat ve aktif/emekli durumu buradan gelir (`lib/catalog/navigator.ts`); KV'deki araç kopyasını yeniden doldurmak gerekmez. Ad sürümsüz yazılır ("ChatGPT", "Claude"); güncel model `modelRule` ile otomatik bulunur. | Elle; ilk hali `scripts/migrate-to-catalog.mjs` |
+| `models.json` | Modeller ve benchmark puanları (Artificial Analysis, LMArena). | Gece senkronu, PR ile; kontrollerden geçen PR otomatik merge edilir (`scripts/automerge-guard.mjs`) |
 | `briefs.json` | Uzman değerlendirmesi için sabit test brifleri. **Şu anki 30 brif TASLAK; Ferit onaylamalı.** | Elle |
 | `reviews.json` | Uzman değerlendirmeleri (rubrik). | Elle |
 | `migration-review.md` | v1 → v2 göçünde emin olunmayan görev eşlemeleri. | Göç scripti |
@@ -18,6 +18,7 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 | `sync-report.md` | Son model senkronunun raporu: hatalar, yeni/kaybolan modeller, alias adayları, kullanılan alanlar. | Gece senkronu |
 | `prompt-guides/*.md` | Araç başına prompt rehberleri (frontmatter + Sözdizimi / Şablon / Yap-Yapma / Örnekler). `reviewedBy` boşsa taslak. Biçim: `lib/promptBuilder/guideSchema.ts`. | Elle; Ferit onaylar |
 | `prompt-guides.json` | Rehberlerin derlenmiş hali (edge'de fs yok). Elle düzenleme. | `npm run build:guides` |
+| `prompt-products.json` | Ana sayfadaki prompt aracı listesi: ürün adı → id (rehberi olan aktif ürünler). Elle düzenleme. | `npm run build:guides` |
 | `link-review.md` | Ürün → model bağlantı önerileri; `[x]` işaretlenenler `--apply` ile products.json'a yazılır. | `scripts/link-products.mjs` |
 
 ### tasks.json
@@ -119,3 +120,17 @@ Skor motoru (P4) rubriği 0–1 aralığına çevirir: `(quality*0.5 + ease*0.2 
 - **Kendi gözlemler (iş sonucu, karşılaştırma, oy):** Sadece `scripts/aggregate-signals.mjs` (P8) `data/signals.json`'a yazar, gece PR ile.
 - **Ağırlıklar** (`lib/catalog/weights.ts`): Sadece Ferit değiştirir; değişiklik ROADMAP'e not edilir.
 - Sponsorluk ya da affiliate bilgisi hiçbir puana ve sıralamaya girmez.
+
+### Güncel model: `modelRule` (sürüm elle yazılmaz)
+
+Ürün adında sürüm tutulmaz. Kartta görünen "Güncel model: X · kaynak · tarih", gece senkronundaki `models.json` içinden otomatik seçilir (`lib/catalog/currentModel.ts`):
+
+```json
+"modelRule": { "creator": "OpenAI", "include": ["gpt"], "exclude": ["mini", "nano"], "modality": "text" }
+```
+
+- `creator`: üretici (büyük/küçük harf ve boşluk duyarsız, "Google" ~ "Google DeepMind").
+- `include`: model adında/id'sinde geçmesi gereken parçalardan en az biri. `exclude`: geçmemesi gerekenler.
+- `modality`: `text`, `code`, `research`, `image`, `video`, `audio` (senkronun atadığı türler; müzik yok).
+- Kurala uyan ve skoru olan modellerden **en yeni çıkış tarihli** seçilir; tarih yoksa en iyi sıralı. `models` dizisinde elle bağlanmış id varsa kural yerine onlar kullanılır.
+- Her gece `data/sync-report.md` sonundaki "Ürün → güncel model" tablosu hangi ürünün hangi modele bağlandığını gösterir. Yanlış eşleşme varsa kuralı düzelt.

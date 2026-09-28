@@ -6,8 +6,9 @@ import guidesJson from '../../data/prompt-guides.json';
 import promptProductsJson from '../../data/prompt-products.json';
 import { AUTO_TOOL, promptProductId, promptToolNames, resolvePromptTarget } from '../promptBuilder/products';
 import { promptStartSchema } from '../validations/prompt';
+import { withCatalog } from '../catalog/navigator';
 
-type Tool = { name: string };
+type Tool = { id?: string; name: string };
 type Product = { id: string; name: string; status: string; promptGuide?: string };
 
 const tools = (Array.isArray(toolsDatabase) ? toolsDatabase : (toolsDatabase as { tools: Tool[] }).tools) as Tool[];
@@ -25,11 +26,13 @@ describe('ana sayfa prompt oluşturucu: araç adı -> ürün', () => {
     }
   });
 
-  it('rehberi olan her aktif ürün haritada ve v1 araç adıyla eşleşiyor (kutu görünür)', () => {
-    const v1Names = new Set(tools.map((t) => t.name));
+  it('rehberi olan her aktif ürün haritada; ana sayfa aynı adı gösteriyor (id ile v1 aracına bağlı)', () => {
+    const v1Ids = new Set(tools.map((t) => (t as { id?: string }).id));
+    const shown = new Map(withCatalog(tools as unknown as Parameters<typeof withCatalog>[0]).map((t) => [t.id, t.name]));
     for (const p of products.filter((x) => x.status === 'active' && x.promptGuide)) {
       assert.equal(promptProductId(p.name), p.id);
-      assert.ok(v1Names.has(p.name), `${p.name} v1 veritabanında yok; navigasyonda kutu çıkmaz`);
+      assert.ok(v1Ids.has(p.id), `${p.id} v1 veritabanında yok; ana sayfada önerilmez`);
+      assert.equal(shown.get(p.id), p.name, `${p.id}: ana sayfadaki ad katalogdakiyle aynı olmalı`);
     }
   });
 
@@ -63,8 +66,8 @@ describe('prompt aracı seçimi (filtrenin sağındaki liste)', () => {
   });
 
   it('belirli araç seçilince sonuçtan bağımsız o araç', () => {
-    assert.deepEqual(resolvePromptTarget('Midjourney v7', []), { productId: 'midjourney-v7', toolName: 'Midjourney v7' });
-    assert.deepEqual(resolvePromptTarget('Midjourney v7', ['Suno AI']), { productId: 'midjourney-v7', toolName: 'Midjourney v7' });
+    assert.deepEqual(resolvePromptTarget('Midjourney', []), { productId: 'midjourney-v7', toolName: 'Midjourney' });
+    assert.deepEqual(resolvePromptTarget('Midjourney', ['Suno AI']), { productId: 'midjourney-v7', toolName: 'Midjourney' });
     assert.equal(resolvePromptTarget('Jasper AI', []), null);
   });
 

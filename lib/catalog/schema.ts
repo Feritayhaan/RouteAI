@@ -140,6 +140,21 @@ export const productFactsSchema = z.object({
   checkedAt: dateStringSchema,
 });
 
+/**
+ * Ürünün "güncel modeli" kuralı: model adı/sürümü elle YAZILMAZ. Gece
+ * senkronundaki modeller arasından kurala uyan en yeni model otomatik seçilir
+ * (lib/catalog/currentModel.ts). creator: üretici adı (büyük/küçük harf
+ * duyarsız, ör. "OpenAI"); include: model adında/id'sinde geçmesi gereken
+ * parçalardan en az biri; exclude: geçmemesi gerekenler; modality: model türü.
+ */
+export const modelRuleSchema = z.object({
+  creator: z.string().min(1).optional(),
+  include: z.array(z.string().min(1)).min(1),
+  exclude: z.array(z.string().min(1)).optional(),
+  modality: z.enum(MODALITIES).optional(),
+});
+export type ModelRule = z.infer<typeof modelRuleSchema>;
+
 export const productSchema = z.object({
   id: idSchema,
   name: z.string().min(1),
@@ -148,6 +163,8 @@ export const productSchema = z.object({
   description: localeTextSchema,
   tasks: z.array(taskIdSchema),
   models: z.array(idSchema),
+  /** models boşsa güncel model bu kuralla bulunur (sürüm yazılmaz). */
+  modelRule: modelRuleSchema.optional(),
   pricing: toolPricingSchema,
   /** Boş dizi = bilinmiyor (henüz doğrulanmadı). */
   access: z.array(z.enum(ACCESS_CHANNELS)),
