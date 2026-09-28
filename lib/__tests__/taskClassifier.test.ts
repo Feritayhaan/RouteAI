@@ -57,6 +57,13 @@ describe('classifyTask: kural katmanı (allowLLM:false, ağ çağrısı yok)', (
     assert.strictEqual(r.constraints.pricing, 'free');
   });
 
+  it('sorguda fiyat yoksa constraints.pricing de yok (parser\'ın "freemium" varsayılanı kısıt sayılmaz)', async () => {
+    const r = await classifyTask('logo tasarlamak istiyorum', { allowLLM: false });
+    assert.ok(!('clarify' in r));
+    if ('clarify' in r) return;
+    assert.strictEqual(r.constraints.pricing, undefined);
+  });
+
   it('KV yoksa (bu test ortamında olduğu gibi) sonuç yine döner, hata fırlatmaz', async () => {
     assert.ok(!process.env.KV_REST_API_URL, 'test ortamında KV tanımlı olmamalı');
     const r = await classifyTask('podcast kapağı istiyorum', { allowLLM: false });

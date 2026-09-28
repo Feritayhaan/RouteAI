@@ -1,60 +1,30 @@
 "use client"
 
-import { useState, useEffect, type KeyboardEvent } from "react"
+import { useState, type KeyboardEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Sparkles, MessageCircle, Wand2 } from "lucide-react"
 import WelcomeModal from "@/components/WelcomeModal"
 import ThemeToggle from "@/components/ThemeToggle"
 import WorkflowDisplay from "@/components/WorkflowDisplay"
 import SimpleRecommendationDisplay from "@/components/SimpleRecommendationDisplay"
+import ClarifyDisplay from "@/components/ClarifyDisplay"
+import NoEvidenceDisplay from "@/components/NoEvidenceDisplay"
 import PromptPanel from "@/components/PromptPanel"
 import PricingToggle, { type PricingFilter } from "@/components/PricingToggle"
 import { getDictionary } from "@/lib/i18n"
 import { AUTO_TOOL, promptToolNames, resolvePromptTarget } from "@/lib/promptBuilder/products"
-import type { ApiResponse, SimpleRecommendation, WorkflowRecommendation } from "@/lib/types"
+import { apiResponseFromV3, type ApiResponse } from "@/lib/types"
+import type { RecommendV3Result } from "@/lib/recommendV3"
 import type { PromptCard as PromptCardData, PromptQuestionCard as PromptQuestionData } from "@/lib/agent/cards"
-
-interface ToolRating {
-  toolName: string;
-  rating: number;
-  timestamp?: string;
-  id?: string;
-  query?: string;
-}
-
-// Window interface for ratings
-declare global {
-  interface Window {
-    analyzeRatings: () => void
-  }
-}
-
-/** Bu sorgu + ana araç için localStorage'da kayıtlı puan; yoksa null. */
-function findStoredRating(response: ApiResponse | null, query: string): number | null {
-  if (!response || response.type === 'workflow') return null
-
-  try {
-    const existingRatings = localStorage.getItem('routeai-ratings')
-    if (!existingRatings) return null
-
-    const ratings = JSON.parse(existingRatings) as ToolRating[]
-    const previousRating = ratings.find(
-      (r: ToolRating) => r.query === query && r.toolName === response.main.toolName
-    )
-    return previousRating ? previousRating.rating : null
-  } catch (error) {
-    console.error('Rating yükleme hatası:', error)
-    return null
-  }
-}
 
 const dict = getDictionary("tr")
 const PROMPT_TOOLS = promptToolNames()
 
-/** Prompt için aday araçlar: tek öneride ana araç, workflow'da adımların ana araçları. */
+/** Prompt için aday araçlar: tek öneride ana araç, workflow'da adımların ana araçları. Netleştirme ve kanıtsız durumda öneri yok. */
 function recommendedTools(response: ApiResponse | null): string[] {
   if (!response) return []
   if (response.type === "workflow") return response.workflow.steps.map((s) => s.primary.toolName)
+  if (response.type === "clarify" || response.type === "no_evidence") return []
   return response.main ? [response.main.toolName] : []
 }
 
@@ -64,8 +34,6 @@ export default function HomeClient() {
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [rating, setRating] = useState(0)
-  const [ratingFeedback, setRatingFeedback] = useState(false)
   // Prompt oluşturucu: filtrenin solunda aç/kapa, sağında araç seçimi
   const [promptEnabled, setPromptEnabled] = useState(false)
   const [promptTool, setPromptTool] = useState(AUTO_TOOL)
@@ -73,14 +41,15 @@ export default function HomeClient() {
   // Aynı arama + araç için üretilmiş prompt: araç değiştirip geri dönünce yeniden üretilmez
   const [promptCache] = useState(() => new Map<string, PromptCardData | PromptQuestionData>())
 
-  const getRecommendation = async () => {
-    if (!query.trim()) return
+  /** taskId: v3 netleştirmesinde seçilen görev — aynı sorgu o görevle yeniden istenir. */
+  const getRecommendation = async (taskId?: string) => {
+    const prompt = taskId && submitted ? submitted.query : query.trim()
+    if (!prompt) return
 
     setIsLoading(true)
     setError(null)
     setResponse(null)
-    setRating(0)
-    setSubmitted((prev) => ({ query: query.trim(), n: (prev?.n ?? 0) + 1 }))
+    setSubmitted((prev) => ({ query: prompt, n: (prev?.n ?? 0) + 1 }))
 
     try {
       const res = await fetch("/api/recommend", {
@@ -88,7 +57,7 @@ export default function HomeClient() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: query, pricingFilter }),
+        body: JSON.stringify({ prompt, pricingFilter, ...(taskId ? { taskId } : {}) }),
       })
 
       if (!res.ok) {
@@ -119,7 +88,12 @@ export default function HomeClient() {
             try {
               const chunk = JSON.parse(line);
 
-              if (chunk.chunk === 'main') {
+              if (chunk.chunk === 'v3') {
+                // RECOMMENDER=v3: tek satır, dört durumdan biri (lib/recommendV3.ts).
+                const mapped = apiResponseFromV3(chunk as RecommendV3Result, dict)
+                if (mapped) setResponse(mapped)
+                else setError(dict.v3.filteredEmpty)
+              } else if (chunk.chunk === 'main') {
                 assembledResponse = {
                   type: chunk.type,
                   category: chunk.category,
@@ -189,107 +163,6 @@ export default function HomeClient() {
       getRecommendation()
     }
   }
-
-  const saveRatingToLocalStorage = (newRating: number) => {
-    if (!response || response.type === 'workflow') return
-
-    try {
-      const existingRatings = localStorage.getItem('routeai-ratings')
-      const ratings: ToolRating[] = existingRatings ? JSON.parse(existingRatings) as ToolRating[] : []
-
-      const existingIndex = ratings.findIndex(
-        (r: ToolRating) => r.query === query && r.toolName === response.main.toolName
-      )
-
-      const ratingData = {
-        id: Date.now().toString(),
-        query: query,
-        toolName: response.main.toolName,
-        rating: newRating,
-        timestamp: new Date().toISOString()
-      }
-
-      if (existingIndex !== -1) {
-        ratings[existingIndex] = { ...ratings[existingIndex], rating: newRating, timestamp: new Date().toISOString() }
-      } else {
-        ratings.push(ratingData)
-      }
-
-      localStorage.setItem('routeai-ratings', JSON.stringify(ratings))
-      setRatingFeedback(true)
-      setTimeout(() => setRatingFeedback(false), 2000)
-    } catch (error) {
-      console.error('Rating kaydetme hatası:', error)
-    }
-  }
-
-  // response ya da query değişince o öneri için kayıtlı puanı yükle. Eskiden
-  // useEffect içindeydi; şimdi React'in "önceki render'ın değerini sakla"
-  // kalıbıyla render sırasında: aynı tetikleyiciler, aynı sonuç, fazladan
-  // effect render'ı yok.
-  const [ratingSource, setRatingSource] = useState({ response, query })
-  if (ratingSource.response !== response || ratingSource.query !== query) {
-    setRatingSource({ response, query })
-    const previousRating = findStoredRating(response, query)
-    if (previousRating !== null) {
-      setRating(previousRating)
-    }
-  }
-
-  const handleStarClick = (star: number) => {
-    setRating(star)
-    saveRatingToLocalStorage(star)
-  }
-
-  // Analytics function
-  useEffect(() => {
-    window.analyzeRatings = () => {
-      try {
-        const existingRatings = localStorage.getItem('routeai-ratings')
-        if (!existingRatings) {
-          console.log('Henüz değerlendirme yok.')
-          return
-        }
-
-        const ratings = JSON.parse(existingRatings) as ToolRating[]
-        const totalRatings = ratings.length
-        const toolStats: Record<string, { total: number, count: number }> = {}
-        const queryStats: Record<string, number> = {}
-
-        ratings.forEach((r: ToolRating) => {
-          if (!toolStats[r.toolName]) {
-            toolStats[r.toolName] = { total: 0, count: 0 }
-          }
-          toolStats[r.toolName].total += r.rating
-          toolStats[r.toolName].count += 1
-          if (r.query) {
-            queryStats[r.query] = (queryStats[r.query] || 0) + 1
-          }
-        })
-
-        console.log('\n📊 ROUTEAI RATING ANALİZİ')
-        console.log('========================')
-        console.log(`Toplam Değerlendirme: ${totalRatings}`)
-
-        console.log('\n🏆 ARAÇ PERFORMANSLARI:')
-        Object.entries(toolStats).forEach(([tool, stats]) => {
-          const average = (stats.total / stats.count).toFixed(1)
-          console.log(`• ${tool}: ${average}/5 (${stats.count} değerlendirme)`)
-        })
-
-        console.log('\n🔥 EN POPÜLER SORGULAR:')
-        Object.entries(queryStats)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 5)
-          .forEach(([q, count]) => {
-            console.log(`• "${q}" (${count} değerlendirme)`)
-          })
-
-      } catch (error) {
-        console.error('Analiz hatası:', error)
-      }
-    }
-  }, [])
 
   // Check if response is a workflow
   const isWorkflow = response?.type === 'workflow'
@@ -407,7 +280,7 @@ export default function HomeClient() {
             </div>
 
             <Button
-              onClick={getRecommendation}
+              onClick={() => getRecommendation()}
               disabled={isLoading || !query.trim()}
               className="w-full h-12 md:h-14 text-base md:text-lg font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all disabled:opacity-50"
             >
@@ -433,21 +306,22 @@ export default function HomeClient() {
 
           {/* Response Display */}
           {response && !isLoading && (
-            isWorkflow ? (
+            response.type === "workflow" ? (
               <WorkflowDisplay
                 key={submitted?.n}
-                workflow={(response as WorkflowRecommendation).workflow}
+                workflow={response.workflow}
                 goal={submitted?.query ?? query}
                 autoPrompt={promptEnabled && stepPrompts}
               />
+            ) : response.type === "clarify" ? (
+              <ClarifyDisplay clarify={response} dict={dict} onSelect={(taskId) => getRecommendation(taskId)} disabled={isLoading} />
+            ) : response.type === "no_evidence" ? (
+              <NoEvidenceDisplay result={response} dict={dict} />
             ) : (
               <SimpleRecommendationDisplay
-                key={`${query}-${(response as SimpleRecommendation).main.toolName}`}
-                recommendation={response as SimpleRecommendation}
-                query={query}
-                rating={rating}
-                onRatingChange={handleStarClick}
-                ratingFeedback={ratingFeedback}
+                key={`${submitted?.query ?? query}-${response.main.toolName}`}
+                recommendation={response}
+                query={submitted?.query ?? query}
               />
             )
           )}

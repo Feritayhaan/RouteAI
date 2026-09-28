@@ -131,6 +131,18 @@ export const tr: Dictionary = {
     hidePrompt: 'Promptu gizle',
     stepGoal: 'Bu adım: {step} ({description})',
   },
+  v3: {
+    task: 'Görev',
+    clarifyTitle: 'Şunu mu demek istedin?',
+    clarifyHint: 'İsteğin birden fazla işe uyuyor. Birini seç, aynı isteği o işle yeniden arayayım.',
+    noEvidenceTitle: 'Bu iş için henüz güvenilir veri yok',
+    noEvidenceBody: 'Bu görevdeki araçları henüz doğrulamadık, bu yüzden sıralama yapmıyorum. Katalogdaki araçlar (alfabetik):',
+    noTools: 'Katalogda bu görev için aktif araç yok.',
+    unverified: 'Doğrulanmadı',
+    unverifiedList: 'Doğrulanmadı: {tools}',
+    filteredEmpty: 'Seçtiğin fiyat filtresine uyan doğrulanmış araç yok. Filtreyi değiştirip tekrar dene.',
+    stepFiltered: 'Fiyat filtrene uyan doğrulanmış araç yok',
+  },
   outcome: {
     question: '{product} işini gördü mü?',
     yes: 'Evet',

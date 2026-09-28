@@ -15,6 +15,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { recommendRequestSchema } from '../validations/recommend';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const source = readFileSync(path.join(ROOT, 'app/api/recommend/route.ts'), 'utf8');
@@ -49,6 +50,26 @@ describe('app/api/recommend/route.ts: RECOMMENDER=v3 bayrağı', () => {
       "chunk: 'meta'",
     ]) {
       assert.ok(source.includes(needle), `v1 akışından beklenen satır kayıp: ${needle}`);
+    }
+  });
+});
+
+describe('recommendRequestSchema: taskId (P13 clarify seçimi)', () => {
+  it('taskId opsiyonel; yoksa istek aynen geçerli (v1 istemcisi etkilenmez)', () => {
+    const r = recommendRequestSchema.safeParse({ prompt: 'logo lazım' });
+    assert.ok(r.success);
+    if (r.success) assert.strictEqual(r.data.taskId, undefined);
+  });
+
+  it('"grup.görev" biçimindeki taskId kabul edilir', () => {
+    const r = recommendRequestSchema.safeParse({ prompt: 'logo lazım', taskId: 'image.logo' });
+    assert.ok(r.success);
+    if (r.success) assert.strictEqual(r.data.taskId, 'image.logo');
+  });
+
+  it('biçimsiz ya da çok uzun taskId reddedilir', () => {
+    for (const taskId of ['../etc', 'IMAGE.LOGO', 'image', `a.${'b'.repeat(80)}`, 42]) {
+      assert.strictEqual(recommendRequestSchema.safeParse({ prompt: 'logo lazım', taskId }).success, false, String(taskId));
     }
   });
 });

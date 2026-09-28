@@ -82,7 +82,9 @@ function ruleConfidence(best: number, margin: number): number {
 
 function pickPriceLang(c: ReturnType<typeof extractConstraints>): TaskConstraints {
   const out: TaskConstraints = {};
-  if (c.pricing) out.pricing = c.pricing;
+  // extractConstraints 'freemium'i sadece varsayılan olarak yazar ("tercih belirtilmedi"):
+  // kısıt değildir, yoksa her sorgu "ücretsiz planı olsun" filtresine dönüşür.
+  if (c.pricing && c.pricing !== 'freemium') out.pricing = c.pricing;
   if (c.language) out.language = c.language;
   return out;
 }

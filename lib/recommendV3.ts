@@ -16,7 +16,8 @@
 // Yalnızca data/products.json: searchCatalog zaten sadece bu dosyayı okuyor;
 // katalogda olmayan araç yapısal olarak dönemez.
 
-import { classifyTask, type ClassifyTaskOptions } from './intent/taskClassifier';
+import { classifyTask, type ClassifyTaskOptions, type TaskClassification } from './intent/taskClassifier';
+import { extractConstraints } from './intent/parser';
 import { defaultSearchContext, searchCatalog, type SearchContext, type SearchItem } from './catalog/search';
 import type { ConstraintKey, Constraints } from './catalog/fit';
 import type { Confidence, Reason } from './catalog/score';
@@ -44,8 +45,10 @@ export interface RecommendationItem {
 export interface RecommendV3Recommendation {
   kind: 'recommendation';
   taskId: string;
+  taskLabel: LocaleText;
   taskConfidence: number;
-  taskSource: 'rules' | 'llm';
+  /** 'user': görevi kullanıcı clarify seçeneklerinden seçti. */
+  taskSource: 'rules' | 'llm' | 'user';
   items: RecommendationItem[];
   /** Sorgudaki kısıt gevşetildiyse (arayüz filtresi ASLA burada olamaz). */
   relaxedConstraint?: ConstraintKey[];
@@ -59,6 +62,7 @@ export interface RecommendV3Clarify {
 export interface RecommendV3NoEvidence {
   kind: 'no_evidence';
   taskId: string;
+  taskLabel: LocaleText;
   /** Görevdeki aktif ürünler, puansız, alfabetik. Sıralama iddiası yok. */
   products: Product[];
 }
@@ -88,6 +92,20 @@ export type RecommendV3Result = RecommendV3Recommendation | RecommendV3Clarify |
 export interface RecommendV3Options extends ClassifyTaskOptions {
   ctx?: SearchContext;
   now?: number;
+  /**
+   * Kullanıcının clarify seçeneklerinden seçtiği görev: sınıflandırma ve iş
+   * akışı denemesi atlanır. Katalogda olmayan id yok sayılır (normal akış).
+   */
+  taskId?: string;
+}
+
+type ResolvedTask = Pick<TaskClassification, 'taskId' | 'confidence' | 'constraints'> & { source: RecommendV3Recommendation['taskSource'] };
+
+/** Kullanıcının seçtiği görev: sorgudaki fiyat kısıtı yine sorgudan okunur (classifyTask'taki kuralla). */
+function chosenTask(query: string, taskId: string): ResolvedTask {
+  const { pricing } = extractConstraints(query);
+  // 'freemium' parser'ın "tercih belirtilmedi" varsayılanı: kısıt değil (taskClassifier pickPriceLang ile aynı).
+  return { taskId, confidence: 1, source: 'user', constraints: pricing && pricing !== 'freemium' ? { pricing } : {} };
 }
 
 // ------------------------------------------------------------------
@@ -189,7 +207,10 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
   // belirsiz kalıyor çünkü hiçbir TEK görevin anahtar kelimesi baskın değil
   // — bu doğal ayrım, parser.ts'teki PART_TERMS listesini kopyalamadan aynı
   // sonucu verir (doğrulama: bu dosyanın testleri, lib/__tests__/recommendV3.test.ts).
-  const classified = await classifyTask(query, { allowLLM: options.allowLLM });
+  const classified: ResolvedTask | Awaited<ReturnType<typeof classifyTask>> =
+    options.taskId && ctx.tasksById.has(options.taskId)
+      ? chosenTask(query, options.taskId)
+      : await classifyTask(query, { allowLLM: options.allowLLM });
 
   if ('clarify' in classified) {
     const template = findMatchingTemplate(query);
@@ -203,14 +224,16 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
     };
   }
 
+  const taskLabel = ctx.tasksById.get(classified.taskId)!.label;
   const outcome = recommendForTask(classified.taskId, ctx, pricingFilter, toSoftPricing(classified.constraints.pricing));
   if (outcome.noEvidence) {
-    return { kind: 'no_evidence', taskId: classified.taskId, products: outcome.products };
+    return { kind: 'no_evidence', taskId: classified.taskId, taskLabel, products: outcome.products };
   }
 
   return {
     kind: 'recommendation',
     taskId: classified.taskId,
+    taskLabel,
     taskConfidence: classified.confidence,
     taskSource: classified.source,
     items: outcome.items,

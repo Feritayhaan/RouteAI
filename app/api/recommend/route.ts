@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { prompt, pricingFilter } = validationResult.data;
+    const { prompt, pricingFilter, taskId } = validationResult.data;
 
     // Kullanıcı metni loglanmaz; teşhis için uzunluğu yeter.
     console.log('[API] İstek analiz ediliyor, uzunluk:', prompt.length);
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     // (taskId, confidence, reasons, dataDate, sources) ama yine NDJSON.
     // ============================================================
     if (process.env.RECOMMENDER === 'v3') {
-      const result = await recommendV3(prompt, pricingFilter);
+      const result = await recommendV3(prompt, pricingFilter, { taskId });
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {

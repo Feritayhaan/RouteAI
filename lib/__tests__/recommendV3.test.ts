@@ -77,6 +77,45 @@ describe('recommendV3: workflow (projenin TÜMÜ isteniyor, tek görev değil)',
   });
 });
 
+describe('recommendV3: taskId (P13 clarify seçimi — aynı sorgu + görev)', () => {
+  it('katalogdaki taskId verilirse sınıflandırma ve iş akışı atlanır; taskSource "user", taskLabel dolu', async () => {
+    const fakeCtx = ctx({ products: [product('a', { models: ['m1'] })], models: arenaModels([1, 2, 3]) });
+    // "podcast oluşturmak istiyorum" normalde workflow'a gider; kullanıcı image.generate seçti.
+    const r = await recommendV3('podcast oluşturmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx, taskId: 'image.generate' });
+    assert.strictEqual(r.kind, 'recommendation');
+    if (r.kind !== 'recommendation') return;
+    assert.strictEqual(r.taskId, 'image.generate');
+    assert.strictEqual(r.taskSource, 'user');
+    assert.strictEqual(r.taskConfidence, 1);
+    assert.deepStrictEqual(r.taskLabel, { en: 'image.generate', tr: 'image.generate' });
+  });
+
+  it('seçilen görevde kanıt yoksa no_evidence (taskLabel ile)', async () => {
+    const fakeCtx = ctx({ products: [product('a')] });
+    const r = await recommendV3('bir şeyler yapmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx, taskId: 'image.generate' });
+    assert.strictEqual(r.kind, 'no_evidence');
+    if (r.kind !== 'no_evidence') return;
+    assert.ok(r.taskLabel.tr);
+  });
+
+  it('sorgudaki fiyat kısıtı seçilen görevde de uygulanır (yumuşak, gevşerse bildirilir)', async () => {
+    const fakeCtx = ctx({ products: [product('a', { models: ['m1'], pricing: 'paid' })], models: arenaModels([1, 2, 3]) });
+    const r = await recommendV3('ücretsiz bir şey lazım', 'all', { ...noLLM, ctx: fakeCtx, taskId: 'image.generate' });
+    assert.strictEqual(r.kind, 'recommendation');
+    if (r.kind !== 'recommendation') return;
+    assert.deepStrictEqual(r.relaxedConstraint, ['pricing']);
+  });
+
+  it('katalogda olmayan taskId yok sayılır: normal akış (hata fırlatmaz)', async () => {
+    const r = await recommendV3('bir şeyler yapmak istiyorum ama ne yapacağımı bilmiyorum', 'all', {
+      ...noLLM,
+      ctx: defaultSearchContext(),
+      taskId: 'yok.boyle-gorev',
+    });
+    assert.strictEqual(r.kind, 'clarify');
+  });
+});
+
 describe('recommendV3: fiyat kısıtı — arayüz ASLA gevşemez, sorgudaki kısıt gevşer', () => {
   it('arayüz filtresi (free) sonucu boşaltabilir; bu bir hata değildir, relaxedConstraint arayüz filtresinden gelmez', async () => {
     // Sorgu fiyatı açıkça "ücretli" -> toSoftPricing 'paid' -> undefined (yumuşak kısıt YOK).
@@ -89,12 +128,24 @@ describe('recommendV3: fiyat kısıtı — arayüz ASLA gevşemez, sorgudaki kı
     assert.strictEqual(r.relaxedConstraint, undefined); // searchCatalog'un kendi tarafında gevşetme YOK
   });
 
-  it('sorgudaki yumuşak kısıt (freeTier) boş kalınca gevşer ve relaxedConstraint döner; arayüz filtresi ayrıca uygulanır', async () => {
-    // Sorguda fiyat belirtilmemiş -> varsayılan freemium -> yumuşak 'freeTier'.
-    // Tek kanıtlı ürün 'paid': searchCatalog kendi kısıtını gevşetip 'a'yı bulur.
+  it('sorguda fiyat YOKSA kısıt da yok: ücretli ürün elenmez, "gevşettim" denmez (parser varsayılanı freemium kısıt değildir)', async () => {
+    const fakeCtx = ctx({
+      products: [product('a', { models: ['m2'], pricing: 'paid' }), product('b', { models: ['m1'], pricing: 'freemium' })],
+      models: arenaModels([1, 2, 3]),
+    });
+    const r = await recommendV3('resim oluşturmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx });
+    assert.strictEqual(r.kind, 'recommendation');
+    if (r.kind !== 'recommendation') return;
+    assert.deepStrictEqual(r.items.map((i) => i.product.id), ['a', 'b']);
+    assert.strictEqual(r.relaxedConstraint, undefined);
+  });
+
+  it('sorgudaki yumuşak kısıt ("ücretsiz") boş kalınca gevşer ve relaxedConstraint döner; arayüz filtresi ayrıca uygulanır', async () => {
+    // Sorgu açıkça "ücretsiz" -> yumuşak 'free'. Tek kanıtlı ürün 'paid':
+    // searchCatalog kendi kısıtını gevşetip 'a'yı bulur ve bunu bildirir.
     const fakeCtx = ctx({ products: [product('a', { models: ['m1'], pricing: 'paid' })], models: arenaModels([1, 2, 3]) });
 
-    const allFilter = await recommendV3('resim oluşturmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx });
+    const allFilter = await recommendV3('ücretsiz resim oluşturmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx });
     assert.strictEqual(allFilter.kind, 'recommendation');
     if (allFilter.kind !== 'recommendation') return;
     assert.deepStrictEqual(allFilter.items.map((i) => i.product.id), ['a']);
@@ -103,7 +154,7 @@ describe('recommendV3: fiyat kısıtı — arayüz ASLA gevşemez, sorgudaki kı
     // Aynı senaryoda arayüz 'free' isterse: searchCatalog yine 'a'yı bulur
     // (kendi kısıtını gevşeterek), ama arayüz filtresi 'a' paid olduğu için
     // sonucu YİNE de boşaltır — arayüz kısıtı ASLA gevşemez.
-    const freeFilter = await recommendV3('resim oluşturmak istiyorum', 'free', { ...noLLM, ctx: fakeCtx });
+    const freeFilter = await recommendV3('ücretsiz resim oluşturmak istiyorum', 'free', { ...noLLM, ctx: fakeCtx });
     assert.strictEqual(freeFilter.kind, 'recommendation');
     if (freeFilter.kind !== 'recommendation') return;
     assert.deepStrictEqual(freeFilter.items, []);
