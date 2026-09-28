@@ -42,6 +42,8 @@ export interface SimpleRecommendation {
   category: string
   main: RecommendationTool
   alternatives: RecommendationTool[]
+  /** Sorgudaki fiyat koşulu ("ücretsiz"/"ücretli") tutmadı ve gevşetildi: kullanıcıya söylenir. */
+  relaxedPricing?: 'free' | 'freemium' | 'paid' | null
 }
 
 export interface WorkflowRecommendation {

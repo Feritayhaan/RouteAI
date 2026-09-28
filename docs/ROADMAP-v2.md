@@ -16,6 +16,20 @@ RouteAI bir **navigasyon** aracı, sohbet botu değil. Site **tek ekran**:
 - Model listesi elle tutulmaz (2026-09-25): ürün adları sürümsüz, `modelRule` ile güncel model gece senkronundan otomatik; ana sayfa ad/link/fiyat/durumu `data/products.json`'dan okur. Gece PR'ı katalog kontrolü + test + build + `automerge:guard` geçerse otomatik merge edilir; şüpheli durumda Ferit'i bekler.
 Aşağıdaki "Ürün" ve "Mimari" tanımları sohbet ajanı dönemine ait; ajan şu an sitede yok.
 
+## Denetim (2026-09-28)
+Baştan sona inceleme; ayrıntı PR açıklamasında. Düzeltilenler:
+- Niyet analizinde yapay zekâ cevabı 150 token'da kesiliyordu (canlıda "Unterminated string in JSON"); sınır 500, kesilen cevap ayrıştırılmaz. Niyet önbelleği `intent:v3`.
+- Gerekçe metninden kaynaksız ifadeler kaldırıldı ("Sektörün en iyisi", "Çok yüksek kaliteli", her sorguya yazılan "Yeni başlayanlar için uygun").
+- Sorgudaki fiyat koşulu gevşetilince kartta uyarı çıkar (eskiden arayüz bu bilgiyi atıyordu).
+- "profesyonel" artık "ücretli" sayılmaz. Fiyat düğmesinin "Sadece ücretsiz" etiketi "Ücretsiz planı olanlar" oldu (freemium da gösteriliyor).
+Açık kalanlar (öncelik sırasıyla):
+1. Ana sayfa hâlâ v1 (7 kategori + kelime eşleşmesi + kaynaksız strength). Görev taksonomisi ve RouteAI Skoru devrede değil. İdeal kategoriyle bile ilk öneri 28/39.
+2. Kanıt döngüsü kopuk: ana sayfadaki oy eski formatta, skora girmiyor; yıldızlar sadece tarayıcıda; "işini gördü mü" ve araca tıklama sayımı yok.
+3. Veri: models/reviews/signals boş; 56 aktif ürünün 32'sinin fiyatı 2025 sonundan, 24'ünün tarihi yok. Gece senkronu: AA_API_KEY ve KV secret'ları boş, LMArena 10 hatayla boş dönüyor, iş yine "başarılı" görünüyor.
+4. Kural yolu dar: yaygın kısa sorguların çoğu (ör. "arka plan kaldır", "cv hazırla", "write email") tamamen OpenAI'a bağlı.
+5. Katalogda olmayan araç tek araç yolunda elenmiyor; canlıdaki KV araç listesi repodan farklı olabilir (seed).
+6. PR'larda otomatik test yok; ana sayfa sadece Türkçe; 10 prompt rehberi taslak ve kaynaksız.
+
 ## Mimari
 - Katalog git'te JSON: data/tasks.json, data/models.json, data/products.json, data/reviews.json, data/briefs.json, data/signals.json, data/prompt-guides/*.md. Zod şeması lib/catalog/schema.ts.
 - Modeller her gece GitHub Action ile Artificial Analysis API ve LMArena (Hugging Face) verisinden güncellenir ve PR açılır. Ürünler seçilmiştir; yeni ürünler 'candidate' olarak PR ile gelir.

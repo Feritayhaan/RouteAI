@@ -63,7 +63,8 @@ multi-step ise:
 - Multi-intent durumlari tespit et (orn: "video icin muzik" -> primary:video, secondary:ses)
 - Context'e dikkat et (orn: "sosyal medya icerigi" cogunlukla gorsel demektir)
 - SADECE gercekten karmasik, cok-asamali projeler multi-step olmali!
-- Tek arac gerektiren isler SIMPLE olmali!`;
+- Tek arac gerektiren isler SIMPLE olmali!
+- Kısa yaz: userGoal en fazla 12 kelime, reasoning tek kısa cümle, keywords en fazla 6 kelime.`;
 
 // ===========================================
 // WORKFLOW DETECTION LOGIC 
@@ -243,7 +244,7 @@ export async function parseUserIntent(
 
     // ================================================================
     // KADEME 2: LLM fallback (sadece karmaşık sorgular için)
-    // gpt-4o-mini, temperature: 0, max_tokens: 150
+    // gpt-4o-mini, temperature: 0, max_tokens: 500
     // ================================================================
     console.log('[Intent Parser] Kademe 2: LLM analizi başlıyor...');
     const response = await openai.chat.completions.create({
@@ -320,10 +321,16 @@ export async function parseUserIntent(
         },
       },
       temperature: 0,       // Deterministic — daha hızlı, tutarlı
-      max_tokens: 150,       // Kısa yanıt — hız optimizasyonu
+      // 150 idi: şemadaki JSON sığmıyor, cevap yarıda kesilip ayrıştırılamıyordu
+      // (canlıda "Unterminated string in JSON"). Kısalık sistem talimatında.
+      max_tokens: 500,
     });
 
-    const content = response.choices[0]?.message?.content;
+    const choice = response.choices[0];
+    if (choice?.finish_reason === 'length') {
+      throw new Error('Yanıt token sınırında kesildi');
+    }
+    const content = choice?.message?.content;
     if (!content) {
       throw new Error("Boş yanıt");
     }
@@ -427,7 +434,9 @@ export function extractConstraints(query: string): ParsedIntent['constraints'] {
   // "GoPro" ücretli demek değil.
   if (/ücretsiz|bedava|\bfree\b|para\s*vermeden|parasız/.test(lower)) {
     constraints.pricing = 'free';
-  } else if (/premium|profesyonel|paid|\bpro\b/.test(lower)) {
+  // "profesyonel" ücret değil kalite/uzmanlık demek (aşağıda expertise'e yazılır);
+  // eskiden "profesyonel logo" sadece ücretli araçlara süzülüyordu.
+  } else if (/premium|paid|\bpro\b|ücretli|parali|paralı/.test(lower)) {
     constraints.pricing = 'paid';
   }
 

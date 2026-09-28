@@ -131,8 +131,12 @@ export default function HomeClient() {
               } else if (chunk.chunk === 'alternatives') {
                 assembledResponse.alternatives = chunk.alternatives;
                 setResponse({ ...assembledResponse } as unknown as ApiResponse);
+              } else if (chunk.chunk === 'meta' && chunk.relaxedConstraint === 'pricing') {
+                // Sorgudaki fiyat koşulu gevşetildi: sessiz kalma, kartta söyle.
+                assembledResponse.relaxedPricing = chunk.requestedPricing ?? null;
+                setResponse({ ...assembledResponse } as unknown as ApiResponse);
               }
-              // debug chunk'ı sessizce yoksay
+              // meta'daki debug alanları yok sayılır
             } catch {
               console.warn('NDJSON parse hatası:', line);
             }

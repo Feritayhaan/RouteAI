@@ -12,7 +12,8 @@ const NEXT: Record<PricingFilter, PricingFilter> = { all: "free", free: "paid", 
 
 const STATES: Record<PricingFilter, { label: string; Icon: typeof Gift }> = {
   all: { label: "Tümü (ücretli + ücretsiz)", Icon: CircleDollarSign },
-  free: { label: "Sadece ücretsiz", Icon: Gift },
+  // Ücretsiz planı olanlar (tamamen ücretsiz + freemium); "sadece ücretsiz" yazıyordu ama $20/ay araçlar da çıkıyordu.
+  free: { label: "Ücretsiz planı olanlar", Icon: Gift },
   paid: { label: "Sadece ücretli", Icon: CreditCard },
 }
 

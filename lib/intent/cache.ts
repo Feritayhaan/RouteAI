@@ -5,7 +5,10 @@ import { ParsedIntent } from './types';
 // yeni kod o kisiti uyguladigi icin cache'teki eski kayitlar "ucretsiz" demeyen
 // sorgulari da ucretsiz havuzuna sikistiriyordu. Prefix cevrildi, eski anahtarlar
 // 24 saatlik TTL ile kendiliginden olecek.
-const CACHE_PREFIX = 'intent:v2:';
+// v3 (2026-09-28): iş akışı kuralları ve "profesyonel" kısıtı değişti; v2'deki
+// eski kararlar (ör. "sunum hazırla" = çok adımlı) 24 saat boyunca yeni kuralı
+// gölgelemesin diye prefix çevrildi.
+const CACHE_PREFIX = 'intent:v3:';
 const CACHE_TTL = 60 * 60 * 24;
 
 export function normalizeQuery(query: string): string {

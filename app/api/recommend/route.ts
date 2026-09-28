@@ -156,6 +156,8 @@ export async function POST(req: NextRequest) {
           // ücretli sonuç görüyorsa bunu bilmeli.
           if (relaxedConstraint) {
             metaChunk.relaxedConstraint = relaxedConstraint;
+            // Arayüz hangi koşulun tutmadığını söyleyebilsin ("ücretsiz" / "ücretli").
+            metaChunk.requestedPricing = intent.constraints?.pricing ?? null;
           }
           if (process.env.NODE_ENV !== 'production') {
             metaChunk._debug = {
