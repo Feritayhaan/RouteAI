@@ -7,10 +7,17 @@
 //  - lmarena: Hugging Face `lmarena-ai/leaderboard-dataset` config adı.
 //  - artificialanalysis: "<uç>#<alan yolu>", ör. "/data/media/text-to-image#elo".
 //
-// DOĞRULANMADI: P3 yazılırken geliştirme ortamı bu API'lere erişemedi. Uçlar
-// ve üst düzey alanlar (evaluations, elo, rank, ci95, appearances) AA
-// dokümanından; `evaluations` altındaki indeks adları ilk senkron raporunda
-// doğrulanmalı (rapor bulunamayan alanı ve mevcut alanları listeler).
+// LMArena (P10, 2026-09-28): config listesi (buradaki 9'u dahil), 'latest'
+// split'i ve satır alan adları (model_name, rating, rating_lower/upper,
+// vote_count, rank, category) HF datasets-server'dan DOĞRULANDI; sourceField
+// değerleri (config adları) doğru. release_date/released alanı veride YOK,
+// releaseDate o yüzden null kalıyor — uydurulmadı.
+//
+// Artificial Analysis: HÂLÂ DOĞRULANMADI (bu ortamda AA_API_KEY yok, gerçek
+// yanıt görülemedi). Uçlar ve üst düzey alanlar (evaluations, elo, rank,
+// ci95, appearances) AA dokümanından; `evaluations` altındaki indeks adları
+// AA_API_KEY tanımlı bir gece koşusunun raporunda doğrulanmalı (rapor
+// bulunamayan alanı ve mevcut alanları listeler).
 
 import type { BenchmarkSource } from './schema';
 

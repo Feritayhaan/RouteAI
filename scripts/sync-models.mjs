@@ -9,7 +9,8 @@
 // Çıkış kodu (syncExitDecision): beklenen bir kaynaktan (LMArena; anahtar
 // tanımlıysa AA) hiç veri gelmezse 1. Rapor ve veri yine yazılır; gece işi
 // kırmızı kararı en sonda uygular.
-// İstekler arasında 1 sn beklenir. Mantık: scripts/sync/core.mjs.
+// İstekler arasında 1 sn beklenir; 429/5xx'te retryDelayMs'e göre daha uzun
+// beklenip tekrar denenir (bkz. scripts/sync/core.mjs). Mantık: scripts/sync/core.mjs.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -22,6 +23,8 @@ import {
   mergeModels,
   newReport,
   renderReport,
+  isRetryableStatus,
+  retryDelayMs,
   syncExitDecision,
 } from './sync/core.mjs';
 
@@ -29,17 +32,24 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dryRun = process.argv.includes('--dry-run');
 const read = (rel) => JSON.parse(readFileSync(path.join(ROOT, rel), 'utf8'));
 
+const MAX_ATTEMPTS = 5;
+
 async function fetchJson(url, init = {}) {
   let lastError;
-  for (let attempt = 1; attempt <= 2; attempt++) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    let res;
     try {
-      const res = await fetch(url, { ...init, signal: AbortSignal.timeout(30_000) });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      res = await fetch(url, { ...init, signal: AbortSignal.timeout(30_000) });
     } catch (error) {
       lastError = error;
-      if (attempt < 2) await new Promise((r) => setTimeout(r, 2000));
+      if (attempt < MAX_ATTEMPTS) await new Promise((r) => setTimeout(r, retryDelayMs({ status: 0, attempt })));
+      continue;
     }
+    if (res.ok) return await res.json();
+    lastError = new Error(`HTTP ${res.status}`);
+    if (!isRetryableStatus(res.status) || attempt >= MAX_ATTEMPTS) break;
+    const retryAfterSeconds = Number(res.headers.get('retry-after'));
+    await new Promise((r) => setTimeout(r, retryDelayMs({ status: res.status, attempt, retryAfterSeconds })));
   }
   throw lastError;
 }

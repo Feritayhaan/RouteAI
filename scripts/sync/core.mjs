@@ -119,6 +119,32 @@ function daysBetween(a, b) {
 }
 
 // ------------------------------------------------------------------
+// Yeniden deneme (429 / 5xx) — scripts/sync-models.mjs'in fetchJson'ı kullanır
+// ------------------------------------------------------------------
+
+/**
+ * 2026-09-28 gece koşusunda LMArena `text` config'i (latest split'te 10.821
+ * satır, ~109 sayfa) 30. sayfa civarında HTTP 429 verdi; ardından o koşudaki
+ * TÜM sonraki istekler (diğer 8 config'in ilk sayfası dahil) de 429 döndü.
+ * Yani limit birkaç saniyede geçmiyor; eski mantık (429 dahil her hata için
+ * 2 sn sonra tek bir tekrar) yetersizdi. Ağ hatası ve 5xx için kısa, 429 için
+ * uzun ve katlanarak artan bekleme; sunucu Retry-After verdiyse ona uyulur.
+ */
+export function isRetryableStatus(status) {
+  return status === 429 || status >= 500;
+}
+
+/**
+ * @param {{ status: number, attempt: number, retryAfterSeconds?: number }} params
+ * @returns {number} milisaniye. `retryAfterSeconds` sunucunun Retry-After başlığından geldiyse ona uyulur.
+ */
+export function retryDelayMs({ status, attempt, retryAfterSeconds }) {
+  if (Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0) return retryAfterSeconds * 1000;
+  if (status === 429) return Math.min(5000 * attempt, 30_000);
+  return 2000 * attempt; // ağ hatası (status 0) ve 5xx
+}
+
+// ------------------------------------------------------------------
 // Kaynaklardan ham skor satırları: { source, key, rawName, creator, modality, score{...}, releaseDate, pricing? }
 // ------------------------------------------------------------------
 

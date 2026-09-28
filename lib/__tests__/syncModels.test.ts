@@ -3,11 +3,13 @@ import { describe, it } from 'node:test';
 import {
   fetchArtificialAnalysis,
   fetchLmArena,
+  isRetryableStatus,
   mergeModels,
   newReport,
   normalizeModelKey,
   parseCi95,
   renderReport,
+  retryDelayMs,
   suggestModels,
   syncExitDecision,
 } from '../../scripts/sync/core.mjs';
@@ -206,6 +208,84 @@ describe('gece işi çıkış kararı (syncExitDecision)', () => {
     const decision = syncExitDecision({ sources: [aa(false, false), lm(false)], errors: [] });
     const text = renderReport(report, { models: [], dryRun: false, wrote: false, decision });
     assert.match(text, /## Karar: BAŞARISIZ \(iş kırmızı biter\)\n\n- Artificial Analysis: anahtar tanımlı değil, atlandı \(hata sayılmadı\)\.\n- LMArena: veri gelmedi\./);
+  });
+});
+
+describe('model senkronu: gerçek LMArena satırıyla doğrulama (P10, 2026-09-28)', () => {
+  // HF datasets-server'dan (https://datasets-server.huggingface.co) doğrudan
+  // okunan gerçek satırlar. Config listesi (text, text_to_image dahil 9'u),
+  // 'latest' split'i ve buradaki alan adları (model_name, rating,
+  // rating_lower/upper, vote_count, rank, category) DOĞRULANDI — data/README
+  // ve LMARENA_FIELDS'teki adaylarla birebir eşleşiyor, kod değişmedi.
+  // Gerçek veride release_date alanı YOK; releaseDate uydurulmaz, null kalır.
+  const realHfRoutes = {
+    '/splits': {
+      splits: [
+        { config: 'text', split: 'latest' },
+        { config: 'text_to_image', split: 'latest' },
+      ],
+    },
+    'config=text&': {
+      num_rows_total: 2,
+      rows: [
+        { row: { model_name: 'claude-opus-5.5-high', organization: 'anthropic', license: 'Proprietary', rating: 1517.7921223112396, rating_lower: 1505.6151276832159, rating_upper: 1529.9691169392634, variance: 38.599710446493205, vote_count: 2307.0, rank: 1.0, category: 'overall', leaderboard_publish_date: '2026-09-25' } },
+        { row: { model_name: 'claude-fable-5.1-max', organization: 'anthropic', license: 'Proprietary', rating: 1510.8335549676824, rating_lower: 1504.0754342033576, rating_upper: 1517.5916757320074, variance: 11.889284357067776, vote_count: 9942.0, rank: 2.0, category: 'overall', leaderboard_publish_date: '2026-09-25' } },
+      ],
+    },
+    'config=text_to_image&': {
+      num_rows_total: 1,
+      rows: [
+        { row: { model_name: 'gpt-image-2.5-sunburst', organization: 'openai', license: 'Proprietary', rating: 1423.6048361955234, rating_lower: 1415.9321932783876, rating_upper: 1431.277479112659, variance: 15.324763867502837, vote_count: 10884, rank: 1, category: 'overall', leaderboard_publish_date: '2026-09-24' } },
+      ],
+    },
+  };
+
+  it('gerçek alan adları doğru okunur; olmayan alan (release_date) uydurulmaz', async () => {
+    const { fetchJson } = fakeFetch(realHfRoutes);
+    const report = newReport();
+    const lm = await fetchLmArena({ fetchJson, sleep, arenas, today }, report);
+    assert.ok(lm);
+    assert.deepStrictEqual(report.errors, []);
+
+    const claude = lm.find((r: { rawName: string }) => r.rawName === 'claude-opus-5.5-high');
+    assert.ok(claude);
+    assert.strictEqual(claude.creator, 'anthropic');
+    assert.strictEqual(claude.releaseDate, null, 'gerçek veride release_date yok; tahmin edilmez');
+    assert.deepStrictEqual(claude.score, { source: 'lmarena', key: 'text', value: 1517.7921223112396, fetchedAt: today, ciLow: 1505.6151276832159, ciHigh: 1529.9691169392634, votes: 2307, rank: 1 });
+
+    const gptImage = lm.find((r: { rawName: string }) => r.rawName === 'gpt-image-2.5-sunburst');
+    assert.ok(gptImage);
+    assert.deepStrictEqual(gptImage.score, { source: 'lmarena', key: 'text_to_image', value: 1423.6048361955234, fetchedAt: today, ciLow: 1415.9321932783876, ciHigh: 1431.277479112659, votes: 10884, rank: 1 });
+
+    const models = mergeModels({ oldModels: [], fresh: lm, succeededSources: new Set(['lmarena']), aliases: {}, linkedModelIds: new Set(), today }, report);
+    assert.ok(models.find((m: { id: string }) => m.id === 'claude-opus-5-5-high'));
+    assert.ok(models.find((m: { id: string }) => m.id === 'gpt-image-2-5-sunburst'));
+  });
+});
+
+describe('gece işi yeniden deneme (429/5xx) — retryDelayMs, isRetryableStatus', () => {
+  it('429 ve 5xx tekrar denenir; başka 4xx (ör. 404) denenmez', () => {
+    assert.strictEqual(isRetryableStatus(429), true);
+    assert.strictEqual(isRetryableStatus(500), true);
+    assert.strictEqual(isRetryableStatus(503), true);
+    assert.strictEqual(isRetryableStatus(404), false);
+    assert.strictEqual(isRetryableStatus(401), false);
+  });
+
+  it('Retry-After varsa ona uyulur', () => {
+    assert.strictEqual(retryDelayMs({ status: 429, attempt: 1, retryAfterSeconds: 12 }), 12_000);
+    assert.strictEqual(retryDelayMs({ status: 500, attempt: 1, retryAfterSeconds: 3 }), 3_000);
+  });
+
+  it('429: katlanarak artan, 30 sn\'de tavanlanan bekleme (2026-09-28 koşusunda tek seferlik 2 sn yetmedi)', () => {
+    assert.strictEqual(retryDelayMs({ status: 429, attempt: 1 }), 5_000);
+    assert.strictEqual(retryDelayMs({ status: 429, attempt: 2 }), 10_000);
+    assert.strictEqual(retryDelayMs({ status: 429, attempt: 6 }), 30_000);
+  });
+
+  it('ağ hatası (status 0) ve 5xx: kısa, katlanarak artan bekleme', () => {
+    assert.strictEqual(retryDelayMs({ status: 0, attempt: 1 }), 2_000);
+    assert.strictEqual(retryDelayMs({ status: 502, attempt: 2 }), 4_000);
   });
 });
 
