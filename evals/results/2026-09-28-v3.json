@@ -1,7 +1,7 @@
 {
   "recommender": "v3",
   "date": "2026-09-28",
-  "generatedAt": "2026-09-28T17:32:39.375Z",
+  "generatedAt": "2026-09-28T21:32:23.020Z",
   "env": {
     "openaiKey": false,
     "catalog": "lib/tools-database.json",
@@ -9,28 +9,28 @@
     "vectorSearch": "disabled"
   },
   "summary": {
-    "total": 112,
-    "evaluated": 112,
+    "total": 128,
+    "evaluated": 128,
     "skipped": 0,
     "top1Hit": {
-      "hits": 39,
-      "n": 109,
-      "rate": 0.358
+      "hits": 98,
+      "n": 125,
+      "rate": 0.784
     },
     "top3Hit": {
-      "hits": 42,
-      "n": 109,
-      "rate": 0.385
+      "hits": 101,
+      "n": 125,
+      "rate": 0.808
     },
     "taskMatch": {
-      "hits": 88,
-      "n": 88,
+      "hits": 103,
+      "n": 103,
       "rate": 1
     },
     "clarifyRate": {
-      "hits": 24,
-      "n": 112,
-      "rate": 0.214
+      "hits": 25,
+      "n": 128,
+      "rate": 0.195
     },
     "clarifyOnNeeded": {
       "hits": 5,
@@ -38,11 +38,11 @@
       "rate": 0.385
     },
     "clarifyOnClear": {
-      "hits": 19,
-      "n": 99,
-      "rate": 0.192
+      "hits": 20,
+      "n": 115,
+      "rate": 0.174
     },
-    "avgLatencyMs": 6,
+    "avgLatencyMs": 7,
     "avgTokens": null,
     "confusedTasks": []
   },
@@ -54,17 +54,20 @@
       "expectedTask": "slides.create",
       "needsClarification": false,
       "task": "slides.create",
-      "tools": [],
+      "tools": [
+        "Gamma AI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 55,
+      "latencyMs": 35,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 5
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -75,17 +78,20 @@
       "expectedTask": "slides.create",
       "needsClarification": false,
       "task": "slides.create",
-      "tools": [],
+      "tools": [
+        "Gamma AI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 10,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 5
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -104,7 +110,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 12,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -120,17 +126,20 @@
       "expectedTask": "video.subtitles",
       "needsClarification": false,
       "task": "video.subtitles",
-      "tools": [],
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 10,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -152,7 +161,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 8,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -174,7 +183,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 10,
+      "latencyMs": 9,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -193,17 +202,20 @@
       "expectedTask": "docs.create",
       "needsClarification": false,
       "task": "docs.create",
-      "tools": [],
+      "tools": [
+        "ChatGPT"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
       "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 6
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -252,7 +264,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -280,7 +292,7 @@
       "top1Hit": false,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 9,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -296,17 +308,20 @@
       "expectedTask": "audio.tts-voiceover",
       "needsClarification": false,
       "task": "audio.tts-voiceover",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 10,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -317,17 +332,20 @@
       "expectedTask": "music.generate",
       "needsClarification": false,
       "task": "music.generate",
-      "tools": [],
+      "tools": [
+        "Suno AI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -338,17 +356,20 @@
       "expectedTask": "audio.meeting-notes",
       "needsClarification": false,
       "task": "audio.meeting-notes",
-      "tools": [],
+      "tools": [
+        "Fathom (Meeting Assistant)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -370,7 +391,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -385,12 +406,58 @@
       "query": "İngilizce kira sözleşmesini Türkçeye çevirmem gerekiyor",
       "expectedTask": "text.translate",
       "needsClarification": false,
-      "task": "text.translate",
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "text.translate",
+          "docs.create",
+          "text.write-longform"
+        ]
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-16",
+      "lang": "tr",
+      "query": "tezim için literatür taraması yapmam lazım",
+      "expectedTask": "research.academic",
+      "needsClarification": false,
+      "task": "research.academic",
       "tools": [
-        "Claude",
-        "Gemini",
-        "ChatGPT",
-        "Le Chat (Mistral)"
+        "Elicit AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-17",
+      "lang": "tr",
+      "query": "kod bilmiyorum ama restoranım için rezervasyon alan bir mobil uygulama yapmak istiyorum",
+      "expectedTask": "code.app-builder",
+      "needsClarification": false,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
       ],
       "clarification": false,
       "skipped": null,
@@ -407,65 +474,26 @@
       "llmCalls": 0
     },
     {
-      "id": "tr-16",
-      "lang": "tr",
-      "query": "tezim için literatür taraması yapmam lazım",
-      "expectedTask": "research.academic",
-      "needsClarification": false,
-      "task": "research.academic",
-      "tools": [],
-      "clarification": false,
-      "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
-      "taskMatch": true,
-      "latencyMs": 5,
-      "tokens": null,
-      "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
-      },
-      "llmCalls": 0
-    },
-    {
-      "id": "tr-17",
-      "lang": "tr",
-      "query": "kod bilmiyorum ama restoranım için rezervasyon alan bir mobil uygulama yapmak istiyorum",
-      "expectedTask": "code.app-builder",
-      "needsClarification": false,
-      "task": "code.app-builder",
-      "tools": [],
-      "clarification": false,
-      "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
-      "taskMatch": true,
-      "latencyMs": 5,
-      "tokens": null,
-      "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
-      },
-      "llmCalls": 0
-    },
-    {
       "id": "tr-18",
       "lang": "tr",
       "query": "Excel'deki satış verilerimi analiz edip hangi ürünün satışının düştüğünü bulmak istiyorum",
       "expectedTask": "data.spreadsheet-analysis",
       "needsClarification": false,
       "task": "data.spreadsheet-analysis",
-      "tools": [],
+      "tools": [
+        "ChatGPT"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 8,
+      "latencyMs": 10,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 4
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -476,17 +504,20 @@
       "expectedTask": "audio.tts-voiceover",
       "needsClarification": true,
       "task": "audio.tts-voiceover",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -507,7 +538,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -522,22 +553,21 @@
       "query": "make slides for my quarterly sales review meeting",
       "expectedTask": "slides.create",
       "needsClarification": false,
-      "task": null,
-      "tools": [],
-      "clarification": true,
+      "task": "slides.create",
+      "tools": [
+        "Gamma AI"
+      ],
+      "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
-      "taskMatch": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
       "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "clarify",
-        "options": [
-          "slides.create",
-          "audio.meeting-notes",
-          "text.write-longform"
-        ]
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -558,7 +588,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -586,7 +616,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -636,7 +666,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 3,
+      "latencyMs": 4,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -655,17 +685,20 @@
       "expectedTask": "audio.voice-clone",
       "needsClarification": false,
       "task": "audio.voice-clone",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -676,17 +709,20 @@
       "expectedTask": "music.generate",
       "needsClarification": false,
       "task": "music.generate",
-      "tools": [],
+      "tools": [
+        "Suno AI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 4,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -697,17 +733,20 @@
       "expectedTask": "audio.cleanup",
       "needsClarification": false,
       "task": "audio.cleanup",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -727,7 +766,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -742,23 +781,22 @@
       "query": "write a polite follow-up email to a client who hasn't paid their invoice yet",
       "expectedTask": "text.email",
       "needsClarification": false,
-      "task": "text.email",
-      "tools": [
-        "Claude",
-        "Gemini",
-        "ChatGPT"
-      ],
-      "clarification": false,
+      "task": null,
+      "tools": [],
+      "clarification": true,
       "skipped": null,
-      "top1Hit": true,
-      "top3Hit": true,
-      "taskMatch": true,
-      "latencyMs": 6,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
-        "kind": "recommendation",
-        "taskSource": "rules",
-        "relaxedConstraint": null
+        "kind": "clarify",
+        "options": [
+          "text.email",
+          "docs.create",
+          "text.write-longform"
+        ]
       },
       "llmCalls": 0
     },
@@ -775,7 +813,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -794,17 +832,20 @@
       "expectedTask": "research.academic",
       "needsClarification": true,
       "task": "research.academic",
-      "tools": [],
+      "tools": [
+        "Elicit AI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -824,7 +865,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -840,17 +881,20 @@
       "expectedTask": "code.assistant-ide",
       "needsClarification": false,
       "task": "code.assistant-ide",
-      "tools": [],
+      "tools": [
+        "Cursor"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 3
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -861,17 +905,20 @@
       "expectedTask": "code.website-builder",
       "needsClarification": true,
       "task": "code.website-builder",
-      "tools": [],
+      "tools": [
+        "Replit Agent"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
       "latencyMs": 4,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 4
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -882,17 +929,20 @@
       "expectedTask": "data.dashboard",
       "needsClarification": false,
       "task": "data.dashboard",
-      "tools": [],
+      "tools": [
+        "Microsoft Power BI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -903,17 +953,20 @@
       "expectedTask": "automation.workflow",
       "needsClarification": false,
       "task": "automation.workflow",
-      "tools": [],
+      "tools": [
+        "n8n AI Workflow Builder"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -934,7 +987,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 12,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -959,7 +1012,7 @@
       "top1Hit": false,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -975,17 +1028,20 @@
       "expectedTask": "3d.generate",
       "needsClarification": false,
       "task": "3d.generate",
-      "tools": [],
+      "tools": [
+        "World Labs Marble"
+      ],
       "clarification": false,
       "skipped": null,
       "top1Hit": null,
       "top3Hit": null,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1006,7 +1062,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1032,7 +1088,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1054,7 +1110,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1085,7 +1141,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 7,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1111,7 +1167,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1126,23 +1182,22 @@
       "query": "ask questions about a contract I uploaded",
       "expectedTask": "research.document-qa",
       "needsClarification": false,
-      "task": "research.document-qa",
-      "tools": [
-        "Claude",
-        "ChatGPT",
-        "Gemini"
-      ],
-      "clarification": false,
+      "task": null,
+      "tools": [],
+      "clarification": true,
       "skipped": null,
-      "top1Hit": true,
-      "top3Hit": true,
-      "taskMatch": true,
-      "latencyMs": 5,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "recommendation",
-        "taskSource": "rules",
-        "relaxedConstraint": null
+        "kind": "clarify",
+        "options": [
+          "research.document-qa",
+          "docs.create",
+          "text.write-longform"
+        ]
       },
       "llmCalls": 0
     },
@@ -1159,7 +1214,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1184,7 +1239,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1214,7 +1269,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 7,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1241,7 +1296,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1256,22 +1311,21 @@
       "query": "eski bir fotoğrafın çözünürlüğünü artırmak istiyorum",
       "expectedTask": "image.upscale",
       "needsClarification": false,
-      "task": null,
-      "tools": [],
-      "clarification": true,
+      "task": "image.upscale",
+      "tools": [
+        "Leonardo AI"
+      ],
+      "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
-      "taskMatch": null,
-      "latencyMs": 8,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "clarify",
-        "options": [
-          "text.write-longform",
-          "text.marketing-copy",
-          "text.email"
-        ]
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1288,7 +1342,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1319,7 +1373,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1341,7 +1395,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1360,17 +1414,20 @@
       "expectedTask": "video.avatar-presenter",
       "needsClarification": false,
       "task": "video.avatar-presenter",
-      "tools": [],
+      "tools": [
+        "Synthesia"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1381,17 +1438,20 @@
       "expectedTask": "video.avatar-presenter",
       "needsClarification": false,
       "task": "video.avatar-presenter",
-      "tools": [],
+      "tools": [
+        "Synthesia"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1402,17 +1462,20 @@
       "expectedTask": "video.repurpose-clips",
       "needsClarification": false,
       "task": "video.repurpose-clips",
-      "tools": [],
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1423,17 +1486,20 @@
       "expectedTask": "video.repurpose-clips",
       "needsClarification": false,
       "task": "video.repurpose-clips",
-      "tools": [],
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
       "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1444,17 +1510,20 @@
       "expectedTask": "audio.transcribe",
       "needsClarification": false,
       "task": "audio.transcribe",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1465,17 +1534,20 @@
       "expectedTask": "audio.transcribe",
       "needsClarification": false,
       "task": "audio.transcribe",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1494,7 +1566,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 7,
+      "latencyMs": 9,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1518,7 +1590,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1545,7 +1617,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1567,7 +1639,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1596,7 +1668,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1622,7 +1694,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1648,7 +1720,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1663,23 +1735,22 @@
       "query": "give me a one-paragraph summary of this 40-page contract",
       "expectedTask": "text.summarize",
       "needsClarification": false,
-      "task": "text.summarize",
-      "tools": [
-        "Claude",
-        "Gemini",
-        "ChatGPT"
-      ],
-      "clarification": false,
+      "task": null,
+      "tools": [],
+      "clarification": true,
       "skipped": null,
-      "top1Hit": true,
-      "top3Hit": true,
-      "taskMatch": true,
-      "latencyMs": 6,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "recommendation",
-        "taskSource": "rules",
-        "relaxedConstraint": null
+        "kind": "clarify",
+        "options": [
+          "text.summarize",
+          "docs.create",
+          "text.write-longform"
+        ]
       },
       "llmCalls": 0
     },
@@ -1701,7 +1772,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1728,7 +1799,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1753,7 +1824,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1778,7 +1849,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -1794,17 +1865,20 @@
       "expectedTask": "docs.create",
       "needsClarification": false,
       "task": "docs.create",
-      "tools": [],
+      "tools": [
+        "ChatGPT"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 4,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 6
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1821,7 +1895,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1840,17 +1914,20 @@
       "expectedTask": "image.background-remove",
       "needsClarification": false,
       "task": "image.background-remove",
-      "tools": [],
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 4,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1861,17 +1938,20 @@
       "expectedTask": "image.background-remove",
       "needsClarification": false,
       "task": "image.background-remove",
-      "tools": [],
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1888,7 +1968,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -1913,14 +1993,14 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
         "options": [
           "video.edit-short-social",
           "video.subtitles",
-          "video.text-to-video"
+          "text.marketing-copy"
         ]
       },
       "llmCalls": 0
@@ -1932,17 +2012,20 @@
       "expectedTask": "video.subtitles",
       "needsClarification": false,
       "task": "video.subtitles",
-      "tools": [],
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1953,17 +2036,20 @@
       "expectedTask": "video.subtitles",
       "needsClarification": false,
       "task": "video.subtitles",
-      "tools": [],
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -1980,7 +2066,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 7,
+      "latencyMs": 9,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2005,7 +2091,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2024,17 +2110,20 @@
       "expectedTask": "audio.cleanup",
       "needsClarification": false,
       "task": "audio.cleanup",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2045,17 +2134,20 @@
       "expectedTask": "audio.cleanup",
       "needsClarification": false,
       "task": "audio.cleanup",
-      "tools": [],
+      "tools": [
+        "ElevenLabs"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2066,17 +2158,20 @@
       "expectedTask": "audio.meeting-notes",
       "needsClarification": false,
       "task": "audio.meeting-notes",
-      "tools": [],
+      "tools": [
+        "Fathom (Meeting Assistant)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 4,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2087,17 +2182,20 @@
       "expectedTask": "audio.meeting-notes",
       "needsClarification": false,
       "task": "audio.meeting-notes",
-      "tools": [],
+      "tools": [
+        "Fathom (Meeting Assistant)"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
       "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2108,17 +2206,20 @@
       "expectedTask": "code.assistant-ide",
       "needsClarification": false,
       "task": "code.assistant-ide",
-      "tools": [],
+      "tools": [
+        "Cursor"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 3
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2129,17 +2230,20 @@
       "expectedTask": "code.assistant-ide",
       "needsClarification": false,
       "task": "code.assistant-ide",
-      "tools": [],
+      "tools": [
+        "Cursor"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 3
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2161,7 +2265,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2183,7 +2287,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2201,22 +2305,21 @@
       "query": "kod yazmayı bilmiyorum ama küçük işletmem için stok takip uygulaması yapmak istiyorum",
       "expectedTask": "code.app-builder",
       "needsClarification": false,
-      "task": null,
-      "tools": [],
-      "clarification": true,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
-      "taskMatch": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
       "latencyMs": 8,
       "tokens": null,
       "detail": {
-        "kind": "clarify",
-        "options": [
-          "text.write-longform",
-          "text.marketing-copy",
-          "text.email"
-        ]
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2233,7 +2336,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2252,17 +2355,20 @@
       "expectedTask": "code.website-builder",
       "needsClarification": false,
       "task": "code.website-builder",
-      "tools": [],
+      "tools": [
+        "Replit Agent"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 3,
+      "latencyMs": 4,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 4
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2273,17 +2379,20 @@
       "expectedTask": "code.website-builder",
       "needsClarification": false,
       "task": "code.website-builder",
-      "tools": [],
+      "tools": [
+        "Replit Agent"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 4
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2294,17 +2403,20 @@
       "expectedTask": "data.spreadsheet-analysis",
       "needsClarification": false,
       "task": "data.spreadsheet-analysis",
-      "tools": [],
+      "tools": [
+        "ChatGPT"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 4
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2315,17 +2427,20 @@
       "expectedTask": "data.spreadsheet-analysis",
       "needsClarification": false,
       "task": "data.spreadsheet-analysis",
-      "tools": [],
+      "tools": [
+        "ChatGPT"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 4
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2336,17 +2451,20 @@
       "expectedTask": "data.dashboard",
       "needsClarification": false,
       "task": "data.dashboard",
-      "tools": [],
+      "tools": [
+        "Microsoft Power BI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2357,17 +2475,20 @@
       "expectedTask": "data.dashboard",
       "needsClarification": false,
       "task": "data.dashboard",
-      "tools": [],
+      "tools": [
+        "Microsoft Power BI"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 2
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2378,17 +2499,20 @@
       "expectedTask": "automation.workflow",
       "needsClarification": false,
       "task": "automation.workflow",
-      "tools": [],
+      "tools": [
+        "n8n AI Workflow Builder"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2399,17 +2523,20 @@
       "expectedTask": "automation.workflow",
       "needsClarification": false,
       "task": "automation.workflow",
-      "tools": [],
+      "tools": [
+        "n8n AI Workflow Builder"
+      ],
       "clarification": false,
       "skipped": null,
-      "top1Hit": false,
-      "top3Hit": false,
+      "top1Hit": true,
+      "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2426,7 +2553,7 @@
       "top1Hit": null,
       "top3Hit": null,
       "taskMatch": null,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2445,17 +2572,20 @@
       "expectedTask": "3d.generate",
       "needsClarification": false,
       "task": "3d.generate",
-      "tools": [],
+      "tools": [
+        "World Labs Marble"
+      ],
       "clarification": false,
       "skipped": null,
       "top1Hit": null,
       "top3Hit": null,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
-        "kind": "no_evidence",
-        "productCount": 1
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     },
@@ -2478,7 +2608,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2506,7 +2636,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2534,7 +2664,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 4,
+      "latencyMs": 5,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2562,7 +2692,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2589,7 +2719,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2617,7 +2747,7 @@
       "top1Hit": true,
       "top3Hit": true,
       "taskMatch": true,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "recommendation",
@@ -2639,7 +2769,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 6,
+      "latencyMs": 8,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2664,7 +2794,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 4,
+      "latencyMs": 6,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2689,7 +2819,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 6,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2714,7 +2844,7 @@
       "top1Hit": false,
       "top3Hit": false,
       "taskMatch": null,
-      "latencyMs": 5,
+      "latencyMs": 7,
       "tokens": null,
       "detail": {
         "kind": "clarify",
@@ -2723,6 +2853,405 @@
           "text.marketing-copy",
           "text.email"
         ]
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-59",
+      "lang": "tr",
+      "query": "C# programı yapmak istiyorum",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-60",
+      "lang": "tr",
+      "query": "discord botu yapmak istiyorum",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-61",
+      "lang": "tr",
+      "query": "metni sese çevir",
+      "expectedTask": "audio.tts-voiceover",
+      "needsClarification": false,
+      "task": "audio.tts-voiceover",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-62",
+      "lang": "tr",
+      "query": "youtube thumbnail yap",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": false,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-63",
+      "lang": "tr",
+      "query": "podcast sesini temizle",
+      "expectedTask": "audio.cleanup",
+      "needsClarification": false,
+      "task": "audio.cleanup",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-64",
+      "lang": "tr",
+      "query": "instagram gönderisi için açıklama yaz",
+      "expectedTask": "text.marketing-copy",
+      "needsClarification": false,
+      "task": "text.marketing-copy",
+      "tools": [
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-65",
+      "lang": "tr",
+      "query": "powerpoint yap",
+      "expectedTask": "slides.create",
+      "needsClarification": false,
+      "task": "slides.create",
+      "tools": [
+        "Gamma AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-66",
+      "lang": "tr",
+      "query": "fotoğrafın arka planını sil",
+      "expectedTask": "image.background-remove",
+      "needsClarification": false,
+      "task": "image.background-remove",
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-67",
+      "lang": "tr",
+      "query": "afiş tasarlamak istiyorum",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": false,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-68",
+      "lang": "tr",
+      "query": "dilekçe yazmak istiyorum",
+      "expectedTask": "docs.create",
+      "needsClarification": false,
+      "task": "docs.create",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-69",
+      "lang": "tr",
+      "query": "matematik sorusu çöz",
+      "expectedTask": "chat.general-assistant",
+      "needsClarification": false,
+      "task": "chat.general-assistant",
+      "tools": [
+        "Claude",
+        "Gemini",
+        "ChatGPT",
+        "Grok",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-70",
+      "lang": "tr",
+      "query": "eski fotoğrafı netleştir",
+      "expectedTask": "image.upscale",
+      "needsClarification": false,
+      "task": "image.upscale",
+      "tools": [
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-71",
+      "lang": "tr",
+      "query": "fotoğrafı hareketlendir",
+      "expectedTask": "video.image-to-video",
+      "needsClarification": false,
+      "task": "video.image-to-video",
+      "tools": [
+        "Grok Imagine (xAI)",
+        "Google Veo",
+        "Kling AI",
+        "Luma Dream Machine",
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-55",
+      "lang": "en",
+      "query": "write python code",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-56",
+      "lang": "en",
+      "query": "make a youtube thumbnail",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": false,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-57",
+      "lang": "en",
+      "query": "i want to make an app",
+      "expectedTask": "code.app-builder",
+      "needsClarification": false,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 4,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
       },
       "llmCalls": 0
     }

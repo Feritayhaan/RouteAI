@@ -19,6 +19,8 @@ export interface RecommendationTool {
   /** Gevsek sema: KV'de migration oncesi kayitlar hala olabilir. Okurken
    *  lib/pricing.ts helper'larini kullan, bayraklari elle yorumlama. */
   pricing?: PricingLike
+  /** Ürünün fiyat sayfası: fiyat doğrulanmamışsa kart buraya yönlendirir. */
+  pricingUrl?: string
   strength?: number
   why?: string
   promptSuggestion?: string
@@ -32,6 +34,9 @@ export interface RecommendationTool {
   dataDate?: string | null
   /** Puana giren benchmark kaynakları (kaynak adı kartta görünür: lisans şartı). */
   sources?: BenchmarkSource[]
+  /** 'editor': kanıt yokken RouteAI editör seçimi (puansız); gerekçesi editorNote. */
+  basis?: 'evidence' | 'editor'
+  editorNote?: string
 }
 
 export interface WorkflowStep {
@@ -67,6 +72,8 @@ export interface SimpleRecommendation {
   taskLabel?: string
   /** v3: sorgudaki kısıt gevşetildi (lib/catalog/fit.ts anahtarları). */
   relaxedConstraint?: string[]
+  /** v3 editör seçimi varken görevdeki diğer araçlar (puansız, "doğrulanmadı"). */
+  unverified?: RecommendationTool[]
 }
 
 export interface WorkflowRecommendation {
@@ -99,7 +106,7 @@ export type ApiResponse = SimpleRecommendation | WorkflowRecommendation | Clarif
 type Locale = 'en' | 'tr'
 
 function productTool(p: Product, locale: Locale): RecommendationTool {
-  return { toolName: p.name, description: p.description[locale], url: p.url, pricing: p.pricing, productId: p.id }
+  return { toolName: p.name, description: p.description[locale], url: p.url, pricing: p.pricing, productId: p.id, ...(p.pricingUrl ? { pricingUrl: p.pricingUrl } : {}) }
 }
 
 function itemTool(i: V3Item, locale: Locale): RecommendationTool {
@@ -109,6 +116,8 @@ function itemTool(i: V3Item, locale: Locale): RecommendationTool {
     reasons: i.reasons,
     dataDate: i.dataDate,
     sources: i.sources,
+    basis: i.basis,
+    ...(i.editorNote ? { editorNote: i.editorNote[locale] } : {}),
   }
 }
 
@@ -129,6 +138,7 @@ export function apiResponseFromV3(result: RecommendV3Result, dict: Dictionary, l
         main: itemTool(main, locale),
         alternatives: alternatives.map((i) => itemTool(i, locale)),
         ...(result.relaxedConstraint?.length ? { relaxedConstraint: result.relaxedConstraint } : {}),
+        ...(result.unverified?.length ? { unverified: result.unverified.map((p) => productTool(p, locale)) } : {}),
       }
     }
     case 'clarify': {

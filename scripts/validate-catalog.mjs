@@ -18,6 +18,7 @@ import {
   signalsFileSchema,
   tasksFileSchema,
   candidatesFileSchema,
+  editorPicksFileSchema,
 } from '../lib/catalog/schema.ts';
 import { isKnownArena } from '../lib/catalog/benchmarkKeys.ts';
 
@@ -56,6 +57,7 @@ const briefs = check('briefs.json', briefsFileSchema);
 const reviews = check('reviews.json', reviewsFileSchema);
 const signals = check('signals.json', signalsFileSchema);
 const candidates = check('candidates.json', candidatesFileSchema);
+const editorPicks = check('editor-picks.json', editorPicksFileSchema);
 
 uniqueIds('tasks.json', tasks);
 uniqueIds('products.json', products);
@@ -119,6 +121,18 @@ for (const s of signals) {
   if (!taskIds.has(s.taskId)) errors.push(`signals.json ${k}: olmayan görev`);
 }
 
+// Editör seçimleri ("RouteAI tavsiyesi"): görevde aktif katalog ürünü, görev başına tek
+const pickTasks = new Set();
+for (const pick of editorPicks) {
+  const where = `editor-picks.json ${pick.taskId} -> ${pick.productId}`;
+  const product = productsById.get(pick.productId);
+  if (!taskIds.has(pick.taskId)) errors.push(`${where}: olmayan görev`);
+  if (!product) errors.push(`${where}: olmayan ürün`);
+  else if (product.status !== 'active' || !product.tasks.includes(pick.taskId)) errors.push(`${where}: ürün bu görevde aktif değil`);
+  if (pickTasks.has(pick.taskId)) errors.push(`${where}: görev için birden fazla seçim`);
+  pickTasks.add(pick.taskId);
+}
+
 // Adaylar: görevler mevcut, katalogdaki ürünle çakışmıyor
 uniqueIds('candidates.json', candidates);
 for (const c of candidates) {
@@ -146,7 +160,7 @@ for (const { id, n } of counts) {
   if (n === 0) warnings.push(`aktif ürünü olmayan görev: ${id}`);
 }
 
-console.log(`[validate:catalog] ${tasks.length} görev, ${products.length} ürün (${active.length} aktif), ${models.length} model, ${briefs.length} brif, ${reviews.length} değerlendirme, ${signals.length} sinyal, ${candidates.length} aday`);
+console.log(`[validate:catalog] ${tasks.length} görev, ${products.length} ürün (${active.length} aktif), ${models.length} model, ${briefs.length} brif, ${reviews.length} değerlendirme, ${signals.length} sinyal, ${editorPicks.length} editör seçimi, ${candidates.length} aday`);
 const thin = counts.filter((c) => c.n === 1).map((c) => c.id);
 if (thin.length) console.log(`[validate:catalog] tek aktif ürünlü görevler (${thin.length}): ${thin.join(', ')}`);
 for (const w of warnings) console.log(`UYARI: ${w}`);

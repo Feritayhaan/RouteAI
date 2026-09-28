@@ -1,13 +1,17 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
-import { priceLabelOrUnknown } from "@/lib/pricing"
+import { displayPriceLabel } from "@/lib/pricing"
 import { format, getDictionary } from "@/lib/i18n"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
-import { ConfidenceBadge, ReasonsBox } from "./Evidence"
+import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox } from "./Evidence"
+import { onToolOpen } from "./toolOpen"
+import { trackEvent } from "@/lib/analytics/client"
+import { getSessionId } from "@/lib/chat/session"
 import { SOURCES } from "@/lib/catalog/sources"
 import type { CurrentModel } from "@/lib/catalog/currentModel"
 
@@ -42,13 +46,20 @@ export default function SimpleRecommendationDisplay({
   recommendation: SimpleRecommendation
   query: string
 }) {
-  const { main } = recommendation
+  const { main, taskId } = recommendation
+  const editor = main.basis === "editor"
+  // v3: oturum kimliği ile oy (arama metni gönderilmez); v1'de klasik oy.
+  const [sessionId] = useState(() => (taskId && main.productId ? getSessionId() : null))
+
+  useEffect(() => {
+    if (taskId) trackEvent("recommendation_shown", { taskId })
+  }, [taskId])
   const renderPricingBadges = () => {
     if (!main.pricing && !main.confidence) return null
     return (
       <div className="flex flex-wrap items-center gap-1.5">
-        {main.pricing && <PricingBadges pricing={main.pricing} />}
-        {main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
+        {main.pricing && <PricingBadges pricing={main.pricing} pricingUrl={main.pricingUrl} />}
+        {editor ? <EditorPickBadge dict={dict} /> : main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
       </div>
     )
   }
@@ -84,6 +95,9 @@ export default function SimpleRecommendationDisplay({
                 )}
                 {renderPricingBadges()}
 
+                {recommendation.taskLabel && (
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-primary">{dict.v3.pick}</p>
+                )}
                 <h2 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight break-words">
                   <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                     {main.toolName}
@@ -97,6 +111,7 @@ export default function SimpleRecommendationDisplay({
               href={main.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => onToolOpen(main, taskId)}
               className="self-start flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
             >
               <ExternalLink className="w-4 h-4" />
@@ -129,7 +144,9 @@ export default function SimpleRecommendationDisplay({
               <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground">
                 {main.description}
               </p>
-              {main.reasons ? (
+              {editor ? (
+                <EditorReasonsBox tool={main} dict={dict} />
+              ) : main.reasons ? (
                 <ReasonsBox tool={main} dict={dict} />
               ) : main.why && (
                 <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
@@ -155,6 +172,7 @@ export default function SimpleRecommendationDisplay({
                       href={alt.url}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => onToolOpen(alt, taskId)}
                       className="text-sm flex justify-between items-center gap-3 hover:underline"
                     >
                       <span className="min-w-0 break-words">
@@ -166,7 +184,7 @@ export default function SimpleRecommendationDisplay({
                       {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
                           ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
                       <span className="shrink-0 text-xs text-muted-foreground">
-                        {priceLabelOrUnknown(alt.pricing)}
+                        {displayPriceLabel(alt.pricing)}
                       </span>
                     </a>
                   ))}
@@ -174,7 +192,41 @@ export default function SimpleRecommendationDisplay({
               </div>
             )}
 
-            <FeedbackButtons query={query} toolName={main.toolName} />
+            {recommendation.unverified && recommendation.unverified.length > 0 && (
+              <div className="mt-4 border-t border-border/50 pt-3">
+                <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase">
+                  {dict.v3.otherTools}
+                </div>
+                <div className="flex flex-col gap-2">
+                  {recommendation.unverified.map((alt) => (
+                    <a
+                      key={alt.toolName}
+                      href={alt.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => onToolOpen(alt, taskId)}
+                      className="text-sm flex justify-between items-center gap-3 hover:underline"
+                    >
+                      <span className="min-w-0 break-words">{alt.toolName}</span>
+                      <span className="shrink-0 text-xs text-muted-foreground">{displayPriceLabel(alt.pricing)}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {sessionId && taskId && main.productId ? (
+              <FeedbackButtons
+                sessionId={sessionId}
+                taskId={taskId}
+                productId={main.productId}
+                toolName={main.toolName}
+                labels={{ question: dict.feedback.question, up: dict.feedback.up, down: dict.feedback.down, thanks: dict.feedback.thanks }}
+                onVote={() => trackEvent("feedback", { taskId })}
+              />
+            ) : (
+              <FeedbackButtons query={query} toolName={main.toolName} />
+            )}
           </div>
         </div>
       </div>

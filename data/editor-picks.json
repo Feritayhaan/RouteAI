@@ -1,0 +1,212 @@
+[
+  {
+    "taskId": "research.academic",
+    "productId": "elicit-ai",
+    "reason": {
+      "en": "Searches academic papers, summarizes them and compares findings in a table, with citations.",
+      "tr": "Akademik makaleleri arar, özetler ve bulguları tabloda karşılaştırır; kaynak gösterir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "slides.create",
+    "productId": "gamma-ai",
+    "reason": {
+      "en": "Turns a sentence or an outline into a structured slide deck; text and design stay editable.",
+      "tr": "Bir cümleden ya da taslaktan düzenli slaytlar oluşturur; metin ve tasarım sonradan düzenlenebilir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "docs.create",
+    "productId": "chatgpt-gpt-5",
+    "reason": {
+      "en": "Drafts and edits documents such as letters, proposals and resumes in the format you ask for.",
+      "tr": "Dilekçe, teklif, özgeçmiş gibi belgeleri istediğin biçimde yazar ve düzeltir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "image.background-remove",
+    "productId": "canva-ai-magic-studio",
+    "reason": {
+      "en": "Removes a photo background automatically; you can use the result in a design right away.",
+      "tr": "Fotoğrafın arka planını otomatik kaldırır; sonucu aynı yerde tasarımda kullanabilirsin."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "image.upscale",
+    "productId": "leonardo-ai",
+    "reason": {
+      "en": "Includes an upscaler that increases image resolution and sharpness.",
+      "tr": "Görselin çözünürlüğünü ve netliğini artıran bir büyütme aracı içerir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "video.subtitles",
+    "productId": "opusclip-video-repurposing",
+    "reason": {
+      "en": "Adds automatic captions to videos; caption style is editable.",
+      "tr": "Videoya otomatik altyazı ekler; altyazı stili düzenlenebilir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "video.avatar-presenter",
+    "productId": "synthesia-30",
+    "reason": {
+      "en": "Turns your script into a video presented by an AI avatar.",
+      "tr": "Yazdığın metni bir yapay zekâ avatarının sunduğu videoya çevirir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "video.repurpose-clips",
+    "productId": "opusclip-video-repurposing",
+    "reason": {
+      "en": "Cuts long videos into short vertical clips and adds captions.",
+      "tr": "Uzun videodan kısa, dikey klipler çıkarır ve altyazı ekler."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "audio.tts-voiceover",
+    "productId": "elevenlabs",
+    "reason": {
+      "en": "Turns text into natural-sounding speech with a choice of voices and languages.",
+      "tr": "Metni doğal sesli konuşmaya çevirir; ses ve dil seçenekleri sunar."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "audio.voice-clone",
+    "productId": "elevenlabs",
+    "reason": {
+      "en": "Creates a synthetic copy of a voice from a recording, with consent.",
+      "tr": "Kendi ses kaydından, iznin olan bir sesin sentetik kopyasını oluşturur."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "audio.transcribe",
+    "productId": "elevenlabs",
+    "reason": {
+      "en": "Transcribes speech in audio and video recordings into text.",
+      "tr": "Ses ve video kayıtlarındaki konuşmayı yazıya döker."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "audio.cleanup",
+    "productId": "elevenlabs",
+    "reason": {
+      "en": "Separates background noise from speech and cleans up the recording.",
+      "tr": "Kayıttaki arka plan gürültüsünü ayırıp konuşmayı temizler."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "audio.meeting-notes",
+    "productId": "fathom-meeting-assistant",
+    "reason": {
+      "en": "Records video meetings and produces a summary and action items.",
+      "tr": "Görüntülü toplantıları kaydeder; özet ve aksiyon maddelerini çıkarır."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "music.generate",
+    "productId": "suno-ai",
+    "reason": {
+      "en": "Generates songs with vocals or instrumentals from a description.",
+      "tr": "Bir tariften sözlü ya da enstrümantal şarkı üretir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "code.assistant-ide",
+    "productId": "cursor",
+    "reason": {
+      "en": "An AI code editor: chat, code completion and multi-file edits in one place.",
+      "tr": "Yapay zekâlı kod editörü: sohbet, kod tamamlama ve birden fazla dosyada düzenleme tek yerde."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "code.app-builder",
+    "productId": "replit-agent",
+    "reason": {
+      "en": "Builds, runs and deploys an app from your description; no coding needed to start.",
+      "tr": "Uygulamayı anlatarak kurar, çalıştırır ve yayına alır; kod bilmeden başlanabilir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "code.website-builder",
+    "productId": "replit-agent",
+    "reason": {
+      "en": "Builds and publishes a website from your description; no coding needed, and the code stays editable.",
+      "tr": "Siteyi anlatarak oluşturur ve yayına alır; kod bilmeden başlanabilir, istersen kodu düzenleyebilirsin."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "data.spreadsheet-analysis",
+    "productId": "chatgpt-gpt-5",
+    "reason": {
+      "en": "Upload an Excel or CSV file, ask questions and get charts and summaries.",
+      "tr": "Excel ya da CSV dosyasını yükleyip soru sorabilir, grafik ve özet çıkarabilirsin."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "data.dashboard",
+    "productId": "microsoft-power-bi",
+    "reason": {
+      "en": "Builds interactive dashboards and reports from your data.",
+      "tr": "Verinden etkileşimli dashboard ve raporlar oluşturur."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "automation.workflow",
+    "productId": "n8n-ai-workflow-builder",
+    "reason": {
+      "en": "Connects apps and builds workflows that automate repetitive tasks.",
+      "tr": "Uygulamaları birbirine bağlayıp tekrar eden işleri otomatikleştiren akışlar kurar."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  },
+  {
+    "taskId": "3d.generate",
+    "productId": "world-labs-marble",
+    "reason": {
+      "en": "Generates 3D scenes from text or images.",
+      "tr": "Metinden ya da görselden 3D sahne oluşturur."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-09-28"
+  }
+]

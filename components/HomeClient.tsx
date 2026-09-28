@@ -9,6 +9,7 @@ import WorkflowDisplay from "@/components/WorkflowDisplay"
 import SimpleRecommendationDisplay from "@/components/SimpleRecommendationDisplay"
 import ClarifyDisplay from "@/components/ClarifyDisplay"
 import NoEvidenceDisplay from "@/components/NoEvidenceDisplay"
+import OutcomePrompt from "@/components/OutcomePrompt"
 import PromptPanel from "@/components/PromptPanel"
 import PricingToggle, { type PricingFilter } from "@/components/PricingToggle"
 import { getDictionary } from "@/lib/i18n"
@@ -294,6 +295,9 @@ export default function HomeClient() {
               )}
             </Button>
           </div>
+
+          {/* "İşini gördü mü?" — açılan aracın sonucu (P15) */}
+          <OutcomePrompt />
 
           {/* Error Message */}
           {error && !isLoading && (

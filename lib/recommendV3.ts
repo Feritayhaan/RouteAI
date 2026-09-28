@@ -21,7 +21,8 @@ import { extractConstraints } from './intent/parser';
 import { defaultSearchContext, searchCatalog, type SearchContext, type SearchItem } from './catalog/search';
 import type { ConstraintKey, Constraints } from './catalog/fit';
 import type { Confidence, Reason } from './catalog/score';
-import type { BenchmarkSource, LocaleText, Product } from './catalog/schema';
+import { loadCatalog } from './catalog/index';
+import type { BenchmarkSource, EditorPick, LocaleText, Product } from './catalog/schema';
 import { matchesPricingFilter, type PricingFilter } from './pricing';
 import { findMatchingTemplate, MAX_WORKFLOW_STEPS } from './workflow/workflowTemplates';
 import type { WorkflowStepTemplate } from './workflow/workflowTypes';
@@ -40,6 +41,14 @@ export interface RecommendationItem {
   dataDate: string | null;
   /** Puana giren benchmark kaynakları (lisans şartı: kaynak adı gösterilmeli). */
   sources: BenchmarkSource[];
+  /**
+   * 'evidence': RouteAI Skoru (benchmark / uzman / kullanıcı sonucu).
+   * 'editor': görevde kanıt yokken data/editor-picks.json'daki "RouteAI
+   * tavsiyesi" — puan yok, kartta "editör seçimi" diye yazılır.
+   */
+  basis: 'evidence' | 'editor';
+  /** basis 'editor' ise seçimin tarafsız gerekçesi. */
+  editorNote?: LocaleText;
 }
 
 export interface RecommendV3Recommendation {
@@ -52,6 +61,8 @@ export interface RecommendV3Recommendation {
   items: RecommendationItem[];
   /** Sorgudaki kısıt gevşetildiyse (arayüz filtresi ASLA burada olamaz). */
   relaxedConstraint?: ConstraintKey[];
+  /** Editör seçimi varken görevdeki diğer aktif ürünler: puansız, alfabetik, "doğrulanmadı". */
+  unverified?: Product[];
 }
 
 export interface RecommendV3Clarify {
@@ -97,6 +108,8 @@ export interface RecommendV3Options extends ClassifyTaskOptions {
    * akışı denemesi atlanır. Katalogda olmayan id yok sayılır (normal akış).
    */
   taskId?: string;
+  /** Varsayılan: gerçek katalogdaki seçimler; ctx verilmişse (test) boş. */
+  editorPicks?: EditorPick[];
 }
 
 type ResolvedTask = Pick<TaskClassification, 'taskId' | 'confidence' | 'constraints'> & { source: RecommendV3Recommendation['taskSource'] };
@@ -119,7 +132,12 @@ function toItem(item: SearchItem): RecommendationItem {
     reasons: item.score.reasons,
     dataDate: item.score.dataDate,
     sources: [...new Set(item.score.components.benchmarks.map((b) => b.source))],
+    basis: 'evidence',
   };
+}
+
+function editorItem(product: Product, pick: EditorPick): RecommendationItem {
+  return { product, confidence: 'low', reasons: [], dataDate: pick.date, sources: [], basis: 'editor', editorNote: pick.reason };
 }
 
 /** classifyTask'ın fiyat sözlüğü -> fit.ts'in (sadece "ücretsize doğru" olan) sözlüğü. 'paid' kısıtsız kalır. */
@@ -137,6 +155,13 @@ interface TaskOutcome {
   noEvidence: boolean;
   products: Product[];
   relaxedConstraint?: ConstraintKey[];
+  unverified?: Product[];
+}
+
+interface Env {
+  ctx: SearchContext;
+  pricingFilter: PricingFilter;
+  picks: EditorPick[];
 }
 
 /**
@@ -144,17 +169,26 @@ interface TaskOutcome {
  * filtresiyle sonradan ele (asla gevşetilmez) → RecommendationItem'lara çevir.
  * Kanıt yoksa products dolu döner (no_evidence listesi için).
  */
-function recommendForTask(taskId: string, ctx: SearchContext, pricingFilter: PricingFilter, softPricing?: Constraints['pricing']): TaskOutcome {
+function recommendForTask(taskId: string, { ctx, pricingFilter, picks }: Env, softPricing?: Constraints['pricing']): TaskOutcome {
   const result = searchCatalog({ taskId, constraints: { pricing: softPricing } }, ctx);
   if (result.noEvidence) {
-    return { items: [], noEvidence: true, products: activeForTask(ctx, taskId) };
+    const active = activeForTask(ctx, taskId);
+    // Kanıt yok ama editör seçimi var: "RouteAI tavsiyesi" (puansız). Arayüz
+    // fiyat filtresine uymuyorsa gösterilmez — filtre asla gevşetilmez.
+    const pick = picks.find((p) => p.taskId === taskId);
+    const picked = pick && active.find((p) => p.id === pick.productId && matchesPricingFilter(p.pricing, pricingFilter));
+    if (pick && picked) {
+      return { items: [editorItem(picked, pick)], noEvidence: false, products: [], unverified: active.filter((p) => p.id !== picked.id) };
+    }
+    return { items: [], noEvidence: true, products: active };
   }
   const items = result.items.filter((i) => matchesPricingFilter(i.product.pricing, pricingFilter)).map(toItem);
   return { items, noEvidence: false, products: [], relaxedConstraint: result.relaxedConstraint };
 }
 
 /** Birden fazla görevi olan bir adım: sonuçlar birleşir (görev sırasıyla, tekrarsız). */
-function recommendForStep(step: WorkflowStepTemplate, ctx: SearchContext, pricingFilter: PricingFilter): RecommendV3WorkflowStep {
+function recommendForStep(step: WorkflowStepTemplate, env: Env): RecommendV3WorkflowStep {
+  const { ctx } = env;
   const seen = new Set<string>();
   const items: RecommendationItem[] = [];
   const products: Product[] = [];
@@ -163,7 +197,7 @@ function recommendForStep(step: WorkflowStepTemplate, ctx: SearchContext, pricin
 
   for (const taskId of step.tasks) {
     if (!ctx.tasksById.has(taskId)) continue;
-    const outcome = recommendForTask(taskId, ctx, pricingFilter);
+    const outcome = recommendForTask(taskId, env);
     if (!outcome.noEvidence) anyEvidence = true;
     for (const item of outcome.items) {
       if (seen.has(item.product.id)) continue;
@@ -196,6 +230,7 @@ function recommendForStep(step: WorkflowStepTemplate, ctx: SearchContext, pricin
 
 export async function recommendV3(query: string, pricingFilter: PricingFilter = 'all', options: RecommendV3Options = {}): Promise<RecommendV3Result> {
   const ctx = options.ctx ?? defaultSearchContext(options.now);
+  const env: Env = { ctx, pricingFilter, picks: options.editorPicks ?? (options.ctx ? [] : loadCatalog().editorPicks) };
 
   // ÖNCE tek görev (P11): "podcast kapağı", "e-kitap için kapak" gibi bir
   // projenin TEK PARÇASI istekleri classifyTask'ın kural katmanında (5+5
@@ -220,7 +255,7 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
     if ('clarify' in rules) {
       const template = findMatchingTemplate(query);
       if (template) {
-        const steps = template.steps.slice(0, MAX_WORKFLOW_STEPS).map((step) => recommendForStep(step, ctx, pricingFilter));
+        const steps = template.steps.slice(0, MAX_WORKFLOW_STEPS).map((step) => recommendForStep(step, env));
         return { kind: 'workflow', templateId: template.id, templateName: template.name, steps };
       }
     }
@@ -235,7 +270,7 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
   }
 
   const taskLabel = ctx.tasksById.get(classified.taskId)!.label;
-  const outcome = recommendForTask(classified.taskId, ctx, pricingFilter, toSoftPricing(classified.constraints.pricing));
+  const outcome = recommendForTask(classified.taskId, env, toSoftPricing(classified.constraints.pricing));
   if (outcome.noEvidence) {
     return { kind: 'no_evidence', taskId: classified.taskId, taskLabel, products: outcome.products };
   }
@@ -248,5 +283,6 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
     taskSource: classified.source,
     items: outcome.items,
     ...(outcome.relaxedConstraint ? { relaxedConstraint: outcome.relaxedConstraint } : {}),
+    ...(outcome.unverified?.length ? { unverified: outcome.unverified } : {}),
   };
 }

@@ -50,3 +50,50 @@ describe('katalog (lib/catalog)', () => {
     );
   });
 });
+
+describe('editör seçimleri (data/editor-picks.json)', () => {
+  it('gerçek dosya yüklenir; her seçim o görevde aktif bir ürün, görev başına tek', async () => {
+    const { loadCatalog } = await import('../catalog/index');
+    const c = loadCatalog();
+    const seen = new Set<string>();
+    for (const p of c.editorPicks) {
+      const product = c.productsById.get(p.productId);
+      assert.ok(product && product.status === 'active' && product.tasks.includes(p.taskId), `${p.taskId} -> ${p.productId}`);
+      assert.ok(!seen.has(p.taskId));
+      seen.add(p.taskId);
+    }
+  });
+
+  it('görevde olmayan ürünü seçen dosya yüklemede patlar', async () => {
+    const { buildCatalog, loadCatalog } = await import('../catalog/index');
+    const real = loadCatalog();
+    assert.throws(() => buildCatalog({
+      tasks: real.tasks, products: real.products, models: [], briefs: real.briefs, reviews: [], signals: [],
+      editorPicks: [{ taskId: 'code.website-builder', productId: 'suno-ai', reason: { en: 'x', tr: 'x' }, by: 't', date: '2026-09-28' }],
+    }), /aktif bir ürün değil/);
+  });
+});
+
+describe('ürün açıklamaları (P14): tarafsız, kaynaksız sayı yok', () => {
+  // Üstünlük iddiası ve fiyat iddiası kaynaksızdır; sayı (Elo, %, "200 dakika")
+  // kaynağı ve tarihiyle data/ altında durmadıkça açıklamaya yazılmaz.
+  const BANNED = /\b(en iyi|en güçlü|en gelişmiş|en gerçekçi|en hızlı|en popüler|gelişmiş|üstün|mükemmel|lider|endüstri standardı|uygun fiyatlı|sonsuza dek ücretsiz|best|top|most|leading|superior|excellent|advanced|powerful|industry-standard|affordable|free-forever|state-of-the-art|cutting-edge)\b/i;
+
+  // Rakam içeren ürün/kavram ADLARI iddia değildir.
+  const NAMES_WITH_DIGITS = /\b3D\b|Microsoft 365/g;
+
+  it('aktif ürünlerde tr ve en dolu, farklı; üstünlük/fiyat iddiası yok; ad dışında rakam yok', () => {
+    const problems: string[] = [];
+    for (const p of loadCatalog().products.filter((x) => x.status === 'active')) {
+      const { tr, en } = p.description;
+      if (!tr.trim() || !en.trim()) problems.push(`${p.id}: boş açıklama`);
+      if (tr.trim() === en.trim()) problems.push(`${p.id}: en çevrilmemiş`);
+      for (const text of [tr, en]) {
+        const m = text.match(BANNED);
+        if (m) problems.push(`${p.id}: "${m[0]}"`);
+        if (/\d/.test(text.replace(NAMES_WITH_DIGITS, ''))) problems.push(`${p.id}: kaynaksız sayı: ${text}`);
+      }
+    }
+    assert.deepStrictEqual(problems, []);
+  });
+});

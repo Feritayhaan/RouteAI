@@ -16,6 +16,7 @@ function item(id: string, extra: Partial<RecommendationItem> = {}): Recommendati
     reasons: [{ code: 'benchmark_rank', params: { source: 'lmarena', arena: 'text_to_image', rank: 2, total: 40 } }],
     dataDate: '2026-09-28',
     sources: ['lmarena'],
+    basis: 'evidence',
     ...extra,
   };
 }
@@ -90,5 +91,20 @@ describe('apiResponseFromV3', () => {
     assert.deepStrictEqual(s2.tips, ['ipucu']);
     assert.strictEqual(s3.primary.toolName, dict.v3.stepFiltered);
     assert.strictEqual(r.workflow.totalSteps, 3);
+  });
+});
+
+describe('apiResponseFromV3: editör seçimi', () => {
+  it('basis editor ve gerekçe (dilde) karta taşınır; doğrulanmamış araçlar ayrı liste', () => {
+    const r = apiResponseFromV3({
+      kind: 'recommendation', taskId: 'code.website-builder', taskLabel: label, taskConfidence: 0.9, taskSource: 'rules',
+      items: [item('a', { basis: 'editor', reasons: [], sources: [], editorNote: { en: 'why', tr: 'neden' } })],
+      unverified: [product('b')],
+    }, dict);
+    assert.ok(r && r.type === 'simple');
+    if (!r || r.type !== 'simple') return;
+    assert.strictEqual(r.main.basis, 'editor');
+    assert.strictEqual(r.main.editorNote, 'neden');
+    assert.deepStrictEqual(r.unverified?.map((u) => u.toolName), ['B']);
   });
 });

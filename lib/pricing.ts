@@ -117,6 +117,23 @@ export function priceLabelOrUnknown(pricing: MaybePricing): string {
     return formatPrice(pricing) ?? 'Fiyat bilinmiyor';
 }
 
+/** Tutar son PRICE_STALE_AFTER_DAYS gün içinde doğrulandı mı (tarihsiz = hayır). */
+export function isPriceVerified(pricing: MaybePricing, now: number = Date.now()): boolean {
+    return !!pricing && !isPriceStale(pricing.priceCheckedAt ?? null, now);
+}
+
+export const PRICE_UNVERIFIED_LABEL = 'Fiyat doğrulanmadı';
+
+/**
+ * Kartta gösterilecek fiyat: ücretsiz modelde "Ücretsiz"; tutar tarihsiz ya da
+ * 60 günden eskiyse tutar YERİNE "Fiyat doğrulanmadı" (eski rakam gösterilmez).
+ */
+export function displayPriceLabel(pricing: MaybePricing, now: number = Date.now()): string {
+    if (getPricingModel(pricing) === 'free') return 'Ücretsiz';
+    if (!isPriceVerified(pricing, now)) return PRICE_UNVERIFIED_LABEL;
+    return priceLabelOrUnknown(pricing);
+}
+
 export function pricingModelLabel(pricing: MaybePricing): string {
     const model = getPricingModel(pricing);
     if (model === 'free') return 'Ücretsiz';

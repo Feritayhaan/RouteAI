@@ -6,7 +6,9 @@
 
 import { ExternalLink, Info } from "lucide-react"
 import { priceText, type Dictionary } from "@/lib/i18n"
+import { getPricingModel, isPriceVerified } from "@/lib/pricing"
 import type { NoEvidenceRecommendation } from "@/lib/types"
+import { onToolOpen } from "./toolOpen"
 
 export default function NoEvidenceDisplay({ result, dict }: { result: NoEvidenceRecommendation; dict: Dictionary }) {
   return (
@@ -41,13 +43,16 @@ export default function NoEvidenceDisplay({ result, dict }: { result: NoEvidence
                       {dict.v3.unverified}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{priceText(dict, p.pricing)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {getPricingModel(p.pricing) === "free" || isPriceVerified(p.pricing) ? priceText(dict, p.pricing) : dict.price.unverified}
+                  </p>
                 </div>
                 {p.url && (
                   <a
                     href={p.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => onToolOpen(p, result.taskId)}
                     className="shrink-0 min-h-11 inline-flex items-center gap-1 rounded-lg border border-border px-3 text-xs font-medium hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <ExternalLink className="w-3.5 h-3.5" aria-hidden />

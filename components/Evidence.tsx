@@ -96,7 +96,8 @@ export function DataLine({ tool, dict, locale = "tr" }: { tool: RecommendationTo
 
 /** "Neden" kutusu: gerekçe kodları metne (reasonText) + veri satırı. */
 export function ReasonsBox({ tool, dict, locale = "tr" }: { tool: RecommendationTool; dict: Dictionary; locale?: string }) {
-  const reasons = [...(tool.reasons ?? [])]
+  // price_stale gösterilmez: fiyat çipi zaten "Fiyat doğrulanmadı" diyor.
+  const reasons = [...(tool.reasons ?? [])].filter((r) => r.code !== "price_stale")
     .sort((a, b) => rank(a.code) - rank(b.code))
     .map((r) => reasonText(dict, r))
     .filter((t): t is string => t !== null)
@@ -116,6 +117,63 @@ export function ReasonsBox({ tool, dict, locale = "tr" }: { tool: Recommendation
         </ul>
       )}
       <DataLine tool={tool} dict={dict} locale={locale} />
+    </div>
+  )
+}
+
+/** "Editör seçimi" rozeti: kanıt yokken öne çıkarılan araç; puan iddiası yok. */
+export function EditorPickBadge({ dict }: { dict: Dictionary }) {
+  return (
+    <Tooltip.Provider>
+      <Tooltip.Root delayDuration={150}>
+        <Tooltip.Trigger asChild>
+          <button
+            type="button"
+            className="inline-flex min-h-8 items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2.5 text-xs font-semibold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+            {dict.v3.editorPick}
+            <span className="sr-only">. {dict.v3.editorPickHint}</span>
+          </button>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            side="top"
+            sideOffset={6}
+            className="z-50 max-w-64 rounded-lg border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-lg"
+          >
+            {dict.v3.editorPickHint}
+            <Tooltip.Arrow className="fill-popover" />
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
+  )
+}
+
+/** Editör seçiminin "Neden" kutusu: tarafsız gerekçe + henüz veri olmadığı + tarih. */
+export function EditorReasonsBox({ tool, dict, locale = "tr" }: { tool: RecommendationTool; dict: Dictionary; locale?: string }) {
+  const [before, after] = (tool.dataDate ? dict.rec.data : dict.rec.dataNoDate).split("{sources}")
+  return (
+    <div className="mt-3 space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+      <p className="text-xs font-semibold text-primary">{dict.rec.why}</p>
+      <ul className="space-y-1 text-xs md:text-sm text-muted-foreground">
+        {tool.editorNote && (
+          <li className="flex gap-2">
+            <span className="text-primary" aria-hidden>•</span>
+            <span className="min-w-0 break-words">{tool.editorNote}</span>
+          </li>
+        )}
+        <li className="flex gap-2">
+          <span className="text-primary" aria-hidden>•</span>
+          <span className="min-w-0 break-words">{dict.v3.editorNoData}</span>
+        </li>
+      </ul>
+      <p className="text-[11px] md:text-xs text-muted-foreground">
+        {format(before, { date: tool.dataDate ? formatDate(tool.dataDate, locale) : "" })}
+        {dict.rec.sourceEditor}
+        {after}
+      </p>
     </div>
   )
 }

@@ -170,3 +170,7 @@ AKTİF ürünlerden (validate:catalog bunu kontrol ediyor).
 5. **tr-52/tr-53/en-52/tr-54/tr-56 ("kapak" örnekleri):** Hepsi image.generate'e bağlandı (katalogda özel bir "cover art" aracı yok). Bu doğru bir basitleştirme mi, yoksa design.social-graphic daha mı uygun olur? Karar ver.
 6. **tr-57/en-53/tr-58/en-54 (aşırı belirsiz sorgular):** chat.general-assistant ve text.marketing-copy'ye bağlandı; bunlar gerçekten "netleştirme sorulmalı" örnekleri mi yoksa farklı bir görev mi olmalı, gözden geçir.
 7. **en-44:** evals/golden.jsonl'daki en-14 ile AYNI sorgu, kasıtlı tekrar (kural katmanının tutarlılığını doğrular). İstersen sil, zorunlu değil.
+
+## Canlı tarama eki (2026-09-28) — 16 satır, needsReview: true
+
+Canlıda bulunan yanlış eşleşmelerden (Ferit: "C# programı yapmak istiyorum" → no-code araçlar) sonra ~75 gerçekçi sorguyla yapılan taramadan: tr-59 … tr-71, en-55 … en-57. Kural katmanının emin ama yanlış olduğu 4 durum düzeltildi: "metni sese çevir" (Çeviri → Seslendirme), "youtube thumbnail yap" ve "podcast sesini temizle" (iş akışı → tek parça), "instagram gönderisi için açıklama yaz" (görsel → metin). Kontrol et: beklenen görev ve kabul edilen araçlar mantıklı mı?

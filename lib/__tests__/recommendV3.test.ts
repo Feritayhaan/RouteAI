@@ -161,3 +161,42 @@ describe('recommendV3: fiyat kısıtı — arayüz ASLA gevşemez, sorgudaki kı
     assert.deepStrictEqual(freeFilter.relaxedConstraint, ['pricing']);
   });
 });
+
+describe('recommendV3: RouteAI tavsiyesi (editör seçimi, kanıtsız görev)', () => {
+  const pick = { taskId: 'image.generate', productId: 'b', reason: { en: 'why en', tr: 'neden tr' }, by: 'test', date: '2026-09-28' };
+
+  it('kanıt yok + seçim var -> recommendation, basis editor, puan yok; diğerleri doğrulanmadı listesinde', async () => {
+    const fakeCtx = ctx({ products: [product('a'), product('b'), product('c')] });
+    const r = await recommendV3('resim oluşturmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx, editorPicks: [pick] });
+    assert.strictEqual(r.kind, 'recommendation');
+    if (r.kind !== 'recommendation') return;
+    assert.deepStrictEqual(r.items.map((i) => [i.product.id, i.basis]), [['b', 'editor']]);
+    assert.deepStrictEqual(r.items[0].reasons, [], 'editör seçiminde uydurma gerekçe/puan yok');
+    assert.deepStrictEqual(r.items[0].sources, []);
+    assert.deepStrictEqual(r.items[0].editorNote, pick.reason);
+    assert.deepStrictEqual(r.unverified?.map((p) => p.id), ['a', 'c']);
+  });
+
+  it('seçim arayüz fiyat filtresine uymuyorsa gösterilmez (filtre gevşemez) -> no_evidence', async () => {
+    const fakeCtx = ctx({ products: [product('a', { pricing: 'free' }), product('b', { pricing: 'paid' })] });
+    const r = await recommendV3('resim oluşturmak istiyorum', 'free', { ...noLLM, ctx: fakeCtx, editorPicks: [pick] });
+    assert.strictEqual(r.kind, 'no_evidence');
+  });
+
+  it('kanıt varsa editör seçimi DEVREYE GİRMEZ: sıralama RouteAI Skoru', async () => {
+    const fakeCtx = ctx({ products: [product('a', { models: ['m1'] }), product('b')], models: arenaModels([1, 2, 3]) });
+    const r = await recommendV3('resim oluşturmak istiyorum', 'all', { ...noLLM, ctx: fakeCtx, editorPicks: [pick] });
+    assert.strictEqual(r.kind, 'recommendation');
+    if (r.kind !== 'recommendation') return;
+    assert.deepStrictEqual(r.items.map((i) => [i.product.id, i.basis]), [['a', 'evidence']]);
+    assert.strictEqual(r.unverified, undefined);
+  });
+
+  it('gerçek katalog: kanıtsız her görevin bir editör seçimi var ("web sitesi" artık boş dönmez)', async () => {
+    const r = await recommendV3('web sitesi yapmak istiyorum', 'all', noLLM);
+    assert.strictEqual(r.kind, 'recommendation');
+    if (r.kind !== 'recommendation') return;
+    assert.strictEqual(r.items[0].basis, 'editor');
+    assert.ok(r.unverified && r.unverified.length > 0);
+  });
+});
