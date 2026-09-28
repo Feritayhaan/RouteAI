@@ -60,12 +60,11 @@ export async function POST(req: NextRequest) {
     console.log('[API] İstek analiz ediliyor, uzunluk:', prompt.length);
 
     // ============================================================
-    // P12: RECOMMENDER=v3 ortam bayrağı. Yoksa aşağıdaki v1 kodu AYNEN çalışır
-    // (bayrak kapalıyken davranış değişmez). v3: görev tabanlı, kanıta dayalı
-    // öneri (lib/recommendV3.ts) — NDJSON'a tek satır, yeni alanlarla
-    // (taskId, confidence, reasons, dataDate, sources) ama yine NDJSON.
+    // Varsayılan v3: görev tabanlı, kanıta dayalı öneri (lib/recommendV3.ts),
+    // NDJSON'a tek satır. Eski v1 motoru sadece RECOMMENDER=v1 ile çalışır
+    // (geri dönüş: Vercel'de RECOMMENDER=v1 + yeniden yayın); v1 kodu aşağıda aynen.
     // ============================================================
-    if (process.env.RECOMMENDER === 'v3') {
+    if (process.env.RECOMMENDER !== 'v1') {
       const result = await recommendV3(prompt, pricingFilter, { taskId });
       const encoder = new TextEncoder();
       const stream = new ReadableStream({

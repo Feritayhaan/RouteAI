@@ -35,6 +35,8 @@ export function reasonText(dict: Dictionary, reason: ReasonLike): string | null 
     const source = String(p.source) as BenchmarkSource;
     p.arena = findArena(source, String(p.arena))?.label ?? String(p.arena);
     p.source = SOURCES[source]?.label ?? String(p.source);
+    // Hangi modelin sırası olduğu görünür (ürün adı sürümsüz; model gece senkronundan).
+    p.model = p.model ? ` · ${String(p.model)}` : '';
   }
   if (reason.code === 'comparison_wins') p.total = Number(p.wins) + Number(p.losses);
   return format(template, p);

@@ -6,6 +6,7 @@
 // biriktikçe payı düşer. Tarih her zaman ctx.now'dan okunur (Date.now yok).
 
 import { PRICE_STALE_AFTER_DAYS, hasFreeTier } from '../pricing';
+import { matchesRule } from './currentModel';
 import type { BenchmarkSource, ExpertReview, Model, Product, Signal, Task } from './schema';
 import {
   FRESH_DAYS,
@@ -28,7 +29,7 @@ export type Reason =
   | { code: 'outcome_success'; params: { pct: number; n: number } }
   | { code: 'comparison_wins'; params: { wins: number; losses: number } }
   | { code: 'expert_rubric'; params: { quality: number; ease: number; value: number; speed: number } }
-  | { code: 'benchmark_rank'; params: { source: BenchmarkSource; arena: string; rank: number; total: number } }
+  | { code: 'benchmark_rank'; params: { source: BenchmarkSource; arena: string; rank: number; total: number; model?: string } }
   | { code: 'users_like'; params: { pct: number; n: number } }
   | { code: 'free_tier'; params: Record<string, never> }
   | { code: 'price_stale'; params: { days: number } }
@@ -46,6 +47,7 @@ export interface BenchmarkComponent {
   source: BenchmarkSource;
   arena: string;
   modelId: string;
+  modelName: string;
   /** En iyi modelin arenadaki yüzdelik dilimi (0–1). */
   percentile: number;
   rank: number;
@@ -103,7 +105,14 @@ function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, 
     .filter((x): x is { m: Model; s: NonNullable<typeof x.s> } => x.s !== undefined);
   if (arena.length < 2) return null;
 
-  const own = arena.filter((x) => product.models.includes(x.m.id));
+  // Elle bağlanmış modeller varsa onlar; yoksa modelRule'a uyanlar (ROADMAP-v2:
+  // model listesi elle tutulmaz, güncel model gece senkronundan kuralla bulunur —
+  // "Güncel model" satırıyla aynı kaynak, lib/catalog/currentModel.ts).
+  const own = product.models.length > 0
+    ? arena.filter((x) => product.models.includes(x.m.id))
+    : product.modelRule
+      ? arena.filter((x) => matchesRule(x.m, product.modelRule!))
+      : [];
   if (own.length === 0) return null;
   const best = own.reduce((a, b) => (b.s.value > a.s.value ? b : a));
 
@@ -114,6 +123,7 @@ function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, 
     source,
     arena: key,
     modelId: best.m.id,
+    modelName: best.m.name,
     percentile: (below + equal / 2) / (arena.length - 1),
     rank: above + 1,
     total: arena.length,
@@ -177,7 +187,7 @@ export function scoreProduct(product: Product, task: Task, ctx: ScoreContext): S
     reasons.push({ code: 'expert_rubric', params: { quality: avg('quality'), ease: avg('ease'), value: avg('value'), speed: avg('speed') } });
   }
   for (const b of benchmarks) {
-    reasons.push({ code: 'benchmark_rank', params: { source: b.source, arena: b.arena, rank: b.rank, total: b.total } });
+    reasons.push({ code: 'benchmark_rank', params: { source: b.source, arena: b.arena, rank: b.rank, total: b.total, model: b.modelName } });
   }
   if (nVotes > 0) reasons.push({ code: 'users_like', params: { pct: Math.round((100 * votes.up) / nVotes), n: nVotes } });
   if (hasFreeTier(product.pricing)) reasons.push({ code: 'free_tier', params: {} });

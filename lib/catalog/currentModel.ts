@@ -20,7 +20,7 @@ const norm = (s: string) => s.toLowerCase();
 /** Üretici adı kaynaklar arasında farklı yazılabilir ("Google" / "Google DeepMind", "Runway" / "RunwayML"). */
 const compact = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-function matchesRule(model: Model, rule: ModelRule): boolean {
+export function matchesRule(model: Model, rule: ModelRule): boolean {
   if (rule.creator && !compact(model.creator).includes(compact(rule.creator))) return false;
   if (rule.modality && !model.modalities.includes(rule.modality)) return false;
   const haystack = [model.id, model.name, ...model.aliases].map(norm);

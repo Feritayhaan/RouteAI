@@ -71,7 +71,7 @@ export const tr: Dictionary = {
     outcome_success: 'İşini gördü diyenler: %{pct} ({n} kullanıcı)',
     comparison_wins: 'Karşılaştırmalarda {wins} galibiyet, {losses} yenilgi',
     expert_rubric: 'Uzman değerlendirmesi: kalite {quality}/5, kolaylık {ease}/5, değer {value}/5',
-    benchmark_rank: '{arena} sıralamasında {total} model içinde {rank}. ({source})',
+    benchmark_rank: '{arena} sıralamasında {total} model içinde {rank}. ({source}{model})',
     users_like: 'Öneriyi beğenenler: %{pct} ({n} kullanıcı)',
     free_tier: 'Ücretsiz planı var',
     price_stale: 'Fiyat en son {days} gün önce kontrol edildi',

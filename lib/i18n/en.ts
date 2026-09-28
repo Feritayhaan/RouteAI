@@ -70,7 +70,7 @@ export const en = {
     outcome_success: '{pct}% of {n} users said it did the job',
     comparison_wins: 'Won {wins} of {total} head-to-head comparisons',
     expert_rubric: 'Expert review: quality {quality}/5, ease {ease}/5, value {value}/5',
-    benchmark_rank: '#{rank} of {total} on {arena} ({source})',
+    benchmark_rank: '#{rank} of {total} on {arena} ({source}{model})',
     users_like: '{pct}% of {n} users liked this suggestion',
     free_tier: 'Has a free plan',
     price_stale: 'Price last checked {days} days ago',

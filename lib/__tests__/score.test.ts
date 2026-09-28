@@ -30,7 +30,28 @@ describe('RouteAI Skoru: kanıt kuralı ve benchmark payı', () => {
     assert.strictEqual(s.components.B, 1);
     assert.strictEqual(s.q, 1);
     assert.ok(s.reasons.some((r) => r.code === 'benchmark_only'));
-    assert.deepStrictEqual(s.reasons.find((r) => r.code === 'benchmark_rank')?.params, { source: 'lmarena', arena: 'text_to_image', rank: 1, total: 3 });
+    assert.deepStrictEqual(s.reasons.find((r) => r.code === 'benchmark_rank')?.params, { source: 'lmarena', arena: 'text_to_image', rank: 1, total: 3, model: 'M2' });
+  });
+
+  it('models boşsa modelRule\'a uyan modeller benchmark kanıtı olur (Güncel model satırıyla aynı kaynak)', () => {
+    const models = [
+      ...arenaModels([100, 200, 300]),
+      { id: 'acme-img-2', name: 'acme-img-2', creator: 'acme', aliases: [], modalities: ['image' as const], scores: [{ source: 'lmarena' as const, key: 'text_to_image', value: 250, fetchedAt: daysAgo(3) }] },
+    ];
+    const p = { ...product('a'), modelRule: { creator: 'Acme', include: ['acme-img'], modality: 'image' as const } };
+    const s = score(p, { products: [p], models });
+    assert.strictEqual(s.hasEvidence, true);
+    assert.deepStrictEqual(s.reasons.find((r) => r.code === 'benchmark_rank')?.params, { source: 'lmarena', arena: 'text_to_image', rank: 2, total: 4, model: 'acme-img-2' });
+  });
+
+  it('elle bağlı models varsa modelRule kullanılmaz; ikisi de yoksa benchmark kanıtı yok', () => {
+    const models = arenaModels([100, 200, 300]);
+    const linked = { ...product('a', { models: ['m0'] }), modelRule: { include: ['M2'] } };
+    assert.strictEqual(score(linked, { products: [linked], models }).components.benchmarks[0].modelId, 'm0');
+    const bare = product('b');
+    assert.strictEqual(score(bare, { products: [bare], models }).hasEvidence, false);
+    const noMatch = { ...product('c'), modelRule: { include: ['yok-boyle-model'] } };
+    assert.strictEqual(score(noMatch, { products: [noMatch], models }).hasEvidence, false);
   });
 
   it('yüzdelik: en iyi model, arenadaki TÜM modeller arasında; eşitler yarım sayılır', () => {
