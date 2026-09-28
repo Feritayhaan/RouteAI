@@ -3,7 +3,9 @@
 // v3: görev belirsiz. "Şunu mu demek istedin?" + görev düğmeleri; seçilen
 // görevle aynı sorgu yeniden istenir (HomeClient, /api/recommend taskId).
 
+import { useEffect } from "react"
 import { HelpCircle } from "lucide-react"
+import { trackEvent } from "@/lib/analytics/client"
 import type { Dictionary } from "@/lib/i18n"
 import type { ClarifyRecommendation } from "@/lib/types"
 
@@ -13,6 +15,10 @@ export default function ClarifyDisplay({ clarify, dict, onSelect, disabled = fal
   onSelect: (taskId: string) => void
   disabled?: boolean
 }) {
+  useEffect(() => {
+    trackEvent("clarify_shown")
+  }, [])
+
   return (
     <section className="animate-in fade-in slide-in-from-bottom-8 duration-700" aria-labelledby="clarify-title">
       <div className="relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-6 space-y-4 shadow-2xl">

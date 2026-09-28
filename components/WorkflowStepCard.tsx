@@ -12,6 +12,7 @@ import { promptProductId } from "@/lib/promptBuilder/products"
 import type { WorkflowStep } from "@/lib/types"
 import PricingBadges from "./PricingBadges"
 import PromptPanel from "./PromptPanel"
+import { onToolOpen } from "./toolOpen"
 
 export type StepPromptCard = PromptCardData | PromptQuestionData
 
@@ -79,6 +80,7 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
                 href={step.primary.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => onToolOpen(step.primary, step.taskId)}
                 className="shrink-0 min-h-11 inline-flex items-center gap-1 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <ExternalLink className="w-3 h-3" aria-hidden />
@@ -95,6 +97,7 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
                   href={step.alternative.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => step.alternative && onToolOpen(step.alternative, step.taskId)}
                   className="font-semibold text-foreground underline underline-offset-2 hover:text-primary"
                 >
                   {step.alternative.toolName}

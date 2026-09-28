@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
 import { displayPriceLabel } from "@/lib/pricing"
@@ -8,6 +9,9 @@ import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
 import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox } from "./Evidence"
+import { onToolOpen } from "./toolOpen"
+import { trackEvent } from "@/lib/analytics/client"
+import { getSessionId } from "@/lib/chat/session"
 import { SOURCES } from "@/lib/catalog/sources"
 import type { CurrentModel } from "@/lib/catalog/currentModel"
 
@@ -42,8 +46,14 @@ export default function SimpleRecommendationDisplay({
   recommendation: SimpleRecommendation
   query: string
 }) {
-  const { main } = recommendation
+  const { main, taskId } = recommendation
   const editor = main.basis === "editor"
+  // v3: oturum kimliği ile oy (arama metni gönderilmez); v1'de klasik oy.
+  const [sessionId] = useState(() => (taskId && main.productId ? getSessionId() : null))
+
+  useEffect(() => {
+    if (taskId) trackEvent("recommendation_shown", { taskId })
+  }, [taskId])
   const renderPricingBadges = () => {
     if (!main.pricing && !main.confidence) return null
     return (
@@ -101,6 +111,7 @@ export default function SimpleRecommendationDisplay({
               href={main.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => onToolOpen(main, taskId)}
               className="self-start flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
             >
               <ExternalLink className="w-4 h-4" />
@@ -161,6 +172,7 @@ export default function SimpleRecommendationDisplay({
                       href={alt.url}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => onToolOpen(alt, taskId)}
                       className="text-sm flex justify-between items-center gap-3 hover:underline"
                     >
                       <span className="min-w-0 break-words">
@@ -192,6 +204,7 @@ export default function SimpleRecommendationDisplay({
                       href={alt.url}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => onToolOpen(alt, taskId)}
                       className="text-sm flex justify-between items-center gap-3 hover:underline"
                     >
                       <span className="min-w-0 break-words">{alt.toolName}</span>
@@ -202,7 +215,18 @@ export default function SimpleRecommendationDisplay({
               </div>
             )}
 
-            <FeedbackButtons query={query} toolName={main.toolName} />
+            {sessionId && taskId && main.productId ? (
+              <FeedbackButtons
+                sessionId={sessionId}
+                taskId={taskId}
+                productId={main.productId}
+                toolName={main.toolName}
+                labels={{ question: dict.feedback.question, up: dict.feedback.up, down: dict.feedback.down, thanks: dict.feedback.thanks }}
+                onVote={() => trackEvent("feedback", { taskId })}
+              />
+            ) : (
+              <FeedbackButtons query={query} toolName={main.toolName} />
+            )}
           </div>
         </div>
       </div>
