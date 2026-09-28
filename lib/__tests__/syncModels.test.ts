@@ -261,6 +261,31 @@ describe('model senkronu: gerçek LMArena satırıyla doğrulama (P10, 2026-09-2
     assert.ok(models.find((m: { id: string }) => m.id === 'claude-opus-5-5-high'));
     assert.ok(models.find((m: { id: string }) => m.id === 'gpt-image-2-5-sunburst'));
   });
+
+  // 2026-09-28 gece koşusu (run 36429402229): 8 modelde organization alanı
+  // BOŞ STRING geldi ("", null/undefined değil); eski kod `?? 'unknown'` ile
+  // bunu yakalamadığı için creator boş string kaldı ve modelSchema'nın
+  // min(1) kuralını kırdı (validate:catalog 8 hatayla kırmızı bitti, PR hiç
+  // açılmadı). Kaynak boş organization verirse creator 'unknown' olmalı.
+  it('organization alanı boş string ise creator "unknown" olur, boş string kalmaz', async () => {
+    const routes = {
+      '/splits': { splits: [{ config: 'text', split: 'latest' }] },
+      'config=text&': {
+        num_rows_total: 1,
+        rows: [{ row: { model_name: 'kat-coder-pro-v1', organization: '', rating: 1200, rank: 1, category: 'overall' } }],
+      },
+    };
+    const { fetchJson } = fakeFetch(routes);
+    const report = newReport();
+    const lm = await fetchLmArena({ fetchJson, sleep, arenas: [{ source: 'lmarena', key: 'text', sourceField: 'text' }], today }, report);
+    assert.ok(lm);
+    assert.strictEqual(lm[0].creator, null, 'boş string ham satırda null\'a normalize edilir');
+
+    const models = mergeModels({ oldModels: [], fresh: lm, succeededSources: new Set(['lmarena']), aliases: {}, linkedModelIds: new Set(), today }, report);
+    const model = models.find((m: { id: string }) => m.id === 'kat-coder-pro-v1');
+    assert.ok(model);
+    assert.strictEqual(model.creator, 'unknown');
+  });
 });
 
 describe('gece işi yeniden deneme (429/5xx) — retryDelayMs, isRetryableStatus', () => {
