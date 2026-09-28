@@ -207,17 +207,27 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
   // belirsiz kalıyor çünkü hiçbir TEK görevin anahtar kelimesi baskın değil
   // — bu doğal ayrım, parser.ts'teki PART_TERMS listesini kopyalamadan aynı
   // sonucu verir (doğrulama: bu dosyanın testleri, lib/__tests__/recommendV3.test.ts).
-  const classified: ResolvedTask | Awaited<ReturnType<typeof classifyTask>> =
-    options.taskId && ctx.tasksById.has(options.taskId)
-      ? chosenTask(query, options.taskId)
-      : await classifyTask(query, { allowLLM: options.allowLLM });
+  //
+  // Şablon kontrolü LLM'den ÖNCE ve önbelleksiz kural kararıyla yapılır: LLM
+  // belirsiz sorguya her zaman tek görev seçer (eval.yml, 2026-09-28:
+  // clarifyRate 0/112) ve önbellekteki LLM sonucu da aynı işi görür; ikisi de
+  // şablondan önce gelirse iş akışına hiç ulaşılmaz.
+  let classified: ResolvedTask | Awaited<ReturnType<typeof classifyTask>>;
+  if (options.taskId && ctx.tasksById.has(options.taskId)) {
+    classified = chosenTask(query, options.taskId);
+  } else {
+    const rules = await classifyTask(query, { allowLLM: false, useCache: false });
+    if ('clarify' in rules) {
+      const template = findMatchingTemplate(query);
+      if (template) {
+        const steps = template.steps.slice(0, MAX_WORKFLOW_STEPS).map((step) => recommendForStep(step, ctx, pricingFilter));
+        return { kind: 'workflow', templateId: template.id, templateName: template.name, steps };
+      }
+    }
+    classified = 'clarify' in rules && options.allowLLM !== false ? await classifyTask(query, { allowLLM: true }) : rules;
+  }
 
   if ('clarify' in classified) {
-    const template = findMatchingTemplate(query);
-    if (template) {
-      const steps = template.steps.slice(0, MAX_WORKFLOW_STEPS).map((step) => recommendForStep(step, ctx, pricingFilter));
-      return { kind: 'workflow', templateId: template.id, templateName: template.name, steps };
-    }
     return {
       kind: 'clarify',
       options: classified.clarify.map((taskId) => ({ taskId, label: ctx.tasksById.get(taskId)!.label })),

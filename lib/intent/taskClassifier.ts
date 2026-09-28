@@ -43,6 +43,8 @@ export interface TaskClarify {
 export interface ClassifyTaskOptions {
   /** false: LLM hiç çağrılmaz; belirsiz sorgu doğrudan clarify döner. */
   allowLLM?: boolean;
+  /** false: KV önbelleği okunmaz/yazılmaz (sadece kural katmanının kendi kararı istenirken). */
+  useCache?: boolean;
 }
 
 /** En iyi aday ikinciyi en az bu kadar puan geçmeli; testlerle belirlendi (evals/golden.jsonl). */
@@ -169,7 +171,8 @@ async function classifyByLLM(query: string, tasks: Task[]): Promise<{ taskId: st
 // ------------------------------------------------------------------
 
 export async function classifyTask(query: string, options: ClassifyTaskOptions = {}): Promise<TaskClassification | TaskClarify> {
-  const cached = await getCachedTask(query);
+  const useCache = options.useCache !== false;
+  const cached = useCache ? await getCachedTask(query) : null;
   if (cached) return cached;
 
   const tasks = loadCatalog().tasks;
@@ -204,6 +207,6 @@ export async function classifyTask(query: string, options: ClassifyTaskOptions =
       : { clarify: top3(scores) };
   }
 
-  if (!('clarify' in result)) await setCachedTask(query, result);
+  if (useCache && !('clarify' in result)) await setCachedTask(query, result);
   return result;
 }
