@@ -1,13 +1,17 @@
 "use client"
 
-import { ExternalLink, Star, Rocket } from "lucide-react"
+import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
 import { priceLabelOrUnknown } from "@/lib/pricing"
+import { format, getDictionary } from "@/lib/i18n"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
+import { ConfidenceBadge, ReasonsBox } from "./Evidence"
 import { SOURCES } from "@/lib/catalog/sources"
 import type { CurrentModel } from "@/lib/catalog/currentModel"
+
+const dict = getDictionary("tr")
 
 /** "Güncel model: X · Artificial Analysis · 26 Eyl 2026" — kaynak adı görünür (lisans şartı). */
 function CurrentModelLine({ model }: { model: CurrentModel }) {
@@ -34,19 +38,19 @@ const RELAXED_NOTE: Record<string, string> = {
 export default function SimpleRecommendationDisplay({
   recommendation,
   query,
-  rating,
-  onRatingChange,
-  ratingFeedback
 }: {
   recommendation: SimpleRecommendation
   query: string
-  rating: number
-  onRatingChange: (rating: number) => void
-  ratingFeedback: boolean
 }) {
+  const { main } = recommendation
   const renderPricingBadges = () => {
-    if (!recommendation.main.pricing) return null
-    return <PricingBadges pricing={recommendation.main.pricing} />
+    if (!main.pricing && !main.confidence) return null
+    return (
+      <div className="flex flex-wrap items-center gap-1.5">
+        {main.pricing && <PricingBadges pricing={main.pricing} />}
+        {main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
+      </div>
+    )
   }
 
   return (
@@ -65,51 +69,32 @@ export default function SimpleRecommendationDisplay({
               <div className="flex-1 space-y-1.5 md:space-y-2 min-w-0">
                 {/* Bu rozet SORGUNUN kategorisi, aracin degil: Beautiful.ai
                     veritabaninda 'metin' ama video sorgusunda "VIDEO" yaziyordu. */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-muted-foreground">Sorgu kategorisi</span>
-                  <CategoryBadge category={recommendation.category} />
-                </div>
+                {recommendation.taskLabel ? (
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground">{dict.v3.task}</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase break-words">
+                      {recommendation.taskLabel}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground">Sorgu kategorisi</span>
+                    <CategoryBadge category={recommendation.category} />
+                  </div>
+                )}
                 {renderPricingBadges()}
 
                 <h2 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight break-words">
                   <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                    {recommendation.main.toolName}
+                    {main.toolName}
                   </span>
                 </h2>
-                {recommendation.main.currentModel && <CurrentModelLine model={recommendation.main.currentModel} />}
-
-                {/* Rating */}
-                <div className="flex items-center gap-1.5 md:gap-2">
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        onClick={() => onRatingChange(star)}
-                        className="transition-all duration-200 hover:scale-110"
-                      >
-                        <Star
-                          className={`w-4 h-4 md:w-5 md:h-5 transition-colors cursor-pointer ${star <= rating
-                            ? 'fill-yellow-400 text-yellow-400'
-                            : 'fill-gray-300 text-gray-300 dark:fill-gray-600 dark:text-gray-600 hover:fill-yellow-400/50'
-                            }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                  <span className="text-[10px] md:text-xs text-muted-foreground">
-                    {rating > 0 ? `${rating} yıldız` : 'Değerlendir'}
-                  </span>
-                  {ratingFeedback && (
-                    <span className="text-[10px] md:text-xs text-primary animate-in fade-in">
-                      Teşekkür ederiz! 💫
-                    </span>
-                  )}
-                </div>
+                {main.currentModel && <CurrentModelLine model={main.currentModel} />}
               </div>
             </div>
 
             <a
-              href={recommendation.main.url}
+              href={main.url}
               target="_blank"
               rel="noopener noreferrer"
               className="self-start flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
@@ -125,19 +110,33 @@ export default function SimpleRecommendationDisplay({
                 {RELAXED_NOTE[recommendation.relaxedPricing] ?? RELAXED_NOTE.other}
               </p>
             )}
+            {recommendation.relaxedConstraint && recommendation.relaxedConstraint.length > 0 && (
+              <p role="status" className="flex items-start gap-2 text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-800 dark:text-amber-300">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                <span>
+                  {format(dict.rec.relaxed, {
+                    constraints: recommendation.relaxedConstraint
+                      .map((c) => (dict.rec.constraint as Record<string, string>)[c] ?? c)
+                      .join(", "),
+                  })}
+                </span>
+              </p>
+            )}
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
                 Ana öneri
               </div>
               <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground">
-                {recommendation.main.description}
+                {main.description}
               </p>
-              {recommendation.main.why && (
+              {main.reasons ? (
+                <ReasonsBox tool={main} dict={dict} />
+              ) : main.why && (
                 <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="flex items-start gap-2">
                     <span className="text-primary text-xs font-semibold">💡</span>
                     <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                      {recommendation.main.why}
+                      {main.why}
                     </p>
                   </div>
                 </div>
@@ -156,12 +155,17 @@ export default function SimpleRecommendationDisplay({
                       href={alt.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sm flex justify-between items-center hover:underline"
+                      className="text-sm flex justify-between items-center gap-3 hover:underline"
                     >
-                      <span>{alt.toolName}</span>
+                      <span className="min-w-0 break-words">
+                        {alt.toolName}
+                        {alt.confidence && (
+                          <span className="ml-2 text-[10px] text-muted-foreground no-underline">{dict.rec.confidence[alt.confidence]}</span>
+                        )}
+                      </span>
                       {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
                           ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
-                      <span className="text-xs text-muted-foreground">
+                      <span className="shrink-0 text-xs text-muted-foreground">
                         {priceLabelOrUnknown(alt.pricing)}
                       </span>
                     </a>
@@ -170,7 +174,7 @@ export default function SimpleRecommendationDisplay({
               </div>
             )}
 
-            <FeedbackButtons query={query} toolName={recommendation.main.toolName} />
+            <FeedbackButtons query={query} toolName={main.toolName} />
           </div>
         </div>
       </div>

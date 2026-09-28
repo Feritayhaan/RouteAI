@@ -27,7 +27,7 @@ import { evaluateRow, parseGolden, summarize } from './metrics.mjs';
 import { explainOracleMisses } from './oracleMisses.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const RECOMMENDERS = ['v1', 'v2-oracle', 'v2'];
+const RECOMMENDERS = ['v1', 'v2-oracle', 'v2', 'task', 'v3'];
 
 // ------------------------------------------------------------------
 // Argümanlar

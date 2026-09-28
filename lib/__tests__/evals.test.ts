@@ -9,11 +9,24 @@ import tasksJson from '../../data/tasks.json';
 const golden = parseGolden(readFileSync(new URL('../../evals/golden.jsonl', import.meta.url), 'utf8'));
 
 describe('altın set (evals/golden.jsonl)', () => {
-  it('40 satır: 20 Türkçe + 20 İngilizce, en az 8 netleştirme gerektiren', () => {
-    assert.strictEqual(golden.length, 40);
-    assert.strictEqual(golden.filter((r) => r.lang === 'tr').length, 20);
-    assert.strictEqual(golden.filter((r) => r.lang === 'en').length, 20);
+  it('~100 satır (P11: 40 görevin her biri en az 2), tr+en karışık, en az 8 netleştirme gerektiren', () => {
+    assert.ok(golden.length >= 100, `golden.jsonl ${golden.length} satır; en az 100 bekleniyor`);
+    assert.ok(golden.filter((r) => r.lang === 'tr').length >= 40);
+    assert.ok(golden.filter((r) => r.lang === 'en').length >= 40);
     assert.ok(golden.filter((r) => r.needsClarification).length >= 8);
+  });
+
+  it('40 görevin her biri en az 2 satırda expectedTask olarak geçer (P11 kabul)', () => {
+    const counts = new Map<string, number>();
+    for (const r of golden) counts.set(r.expectedTask, (counts.get(r.expectedTask) ?? 0) + 1);
+    const taskIds = (tasksJson as { id: string }[]).map((t) => t.id);
+    const thin = taskIds.filter((id) => (counts.get(id) ?? 0) < 2);
+    assert.deepStrictEqual(thin, []);
+  });
+
+  it('P9/P10\'dan sonra eklenen yeni satırlar needsReview:true taşır (Ferit\'in kontrol listesi: evals/REVIEW.md)', () => {
+    const reviewed = golden.filter((r) => (r as { needsReview?: boolean }).needsReview);
+    assert.ok(reviewed.length >= 40, `needsReview:true satır sayısı çok düşük: ${reviewed.length}`);
   });
 
   it("v1'de yanlış sonuç veren 7 sorguyu içerir", () => {

@@ -59,6 +59,19 @@ export const taskBenchmarkSchema = z.object({
   key: z.string().min(1),
 });
 
+/**
+ * Sorgudan görev bulmanın kural katmanı (lib/intent/taskClassifier.ts) bu
+ * listelerle eşleşir (lib/text.ts → hasTerm, kelime başına bağlı, Türkçe
+ * eklere izin verir). Her görevde en az 5 tr + 5 en ifade; sorgu hangi dilde
+ * olursa olsun HER İKİ liste de aranır (Türkçe sorguda İngilizce ödünç kelime
+ * geçebilir: "web sitesi", "dashboard").
+ */
+export const taskKeywordsSchema = z.object({
+  tr: z.array(z.string().min(1)).min(5),
+  en: z.array(z.string().min(1)).min(5),
+});
+export type TaskKeywords = z.infer<typeof taskKeywordsSchema>;
+
 export const taskSchema = z.object({
   id: taskIdSchema,
   label: localeTextSchema,
@@ -67,6 +80,7 @@ export const taskSchema = z.object({
   benchmark: z.array(taskBenchmarkSchema),
   slots: z.array(taskSlotSchema).max(3),
   outputTypes: z.array(z.enum(OUTPUT_TYPES)).min(1),
+  keywords: taskKeywordsSchema,
 });
 export type Task = z.infer<typeof taskSchema>;
 export type TaskSlot = z.infer<typeof taskSlotSchema>;

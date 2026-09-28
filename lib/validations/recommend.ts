@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { taskIdSchema } from "../catalog/schema";
 
 export const recommendRequestSchema = z.object({
   prompt: z
@@ -10,6 +11,9 @@ export const recommendRequestSchema = z.object({
     .enum(["all", "free", "paid"])
     .optional()
     .default("all"),
+  // v3 clarify: kullanıcı "Şunu mu demek istedin?" seçeneklerinden birini seçti.
+  // Sadece RECOMMENDER=v3'te okunur; v1 yok sayar.
+  taskId: taskIdSchema.max(64).optional(),
 });
 
 export type RecommendRequest = z.infer<typeof recommendRequestSchema>;

@@ -21,7 +21,9 @@
     "aggregate:signals": "node scripts/aggregate-signals.mjs",
     "discover:tools": "node --loader ./lib/__tests__/ts-loader.mjs scripts/discover-tools.mjs",
     "check:prices": "node --loader ./lib/__tests__/ts-loader.mjs scripts/check-prices.mjs",
-    "automerge:guard": "node --loader ./lib/__tests__/ts-loader.mjs scripts/automerge-guard.mjs"
+    "automerge:guard": "node --loader ./lib/__tests__/ts-loader.mjs scripts/automerge-guard.mjs",
+    "review:template": "node scripts/review-template.mjs",
+    "review:import": "node --loader ./lib/__tests__/ts-loader.mjs scripts/import-reviews.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.1",

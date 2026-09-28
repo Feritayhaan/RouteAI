@@ -130,6 +130,18 @@ export const en = {
     hidePrompt: 'Hide prompt',
     stepGoal: 'This step: {step} ({description})',
   },
+  v3: {
+    task: 'Task',
+    clarifyTitle: 'Did you mean one of these?',
+    clarifyHint: 'Your request fits more than one job. Pick one and I will search again for that job.',
+    noEvidenceTitle: 'No reliable data for this job yet',
+    noEvidenceBody: 'We have not verified the tools for this job yet, so I will not rank them. Tools in the catalog (A–Z):',
+    noTools: 'The catalog has no active tool for this job.',
+    unverified: 'Not verified',
+    unverifiedList: 'Not verified: {tools}',
+    filteredEmpty: 'No verified tool matches the price filter you picked. Change the filter and try again.',
+    stepFiltered: 'No verified tool matches your price filter',
+  },
   outcome: {
     question: 'Did {product} do the job?',
     yes: 'Yes',

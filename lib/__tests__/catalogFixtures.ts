@@ -11,6 +11,7 @@ export function task(id = 'image.generate', benchmark: Task['benchmark'] = [{ so
   return {
     id, label: { en: id, tr: id }, description: { en: id, tr: id }, modality: 'image',
     benchmark, slots: [], outputTypes: ['image'],
+    keywords: { tr: ['test', 'gorsel', 'resim', 'uret', 'olustur'], en: ['test', 'image', 'generate', 'create', 'picture'] },
   };
 }
 
