@@ -4,6 +4,8 @@
 
 Taslak rehberle üretilen promptlar kartta "Taslak rehber" etiketiyle görünür. Üretici, KAYNAK GEREKLİ bölümlerde belgelenmemiş araç sözdizimine dayanmaz; sade ve yaygın uyumlu ifade kullanır.
 
+> **2026-09-28:** Soru kartındaki soru ve seçenekler artık kullanıcının girişine göre üretiliyor. Rehberdeki `question` ve `options` alanları modele örnek olarak gidiyor ve üretilen soru geçersizse yedek olarak kullanılıyor. Seçenek değerleri yine iyi yazılmalı; model onları uyarlıyor.
+
 ## Her rehberde yapılacaklar
 
 1. Resmi dokümandan `## Sözdizimi`, `## Yap / Yapma`, `## Örnekler` bölümlerini doldur; kullandığın sayfaları `sources`a URL olarak ekle.
