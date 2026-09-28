@@ -67,10 +67,14 @@ export function toPromptCard(session: PromptSession, guide: Guide, product: Prod
     variants: version.variants,
     assumptions: version.assumptions.map((a) => {
       const slot = guide.slots.find((s) => s.id === a.slotId)!;
+      // Girişe göre üretilmiş soru varsa "Değiştir" aynı soruyu ve seçenekleri gösterir.
+      const dynamic = session.questionOverrides?.[a.slotId];
       return {
         ...a,
-        question: slot.question[locale],
-        options: slot.options.map((o) => ({ id: o.id, label: o.label[locale], value: o.value })),
+        question: dynamic?.question ?? slot.question[locale],
+        options: dynamic
+          ? dynamic.options.map((o) => ({ id: o.id, label: o.label, value: o.value }))
+          : slot.options.map((o) => ({ id: o.id, label: o.label[locale], value: o.value })),
       };
     }),
     refinements: [...guideRefinements, ...suggested],
@@ -88,10 +92,14 @@ function toQuestionCard(session: PromptSession, guide: Guide, product: Product):
     productName: product.name,
     questions: session.pendingQuestions.map((slotId) => {
       const slot = guide.slots.find((s) => s.id === slotId)!;
+      // Önce kullanıcının girişine göre üretilmiş soru; yoksa rehberdeki sabit soru.
+      const dynamic = session.questionOverrides?.[slotId];
       return {
         slotId,
-        question: slot.question[session.locale],
-        options: slot.options.map((o) => ({ id: o.id, label: o.label[session.locale] })),
+        question: dynamic?.question ?? slot.question[session.locale],
+        options: dynamic
+          ? dynamic.options.map((o) => ({ id: o.id, label: o.label }))
+          : slot.options.map((o) => ({ id: o.id, label: o.label[session.locale] })),
         allowFreeText: true,
       };
     }),
@@ -153,6 +161,9 @@ export async function startPromptSession(
     if (guide.slots.some((s) => s.id === id) && value.trim()) extraction.slots[id] = { value: value.trim().slice(0, 200), source: 'user', confidence: 1 };
   }
   const plan = planSlots(guide, extraction.slots, { questionAsked: false });
+  const questionOverrides = Object.fromEntries(
+    plan.questions.filter((q) => extraction.questions[q.id]).map((q) => [q.id, extraction.questions[q.id]])
+  );
 
   const session: PromptSession = {
     id: deps.newId(),
@@ -164,6 +175,7 @@ export async function startPromptSession(
     slots: plan.slots,
     questionAsked: plan.questions.length > 0,
     pendingQuestions: plan.questions.map((q) => q.id),
+    ...(Object.keys(questionOverrides).length ? { questionOverrides } : {}),
     versions: [],
     refinementCount: 0,
   };
@@ -190,7 +202,7 @@ export async function answerPromptQuestions(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide } = ctx;
 
-  session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions);
+  session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions, session.questionOverrides);
   session.pendingQuestions = [];
   const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] });
   session.versions.push(version);

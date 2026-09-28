@@ -5,6 +5,7 @@ import { YamlError, parseYamlSubset, parseScalar, splitFrontmatter, splitSection
 import { guideRuleErrors, type Guide } from '../promptBuilder/guideSchema';
 import { loadGuides } from '../promptBuilder/guides';
 import { applyAnswers, planSlots } from '../promptBuilder/plan';
+import { sanitizeQuestions } from '../promptBuilder/extract';
 import { checkPrompt, validateWithRepair } from '../promptBuilder/validate';
 import { answerPromptQuestions, refinePromptSession, startPromptSession, type PromptDeps } from '../promptBuilder/service';
 import { memoryPromptStore } from '../promptBuilder/store';
@@ -104,7 +105,9 @@ describe('rehberler (data/prompt-guides)', () => {
 // ------------------------------------------------------------------
 const midjourney = () => loadGuides().find((g) => g.id === 'midjourney')!;
 
-function fakeLLM(opts: { extracted?: Record<string, string | null>; failRegexTimes?: number } = {}) {
+type RawQuestion = { slotId: string; question: string; options: { label: string; value: string }[] };
+
+function fakeLLM(opts: { extracted?: Record<string, string | null>; failRegexTimes?: number; questions?: RawQuestion[] } = {}) {
   const calls: JsonRequest[] = [];
   let failures = opts.failRegexTimes ?? 0;
   const llm = async (req: JsonRequest) => {
@@ -112,7 +115,7 @@ function fakeLLM(opts: { extracted?: Record<string, string | null>; failRegexTim
     const input = JSON.parse(req.user);
     if (req.name === 'slot_extraction') {
       const slots = Object.entries(opts.extracted ?? {}).map(([id, value]) => ({ id, value, source: 'user', confidence: value ? 0.9 : 0 }));
-      return { data: { slots, goalSummary: 'summary' }, tokens: 10 };
+      return { data: { slots, goalSummary: 'summary', ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
     }
     const values = Object.fromEntries(input.slots.map((s: { id: string; value: string | null }) => [s.id, s.value ?? 'auto']));
     const ar = failures > 0 ? '' : ` --ar ${values.aspect === 'auto' ? '1:1' : values.aspect}`;
@@ -310,3 +313,62 @@ describe('prompt oturumu', () => {
 
 // Tip kontrolü için: Guide tipinin dışa açık olduğunu kullan
 export type _G = Guide;
+
+describe('girişe göre dinamik sorular', () => {
+  const g = midjourney();
+  const opts = (...labels: string[]) => labels.map((l, i) => ({ label: l, value: `value ${i + 1}` }));
+
+  it('doğrulama: bilinmeyen slot, tekrar eden slot, <2 seçenek, ayrılmış seçenek ve tekrar eden etiket elenir; en fazla 4', () => {
+    const q = sanitizeQuestions([
+      { slotId: 'yok-boyle-slot', question: 'Ne?', options: opts('A', 'B') },
+      { slotId: 'style', question: 'Logon nasıl bir tarzda olsun?', options: [...opts('Minimal', 'minimal', 'Sen seç', 'El çizimi', 'Vintage', 'Oyuncu', 'Fazla')] },
+      { slotId: 'style', question: 'İkinci soru', options: opts('X', 'Y') },
+      { slotId: 'aspect', question: 'Hangi format?', options: opts('Kare') },
+      { slotId: 'mood', question: 'x'.repeat(161), options: opts('A', 'B') },
+    ], g);
+    assert.deepStrictEqual(Object.keys(q), ['style']);
+    assert.strictEqual(q.style.question, 'Logon nasıl bir tarzda olsun?');
+    assert.deepStrictEqual(q.style.options.map((o) => [o.id, o.label]), [['o1', 'Minimal'], ['o2', 'El çizimi'], ['o3', 'Vintage'], ['o4', 'Oyuncu']]);
+  });
+
+  it('soru kartı girişe uygun soruyu gösterir; olmayan slot için rehberdeki soru; cevap seçeneğin değerini prompta koyar', async () => {
+    const { llm, calls } = fakeLLM({
+      extracted: { subject: 'a bakery logo' },
+      questions: [{ slotId: 'style', question: 'Logon nasıl bir tarzda olsun?', options: [
+        { label: 'Minimal ve modern', value: 'minimal modern flat logo' },
+        { label: 'El çizimi, samimi', value: 'hand-drawn rustic logo' },
+        { label: 'Vintage fırın havası', value: 'vintage bakery badge logo' },
+      ] }],
+    });
+    const d = deps(llm);
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'Fırınım için logo lazım', conversation: [{ role: 'user', content: 'Fırınım için logo lazım' }], locale: 'tr' }, d);
+    if ('error' in r || r.card.type !== 'prompt_question') return assert.fail('soru kartı yok');
+    const [style, aspect] = r.card.questions;
+    assert.strictEqual(style.question, 'Logon nasıl bir tarzda olsun?');
+    assert.deepStrictEqual(style.options.map((o) => o.label), ['Minimal ve modern', 'El çizimi, samimi', 'Vintage fırın havası']);
+    assert.strictEqual(aspect.slotId, 'aspect');
+    assert.strictEqual(aspect.question, g.slots.find((s) => s.id === 'aspect')!.question.tr);
+    // İstek: sorular kullanıcının dilinde istenir, şema soruları zorunlu tutar
+    assert.match(calls[0].system, /in Turkish/);
+    assert.ok((calls[0].schema as { required: string[] }).required.includes('questions'));
+
+    const a = await answerPromptQuestions({ promptSessionId: r.card.promptSessionId, answers: { style: 'o2', aspect: 'auto' } }, d);
+    if ('error' in a || a.card.type !== 'prompt') return assert.fail('prompt kartı yok');
+    assert.match(a.card.variants[0].prompt, /hand-drawn rustic logo/);
+  });
+
+  it('model soru yazmazsa rehberdeki sabit sorular kullanılır (geriye uyumlu)', async () => {
+    const { llm } = fakeLLM({ extracted: { subject: 'a bakery logo' } });
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation: [], locale: 'en' }, deps(llm));
+    if ('error' in r || r.card.type !== 'prompt_question') return assert.fail('soru kartı yok');
+    assert.strictEqual(r.card.questions[0].question, g.slots.find((s) => s.id === 'style')!.question.en);
+  });
+
+  it('applyAnswers: dinamik seçenek önce, sonra rehber seçeneği, sonra serbest metin', () => {
+    const plan = planSlots(g, {}, { questionAsked: false });
+    const overrides = { style: { question: 'q', options: [{ id: 'o1', label: 'Minimal', value: 'minimal flat' }, { id: 'o2', label: 'Vintage', value: 'vintage badge' }] } };
+    const next = applyAnswers(g, plan.slots, { style: 'o2', aspect: 'kendi formatım' }, ['style', 'aspect'], overrides);
+    assert.deepStrictEqual(next.style, { value: 'vintage badge', source: 'user' });
+    assert.deepStrictEqual(next.aspect, { value: 'kendi formatım', source: 'user' });
+  });
+});
