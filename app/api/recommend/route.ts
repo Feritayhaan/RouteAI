@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { formatWorkflowForApi } from "@/lib/workflow";
 import { generateExplanation, getLocalized, resolveLocale } from "@/lib/toolsService";
 import { recommendV1 } from "@/lib/recommendV1";
+import { recommendV3 } from "@/lib/recommendV3";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -57,6 +58,26 @@ export async function POST(req: NextRequest) {
 
     // Kullanıcı metni loglanmaz; teşhis için uzunluğu yeter.
     console.log('[API] İstek analiz ediliyor, uzunluk:', prompt.length);
+
+    // ============================================================
+    // P12: RECOMMENDER=v3 ortam bayrağı. Yoksa aşağıdaki v1 kodu AYNEN çalışır
+    // (bayrak kapalıyken davranış değişmez). v3: görev tabanlı, kanıta dayalı
+    // öneri (lib/recommendV3.ts) — NDJSON'a tek satır, yeni alanlarla
+    // (taskId, confidence, reasons, dataDate, sources) ama yine NDJSON.
+    // ============================================================
+    if (process.env.RECOMMENDER === 'v3') {
+      const result = await recommendV3(prompt, pricingFilter);
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(JSON.stringify({ chunk: 'v3', ...result }) + '\n'));
+          controller.close();
+        },
+      });
+      return new Response(stream, {
+        headers: { 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-cache' },
+      });
+    }
 
     // ============================================================
     // Niyet + arama + workflow dalı + aday seçimi lib/recommendV1.ts'te:

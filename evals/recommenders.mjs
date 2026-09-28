@@ -22,6 +22,7 @@ import { runAgent } from '../lib/agent/loop.ts';
 import { openAIChatClient } from '../lib/agent/client.ts';
 import { agentModel } from '../lib/agent/config.ts';
 import { classifyTask } from '../lib/intent/taskClassifier.ts';
+import { recommendV3 } from '../lib/recommendV3.ts';
 import { hasOpenAIKey } from './env.mjs';
 
 /** v1: /api/recommend ile aynı akış (lib/recommendV1.ts). UI filtresi yok = 'all'. */
@@ -146,4 +147,37 @@ async function task(query) {
   };
 }
 
-export const recommenders = { v1, 'v2-oracle': v2Oracle, v2, task };
+/**
+ * v3: görev tabanlı, kanıta dayalı öneri (P12, lib/recommendV3.ts). v1 ile
+ * yan yana raporlanır: top1/top3 (ürün önerdiğinde), taskMatch, clarifyRate
+ * hepsi anlamlı; no_evidence oranı detail.kind üzerinden run.mjs tablosunda
+ * görünür (npm run eval -- --recommender=v3'te "detail" sütunu).
+ */
+async function v3(query) {
+  const result = await recommendV3(query, 'all', { allowLLM: hasOpenAIKey });
+  switch (result.kind) {
+    case 'recommendation':
+      return {
+        task: result.taskId,
+        tools: result.items.map((i) => i.product.name),
+        clarification: false,
+        detail: { kind: 'recommendation', taskSource: result.taskSource, relaxedConstraint: result.relaxedConstraint ?? null },
+      };
+    case 'clarify':
+      return { tools: [], clarification: true, detail: { kind: 'clarify', options: result.options.map((o) => o.taskId) } };
+    case 'no_evidence':
+      // Görev doğru bulundu ama kanıt yok: taskMatch'e girsin, tools boş kalsın
+      // (ürün önerilmedi, sadece "doğrulanmadı" listesi — top1/top3'e girmez).
+      return { task: result.taskId, tools: [], clarification: false, detail: { kind: 'no_evidence', productCount: result.products.length } };
+    case 'workflow':
+      return {
+        tools: [...new Set(result.steps.flatMap((s) => s.items.map((i) => i.product.name)))],
+        clarification: false,
+        detail: { kind: 'workflow', templateId: result.templateId, steps: result.steps.length },
+      };
+    default:
+      throw new Error(`recommendV3 bilinmeyen sonuç: ${result.kind}`);
+  }
+}
+
+export const recommenders = { v1, 'v2-oracle': v2Oracle, v2, task, v3 };

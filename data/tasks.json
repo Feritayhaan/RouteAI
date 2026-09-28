@@ -57,7 +57,8 @@
         "içerik yaz",
         "blog yazmak istiyorum",
         "yazı yazdır",
-        "senaryo"
+        "senaryo",
+        "video senaryosu"
       ],
       "en": [
         "blog post",
@@ -849,7 +850,8 @@
         "resim",
         "fotogerçekçi görsel",
         "illüstrasyon çiz",
-        "kapak"
+        "kapak",
+        "kapağ"
       ],
       "en": [
         "generate an image",
@@ -1550,6 +1552,7 @@
         "uzun videoyu klip yap",
         "podcast klip",
         "klip çıkar",
+        "kısa klip",
         "video",
         "klip"
       ],
@@ -1738,6 +1741,7 @@
       "en": [
         "audio cleanup",
         "remove background noise",
+        "podcast recording",
         "remove echo",
         "clean up recording",
         "noise reduction",
