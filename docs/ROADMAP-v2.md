@@ -22,6 +22,7 @@ Baştan sona inceleme; ayrıntı PR açıklamasında. Düzeltilenler:
 - Gerekçe metninden kaynaksız ifadeler kaldırıldı ("Sektörün en iyisi", "Çok yüksek kaliteli", her sorguya yazılan "Yeni başlayanlar için uygun").
 - Sorgudaki fiyat koşulu gevşetilince kartta uyarı çıkar (eskiden arayüz bu bilgiyi atıyordu).
 - "profesyonel" artık "ücretli" sayılmaz. Fiyat düğmesinin "Sadece ücretsiz" etiketi "Ücretsiz planı olanlar" oldu (freemium da gösteriliyor).
+Çözüm promptları (sırayla, her biri tek PR): `docs/RouteAI-v3-Claude-Code-promptlari.md` (P9–P18).
 Açık kalanlar (öncelik sırasıyla):
 1. Ana sayfa hâlâ v1 (7 kategori + kelime eşleşmesi + kaynaksız strength). Görev taksonomisi ve RouteAI Skoru devrede değil. İdeal kategoriyle bile ilk öneri 28/39.
 2. Kanıt döngüsü kopuk: ana sayfadaki oy eski formatta, skora girmiyor; yıldızlar sadece tarayıcıda; "işini gördü mü" ve araca tıklama sayımı yok.
