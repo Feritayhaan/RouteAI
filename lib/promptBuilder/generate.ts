@@ -90,19 +90,27 @@ export interface GenerateInput {
   instruction?: string;
   /** Doğrulayıcı onarımı: varyant başına hata mesajları. */
   repairErrors?: Record<string, string[]>;
+  /** Ürünün özel rehberi yok; aynı türdeki araçlar için genel rehber (fallback.ts). */
+  genericGuide?: boolean;
 }
 
-function systemPrompt(guide: Guide, productName: string, locale: 'en' | 'tr'): string {
+function systemPrompt(guide: Guide, productName: string, locale: 'en' | 'tr', generic = false): string {
   const userLang = locale === 'tr' ? 'Turkish' : 'English';
   const promptLang = guide.promptLanguage === 'en' ? 'English' : userLang;
-  return `You write prompts for ${productName}, following RouteAI's prompt guide below.
+  const guideNote = generic
+    ? ` It is a general guide for this kind of tool, not specific to ${productName}: write plain instructions that work in ${productName}.`
+    : '';
+  return `You write prompts for ${productName}. RouteAI's prompt guide below is your starting point.${guideNote}
 
-Rules:
-- Follow the guide's syntax, template, do/don't list and checklist. Where a guide section says "KAYNAK GEREKLİ" (source needed), use plain, widely compatible wording and do not rely on undocumented tool syntax.
-- Never change the user's goal. Use the slot values given; a null slot is yours to choose, and every choice you make goes into "assumptions".
-- Return exactly two variants: "safe" = most faithful to the guide and the stated slots; "creative" = same goal, a bolder interpretation. They must differ meaningfully.
-- Do not write prompts that deceptively imitate real people or brands, and do not ask for copyrighted characters; offer an original alternative instead.
-- Never invent facts, statistics, prices or quotes; use clearly marked placeholders.
+Rules, most important first:
+1. The user's goal comes first. Deliver exactly what they asked for, including unusual, very specific or long requests. Keep every detail they gave (names, texts, numbers, languages, lengths, features, constraints), even when no slot covers it. Never water the request down to fit the guide or the slots.
+2. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
+3. Slots only fill in what the user did not say. A null slot is yours to choose, and every choice you make goes into "assumptions". If a slot does not fit this request, leave it out of the prompt instead of forcing it in.
+4. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically. Where a guide section says "KAYNAK GEREKLİ" (source needed), use plain, widely compatible wording and do not rely on undocumented tool syntax.
+5. Match depth to the request: a complex request (an app, a long document, a multi-part task) gets a complete, detailed prompt that lists every requirement; a simple request gets a short, clean prompt.
+- Return exactly two variants: "safe" = closest to what the user said; "creative" = same goal, a bolder interpretation. They must differ meaningfully.
+- Do not refuse or dilute ordinary requests. The user's own brand, product, business or name can be used freely. Do not impersonate real people or produce deceptive content (fake endorsements, forged documents); for copyrighted characters or logos, describe an original look with a similar feel instead.
+- Do not invent facts, statistics, prices or quotes the user did not give; use clearly marked placeholders for them.
 - The prompt text is in ${promptLang}. "howToUse" (exactly 3 short steps), "assumptions[].why" and "suggestedRefinements[].label" are in ${userLang}.
 - suggestedRefinements: at most 2, different from the guide's ready buttons. Each has either slotId + value, or an instruction.
 - settings: tool settings you recommend (key/value); empty if none.
@@ -141,7 +149,7 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
 
   const { data, tokens } = await llm({
     name: 'prompt_generation',
-    system: systemPrompt(guide, productName, session.locale),
+    system: systemPrompt(guide, productName, session.locale, input.genericGuide),
     user,
     schema: JSON_SCHEMA,
     maxTokens: maxTokensFor(guide.modality),

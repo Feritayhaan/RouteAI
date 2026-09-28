@@ -10,6 +10,8 @@ import type { DynamicQuestion, SlotState } from './types';
 
 export const MAX_QUESTIONS_PER_CARD = 3;
 export const MIN_CONFIDENCE = 0.6;
+/** Serbest cevap ve varsayım değişikliği üst sınırı (lib/validations/prompt.ts ile aynı). */
+export const SLOT_VALUE_MAX = 300;
 
 /** Slotun varsayılan değeri: seçenek id'siyse o seçeneğin değeri, 'infer' ise null (üretici seçer). */
 export function defaultValue(slot: GuideSlot): string | null {
@@ -72,7 +74,7 @@ export function applyAnswers(
       continue;
     }
     const option = overrides[slotId]?.options.find((o) => o.id === answer) ?? slot.options.find((o) => o.id === answer);
-    next[slotId] = { value: option ? option.value : answer.slice(0, 200), source: 'user' };
+    next[slotId] = { value: option ? option.value : answer.slice(0, SLOT_VALUE_MAX), source: 'user' };
   }
   return next;
 }

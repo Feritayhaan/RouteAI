@@ -98,6 +98,11 @@ export default function PromptCard({ card: initial }: { card: Card }) {
     <div className="space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm" aria-busy={loading}>
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="mr-auto font-bold">{format(dict.prompt.title, { product: card.productName })}</h3>
+        {card.genericGuide && (
+          <span title={dict.prompt.genericHint} className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+            {dict.prompt.generic}
+          </span>
+        )}
         {card.draft && (
           <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
             {dict.prompt.draft}
@@ -254,7 +259,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
             placeholder={dict.prompt.freeTextPlaceholder}
-            maxLength={500}
+            maxLength={1000}
             disabled={busy}
             className="min-h-11 min-w-0 flex-1 rounded-xl border border-border bg-background px-3 text-sm disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />

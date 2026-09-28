@@ -22,9 +22,14 @@ export function promptModel(): string {
   return process.env.OPENAI_PROMPT_MODEL?.trim() || agentModel();
 }
 
-/** Görsel/video/ses/müzik 600, metin/kod/sunum 1200. */
+/**
+ * Üretim çağrısının üst sınırı (iki varyant + varsayımlar + JSON). Sınıra
+ * takılan yanıt yarım JSON olur ve prompt hiç çıkmaz; bu yüzden karmaşık
+ * istekler (uygulama, uzun metin) için bol tutulur. Görsel/video/ses/müzik
+ * 1000, metin/kod/sunum 1800. Zaman aşımı: deps.ts PROMPT_TIMEOUT_MS.
+ */
 export function maxTokensFor(modality: Modality): number {
-  return ['image', 'video', 'audio', 'music', '3d'].includes(modality) ? 600 : 1200;
+  return ['image', 'video', 'audio', 'music', '3d'].includes(modality) ? 1000 : 1800;
 }
 
 export function openAIJsonLLM(model: string = promptModel()): JsonLLM {

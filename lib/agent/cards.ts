@@ -61,6 +61,8 @@ export const promptCardSchema = z.object({
   guideVersion: z.number().int(),
   /** Rehber henüz gözden geçirilmedi ("Taslak rehber"). */
   draft: z.boolean(),
+  /** Bu araca özel rehber yok; aynı türdeki araçlar için genel rehberle yazıldı ("Genel rehber"). */
+  genericGuide: z.boolean().optional(),
   versionN: z.number().int().positive(),
   variants: z.array(z.object({
     id: z.enum(['safe', 'creative']),

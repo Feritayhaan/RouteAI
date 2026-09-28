@@ -74,5 +74,5 @@ export interface PromptSession {
   refinementCount: number;
 }
 
-export const MAX_REFINEMENTS = 10;
+export const MAX_REFINEMENTS = 20;
 export const SESSION_TTL_SECONDS = 24 * 60 * 60;

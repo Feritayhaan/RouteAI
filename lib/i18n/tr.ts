@@ -91,6 +91,8 @@ export const tr: Dictionary = {
     settings: 'Ayarlar',
     howToUse: 'Nasıl kullanılır',
     draft: 'Taslak rehber',
+    generic: 'Genel rehber',
+    genericHint: 'Bu araca özel rehber henüz yok; aynı türdeki araçlar için genel rehberle yazıldı.',
     variants: 'Prompt varyantları',
     safe: 'Güvenli',
     creative: 'Yaratıcı',

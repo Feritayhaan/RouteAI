@@ -10,11 +10,13 @@ import type { PromptDeps } from './service';
 export const PROMPT_TIMEOUT_MS = 20_000;
 
 export function defaultPromptDeps(signal?: AbortSignal): PromptDeps {
+  const catalog = loadCatalog();
   return {
     llm: openAIJsonLLM(),
     store: kvPromptStore(),
     guides: loadGuides(),
-    products: loadCatalog().products,
+    products: catalog.products,
+    tasksById: catalog.tasksById,
     now: Date.now,
     newId: newPromptSessionId,
     signal,
