@@ -29,6 +29,9 @@ describe('i18n', () => {
     const r = { code: 'benchmark_rank', params: { source: 'lmarena', arena: 'text_to_image', rank: 3, total: 40 } };
     assert.strictEqual(reasonText(en, r), '#3 of 40 on Text-to-Image (LMArena)');
     assert.strictEqual(reasonText(tr, r), 'Text-to-Image sıralamasında 40 model içinde 3. (LMArena)');
+    const withModel = { code: 'benchmark_rank', params: { ...r.params, model: 'gpt-image-2' } };
+    assert.strictEqual(reasonText(tr, withModel), 'Text-to-Image sıralamasında 40 model içinde 3. (LMArena · gpt-image-2)');
+    assert.strictEqual(reasonText(en, withModel), '#3 of 40 on Text-to-Image (LMArena · gpt-image-2)');
     assert.strictEqual(reasonText(en, { code: 'comparison_wins', params: { wins: 6, losses: 2 } }), 'Won 6 of 8 head-to-head comparisons');
     assert.strictEqual(reasonText(tr, { code: 'outcome_success', params: { pct: 43, n: 12 } }), 'İşini gördü diyenler: %43 (12 kullanıcı)');
     assert.strictEqual(reasonText(en, { code: 'bilinmeyen' }), null);

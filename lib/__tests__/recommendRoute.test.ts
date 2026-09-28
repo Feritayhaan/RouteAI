@@ -1,4 +1,4 @@
-// P12 kabul: "Bayrak kapalıyken canlı davranış değişmez."
+// Varsayılan v3; eski v1 motoru sadece RECOMMENDER=v1 ile (geri dönüş yolu).
 //
 // app/api/recommend/route.ts "next/server" import ettiği için Next'in edge
 // ortamı dışında (bu projenin node --test + lib/__tests__/ts-loader.mjs
@@ -6,10 +6,10 @@
 // exports girdisi vermiyor, loader da (haklı olarak) Next'e özel modül
 // çözümlemesi yapmıyor — bu proje route.ts'i hiçbir zaman doğrudan test
 // etmedi (recommendV1/recommendV3 kendi testlerinde koşuyor, route.ts ince
-// bir HTTP sargısı). Bu yüzden bayrak dalının "aynen kalır" garantisi
-// kaynak yapısı üzerinden kilitlenir: v3 dalı erken return eder ve v1
-// kodundan ÖNCE durur; v1 çağrısı bu dalın DIŞINDA, koşulsuz kalır — yani
-// RECOMMENDER!=='v3' iken hiçbir satırı değiştirmeden aynı v1 akışına düşer.
+// bir HTTP sargısı). Bu yüzden bayrak dalı kaynak yapısı üzerinden
+// kilitlenir: v3 dalı erken return eder ve v1 kodundan ÖNCE durur; v1 çağrısı
+// bu dalın DIŞINDA kalır — RECOMMENDER=v1 iken hiçbir satırı değişmemiş v1
+// akışına düşer.
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -20,9 +20,9 @@ import { recommendRequestSchema } from '../validations/recommend';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const source = readFileSync(path.join(ROOT, 'app/api/recommend/route.ts'), 'utf8');
 
-describe('app/api/recommend/route.ts: RECOMMENDER=v3 bayrağı', () => {
+describe('app/api/recommend/route.ts: varsayılan v3, RECOMMENDER=v1 ile eski motor', () => {
   it('v3 dalı erken return eder (v1 koduna hiç düşmez)', () => {
-    const flagIndex = source.indexOf("process.env.RECOMMENDER === 'v3'");
+    const flagIndex = source.indexOf("process.env.RECOMMENDER !== 'v1'");
     assert.notStrictEqual(flagIndex, -1, 'bayrak kontrolü bulunamadı');
     const blockEnd = source.indexOf('\n    }', flagIndex);
     const block = source.slice(flagIndex, blockEnd);
@@ -30,7 +30,7 @@ describe('app/api/recommend/route.ts: RECOMMENDER=v3 bayrağı', () => {
   });
 
   it('v1 çağrısı (recommendV1) bayrak bloğunun DIŞINDA ve koşulsuz: satır sırası ve girinti bunu gösterir', () => {
-    const flagIndex = source.indexOf("process.env.RECOMMENDER === 'v3'");
+    const flagIndex = source.indexOf("process.env.RECOMMENDER !== 'v1'");
     const v1CallIndex = source.indexOf('const result = await recommendV1(prompt, pricingFilter);');
     assert.notStrictEqual(v1CallIndex, -1, 'recommendV1 çağrısı bulunamadı');
     assert.ok(v1CallIndex > flagIndex, 'recommendV1 çağrısı v3 bayrak kontrolünden SONRA durmalı (yoksa v3 hiç devreye girmez)');
