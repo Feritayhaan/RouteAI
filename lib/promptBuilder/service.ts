@@ -2,16 +2,17 @@
 //   başlat: oturum -> extract -> plan -> (soru kartı) ya da (generate -> validate -> PromptCard)
 //   cevap:  soru kartı cevapları -> generate -> validate -> PromptCard
 //   iyileştir: hazır buton | varsayım değişikliği | serbest talimat -> yeni versiyon
-// Her sonuç oturuma yeni versiyon olarak eklenir. Oturum başına en fazla 10
-// iyileştirme ve 1 soru kartı.
+// Her sonuç oturuma yeni versiyon olarak eklenir. Oturum başına en fazla
+// MAX_REFINEMENTS (20) iyileştirme ve 1 soru kartı.
 
-import type { Product } from '../catalog/schema';
+import type { Product, Task } from '../catalog/schema';
 import type { PromptCard, PromptQuestionCard } from '../agent/cards';
 import type { Guide } from './guideSchema';
 import type { JsonLLM } from './llm';
 import type { PromptSessionStore } from './store';
 import { extractSlots } from './extract';
-import { applyAnswers, filledBy, planSlots } from './plan';
+import { resolveGuideId } from './fallback';
+import { applyAnswers, filledBy, planSlots, SLOT_VALUE_MAX } from './plan';
 import { generatePrompt } from './generate';
 import { validateWithRepair } from './validate';
 import { MAX_REFINEMENTS, type PromptSession, type PromptVersion, type SlotState } from './types';
@@ -21,6 +22,8 @@ export interface PromptDeps {
   store: PromptSessionStore;
   guides: Guide[];
   products: Product[];
+  /** Rehberi olmayan ürüne genel rehber seçmek için (lib/promptBuilder/fallback.ts). Yoksa sadece özel rehber. */
+  tasksById?: Map<string, Task>;
   now: () => number;
   newId: () => string;
   signal?: AbortSignal;
@@ -34,12 +37,13 @@ export type PromptResult =
 function context(deps: PromptDeps, productId: string) {
   const product = deps.products.find((p) => p.id === productId && p.status === 'active');
   if (!product) return { error: 'unknown_product' as const };
-  const guide = product.promptGuide ? deps.guides.find((g) => g.id === product.promptGuide) : undefined;
-  if (!guide) return { error: 'no_guide' as const };
-  return { product, guide };
+  const resolved = resolveGuideId(product, deps.tasksById);
+  const guide = resolved ? deps.guides.find((g) => g.id === resolved.guideId) : undefined;
+  if (!resolved || !guide) return { error: 'no_guide' as const };
+  return { product, guide, generic: resolved.generic };
 }
 
-export function toPromptCard(session: PromptSession, guide: Guide, product: Product): PromptCard {
+export function toPromptCard(session: PromptSession, guide: Guide, product: Product, generic = false): PromptCard {
   const version = session.versions.at(-1)!;
   const locale = session.locale;
   const guideRefinements = guide.refinements.map((r) => {
@@ -63,6 +67,7 @@ export function toPromptCard(session: PromptSession, guide: Guide, product: Prod
     guideId: guide.id,
     guideVersion: guide.version,
     draft: !guide.reviewedBy,
+    ...(generic ? { genericGuide: true } : {}),
     versionN: version.n,
     variants: version.variants,
     assumptions: version.assumptions.map((a) => {
@@ -112,13 +117,15 @@ async function produceVersion(
   guide: Guide,
   product: Product,
   deps: PromptDeps,
-  meta: { refinementIds: string[]; instruction?: string }
+  meta: { refinementIds: string[]; instruction?: string },
+  generic: boolean
 ): Promise<{ version: PromptVersion; tokens: number }> {
   const previous = session.versions.at(-1);
   const input = {
     session,
     guide,
     productName: product.name,
+    genericGuide: generic,
     llm: deps.llm,
     signal: deps.signal,
     ...(previous && (meta.instruction || meta.refinementIds.length) ? { previous } : {}),
@@ -153,7 +160,7 @@ export async function startPromptSession(
 ): Promise<PromptResult> {
   const ctx = context(deps, input.productId);
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
-  const { product, guide } = ctx;
+  const { product, guide, generic } = ctx;
 
   const extraction = await extractSlots({ conversation: input.conversation, goal: input.goal, guide, locale: input.locale, llm: deps.llm, signal: deps.signal });
   // Ajanın zaten bildiği slotlar (build_prompt argümanı) kullanıcı bilgisi sayılır.
@@ -185,10 +192,10 @@ export async function startPromptSession(
     return { card: toQuestionCard(session, guide, product), tokens: extraction.tokens, session };
   }
 
-  const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] });
+  const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] }, generic);
   session.versions.push(version);
   await deps.store.set(session);
-  return { card: toPromptCard(session, guide, product), tokens: extraction.tokens + tokens, session };
+  return { card: toPromptCard(session, guide, product, generic), tokens: extraction.tokens + tokens, session };
 }
 
 export async function answerPromptQuestions(
@@ -200,14 +207,14 @@ export async function answerPromptQuestions(
   if (session.pendingQuestions.length === 0) return { error: 'no_pending_question', tokens: 0 };
   const ctx = context(deps, session.productId);
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
-  const { product, guide } = ctx;
+  const { product, guide, generic } = ctx;
 
   session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions, session.questionOverrides);
   session.pendingQuestions = [];
-  const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] });
+  const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] }, generic);
   session.versions.push(version);
   await deps.store.set(session);
-  return { card: toPromptCard(session, guide, product), tokens, session };
+  return { card: toPromptCard(session, guide, product, generic), tokens, session };
 }
 
 export type RefineAction =
@@ -225,12 +232,12 @@ export async function refinePromptSession(
   if (session.refinementCount >= MAX_REFINEMENTS) return { error: 'refine_limit', tokens: 0 };
   const ctx = context(deps, session.productId);
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
-  const { product, guide } = ctx;
+  const { product, guide, generic } = ctx;
 
   let meta: { refinementIds: string[]; instruction?: string };
   const setSlot = (slotId: string, value: string): SlotState | null => {
     if (!guide.slots.some((s) => s.id === slotId)) return null;
-    return { value: value.trim().slice(0, 200), source: 'user' };
+    return { value: value.trim().slice(0, SLOT_VALUE_MAX), source: 'user' };
   };
 
   if ('refinementId' in input) {
@@ -261,14 +268,14 @@ export async function refinePromptSession(
     meta = { refinementIds: ['assumption'] };
   } else {
     // Serbest talimat: önceki versiyon + talimat
-    const instruction = input.instruction.trim().slice(0, 500);
+    const instruction = input.instruction.trim().slice(0, 1000);
     if (!instruction) return { error: 'invalid', tokens: 0 };
     meta = { refinementIds: ['free_text'], instruction };
   }
 
-  const { version, tokens } = await produceVersion(session, guide, product, deps, meta);
+  const { version, tokens } = await produceVersion(session, guide, product, deps, meta, generic);
   session.versions.push(version);
   session.refinementCount++;
   await deps.store.set(session);
-  return { card: toPromptCard(session, guide, product), tokens, session };
+  return { card: toPromptCard(session, guide, product, generic), tokens, session };
 }

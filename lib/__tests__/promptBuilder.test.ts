@@ -13,6 +13,10 @@ import type { JsonRequest } from '../promptBuilder/llm';
 import { MAX_REFINEMENTS } from '../promptBuilder/types';
 import { loadCatalog } from '../catalog/index';
 import { makeBuildPromptTool } from '../promptBuilder/agentTool';
+import { fallbackGuideId, resolveGuideId } from '../promptBuilder/fallback';
+import { buildChatRequest, isReasoningModel, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
+import { PROMPT_TIMEOUT_MS, promptTimeoutMs, REASONING_PROMPT_TIMEOUT_MS } from '../promptBuilder/deps';
+import { promptAnswerSchema, promptRefineSchema } from '../validations/prompt';
 
 describe('YAML alt kümesi', () => {
   it('iç içe eşleme, dizi, eşleme dizisi, skalerler, satır içi dizi, yorum', () => {
@@ -300,6 +304,37 @@ describe('prompt oturumu', () => {
     assert.deepStrictEqual(await startPromptSession({ productId: 'yok-urun', goal: 'x', conversation, locale: 'en' }, deps(llm)), { error: 'unknown_product', tokens: 0 });
   });
 
+  it('rehberi olmayan ürün: aynı türdeki araçların genel rehberiyle yazılır, kartta "Genel rehber"', async () => {
+    const { llm, calls } = fakeLLM({ extracted: { subject: 'a fox', style: 'watercolor', aspect: '1:1', mood: 'calm', background: 'forest' } });
+    const d = { ...deps(llm), tasksById: loadCatalog().tasksById };
+    const r = await startPromptSession({ productId: 'leonardo-ai', goal: 'watercolor fox', conversation, locale: 'en' }, d);
+    if ('error' in r || r.card.type !== 'prompt') return assert.fail(JSON.stringify(r));
+    assert.strictEqual(r.card.guideId, 'image-natural');
+    assert.strictEqual(r.card.genericGuide, true);
+    assert.match(calls.find((c) => c.name === 'prompt_generation')!.system, /general guide for this kind of tool, not specific to Leonardo/);
+    // İyileştirme de aynı genel rehberle
+    const refined = await refinePromptSession({ promptSessionId: r.card.promptSessionId, instruction: 'add a red scarf' }, d);
+    if ('error' in refined || refined.card.type !== 'prompt') return assert.fail();
+    assert.strictEqual(refined.card.genericGuide, true);
+
+    // Özel rehberi olan üründe "genel" notu yok
+    const own = fakeLLM({ extracted: full });
+    const mj = await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, { ...deps(own.llm), tasksById: loadCatalog().tasksById });
+    if ('error' in mj || mj.card.type !== 'prompt') return assert.fail();
+    assert.strictEqual(mj.card.genericGuide, undefined);
+    assert.doesNotMatch(own.calls.find((c) => c.name === 'prompt_generation')!.system, /not specific to/);
+  });
+
+  it('üretici kuralları: kullanıcının isteği ve iyileştirme talimatı rehberden önce gelir', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(llm));
+    const system = calls.find((c) => c.name === 'prompt_generation')!.system;
+    assert.match(system, /The user's goal comes first/);
+    assert.match(system, /refinementInstruction overrides the previous version, the slots and the template/);
+    assert.match(system, /own brand, product, business or name can be used freely/);
+    assert.doesNotMatch(system, /deceptively imitate real people or brands/);
+  });
+
   it('ajan aracı build_prompt: kart + token, ajanın bildiği slotlar kullanıcı bilgisi sayılır', async () => {
     const { llm } = fakeLLM({ extracted: { subject: 'x' } });
     const tool = makeBuildPromptTool(() => deps(llm));
@@ -370,5 +405,104 @@ describe('girişe göre dinamik sorular', () => {
     const next = applyAnswers(g, plan.slots, { style: 'o2', aspect: 'kendi formatım' }, ['style', 'aspect'], overrides);
     assert.deepStrictEqual(next.style, { value: 'vintage badge', source: 'user' });
     assert.deepStrictEqual(next.aspect, { value: 'kendi formatım', source: 'user' });
+  });
+});
+
+describe('genel rehber seçimi (lib/promptBuilder/fallback.ts)', () => {
+  const { products, tasksById } = loadCatalog();
+  const guideIds = new Set(loadGuides().map((g) => g.id));
+  const byId = (id: string) => products.find((p) => p.id === id)!;
+
+  it('görevi olan her aktif ürünün (özel ya da genel) var olan bir rehberi var', () => {
+    for (const p of products.filter((x) => x.status === 'active' && x.tasks.length > 0)) {
+      const r = resolveGuideId(p, tasksById);
+      assert.ok(r && guideIds.has(r.guideId), `${p.id}: rehber yok`);
+      assert.strictEqual(r.generic, !p.promptGuide);
+    }
+  });
+
+  it('ilk görevin türü ya da görev istisnası belirler', () => {
+    const expect: Record<string, string> = {
+      'leonardo-ai': 'image-natural',
+      'replit-agent': 'cursor-task',
+      'github-copilot': 'cursor-task',
+      'perplexity-ai': 'chat-general',
+      'n8n-ai-workflow-builder': 'chat-general',
+      'kling-ai-21': 'text-to-video',
+      udio: 'suno',
+      tome: 'gamma',
+      murfai: 'elevenlabs-voiceover',
+      'fathom-meeting-assistant': 'chat-general',
+      'opusclip-video-repurposing': 'chat-general',
+      'synthesia-30': 'elevenlabs-voiceover',
+    };
+    for (const [id, guideId] of Object.entries(expect)) assert.strictEqual(fallbackGuideId(byId(id), tasksById), guideId, id);
+    assert.strictEqual(fallbackGuideId({ tasks: [] }, tasksById), null);
+    assert.strictEqual(resolveGuideId(byId('leonardo-ai'), undefined), null, 'görev haritası yoksa sadece özel rehber');
+  });
+});
+
+describe('prompt istek sınırları', () => {
+  const id = 'p_test1xxxx';
+  it('serbest iyileştirme 1000, cevap ve varsayım 300 karaktere kadar', () => {
+    assert.ok(promptRefineSchema.safeParse({ promptSessionId: id, instruction: 'x'.repeat(1000) }).success);
+    assert.ok(!promptRefineSchema.safeParse({ promptSessionId: id, instruction: 'x'.repeat(1001) }).success);
+    assert.ok(promptRefineSchema.safeParse({ promptSessionId: id, slotId: 'mood', value: 'x'.repeat(300) }).success);
+    assert.ok(!promptRefineSchema.safeParse({ promptSessionId: id, slotId: 'mood', value: 'x'.repeat(301) }).success);
+    assert.ok(promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(300) } }).success);
+    assert.ok(!promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(301) } }).success);
+  });
+});
+
+describe('düşünen model desteği (lib/promptBuilder/llm.ts)', () => {
+  const req = { name: 'prompt_generation', system: 'sys', user: 'u', schema: { type: 'object' }, maxTokens: 1800, temperature: 0.4 };
+
+  it('o-serisi ve gpt-5 düşünen model; gpt-5 sohbet sürümü ve gpt-4 ailesi değil', () => {
+    for (const m of ['o1', 'o3-mini', 'o4-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5.1', 'openai/gpt-5-nano', ' GPT-5 ']) assert.ok(isReasoningModel(m), m);
+    for (const m of ['gpt-4o-mini', 'gpt-4.1', 'gpt-5-chat-latest', 'omni-moderation-latest']) assert.ok(!isReasoningModel(m), m);
+  });
+
+  it('düşünen model: developer rolü, max_completion_tokens (düşünme payı dahil), reasoning_effort; temperature yok', () => {
+    const body = buildChatRequest('gpt-5-mini', req, 'low');
+    assert.strictEqual(body.messages[0].role, 'developer');
+    assert.deepStrictEqual(
+      { max_completion_tokens: (body as { max_completion_tokens?: number }).max_completion_tokens, reasoning_effort: (body as { reasoning_effort?: string }).reasoning_effort },
+      { max_completion_tokens: 1800 + REASONING_ALLOWANCE.low, reasoning_effort: 'low' }
+    );
+    assert.ok(!('temperature' in body) && !('max_tokens' in body));
+    assert.strictEqual(body.response_format.json_schema.strict, true);
+  });
+
+  it('normal model: system rolü, max_tokens ve temperature (eski davranış)', () => {
+    const body = buildChatRequest('gpt-4o-mini', req, 'low');
+    assert.strictEqual(body.messages[0].role, 'system');
+    assert.deepStrictEqual({ max_tokens: (body as { max_tokens?: number }).max_tokens, temperature: (body as { temperature?: number }).temperature }, { max_tokens: 1800, temperature: 0.4 });
+    assert.ok(!('max_completion_tokens' in body) && !('reasoning_effort' in body));
+  });
+
+  it('düşünme düzeyi ortam değişkeninden; boş ya da geçersizse low. Zaman aşımı modele göre', () => {
+    const old = process.env.OPENAI_PROMPT_REASONING_EFFORT;
+    try {
+      delete process.env.OPENAI_PROMPT_REASONING_EFFORT;
+      assert.strictEqual(promptReasoningEffort(), 'low');
+      process.env.OPENAI_PROMPT_REASONING_EFFORT = ' Medium ';
+      assert.strictEqual(promptReasoningEffort(), 'medium');
+      process.env.OPENAI_PROMPT_REASONING_EFFORT = 'çok';
+      assert.strictEqual(promptReasoningEffort(), 'low');
+    } finally {
+      if (old === undefined) delete process.env.OPENAI_PROMPT_REASONING_EFFORT;
+      else process.env.OPENAI_PROMPT_REASONING_EFFORT = old;
+    }
+    assert.strictEqual(promptTimeoutMs('gpt-4o-mini'), PROMPT_TIMEOUT_MS);
+    assert.strictEqual(promptTimeoutMs('o4-mini'), REASONING_PROMPT_TIMEOUT_MS);
+    assert.ok(REASONING_PROMPT_TIMEOUT_MS < 60_000, 'route maxDuration (60 sn) altında');
+  });
+
+  it('prompt uçları Node çalışma zamanında, maxDuration 60', () => {
+    for (const r of ['start', 'answer', 'refine']) {
+      const src = readFileSync(`app/api/prompt/${r}/route.ts`, 'utf8');
+      assert.match(src, /export const runtime = "nodejs";/, r);
+      assert.match(src, /export const maxDuration = 60;/, r);
+    }
   });
 });

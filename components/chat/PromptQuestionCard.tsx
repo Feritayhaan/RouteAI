@@ -65,7 +65,7 @@ export default function PromptQuestionCard({ card }: { card: Card }) {
                   value={isFree ? selected : ""}
                   onChange={(e) => setAnswers({ ...answers, [q.slotId]: e.target.value || "auto" })}
                   placeholder={dict.prompt.otherPlaceholder}
-                  maxLength={200}
+                  maxLength={300}
                   className="min-h-11 w-full rounded-xl border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </>

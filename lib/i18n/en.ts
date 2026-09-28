@@ -90,6 +90,8 @@ export const en = {
     settings: 'Settings',
     howToUse: 'How to use',
     draft: 'Draft guide',
+    generic: 'General guide',
+    genericHint: 'No guide specific to this tool yet; written with the general guide for this kind of tool.',
     variants: 'Prompt variants',
     safe: 'Safe',
     creative: 'Creative',

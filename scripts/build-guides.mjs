@@ -14,6 +14,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYamlSubset, splitFrontmatter, splitSections } from '../lib/promptBuilder/yaml.ts';
 import { GUIDE_SECTIONS, guideRuleErrors, guideSchema } from '../lib/promptBuilder/guideSchema.ts';
+import { FALLBACK_BY_MODALITY, FALLBACK_BY_TASK, resolveGuideId } from '../lib/promptBuilder/fallback.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = path.join(ROOT, 'data/prompt-guides');
@@ -71,6 +72,13 @@ for (const p of products) {
   }
 }
 
+// Genel rehber haritası (lib/promptBuilder/fallback.ts) var olan rehberlere işaret etmeli.
+for (const [key, id] of [...Object.entries(FALLBACK_BY_MODALITY), ...Object.entries(FALLBACK_BY_TASK)]) {
+  if (!guideIds.has(id)) errors.push(`fallback.ts ${key}: rehber "${id}" yok`);
+}
+const tasks = JSON.parse(readFileSync(path.join(ROOT, 'data/tasks.json'), 'utf8'));
+const tasksById = new Map(tasks.map((t) => [t.id, t]));
+
 for (const w of warnings) console.log(`UYARI: ${w}`);
 for (const e of errors) console.log(`HATA: ${e}`);
 if (errors.length > 0) {
@@ -81,12 +89,13 @@ writeFileSync(path.join(ROOT, 'data/prompt-guides.json'), `${JSON.stringify(guid
 console.log(`[build-guides] ${guides.length} rehber -> data/prompt-guides.json (${guides.filter((g) => !g.reviewedBy).length} taslak)`);
 
 // Navigasyon arayüzünün prompt kutusu için küçük harita: araç adı -> ürün id
-// (sadece rehberi olan aktif ürünler; tarayıcıya tüm katalog gitmesin).
+// (özel ya da genel rehberi olan aktif ürünler; tarayıcıya tüm katalog gitmesin).
 const promptProducts = Object.fromEntries(
   products
-    .filter((p) => p.status === 'active' && p.promptGuide && guideIds.has(p.promptGuide))
+    .filter((p) => p.status === 'active' && guideIds.has(resolveGuideId(p, tasksById)?.guideId))
     .map((p) => [p.name, p.id])
     .sort(([a], [b]) => a.localeCompare(b, 'en'))
 );
 writeFileSync(path.join(ROOT, 'data/prompt-products.json'), `${JSON.stringify(promptProducts, null, 2)}\n`);
-console.log(`[build-guides] ${Object.keys(promptProducts).length} ürün -> data/prompt-products.json`);
+const genericCount = products.filter((p) => p.name in promptProducts && !p.promptGuide).length;
+console.log(`[build-guides] ${Object.keys(promptProducts).length} ürün -> data/prompt-products.json (${genericCount} genel rehberle)`);

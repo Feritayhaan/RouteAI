@@ -7,7 +7,8 @@ Ferit'in lansmandan önce işaretleyeceği maddeler. Kodda hazır olan kısım y
 - [ ] Vercel (Production + Preview) ortam değişkenleri, `.env.local.example` ile birebir:
   - [ ] `OPENAI_API_KEY`
   - [ ] `OPENAI_MODEL` (boşsa `gpt-4o-mini`)
-  - [ ] `OPENAI_PROMPT_MODEL` (boşsa `OPENAI_MODEL`)
+  - [ ] `OPENAI_PROMPT_MODEL` (boşsa `OPENAI_MODEL`; düşünen model olabilir)
+  - [ ] `OPENAI_PROMPT_REASONING_EFFORT` (sadece düşünen modelde; boşsa `low`)
   - [ ] `OPENAI_MONTHLY_TOKEN_BUDGET` (boş = sınırsız; lansmanda boş bırakma)
   - [ ] `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN` (Vercel KV entegrasyonu `KV_URL` ve `REDIS_URL`'i de ekler)
   - [ ] `ADMIN_SECRET` (uzun, rastgele)

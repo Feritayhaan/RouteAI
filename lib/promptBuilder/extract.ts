@@ -106,7 +106,7 @@ questions: for EVERY slot with impact "high" that you return as null or with con
 - question: short (max 12 words), in ${userLanguage}, about THIS goal (e.g. for a bakery logo ask about the logo's style, not generic image topics). Never ask about something the user already said.
 - options: 2-4 clearly different answers that make sense for this goal. label: max 5 words in ${userLanguage}. value: the phrase that goes into the prompt, in ${promptLanguage}, max 12 words.
 - The slot's example options are only hints; adapt them to the goal.
-- Do not add "you choose" or "other" options (the UI has them). No real people, brands or copyrighted characters.`;
+- Do not add "you choose" or "other" options (the UI has them). Keep the user's own names and brands; do not introduce real people or copyrighted characters.`;
   const user = JSON.stringify({
     goal,
     slots: slotSpec,
