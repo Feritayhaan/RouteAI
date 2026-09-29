@@ -13,13 +13,12 @@ import OutcomePrompt from "@/components/OutcomePrompt"
 import PromptPanel from "@/components/PromptPanel"
 import PricingToggle, { type PricingFilter } from "@/components/PricingToggle"
 import { getDictionary } from "@/lib/i18n"
-import { AUTO_TOOL, promptToolNames, resolvePromptTarget } from "@/lib/promptBuilder/products"
+import { AUTO_TOOL, promptProductId, resolvePromptTarget } from "@/lib/promptBuilder/products"
 import { apiResponseFromV3, type ApiResponse } from "@/lib/types"
 import type { RecommendV3Result } from "@/lib/recommendV3"
 import type { PromptCard as PromptCardData, PromptQuestionCard as PromptQuestionData } from "@/lib/agent/cards"
 
 const dict = getDictionary("tr")
-const PROMPT_TOOLS = promptToolNames()
 
 /** Prompt için aday araçlar: tek öneride ana araç, workflow'da adımların ana araçları. Netleştirme ve kanıtsız durumda öneri yok. */
 function recommendedTools(response: ApiResponse | null): string[] {
@@ -29,13 +28,21 @@ function recommendedTools(response: ApiResponse | null): string[] {
   return response.main ? [response.main.toolName] : []
 }
 
+/** Prompt kutusundaki "Başka araç için" düğmeleri: tek önerideki ana, alternatif ve doğrulanmamış araçlar (prompt yazılabilenler). */
+function promptChoices(response: ApiResponse | null): string[] {
+  if (!response || response.type === "workflow" || response.type === "clarify" || response.type === "no_evidence" || !response.main) return []
+  const names = [response.main, ...(response.alternatives ?? []), ...(response.unverified ?? [])].map((t) => t.toolName)
+  return [...new Set(names)].filter((name) => promptProductId(name))
+}
+
 export default function HomeClient() {
   const [query, setQuery] = useState("")
   const [pricingFilter, setPricingFilter] = useState<PricingFilter>("all")
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // Prompt oluşturucu: filtrenin solunda aç/kapa, sağında araç seçimi
+  // Prompt oluşturucu: filtrenin solunda aç/kapa. Araç: varsayılan önerilen
+  // araç; kart ya da prompt kutusundaki düğmeyle sonuçtaki başka bir araç.
   const [promptEnabled, setPromptEnabled] = useState(false)
   const [promptTool, setPromptTool] = useState(AUTO_TOOL)
   const [submitted, setSubmitted] = useState<{ query: string; n: number } | null>(null)
@@ -50,6 +57,7 @@ export default function HomeClient() {
     setIsLoading(true)
     setError(null)
     setResponse(null)
+    setPromptTool(AUTO_TOOL) // yeni sonuç: prompt yine önerilen araç için
     setSubmitted((prev) => ({ query: prompt, n: (prev?.n ?? 0) + 1 }))
 
     try {
@@ -168,16 +176,23 @@ export default function HomeClient() {
   // Check if response is a workflow
   const isWorkflow = response?.type === 'workflow'
 
-  // Prompt: "Bana Yol Göster" sonrası, açıksa önerinin altında aynı ekranda.
-  // Araç 'Önerilen araç' ise sonucu bekler; belirli bir araç seçildiyse sonuçtan bağımsız.
-  // İş akışında 'Önerilen araç' seçiliyse prompt adımın içinde açılır (WorkflowDisplay).
-  const stepPrompts = isWorkflow && promptTool === AUTO_TOOL
+  // Prompt: "Bana Yol Göster" sonrası, açıksa önerinin altında aynı ekranda,
+  // önerilen araç için. Kartta ya da kutuda başka bir araç seçilirse o araç için.
+  // İş akışında prompt adımın içinde açılır (WorkflowDisplay, adım başına düğme).
+  const stepPrompts = isWorkflow
   const promptTarget = promptEnabled && submitted && !isLoading && !stepPrompts
     ? resolvePromptTarget(promptTool, recommendedTools(response))
     : null
   const promptKey = promptTarget && submitted
     ? `${"productId" in promptTarget ? promptTarget.productId : promptTarget.missing}|${submitted.query}|${submitted.n}`
     : ""
+
+  /** Kart ya da prompt kutusundaki düğme: prompt o araç için yazılır, kutuya kaydırılır. */
+  const choosePromptTool = (toolName: string) => {
+    setPromptTool(toolName)
+    setPromptEnabled(true)
+    setTimeout(() => document.getElementById("prompt-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50)
+  }
 
   return (
     <>
@@ -249,35 +264,19 @@ export default function HomeClient() {
               </div>
             </div>
 
-            {/* Filtre satırı: solda prompt aç/kapa, ortada fiyat düğmesi, sağda prompt aracı */}
-            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 md:gap-3">
+            {/* Filtre satırı: iki eşit, tam genişlik düğme — prompt aç/kapa ve fiyat */}
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
               <button
                 type="button"
                 onClick={() => setPromptEnabled((v) => !v)}
                 aria-pressed={promptEnabled}
-                className={`inline-flex h-11 md:h-12 items-center gap-1.5 rounded-2xl border px-2.5 sm:px-3 md:px-4 text-xs md:text-sm font-medium shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 dark:bg-card border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
+                className={`inline-flex h-11 md:h-12 w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl border px-3 text-xs md:text-sm font-medium shadow-lg transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 dark:bg-card border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
               >
-                <Wand2 className="w-4 h-4" aria-hidden />
-                {dict.prompt.toggle}
+                <Wand2 className="w-4 h-4 shrink-0" aria-hidden />
+                <span className="truncate">{dict.prompt.toggle}</span>
               </button>
 
-              <PricingToggle value={pricingFilter} onChange={setPricingFilter} />
-
-              <select
-                value={promptTool}
-                onChange={(e) => {
-                  setPromptTool(e.target.value)
-                  setPromptEnabled(true)
-                }}
-                aria-label={dict.prompt.toolLabel}
-                title={dict.prompt.toolLabel}
-                className={`h-11 md:h-12 w-[128px] sm:w-[160px] md:w-[190px] truncate rounded-2xl border border-border/50 bg-card/80 dark:bg-card px-2.5 sm:px-3 text-xs md:text-sm font-medium shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "text-foreground" : "text-muted-foreground"}`}
-              >
-                <option value={AUTO_TOOL}>{dict.prompt.toolAuto}</option>
-                {PROMPT_TOOLS.map((name) => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
+              <PricingToggle value={pricingFilter} onChange={setPricingFilter} wide />
             </div>
 
             <Button
@@ -326,19 +325,24 @@ export default function HomeClient() {
                 key={`${submitted?.query ?? query}-${response.main.toolName}`}
                 recommendation={response}
                 query={submitted?.query ?? query}
+                onPrompt={choosePromptTool}
               />
             )
           )}
 
           {/* Prompt (aynı ekranda, önerinin altında) */}
           {promptTarget && submitted && (
-            <PromptPanel
-              key={promptKey}
-              target={promptTarget}
-              goal={submitted.query}
-              cached={promptCache.get(promptKey)}
-              onResult={(card) => promptCache.set(promptKey, card)}
-            />
+            <div id="prompt-panel" className="scroll-mt-20">
+              <PromptPanel
+                key={promptKey}
+                target={promptTarget}
+                goal={submitted.query}
+                cached={promptCache.get(promptKey)}
+                onResult={(card) => promptCache.set(promptKey, card)}
+                choices={promptChoices(response)}
+                onChoose={choosePromptTool}
+              />
+            </div>
           )}
 
           <p className="text-center text-xs text-muted-foreground/80">

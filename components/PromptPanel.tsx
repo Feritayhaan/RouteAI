@@ -4,6 +4,8 @@
 // /api/prompt/start'a bir kez gider; hedef ya da amaç değişince üst bileşen
 // key ile yeniden kurar. Aynı hedef + amaç için önceki sonuç (cached) varsa
 // yeniden üretmez. Soru kartı ve prompt kartı mevcut bileşenlerle çizilir.
+// `choices`: sonuçtaki diğer araçlar; başlığın altında düğme olarak gösterilir,
+// tıklanınca prompt o araç için yazılır (eski "Prompt aracı" listesinin yerine).
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Loader2, Wand2 } from "lucide-react"
@@ -21,12 +23,15 @@ const box = "rounded-2xl border border-border/50 bg-card p-4 md:p-6 shadow-lg"
 type Card = PromptCardData | PromptQuestionData
 type State = { status: "loading" } | { status: "error" } | { status: "done"; card: Card }
 
-export default function PromptPanel({ target, goal, locale = "tr", cached, onResult }: {
+export default function PromptPanel({ target, goal, locale = "tr", cached, onResult, choices = [], onChoose }: {
   target: PromptTarget
   goal: string
   locale?: Locale
   cached?: Card
   onResult?: (card: Card) => void
+  /** Prompt yazılabilecek diğer araç adları (sonuçtaki sırayla). */
+  choices?: string[]
+  onChoose?: (toolName: string) => void
 }) {
   const dict = getDictionary(locale)
   const productId = "productId" in target ? target.productId : null
@@ -74,6 +79,24 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
         <Wand2 className="w-4 h-4 text-primary" aria-hidden />
         {format(dict.prompt.panelTitle, { product: toolName })}
       </div>
+
+      {onChoose && choices.length > 1 && (
+        <div className="flex flex-wrap items-center gap-1.5 px-1">
+          <span className="text-xs text-muted-foreground">{dict.prompt.switchTool}</span>
+          {choices.map((name) => (
+            <button
+              key={name}
+              type="button"
+              aria-pressed={name === toolName}
+              disabled={name === toolName}
+              onClick={() => onChoose(name)}
+              className="min-h-9 rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground border-border bg-card hover:bg-muted"
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {!productId ? (
         <div className={box}>

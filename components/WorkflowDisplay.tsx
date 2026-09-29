@@ -23,7 +23,7 @@ export default function WorkflowDisplay({ workflow, goal, locale = "tr", autoPro
   /** Kullanıcının ilk girişi: adım promptlarının amacı. */
   goal: string
   locale?: Locale
-  /** "Prompt da yaz" açık ve araç "Önerilen araç": rehberi olan ilk adımın promptu açılır. */
+  /** "Prompt da yaz" açık: prompt yazılabilen ilk adımın promptu açılır. */
   autoPrompt?: boolean
 }) {
   const dict = getDictionary(locale)

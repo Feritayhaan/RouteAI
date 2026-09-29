@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
+import { AlertTriangle, ExternalLink, Rocket, Wand2 } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
 import { displayPriceLabel } from "@/lib/pricing"
 import { format, getDictionary } from "@/lib/i18n"
@@ -13,6 +13,7 @@ import { onToolOpen } from "./toolOpen"
 import { trackEvent } from "@/lib/analytics/client"
 import { getSessionId } from "@/lib/chat/session"
 import { SOURCES } from "@/lib/catalog/sources"
+import { promptProductId } from "@/lib/promptBuilder/products"
 import type { CurrentModel } from "@/lib/catalog/currentModel"
 
 const dict = getDictionary("tr")
@@ -42,9 +43,12 @@ const RELAXED_NOTE: Record<string, string> = {
 export default function SimpleRecommendationDisplay({
   recommendation,
   query,
+  onPrompt,
 }: {
   recommendation: SimpleRecommendation
   query: string
+  /** "Prompt yaz": ana araç için prompt kutusunu açar (HomeClient). */
+  onPrompt?: (toolName: string) => void
 }) {
   const { main, taskId } = recommendation
   const editor = main.basis === "editor"
@@ -107,16 +111,28 @@ export default function SimpleRecommendationDisplay({
               </div>
             </div>
 
-            <a
-              href={main.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => onToolOpen(main, taskId)}
-              className="self-start flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
-            >
-              <ExternalLink className="w-4 h-4" />
-              <span>Araca Git</span>
-            </a>
+            <div className="self-start flex flex-wrap gap-2">
+              <a
+                href={main.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => onToolOpen(main, taskId)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Araca Git</span>
+              </a>
+              {onPrompt && promptProductId(main.toolName) && (
+                <button
+                  type="button"
+                  onClick={() => onPrompt(main.toolName)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-medium transition-all text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Wand2 className="w-4 h-4" aria-hidden />
+                  <span>{dict.prompt.forTool}</span>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="space-y-3 md:space-y-4">

@@ -1,8 +1,9 @@
 "use client"
 
-// Fiyat filtresi: tek küçük düğme (tema düğmesiyle aynı görünüm). Her
-// tıklamada sırayla: tümü -> ücretsiz -> ücretli -> tümü. Filtre açıkken
-// (ücretsiz/ücretli) düğme vurgulu olur; adı üzerine gelince görünür.
+// Fiyat filtresi: tek düğme. Her tıklamada sırayla: tümü -> ücretsiz ->
+// ücretli -> tümü. Filtre açıkken (ücretsiz/ücretli) düğme vurgulu olur.
+// `wide`: ana sayfadaki filtre satırı, ikon + görünür kısa ad, tam genişlik.
+// Yoksa küçük ikon düğmesi (tema düğmesiyle aynı), adı üzerine gelince görünür.
 
 import { CircleDollarSign, CreditCard, Gift } from "lucide-react"
 
@@ -10,16 +11,29 @@ export type PricingFilter = "all" | "free" | "paid"
 
 const NEXT: Record<PricingFilter, PricingFilter> = { all: "free", free: "paid", paid: "all" }
 
-const STATES: Record<PricingFilter, { label: string; Icon: typeof Gift }> = {
-  all: { label: "Tümü (ücretli + ücretsiz)", Icon: CircleDollarSign },
+const STATES: Record<PricingFilter, { label: string; short: string; Icon: typeof Gift }> = {
+  all: { label: "Tümü (ücretli + ücretsiz)", short: "Tüm fiyatlar", Icon: CircleDollarSign },
   // Ücretsiz planı olanlar (tamamen ücretsiz + freemium); "sadece ücretsiz" yazıyordu ama $20/ay araçlar da çıkıyordu.
-  free: { label: "Ücretsiz planı olanlar", Icon: Gift },
-  paid: { label: "Sadece ücretli", Icon: CreditCard },
+  free: { label: "Ücretsiz planı olanlar", short: "Ücretsiz planı olan", Icon: Gift },
+  paid: { label: "Sadece ücretli", short: "Sadece ücretli", Icon: CreditCard },
 }
 
-export default function PricingToggle({ value, onChange }: { value: PricingFilter; onChange: (v: PricingFilter) => void }) {
-  const { label, Icon } = STATES[value]
+export default function PricingToggle({ value, onChange, wide = false }: { value: PricingFilter; onChange: (v: PricingFilter) => void; wide?: boolean }) {
+  const { label, short, Icon } = STATES[value]
   const active = value !== "all"
+  if (wide) {
+    return (
+      <button
+        type="button"
+        onClick={() => onChange(NEXT[value])}
+        aria-label={`Fiyat: ${label}`}
+        className={`inline-flex h-11 md:h-12 w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl border px-3 text-xs md:text-sm font-medium shadow-lg transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${active ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 dark:bg-card border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
+      >
+        <Icon className="w-4 h-4 shrink-0" aria-hidden />
+        <span className="truncate">{short}</span>
+      </button>
+    )
+  }
   return (
     <button
       type="button"

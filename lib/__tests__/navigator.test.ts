@@ -4,7 +4,7 @@ import toolsDatabase from '../tools-database.json';
 import productsJson from '../../data/products.json';
 import guidesJson from '../../data/prompt-guides.json';
 import promptProductsJson from '../../data/prompt-products.json';
-import { AUTO_TOOL, promptProductId, promptToolNames, resolvePromptTarget } from '../promptBuilder/products';
+import { AUTO_TOOL, promptProductId, resolvePromptTarget } from '../promptBuilder/products';
 import { promptStartSchema } from '../validations/prompt';
 import { withCatalog } from '../catalog/navigator';
 import tasksJson from '../../data/tasks.json';
@@ -69,13 +69,7 @@ describe('/api/prompt/start doğrulaması', () => {
   });
 });
 
-describe('prompt aracı seçimi (filtrenin sağındaki liste)', () => {
-  it('liste rehberi olan araçlar, alfabetik', () => {
-    const names = promptToolNames();
-    assert.deepEqual([...names].sort((a, b) => a.localeCompare(b, 'tr')), names);
-    assert.deepEqual([...names].sort(), Object.keys(promptProductsJson).sort());
-  });
-
+describe('prompt aracı seçimi (kart ve prompt kutusundaki düğmeler)', () => {
   it('belirli araç seçilince sonuçtan bağımsız o araç', () => {
     assert.deepEqual(resolvePromptTarget('Midjourney', []), { productId: 'midjourney-v7', toolName: 'Midjourney' });
     assert.deepEqual(resolvePromptTarget('Midjourney', ['Suno AI']), { productId: 'midjourney-v7', toolName: 'Midjourney' });
@@ -83,7 +77,7 @@ describe('prompt aracı seçimi (filtrenin sağındaki liste)', () => {
     assert.equal(resolvePromptTarget('Olmayan Araç', []), null);
   });
 
-  it("'Önerilen araç': rehberi olan ilk önerilen araç; yoksa ilk araç eksik olarak", () => {
+  it("varsayılan (auto): rehberi olan ilk önerilen araç; yoksa ilk araç eksik olarak", () => {
     assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['Jasper AI', 'Suno AI']), { productId: 'jasper-ai', toolName: 'Jasper AI' });
     assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['Olmayan Araç', 'Suno AI']), { productId: 'suno-ai', toolName: 'Suno AI' });
     assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['ClickUp Brain (Project AI)', 'Olmayan Araç']), { missing: 'ClickUp Brain (Project AI)' });
