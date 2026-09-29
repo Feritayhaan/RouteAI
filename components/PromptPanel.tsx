@@ -18,7 +18,7 @@ import PromptCard from "@/components/chat/PromptCard"
 import PromptQuestionCard from "@/components/chat/PromptQuestionCard"
 
 const noop = () => {}
-const box = "rounded-2xl border border-border/50 bg-card p-4 md:p-6 shadow-lg"
+const box = "glass rounded-2xl p-4 md:p-6"
 
 type Card = PromptCardData | PromptQuestionData
 type State = { status: "loading" } | { status: "error" } | { status: "done"; card: Card }
@@ -90,7 +90,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
               aria-pressed={name === toolName}
               disabled={name === toolName}
               onClick={() => onChoose(name)}
-              className="min-h-9 rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground border-border bg-card hover:bg-muted"
+              className="glass-control min-h-9 rounded-full px-3 py-1 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:glass-cta"
             >
               {name}
             </button>
@@ -118,7 +118,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
           <button
             type="button"
             onClick={retry}
-            className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="glass-control rounded-xl px-3 py-1.5 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {dict.chat.retry}
           </button>

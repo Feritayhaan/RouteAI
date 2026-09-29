@@ -27,13 +27,13 @@ export default function ComparisonCard({ taskId, a, b, onDone }: { taskId: strin
   }
 
   if (sent) {
-    return <p role="status" className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm">{dict.comparison.thanks}</p>
+    return <p role="status" className="glass rounded-2xl border-emerald-500/40 p-4 text-sm">{dict.comparison.thanks}</p>
   }
 
   const question = format(dict.comparison.question, { a: a.productName, b: b.productName })
-  const btn = "min-h-11 rounded-xl border border-border bg-card px-4 text-sm font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+  const btn = "glass-control min-h-11 rounded-2xl px-4 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
   return (
-    <fieldset className="space-y-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+    <fieldset className="glass space-y-3 rounded-2xl p-4">
       <legend className="sr-only">{question}</legend>
       <p className="font-semibold" aria-hidden>{question}</p>
       <div className="flex flex-wrap gap-2">

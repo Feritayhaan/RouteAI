@@ -21,7 +21,7 @@ export default function ClarifyDisplay({ clarify, dict, onSelect, disabled = fal
 
   return (
     <section className="animate-in fade-in slide-in-from-bottom-8 duration-700" aria-labelledby="clarify-title">
-      <div className="relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-6 space-y-4 shadow-2xl">
+      <div className="glass-strong relative rounded-2xl p-4 md:p-6 space-y-4">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center">
             <HelpCircle className="w-5 h-5 text-primary" aria-hidden />
@@ -38,7 +38,7 @@ export default function ClarifyDisplay({ clarify, dict, onSelect, disabled = fal
               type="button"
               disabled={disabled}
               onClick={() => onSelect(o.taskId)}
-              className="min-h-11 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary break-words hover:bg-primary/10 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="glass-control min-h-11 rounded-2xl px-3 py-2 text-sm font-semibold text-primary break-words disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {o.label}
             </button>

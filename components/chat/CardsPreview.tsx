@@ -119,7 +119,7 @@ export default function CardsPreview({ locale }: { locale: Locale }) {
     <ChatContext.Provider value={{ locale, dict, sessionId: "preview-session", onToolOpen: () => {}, onPromptCopied: () => {}, send: () => {}, busy: false }}>
       <Tooltip.Provider>
         <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6">
-          <p className="rounded-xl border border-dashed border-amber-500 p-3 text-sm font-semibold text-amber-700 dark:text-amber-300">
+          <p className="rounded-xl border border-dashed border-amber-500 p-3 text-sm font-semibold text-amber-900 dark:text-amber-300">
             DEV PREVIEW — {locale === "tr" ? "ÖRNEK VERİ, gerçek ürün ya da puan değil" : "SAMPLE DATA, not real products or scores"}
           </p>
           {messages.map((m, i) => (

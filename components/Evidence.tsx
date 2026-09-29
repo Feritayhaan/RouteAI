@@ -14,7 +14,7 @@ import type { Confidence, RecommendationTool } from "@/lib/types"
 
 const STYLE: Record<Confidence, string> = {
   high: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-  medium: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
+  medium: "bg-amber-500/15 text-amber-900 dark:text-amber-300 border-amber-500/30",
   low: "bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30",
 }
 const ICON = { high: ShieldCheck, medium: ShieldAlert, low: ShieldQuestion }
@@ -39,7 +39,7 @@ export function ConfidenceBadge({ confidence, dict }: { confidence: Confidence; 
           <Tooltip.Content
             side="top"
             sideOffset={6}
-            className="z-50 max-w-64 rounded-lg border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-lg"
+            className="z-50 max-w-64 rounded-xl border border-border bg-popover/90 px-3 py-2 text-xs text-popover-foreground shadow-lg backdrop-blur-xl"
           >
             {dict.rec.confidenceHint[confidence]}
             <Tooltip.Arrow className="fill-popover" />
@@ -104,7 +104,7 @@ export function ReasonsBox({ tool, dict, locale = "tr" }: { tool: Recommendation
     .slice(0, 4)
 
   return (
-    <div className="mt-3 space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+    <div className="glass-subtle mt-3 space-y-2 rounded-2xl p-3">
       <p className="text-xs font-semibold text-primary">{dict.rec.why}</p>
       {reasons.length > 0 && (
         <ul className="space-y-1 text-xs md:text-sm text-muted-foreground">
@@ -140,7 +140,7 @@ export function EditorPickBadge({ dict }: { dict: Dictionary }) {
           <Tooltip.Content
             side="top"
             sideOffset={6}
-            className="z-50 max-w-64 rounded-lg border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-lg"
+            className="z-50 max-w-64 rounded-xl border border-border bg-popover/90 px-3 py-2 text-xs text-popover-foreground shadow-lg backdrop-blur-xl"
           >
             {dict.v3.editorPickHint}
             <Tooltip.Arrow className="fill-popover" />
@@ -155,7 +155,7 @@ export function EditorPickBadge({ dict }: { dict: Dictionary }) {
 export function EditorReasonsBox({ tool, dict, locale = "tr" }: { tool: RecommendationTool; dict: Dictionary; locale?: string }) {
   const [before, after] = (tool.dataDate ? dict.rec.data : dict.rec.dataNoDate).split("{sources}")
   return (
-    <div className="mt-3 space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+    <div className="glass-subtle mt-3 space-y-2 rounded-2xl p-3">
       <p className="text-xs font-semibold text-primary">{dict.rec.why}</p>
       <ul className="space-y-1 text-xs md:text-sm text-muted-foreground">
         {tool.editorNote && (

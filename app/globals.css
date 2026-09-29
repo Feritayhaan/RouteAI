@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Glassmorphism tasarım sistemi.
+ *
+ * Katmanlar (arkadan öne):
+ *   1. Aurora: body::before, sabit, renkli bulanık ışık lekeleri. Cam ancak
+ *      arkasında renk varken cam görünür; bu yüzden arka plan düz değil.
+ *   2. .glass-strong / .glass: ana yüzeyler (sonuç kartı, paneller, pencere).
+ *   3. .glass-control: düğme, hap, seçici. .glass-input: yazı alanı.
+ *   4. .glass-subtle: cam yüzeyin İÇİNDEKİ kutular. backdrop-filter YOK
+ *      (iç içe bulanıklık hem yavaş hem bulanık görünür).
+ *   5. .glass-cta: ana eylem düğmesi (gradyan + parıltı).
+ *
+ * Renk değerleri tek yerde, aşağıdaki --glass-* ve --aurora-* değişkenlerinde.
+ * Okunabilirlik: metin renkleri (--foreground, --muted-foreground) cam ve
+ * aurora üzerinde ölçüldü (docs/screenshots/glass-*); cam opaklığını
+ * düşürürken bunları yeniden ölç.
+ * Yedekler (dosyanın sonu): backdrop-filter yoksa, "saydamlığı azalt" açıksa
+ * ve zorlanmış renklerde yüzeyler opak olur.
+ */
+
 @layer base {
   :root {
     --background: 210 20% 98%;
@@ -24,6 +44,35 @@
     --destructive-foreground: 0 0% 98%;
     --ring: 222 29% 22%;
     --radius: 0.85rem;
+
+    /* Cam yüzeyler (açık tema): beyaz, yarı saydam */
+    --glass-bg: rgba(255, 255, 255, 0.58);
+    --glass-bg-strong: rgba(255, 255, 255, 0.72);
+    --glass-bg-control: rgba(255, 255, 255, 0.5);
+    --glass-bg-control-hover: rgba(255, 255, 255, 0.72);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.42);
+    --glass-border: rgba(255, 255, 255, 0.75);
+    --glass-border-subtle: rgba(15, 23, 42, 0.09);
+    --glass-sheen: rgba(255, 255, 255, 0.55);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(15, 23, 42, 0.04);
+    --glass-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.2), 0 2px 8px -2px rgba(15, 23, 42, 0.08);
+    --glass-blur: 22px;
+    --glass-blur-strong: 30px;
+    --glass-blur-control: 14px;
+    --glass-glow: 0 0 0 4px rgba(51, 65, 85, 0.2);
+
+    /* Ana eylem düğmesi */
+    --cta-from: #334155;
+    --cta-to: #0f172a;
+    --cta-foreground: #f8fafc;
+    --cta-shadow: 0 10px 28px -10px rgba(15, 23, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+
+    /* Aurora (açık tema): pastel */
+    --aurora-base: #edf0f6;
+    --aurora-1: rgba(100, 116, 139, 0.2);
+    --aurora-2: rgba(148, 163, 184, 0.32);
+    --aurora-3: rgba(59, 130, 246, 0.12);
+    --aurora-4: rgba(71, 85, 105, 0.15);
   }
 
   .dark {
@@ -46,30 +95,214 @@
     --destructive: 356 65% 54%;
     --destructive-foreground: 210 40% 98%;
     --ring: 220 15% 70%;
+
+    /* Koyu temada cam beyazla değil LACİVERTLE tonlanır: beyaz katmanlar üst üste
+       binip parlak ışık lekelerinin üstünde yüzeyi açıyor, açık renkli yazı (2:1) okunmuyordu. */
+    --glass-bg: rgba(13, 17, 36, 0.62);
+    --glass-bg-strong: rgba(11, 15, 32, 0.72);
+    --glass-bg-control: rgba(30, 36, 72, 0.55);
+    --glass-bg-control-hover: rgba(52, 60, 110, 0.68);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.035);
+    --glass-border: rgba(255, 255, 255, 0.17);
+    --glass-border-subtle: rgba(255, 255, 255, 0.1);
+    --glass-sheen: rgba(255, 255, 255, 0.09);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+    --glass-shadow: 0 14px 48px -10px rgba(0, 0, 0, 0.6), 0 2px 10px -2px rgba(0, 0, 0, 0.35);
+    --glass-glow: 0 0 0 4px rgba(148, 163, 184, 0.28);
+
+    --cta-from: #f8fafc;
+    --cta-to: #cbd5e1;
+    --cta-foreground: #0f172a;
+    --cta-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+    --aurora-base: #0d111b;
+    --aurora-1: rgba(59, 130, 246, 0.22);
+    --aurora-2: rgba(139, 92, 246, 0.16);
+    --aurora-3: rgba(148, 163, 184, 0.1);
+    --aurora-4: rgba(236, 72, 153, 0.09);
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    background-color: var(--aurora-base);
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     font-family: var(--font-sans), ui-sans-serif, system-ui;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-image: radial-gradient(circle at 12% 20%, rgba(15, 23, 42, 0.06), transparent 55%),
-      radial-gradient(circle at 80% 0%, rgba(148, 163, 184, 0.12), transparent 60%);
-    background-attachment: fixed;
+    background-color: transparent;
     min-height: 100vh;
   }
 
-  .dark body {
-    background-image: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.08), transparent 50%),
-      radial-gradient(circle at 80% 10%, rgba(139, 92, 246, 0.06), transparent 50%),
-      radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.05), transparent 45%);
+  /* Aurora: sabit, sayfayla kaymaz; iOS'ta background-attachment: fixed olmadığı için pseudo-eleman. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(48rem 36rem at 8% -6%, var(--aurora-1), transparent 62%),
+      radial-gradient(42rem 34rem at 96% 2%, var(--aurora-2), transparent 62%),
+      radial-gradient(46rem 38rem at 88% 104%, var(--aurora-3), transparent 62%),
+      radial-gradient(40rem 32rem at -4% 92%, var(--aurora-4), transparent 62%),
+      var(--aurora-base);
   }
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.25);
+    background-color: hsl(var(--primary) / 0.28);
     color: hsl(var(--foreground));
+  }
+}
+
+@layer components {
+  /* Ana yüzey: paneller, kartlar */
+  .glass {
+    background-color: var(--glass-bg);
+    background-image: linear-gradient(135deg, var(--glass-sheen) 0%, transparent 42%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight), var(--glass-shadow);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  }
+
+  /* Öne çıkan yüzey: sonuç kartı, karşılama penceresi */
+  .glass-strong {
+    background-color: var(--glass-bg-strong);
+    background-image: linear-gradient(135deg, var(--glass-sheen) 0%, transparent 46%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight), var(--glass-shadow);
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(170%);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(170%);
+  }
+
+  /* Cam yüzeyin içindeki kutular: bulanıklık yok, sadece hafif dolgu */
+  .glass-subtle {
+    background-color: var(--glass-bg-subtle);
+    border: 1px solid var(--glass-border-subtle);
+    box-shadow: inset 0 1px 0 var(--glass-sheen);
+  }
+
+  /* Düğme, hap, seçici */
+  .glass-control {
+    background-color: var(--glass-bg-control);
+    background-image: linear-gradient(180deg, var(--glass-sheen) 0%, transparent 70%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight), 0 4px 16px -6px rgba(15, 23, 42, 0.22);
+    -webkit-backdrop-filter: blur(var(--glass-blur-control)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur-control)) saturate(150%);
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .glass-control:hover:not(:disabled) {
+    background-color: var(--glass-bg-control-hover);
+  }
+  .glass-control:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  /* Yazı alanının kabı: odakta parıltı */
+  .glass-input {
+    background-color: var(--glass-bg-strong);
+    background-image: linear-gradient(135deg, var(--glass-sheen) 0%, transparent 40%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight), var(--glass-shadow);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .glass-input:focus-within {
+    border-color: hsl(var(--primary) / 0.6);
+    box-shadow: var(--glass-highlight), var(--glass-shadow), var(--glass-glow);
+  }
+
+  /* Ana eylem: gradyan dolgu, iç parlaklık, renkli gölge */
+  .glass-cta {
+    color: var(--cta-foreground);
+    background-image: linear-gradient(135deg, var(--cta-from), var(--cta-to));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: var(--cta-shadow);
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .glass-cta:hover:not(:disabled) {
+    filter: brightness(1.08) saturate(1.05);
+  }
+  .glass-cta:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  /* Cam üstünde küçük etiket (rozet, hap) */
+  .glass-chip {
+    background-color: var(--glass-bg-subtle);
+    border: 1px solid var(--glass-border-subtle);
+    box-shadow: inset 0 1px 0 var(--glass-sheen);
+  }
+}
+
+/* Yedekler: yüzeyler opak. Aynı değişkenler yeniden atanır; sınıflar değişmez. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.94);
+    --glass-bg-strong: rgba(255, 255, 255, 0.97);
+    --glass-bg-control: rgba(255, 255, 255, 0.92);
+    --glass-bg-control-hover: rgba(255, 255, 255, 1);
+    --glass-bg-subtle: rgba(238, 241, 255, 0.9);
+  }
+  .dark {
+    --glass-bg: rgba(24, 28, 52, 0.95);
+    --glass-bg-strong: rgba(28, 33, 60, 0.97);
+    --glass-bg-control: rgba(34, 40, 70, 0.95);
+    --glass-bg-control-hover: rgba(48, 56, 92, 1);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.94);
+    --glass-bg-strong: rgba(255, 255, 255, 0.97);
+    --glass-bg-control: rgba(255, 255, 255, 0.92);
+    --glass-bg-control-hover: rgba(255, 255, 255, 1);
+    --glass-bg-subtle: rgba(238, 241, 255, 0.9);
+    --glass-blur: 0px;
+    --glass-blur-strong: 0px;
+    --glass-blur-control: 0px;
+  }
+  .dark {
+    --glass-bg: rgba(24, 28, 52, 0.95);
+    --glass-bg-strong: rgba(28, 33, 60, 0.97);
+    --glass-bg-control: rgba(34, 40, 70, 0.95);
+    --glass-bg-control-hover: rgba(48, 56, 92, 1);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.06);
+    --glass-blur: 0px;
+    --glass-blur-strong: 0px;
+    --glass-blur-control: 0px;
+  }
+}
+
+@media (forced-colors: active) {
+  .glass,
+  .glass-strong,
+  .glass-subtle,
+  .glass-control,
+  .glass-input,
+  .glass-chip {
+    background: Canvas;
+    border-color: CanvasText;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .glass-cta {
+    background: ButtonFace;
+    color: ButtonText;
+    border-color: ButtonText;
+    box-shadow: none;
+  }
+  body::before {
+    display: none;
   }
 }

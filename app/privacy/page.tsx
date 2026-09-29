@@ -16,7 +16,7 @@ export default async function PrivacyPage({ searchParams }: Props) {
   const t = PRIVACY[locale]
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim()
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-6 px-4 py-10">
+    <main className="glass-strong mx-auto my-4 w-full max-w-2xl space-y-6 rounded-2xl px-5 py-8 md:my-10 md:px-8">
       <Link href="/" className="text-sm underline underline-offset-2">{t.back}</Link>
       <h1 className="text-3xl font-black">{t.title}</h1>
       <p>{t.intro}</p>

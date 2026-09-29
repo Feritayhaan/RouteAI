@@ -47,7 +47,7 @@ export default function WorkflowDisplay({ workflow, goal, locale = "tr", autoPro
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-primary/60 to-primary/40 rounded-3xl blur-lg opacity-40 dark:opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
 
-        <div className="relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-5 space-y-3 shadow-2xl">
+        <div className="glass-strong relative rounded-2xl p-4 md:p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center">
               <Workflow className="w-5 h-5 text-primary" aria-hidden />

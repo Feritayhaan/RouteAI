@@ -27,7 +27,7 @@ export function CopyPromptButton({ text, onCopied }: { text: string; onCopied?: 
     <button
       type="button"
       onClick={copy}
-      className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="glass-control inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       {copied ? <Check className="h-4 w-4 text-emerald-500" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
       <span role="status">{copied ? dict.prompt.copied : dict.prompt.copy}</span>
@@ -35,7 +35,7 @@ export function CopyPromptButton({ text, onCopied }: { text: string; onCopied?: 
   )
 }
 
-const chip = "min-h-11 rounded-xl border border-border bg-card px-3 text-sm hover:bg-muted disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+const chip = "glass-control min-h-11 rounded-2xl px-3 text-sm font-medium disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
 /**
  * Prompt kartı: varyant sekmeleri, varsayımlar (tıklayınca seçenekler),
@@ -95,16 +95,16 @@ export default function PromptCard({ card: initial }: { card: Card }) {
   const busy = loading || outOfRefinements
 
   return (
-    <div className="space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm" aria-busy={loading}>
+    <div className="glass space-y-4 rounded-2xl p-4" aria-busy={loading}>
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="mr-auto font-bold">{format(dict.prompt.title, { product: card.productName })}</h3>
         {card.genericGuide && (
-          <span title={dict.prompt.genericHint} className="rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+          <span title={dict.prompt.genericHint} className="glass-chip rounded-full px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
             {dict.prompt.generic}
           </span>
         )}
         {card.draft && (
-          <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+          <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-900 dark:text-amber-300">
             {dict.prompt.draft}
           </span>
         )}
@@ -122,7 +122,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
       </div>
 
       {card.variants.length > 1 && (
-        <div role="tablist" aria-label={dict.prompt.variants} className="inline-flex rounded-xl border border-border p-1">
+        <div role="tablist" aria-label={dict.prompt.variants} className="glass-subtle inline-flex rounded-2xl p-1">
           {(["safe", "creative"] as const).map((id) => (
             <button
               key={id}
@@ -134,7 +134,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
               tabIndex={variant === id ? 0 : -1}
               onClick={() => setVariant(id)}
               onKeyDown={onTabKey}
-              className="min-h-11 rounded-lg px-4 text-sm font-medium aria-selected:bg-primary aria-selected:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-11 rounded-xl px-4 text-sm font-semibold transition-colors aria-selected:glass-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {dict.prompt[id]}
             </button>
@@ -151,13 +151,13 @@ export default function PromptCard({ card: initial }: { card: Card }) {
             <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
           </div>
         ) : (
-          <pre className="max-h-80 overflow-auto whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 font-mono text-sm leading-relaxed">{current.prompt}</pre>
+          <pre className="glass-subtle max-h-80 overflow-auto whitespace-pre-wrap break-words rounded-2xl p-3 font-mono text-sm leading-relaxed">{current.prompt}</pre>
         )}
         {current.negativePrompt && (
           <p className="text-xs"><span className="font-semibold">{dict.prompt.negative}:</span> <span className="font-mono">{current.negativePrompt}</span></p>
         )}
         {current.validation.status === "unchecked" && (
-          <p className="text-xs text-amber-700 dark:text-amber-300">{format(dict.prompt.unchecked, { errors: current.validation.errors.join(" ") })}</p>
+          <p className="text-xs text-amber-900 dark:text-amber-300">{format(dict.prompt.unchecked, { errors: current.validation.errors.join(" ") })}</p>
         )}
         <div className="flex flex-wrap gap-2">
           <CopyPromptButton
@@ -168,7 +168,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
             }}
           />
           {card.productUrl && (
-            <a href={card.productUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <a href={card.productUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 glass-cta rounded-xl px-3 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
               <ExternalLink className="h-4 w-4" aria-hidden />
               {dict.rec.openTool}
             </a>
@@ -206,7 +206,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
           <p className="text-xs font-bold uppercase text-muted-foreground">{dict.prompt.assumptions}</p>
           <ul className="mt-1 space-y-2">
             {card.assumptions.map((a) => (
-              <li key={a.slotId} className="rounded-xl border border-border/70 p-2 text-sm">
+              <li key={a.slotId} className="glass-subtle rounded-2xl p-2 text-sm">
                 <button
                   type="button"
                   aria-expanded={openAssumption === a.slotId}
@@ -261,9 +261,9 @@ export default function PromptCard({ card: initial }: { card: Card }) {
             placeholder={dict.prompt.freeTextPlaceholder}
             maxLength={1000}
             disabled={busy}
-            className="min-h-11 min-w-0 flex-1 rounded-xl border border-border bg-background px-3 text-sm disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="glass-subtle min-h-11 min-w-0 flex-1 rounded-2xl px-3 text-sm placeholder:text-muted-foreground/70 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
-          <button type="submit" disabled={busy || instruction.trim().length < 2} className="min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <button type="submit" disabled={busy || instruction.trim().length < 2} className="glass-cta min-h-11 rounded-2xl px-4 text-sm font-semibold disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             {dict.prompt.apply}
           </button>
         </form>

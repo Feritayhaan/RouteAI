@@ -60,10 +60,8 @@ export default function ThemeToggle({ labels = DEFAULT_LABELS, inline = false }:
         <div className={inline ? "relative" : "fixed top-6 right-6 z-40 animate-in fade-in slide-in-from-top-4 duration-500"}>
             <button
                 onClick={cycleTheme}
-                className="group relative bg-card/80 backdrop-blur-lg border border-border/50 rounded-2xl shadow-2xl p-3 
-                           hover:bg-muted/80 hover:scale-105 active:scale-95
-                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-                           transition-all duration-300 ease-out"
+                className="glass-control group relative rounded-2xl p-3 text-foreground/80 hover:text-foreground hover:scale-105
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label={labels.label.replace("{name}", getLabel())}
             >
                 {/* İkon container - animasyonlu */}
@@ -75,7 +73,7 @@ export default function ThemeToggle({ labels = DEFAULT_LABELS, inline = false }:
 
                 {/* Tooltip */}
                 <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 
-                                 bg-popover border border-border rounded-lg text-xs font-medium 
+                                 glass-strong rounded-lg text-xs font-medium 
                                  text-popover-foreground whitespace-nowrap 
                                  opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100
                                  transition-all duration-200 pointer-events-none shadow-lg">

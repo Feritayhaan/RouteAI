@@ -41,12 +41,12 @@ export default function OutcomeCard({ click, onDone }: { click: ToolClick; onDon
   }
 
   if (sent) {
-    return <p role="status" className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm">{dict.outcome.thanks}</p>
+    return <p role="status" className="glass rounded-2xl border-emerald-500/40 p-4 text-sm">{dict.outcome.thanks}</p>
   }
 
-  const btn = "min-h-11 rounded-xl border border-border bg-card px-4 text-sm font-medium hover:bg-muted aria-pressed:border-primary aria-pressed:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+  const btn = "glass-control min-h-11 rounded-2xl px-4 text-sm font-semibold aria-pressed:border-primary aria-pressed:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
   return (
-    <fieldset className="space-y-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+    <fieldset className="glass space-y-3 rounded-2xl p-4">
       <legend className="sr-only">{format(dict.outcome.question, { product: click.productName })}</legend>
       <p className="font-semibold" aria-hidden>{format(dict.outcome.question, { product: click.productName })}</p>
       <div className="flex flex-wrap gap-2">
@@ -81,7 +81,7 @@ export default function OutcomeCard({ click, onDone }: { click: ToolClick; onDon
           <button
             type="button"
             onClick={() => submit(answer, tags)}
-            className="min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="glass-cta min-h-11 rounded-2xl px-4 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {dict.outcome.send}
           </button>

@@ -33,16 +33,16 @@ export default function WelcomeModal() {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/35 backdrop-blur-md animate-in fade-in duration-300 overflow-y-auto"
       onClick={handleClose}
     >
       <div 
-        className="relative w-full max-w-md my-auto bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300"
+        className="glass-strong relative w-full max-w-md my-auto rounded-2xl animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={handleClose}
-          className="absolute top-3 right-3 z-10 p-2 rounded-lg bg-card hover:bg-muted/50 transition-colors"
+          className="glass-control absolute top-3 right-3 z-10 p-2 rounded-xl"
           aria-label="Kapat"
         >
           <X className="w-5 h-5 text-muted-foreground hover:text-foreground" />
@@ -51,8 +51,8 @@ export default function WelcomeModal() {
         <div className="p-6 md:p-8 space-y-5">
           <div className="flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/60 to-primary/40 blur-xl opacity-60 rounded-full" />
-              <div className="relative p-3 bg-primary/10 rounded-2xl border border-primary/20">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/60 to-primary/40 blur-xl opacity-60 rounded-full" />
+              <div className="glass-subtle relative p-3 rounded-2xl">
                 <Sparkles className="w-10 h-10 text-primary" />
               </div>
             </div>
@@ -69,7 +69,7 @@ export default function WelcomeModal() {
             </p>
           </div>
 
-          <div className="bg-muted/30 border border-border/50 rounded-xl p-4 space-y-2">
+          <div className="glass-subtle rounded-2xl p-4 space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               Yakında
             </p>
@@ -91,7 +91,7 @@ export default function WelcomeModal() {
 
           <button
             onClick={handleClose}
-            className="w-full py-3 px-6 text-sm md:text-base font-semibold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
+            className="glass-cta w-full py-3 px-6 text-sm md:text-base font-semibold rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Başla 🎯
           </button>

@@ -6,7 +6,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = "", ...props }, ref) => (
     <button
       ref={ref}
-      className={`inline-flex h-10 items-center justify-center rounded-md border border-zinc-200 bg-black px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-100 ${className}`}
+      className={`glass-cta inline-flex h-10 items-center justify-center rounded-xl px-4 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     />
   )

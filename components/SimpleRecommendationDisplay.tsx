@@ -73,7 +73,7 @@ export default function SimpleRecommendationDisplay({
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-primary/60 to-primary/40 rounded-3xl blur-lg opacity-40 dark:opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
 
-        <div className="relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-6 lg:p-10 space-y-4 md:space-y-6 shadow-2xl">
+        <div className="glass-strong relative rounded-2xl p-4 md:p-6 lg:p-10 space-y-4 md:space-y-6">
           {/* Card Header */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 md:gap-4 pb-3 md:pb-4 border-b border-border/50">
             <div className="flex items-start gap-2 md:gap-4 flex-1 min-w-0">
@@ -87,7 +87,7 @@ export default function SimpleRecommendationDisplay({
                 {recommendation.taskLabel ? (
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-[10px] text-muted-foreground">{dict.v3.task}</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase break-words">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 dark:bg-black/30 text-primary text-[10px] font-semibold uppercase break-words">
                       {recommendation.taskLabel}
                     </span>
                   </div>
@@ -117,7 +117,7 @@ export default function SimpleRecommendationDisplay({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => onToolOpen(main, taskId)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
+                className="glass-cta flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>Araca Git</span>
@@ -126,7 +126,7 @@ export default function SimpleRecommendationDisplay({
                 <button
                   type="button"
                   onClick={() => onPrompt(main.toolName)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-medium transition-all text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="glass-control flex items-center gap-2 px-4 py-2 rounded-xl text-primary font-semibold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Wand2 className="w-4 h-4" aria-hidden />
                   <span>{dict.prompt.forTool}</span>
@@ -137,12 +137,12 @@ export default function SimpleRecommendationDisplay({
 
           <div className="space-y-3 md:space-y-4">
             {recommendation.relaxedPricing && (
-              <p role="status" className="text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-800 dark:text-amber-300">
+              <p role="status" className="text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-900 dark:text-amber-300">
                 {RELAXED_NOTE[recommendation.relaxedPricing] ?? RELAXED_NOTE.other}
               </p>
             )}
             {recommendation.relaxedConstraint && recommendation.relaxedConstraint.length > 0 && (
-              <p role="status" className="flex items-start gap-2 text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-800 dark:text-amber-300">
+              <p role="status" className="flex items-start gap-2 text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-900 dark:text-amber-300">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                 <span>
                   {format(dict.rec.relaxed, {

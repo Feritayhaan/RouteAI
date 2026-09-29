@@ -66,7 +66,7 @@ export default function MessageBubble({ message, isLast, onRetry }: { message: C
       )}
       {message.status === "stopped" && <p className="text-xs text-muted-foreground">{dict.chat.stopped}</p>}
       {message.status === "rate_limited" && (
-        <p role="alert" className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
+        <p role="alert" className="flex items-center gap-2 text-sm text-amber-900 dark:text-amber-300">
           <AlertCircle className="h-4 w-4" aria-hidden />
           {format(dict.chat.rateLimited, { seconds: message.retryAfter ?? 60 })}
         </p>

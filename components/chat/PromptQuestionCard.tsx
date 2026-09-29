@@ -37,9 +37,9 @@ export default function PromptQuestionCard({ card }: { card: Card }) {
 
   if (result) return <PromptCard card={result} />
 
-  const chip = "min-h-11 rounded-xl border border-border bg-card px-3 text-sm hover:bg-muted aria-pressed:border-primary aria-pressed:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+  const chip = "glass-control min-h-11 rounded-2xl px-3 text-sm font-medium aria-pressed:border-primary aria-pressed:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
   return (
-    <div className="space-y-4 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+    <div className="glass space-y-4 rounded-2xl p-4">
       <p className="font-semibold">{format(dict.prompt.questionTitle, { product: card.productName })}</p>
       {card.questions.map((q, i) => {
         const selected = answers[q.slotId]
@@ -66,7 +66,7 @@ export default function PromptQuestionCard({ card }: { card: Card }) {
                   onChange={(e) => setAnswers({ ...answers, [q.slotId]: e.target.value || "auto" })}
                   placeholder={dict.prompt.otherPlaceholder}
                   maxLength={300}
-                  className="min-h-11 w-full rounded-xl border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="glass-subtle min-h-11 w-full rounded-2xl px-3 text-sm placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </>
             )}
@@ -78,7 +78,7 @@ export default function PromptQuestionCard({ card }: { card: Card }) {
         type="button"
         onClick={submit}
         disabled={loading}
-        className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="glass-cta inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-sm font-semibold disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
         {loading ? dict.prompt.loading : dict.prompt.generate}
