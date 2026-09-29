@@ -8,7 +8,7 @@ type Confidence = "high" | "medium" | "low"
 
 const STYLE: Record<Confidence, string> = {
   high: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-  medium: "bg-amber-500/15 text-amber-900 dark:text-amber-300 border-amber-500/30",
+  medium: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
   low: "bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30",
 }
 const ICON = { high: ShieldCheck, medium: ShieldAlert, low: ShieldQuestion }

@@ -198,19 +198,27 @@ export default function HomeClient() {
     <>
       <WelcomeModal />
       <ThemeToggle />
-      {/* Arka plan (aurora) app/globals.css'te, body::before */}
+      {/* Sayfa ışıkları app/globals.css'te (body::before); bulanık lekeler eskisi gibi burada */}
       <main className="min-h-screen flex items-center justify-center p-3 md:p-6 relative overflow-hidden">
+        {/* Gradient Background Effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-primary/20 via-primary/10 to-transparent rounded-full blur-3xl opacity-60 dark:opacity-40" />
+          <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-l from-primary/15 to-transparent rounded-full blur-3xl opacity-50 dark:opacity-30" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl opacity-40 dark:opacity-25" />
+        </div>
+
 
         <div className="w-full max-w-2xl space-y-6 md:space-y-10 relative z-10 px-2 md:px-0">
           {/* Header */}
           <div className="text-center space-y-3 md:space-y-5 animate-in fade-in slide-in-from-top-4 duration-700">
             <div className="flex items-center justify-center mb-2 md:mb-4">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/60 to-primary/40 blur-2xl opacity-60 dark:opacity-50 rounded-full" />
-                <div className="glass-strong relative z-10 flex items-center justify-center rounded-2xl p-3 md:p-5">
-                  <Sparkles className="w-9 h-9 md:w-14 md:h-14 lg:w-16 lg:h-16 text-primary"
-                    style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary) / 0.55))' }}
-                    aria-hidden
+                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/60 to-primary/40 blur-2xl opacity-60 dark:opacity-50 rounded-full animate-pulse" />
+                <div className="relative z-10">
+                  <Sparkles className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 text-primary drop-shadow-2xl animate-pulse"
+                    style={{
+                      filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.6)) drop-shadow(0 0 16px hsl(var(--primary) / 0.4))'
+                    }}
                   />
                 </div>
               </div>
@@ -227,7 +235,7 @@ export default function HomeClient() {
                 </span>
               </h1>
 
-              <p className="text-xs md:text-sm lg:text-base font-semibold text-muted-foreground tracking-wide uppercase">
+              <p className="text-xs md:text-sm lg:text-base font-semibold text-muted-foreground/80 tracking-wide uppercase">
                 🚀 Artık Workflow Desteği ile!
               </p>
             </div>
@@ -262,7 +270,7 @@ export default function HomeClient() {
                 type="button"
                 onClick={() => setPromptEnabled((v) => !v)}
                 aria-pressed={promptEnabled}
-                className={`inline-flex h-11 md:h-12 w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl px-3 text-xs md:text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "glass-cta" : "glass-control text-foreground/80 hover:text-foreground"}`}
+                className={`inline-flex h-11 md:h-12 w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl px-3 text-xs md:text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${promptEnabled ? "glass-cta" : "glass-control text-muted-foreground hover:text-foreground"}`}
               >
                 <Wand2 className="w-4 h-4 shrink-0" aria-hidden />
                 <span className="truncate">{dict.prompt.toggle}</span>
@@ -337,7 +345,7 @@ export default function HomeClient() {
             </div>
           )}
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-xs text-muted-foreground/80">
             <a href="/privacy?lang=tr" className="underline underline-offset-2 hover:text-foreground">Gizlilik</a>
           </p>
         </div>

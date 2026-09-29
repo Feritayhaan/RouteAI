@@ -21,12 +21,12 @@ export default function PricingBadges({ pricing, pricingUrl }: { pricing?: Recom
 
   return (
     <div className="flex flex-wrap gap-1.5">
-      <span className="inline-flex items-center px-2 py-0.5 glass-chip rounded-full text-[10px] font-semibold text-muted-foreground">
+      <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted/60 dark:bg-muted/30 text-[10px] font-semibold text-muted-foreground">
         {pricingModelLabel(pricing)}
       </span>
 
       {showAmount && verified && (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 dark:bg-black/30 text-primary text-[10px] font-semibold">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold">
           {priceLabelOrUnknown(pricing)}
         </span>
       )}
@@ -36,13 +36,13 @@ export default function PricingBadges({ pricing, pricingUrl }: { pricing?: Recom
           href={pricingUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-[10px] font-semibold text-amber-900 dark:text-amber-300 hover:underline"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-[10px] font-semibold text-amber-800 dark:text-amber-300 hover:underline"
         >
           {PRICE_UNVERIFIED_LABEL}
           <ExternalLink className="w-2.5 h-2.5" aria-hidden />
         </a>
       ) : (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-[10px] font-semibold text-amber-900 dark:text-amber-300">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-[10px] font-semibold text-amber-800 dark:text-amber-300">
           {PRICE_UNVERIFIED_LABEL}
         </span>
       ))}

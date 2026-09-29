@@ -27,7 +27,7 @@ export default function PricingToggle({ value, onChange, wide = false }: { value
         type="button"
         onClick={() => onChange(NEXT[value])}
         aria-label={`Fiyat: ${label}`}
-        className={`inline-flex h-11 md:h-12 w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl px-3 text-xs md:text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${active ? "glass-cta" : "glass-control text-foreground/80 hover:text-foreground"}`}
+        className={`inline-flex h-11 md:h-12 w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl px-3 text-xs md:text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${active ? "glass-cta" : "glass-control text-muted-foreground hover:text-foreground"}`}
       >
         <Icon className="w-4 h-4 shrink-0" aria-hidden />
         <span className="truncate">{short}</span>
@@ -41,7 +41,7 @@ export default function PricingToggle({ value, onChange, wide = false }: { value
       aria-label={`Fiyat: ${label}`}
       className={`group relative rounded-2xl p-2.5 md:p-3
                   hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-                  ${active ? "glass-cta" : "glass-control text-foreground/80 hover:text-foreground"}`}
+                  ${active ? "glass-cta" : "glass-control text-muted-foreground hover:text-foreground"}`}
     >
       <Icon className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" aria-hidden />
 

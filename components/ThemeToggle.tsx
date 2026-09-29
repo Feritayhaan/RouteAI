@@ -60,7 +60,7 @@ export default function ThemeToggle({ labels = DEFAULT_LABELS, inline = false }:
         <div className={inline ? "relative" : "fixed top-6 right-6 z-40 animate-in fade-in slide-in-from-top-4 duration-500"}>
             <button
                 onClick={cycleTheme}
-                className="glass-control group relative rounded-2xl p-3 text-foreground/80 hover:text-foreground hover:scale-105
+                className="glass-control group relative rounded-2xl p-3 hover:scale-105
                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label={labels.label.replace("{name}", getLabel())}
             >

@@ -33,7 +33,7 @@ export default function WelcomeModal() {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/35 backdrop-blur-md animate-in fade-in duration-300 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300 overflow-y-auto"
       onClick={handleClose}
     >
       <div 
@@ -52,7 +52,7 @@ export default function WelcomeModal() {
           <div className="flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/60 to-primary/40 blur-xl opacity-60 rounded-full" />
-              <div className="glass-subtle relative p-3 rounded-2xl">
+              <div className="relative p-3 bg-primary/10 rounded-2xl border border-primary/20">
                 <Sparkles className="w-10 h-10 text-primary" />
               </div>
             </div>
@@ -69,7 +69,7 @@ export default function WelcomeModal() {
             </p>
           </div>
 
-          <div className="glass-subtle rounded-2xl p-4 space-y-2">
+          <div className="bg-muted/30 border border-border/50 rounded-xl p-4 space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               Yakında
             </p>

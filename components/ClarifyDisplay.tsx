@@ -38,7 +38,7 @@ export default function ClarifyDisplay({ clarify, dict, onSelect, disabled = fal
               type="button"
               disabled={disabled}
               onClick={() => onSelect(o.taskId)}
-              className="glass-control min-h-11 rounded-2xl px-3 py-2 text-sm font-semibold text-primary break-words disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-11 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary break-words hover:bg-primary/10 backdrop-blur-md transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {o.label}
             </button>

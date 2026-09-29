@@ -3,23 +3,28 @@
 @tailwind utilities;
 
 /*
- * Glassmorphism tasarım sistemi.
+ * Glassmorphism, ESKİ RENK PALETİYLE.
+ *
+ * Renk kimliği değişmedi: token değerleri (--background, --card, --primary…)
+ * glassmorphism öncesiyle birebir aynı. Cam yüzeyler bu tokenlardan türer
+ * (ör. kart = hsl(var(--card) / 0.8)), yani yeni renk YOK; değişen sadece
+ * saydamlık, bulanıklık, ince ışık kenarı ve gölge.
  *
  * Katmanlar (arkadan öne):
- *   1. Aurora: body::before, sabit, renkli bulanık ışık lekeleri. Cam ancak
- *      arkasında renk varken cam görünür; bu yüzden arka plan düz değil.
- *   2. .glass-strong / .glass: ana yüzeyler (sonuç kartı, paneller, pencere).
+ *   1. Sayfa: --background + eski gövde ışıkları (body::before, sabit).
+ *   2. .glass / .glass-strong: ana yüzeyler (sonuç kartı, paneller, pencere).
  *   3. .glass-control: düğme, hap, seçici. .glass-input: yazı alanı.
- *   4. .glass-subtle: cam yüzeyin İÇİNDEKİ kutular. backdrop-filter YOK
- *      (iç içe bulanıklık hem yavaş hem bulanık görünür).
- *   5. .glass-cta: ana eylem düğmesi (gradyan + parıltı).
+ *   4. .glass-cta: bg-primary düğmeleri ("Araca Git", seçili hap…).
+ *      .glass-hero: ana düğme ("Bana Yol Göster"): boşta açık temada --primary,
+ *      koyuda beyaz; üzerine gelince zinc-900 / zinc-100 (eski Button ile aynı).
+ *   İç kutular (reasons, rozet, girdi…) glassmorphism öncesi renk sınıflarını
+ *   korur (bg-primary/5, bg-muted/60…): cam sadece dış yüzeylerde ve düğmelerde.
  *
- * Renk değerleri tek yerde, aşağıdaki --glass-* ve --aurora-* değişkenlerinde.
- * Okunabilirlik: metin renkleri (--foreground, --muted-foreground) cam ve
- * aurora üzerinde ölçüldü (docs/screenshots/glass-*); cam opaklığını
- * düşürürken bunları yeniden ölç.
+ * Okunabilirlik: her metin düğümü, altındaki gerçek piksele göre WCAG
+ * kontrastıyla ölçüldü (docs/screenshots/glass-*). Cam opaklığını ya da
+ * gövde ışıklarını değiştirirsen yeniden ölç.
  * Yedekler (dosyanın sonu): backdrop-filter yoksa, "saydamlığı azalt" açıksa
- * ve zorlanmış renklerde yüzeyler opak olur.
+ * yüzeyler opak olur; forced-colors'ta düz çerçeveli.
  */
 
 @layer base {
@@ -45,34 +50,28 @@
     --ring: 222 29% 22%;
     --radius: 0.85rem;
 
-    /* Cam yüzeyler (açık tema): beyaz, yarı saydam */
-    --glass-bg: rgba(255, 255, 255, 0.58);
-    --glass-bg-strong: rgba(255, 255, 255, 0.72);
-    --glass-bg-control: rgba(255, 255, 255, 0.5);
-    --glass-bg-control-hover: rgba(255, 255, 255, 0.72);
-    --glass-bg-subtle: rgba(255, 255, 255, 0.42);
-    --glass-border: rgba(255, 255, 255, 0.75);
-    --glass-border-subtle: rgba(15, 23, 42, 0.09);
-    --glass-sheen: rgba(255, 255, 255, 0.55);
-    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(15, 23, 42, 0.04);
-    --glass-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.2), 0 2px 8px -2px rgba(15, 23, 42, 0.08);
-    --glass-blur: 22px;
-    --glass-blur-strong: 30px;
-    --glass-blur-control: 14px;
-    --glass-glow: 0 0 0 4px rgba(51, 65, 85, 0.2);
+    /* Cam (açık tema): beyaz kart rengi, yarı saydam */
+    --glass-bg: hsl(var(--card) / 0.86);
+    --glass-bg-strong: hsl(var(--card) / 0.92);
+    --glass-bg-control: hsl(var(--card) / 0.8);
+    --glass-bg-control-hover: hsl(var(--card) / 0.95);
+    --glass-bg-subtle: hsl(var(--foreground) / 0.035);
+    --glass-border: hsl(var(--border) / 0.8);
+    --glass-border-subtle: hsl(var(--border) / 0.7);
+    --glass-sheen: rgba(255, 255, 255, 0.7);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    --glass-shadow: 0 12px 40px -14px rgba(15, 23, 42, 0.22), 0 2px 8px -3px rgba(15, 23, 42, 0.08);
+    --glass-blur: 18px;
+    --glass-blur-strong: 24px;
+    --glass-blur-control: 12px;
+    --glass-glow: 0 0 0 4px hsl(var(--primary) / 0.14);
 
-    /* Ana eylem düğmesi */
-    --cta-from: #334155;
-    --cta-to: #0f172a;
-    --cta-foreground: #f8fafc;
-    --cta-shadow: 0 10px 28px -10px rgba(15, 23, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-
-    /* Aurora (açık tema): pastel */
-    --aurora-base: #edf0f6;
-    --aurora-1: rgba(100, 116, 139, 0.2);
-    --aurora-2: rgba(148, 163, 184, 0.32);
-    --aurora-3: rgba(59, 130, 246, 0.12);
-    --aurora-4: rgba(71, 85, 105, 0.15);
+    /* Ana düğme: eski Button ile aynı. Boşta açık temada --primary, koyuda beyaz; üzerine gelince zinc-900 / zinc-100. */
+    --hero-bg: hsl(var(--primary));
+    --hero-bg-hover: #18181b;
+    --hero-fg: hsl(var(--primary-foreground));
+    --hero-shadow: 0 10px 26px -12px hsl(var(--primary) / 0.6);
+    --cta-sheen: rgba(255, 255, 255, 0.12);
   }
 
   .dark {
@@ -96,30 +95,24 @@
     --destructive-foreground: 210 40% 98%;
     --ring: 220 15% 70%;
 
-    /* Koyu temada cam beyazla değil LACİVERTLE tonlanır: beyaz katmanlar üst üste
-       binip parlak ışık lekelerinin üstünde yüzeyi açıyor, açık renkli yazı (2:1) okunmuyordu. */
-    --glass-bg: rgba(13, 17, 36, 0.62);
-    --glass-bg-strong: rgba(11, 15, 32, 0.72);
-    --glass-bg-control: rgba(30, 36, 72, 0.55);
-    --glass-bg-control-hover: rgba(52, 60, 110, 0.68);
-    --glass-bg-subtle: rgba(255, 255, 255, 0.035);
-    --glass-border: rgba(255, 255, 255, 0.17);
-    --glass-border-subtle: rgba(255, 255, 255, 0.1);
-    --glass-sheen: rgba(255, 255, 255, 0.09);
-    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
-    --glass-shadow: 0 14px 48px -10px rgba(0, 0, 0, 0.6), 0 2px 10px -2px rgba(0, 0, 0, 0.35);
-    --glass-glow: 0 0 0 4px rgba(148, 163, 184, 0.28);
+    /* Cam (koyu tema): koyu kart rengi, yarı saydam */
+    --glass-bg: hsl(var(--card) / 0.88);
+    --glass-bg-strong: hsl(var(--card) / 0.93);
+    --glass-bg-control: hsl(var(--card) / 0.88);
+    --glass-bg-control-hover: hsl(var(--muted) / 0.85);
+    --glass-bg-subtle: hsl(var(--foreground) / 0.035);
+    --glass-border: hsl(var(--border) / 0.75);
+    --glass-border-subtle: hsl(var(--border) / 0.65);
+    --glass-sheen: rgba(255, 255, 255, 0.02);
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 14px 44px -14px rgba(0, 0, 0, 0.6), 0 2px 10px -3px rgba(0, 0, 0, 0.35);
+    --glass-glow: 0 0 0 4px hsl(var(--primary) / 0.2);
 
-    --cta-from: #f8fafc;
-    --cta-to: #cbd5e1;
-    --cta-foreground: #0f172a;
-    --cta-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
-
-    --aurora-base: #0d111b;
-    --aurora-1: rgba(59, 130, 246, 0.22);
-    --aurora-2: rgba(139, 92, 246, 0.16);
-    --aurora-3: rgba(148, 163, 184, 0.1);
-    --aurora-4: rgba(236, 72, 153, 0.09);
+    --hero-bg: #ffffff;
+    --hero-bg-hover: #f4f4f5;
+    --hero-fg: #000000;
+    --hero-shadow: 0 10px 30px -12px rgba(255, 255, 255, 0.3);
+    --cta-sheen: rgba(255, 255, 255, 0.06);
   }
 
   * {
@@ -127,7 +120,7 @@
   }
 
   html {
-    background-color: var(--aurora-base);
+    background-color: hsl(var(--background));
   }
 
   body {
@@ -138,23 +131,19 @@
     min-height: 100vh;
   }
 
-  /* Aurora: sabit, sayfayla kaymaz; iOS'ta background-attachment: fixed olmadığı için pseudo-eleman. */
+  /* Zemin: düz --background (eski sayfada gövde ışıkları opak <main> altında kalıyordu, hiç görünmüyordu).
+     Sayfadaki tek ışık, HomeClient'taki bulanık primary lekeleri; camın arkasında görünen onlar. */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background:
-      radial-gradient(48rem 36rem at 8% -6%, var(--aurora-1), transparent 62%),
-      radial-gradient(42rem 34rem at 96% 2%, var(--aurora-2), transparent 62%),
-      radial-gradient(46rem 38rem at 88% 104%, var(--aurora-3), transparent 62%),
-      radial-gradient(40rem 32rem at -4% 92%, var(--aurora-4), transparent 62%),
-      var(--aurora-base);
+    background: hsl(var(--background));
   }
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.28);
+    background-color: hsl(var(--primary) / 0.25);
     color: hsl(var(--foreground));
   }
 }
@@ -166,8 +155,8 @@
     background-image: linear-gradient(135deg, var(--glass-sheen) 0%, transparent 42%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
   }
 
   /* Öne çıkan yüzey: sonuç kartı, karşılama penceresi */
@@ -176,15 +165,8 @@
     background-image: linear-gradient(135deg, var(--glass-sheen) 0%, transparent 46%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(170%);
-    backdrop-filter: blur(var(--glass-blur-strong)) saturate(170%);
-  }
-
-  /* Cam yüzeyin içindeki kutular: bulanıklık yok, sadece hafif dolgu */
-  .glass-subtle {
-    background-color: var(--glass-bg-subtle);
-    border: 1px solid var(--glass-border-subtle);
-    box-shadow: inset 0 1px 0 var(--glass-sheen);
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(150%);
   }
 
   /* Düğme, hap, seçici */
@@ -192,9 +174,9 @@
     background-color: var(--glass-bg-control);
     background-image: linear-gradient(180deg, var(--glass-sheen) 0%, transparent 70%);
     border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight), 0 4px 16px -6px rgba(15, 23, 42, 0.22);
-    -webkit-backdrop-filter: blur(var(--glass-blur-control)) saturate(150%);
-    backdrop-filter: blur(var(--glass-blur-control)) saturate(150%);
+    box-shadow: var(--glass-highlight), 0 4px 14px -8px rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: blur(var(--glass-blur-control)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur-control)) saturate(140%);
     transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
   .glass-control:hover:not(:disabled) {
@@ -210,73 +192,66 @@
     background-image: linear-gradient(135deg, var(--glass-sheen) 0%, transparent 40%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-highlight), var(--glass-shadow);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .glass-input:focus-within {
-    border-color: hsl(var(--primary) / 0.6);
+    border-color: hsl(var(--primary) / 0.5);
     box-shadow: var(--glass-highlight), var(--glass-shadow), var(--glass-glow);
   }
 
-  /* Ana eylem: gradyan dolgu, iç parlaklık, renkli gölge */
+  /* bg-primary düğmeleri: eski renk (--primary), üstüne cam parlaması */
   .glass-cta {
-    color: var(--cta-foreground);
-    background-image: linear-gradient(135deg, var(--cta-from), var(--cta-to));
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: var(--cta-shadow);
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--primary));
+    background-image: linear-gradient(180deg, var(--cta-sheen), transparent 55%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 6px 18px -8px hsl(var(--primary) / 0.6);
     transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
   .glass-cta:hover:not(:disabled) {
-    filter: brightness(1.08) saturate(1.05);
+    filter: brightness(1.08);
   }
   .glass-cta:active:not(:disabled) {
     transform: scale(0.98);
   }
 
-  /* Cam üstünde küçük etiket (rozet, hap) */
-  .glass-chip {
-    background-color: var(--glass-bg-subtle);
-    border: 1px solid var(--glass-border-subtle);
-    box-shadow: inset 0 1px 0 var(--glass-sheen);
+  /* Ana düğme: eski Button rengi (açık temada siyah, koyuda beyaz) */
+  .glass-hero {
+    color: var(--hero-fg);
+    background-color: var(--hero-bg);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), var(--hero-shadow);
+    transition: filter 0.2s ease, transform 0.2s ease;
   }
+  .glass-hero:hover:not(:disabled) {
+    background-color: var(--hero-bg-hover);
+  }
+  .glass-hero:active:not(:disabled) {
+    transform: scale(0.99);
+  }
+
 }
 
-/* Yedekler: yüzeyler opak. Aynı değişkenler yeniden atanır; sınıflar değişmez. */
+/* Yedekler: yüzeyler opak (aynı kart rengi). Aynı değişkenler yeniden atanır; sınıflar değişmez. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root {
-    --glass-bg: rgba(255, 255, 255, 0.94);
-    --glass-bg-strong: rgba(255, 255, 255, 0.97);
-    --glass-bg-control: rgba(255, 255, 255, 0.92);
-    --glass-bg-control-hover: rgba(255, 255, 255, 1);
-    --glass-bg-subtle: rgba(238, 241, 255, 0.9);
-  }
+  :root,
   .dark {
-    --glass-bg: rgba(24, 28, 52, 0.95);
-    --glass-bg-strong: rgba(28, 33, 60, 0.97);
-    --glass-bg-control: rgba(34, 40, 70, 0.95);
-    --glass-bg-control-hover: rgba(48, 56, 92, 1);
-    --glass-bg-subtle: rgba(255, 255, 255, 0.06);
+    --glass-bg: hsl(var(--card) / 0.97);
+    --glass-bg-strong: hsl(var(--card) / 0.98);
+    --glass-bg-control: hsl(var(--card) / 0.95);
+    --glass-bg-control-hover: hsl(var(--muted) / 1);
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  :root {
-    --glass-bg: rgba(255, 255, 255, 0.94);
-    --glass-bg-strong: rgba(255, 255, 255, 0.97);
-    --glass-bg-control: rgba(255, 255, 255, 0.92);
-    --glass-bg-control-hover: rgba(255, 255, 255, 1);
-    --glass-bg-subtle: rgba(238, 241, 255, 0.9);
-    --glass-blur: 0px;
-    --glass-blur-strong: 0px;
-    --glass-blur-control: 0px;
-  }
+  :root,
   .dark {
-    --glass-bg: rgba(24, 28, 52, 0.95);
-    --glass-bg-strong: rgba(28, 33, 60, 0.97);
-    --glass-bg-control: rgba(34, 40, 70, 0.95);
-    --glass-bg-control-hover: rgba(48, 56, 92, 1);
-    --glass-bg-subtle: rgba(255, 255, 255, 0.06);
+    --glass-bg: hsl(var(--card) / 0.97);
+    --glass-bg-strong: hsl(var(--card) / 0.98);
+    --glass-bg-control: hsl(var(--card) / 0.95);
+    --glass-bg-control-hover: hsl(var(--muted) / 1);
     --glass-blur: 0px;
     --glass-blur-strong: 0px;
     --glass-blur-control: 0px;
@@ -286,17 +261,16 @@
 @media (forced-colors: active) {
   .glass,
   .glass-strong,
-  .glass-subtle,
   .glass-control,
-  .glass-input,
-  .glass-chip {
+  .glass-input {
     background: Canvas;
     border-color: CanvasText;
     box-shadow: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-  .glass-cta {
+  .glass-cta,
+  .glass-hero {
     background: ButtonFace;
     color: ButtonText;
     border-color: ButtonText;
