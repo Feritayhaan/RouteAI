@@ -459,10 +459,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 17,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "promptGuide": "chat-general",
@@ -513,10 +513,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 19.99,
+      "startingPrice": 4.99,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "promptGuide": "chat-general",
@@ -539,14 +539,14 @@
     ],
     "models": [],
     "pricing": {
-      "model": "paid",
+      "model": "freemium",
       "free": false,
-      "freemium": false,
-      "paidOnly": true,
-      "startingPrice": 39,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 59,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -571,10 +571,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 24,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -602,8 +602,8 @@
       "paidOnly": false,
       "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -632,8 +632,8 @@
       "paidOnly": false,
       "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "promptGuide": "cursor-task",
@@ -671,10 +671,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 17,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -708,10 +708,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 5,
+      "startingPrice": 6,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "promptGuide": "elevenlabs-voiceover",
@@ -879,10 +879,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": 11,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -937,8 +937,8 @@
       "paidOnly": false,
       "startingPrice": 14,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -994,10 +994,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 12,
+      "startingPrice": 14.5,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -1049,10 +1049,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": 8,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "promptGuide": "suno",
@@ -1151,10 +1151,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 8,
+      "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -1653,14 +1653,14 @@
     ],
     "models": [],
     "pricing": {
-      "model": "paid",
+      "model": "freemium",
       "free": false,
-      "freemium": false,
-      "paidOnly": true,
-      "startingPrice": null,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 29,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -1931,10 +1931,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -1960,10 +1960,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2017,10 +2017,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2045,10 +2045,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2183,10 +2183,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 39,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2212,10 +2212,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 79,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2234,14 +2234,14 @@
     "tasks": [],
     "models": [],
     "pricing": {
-      "model": "paid",
+      "model": "freemium",
       "free": false,
-      "freemium": false,
-      "paidOnly": true,
-      "startingPrice": null,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 9,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2267,10 +2267,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 79,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2512,10 +2512,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 4.99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "promptGuide": "image-natural",
@@ -2622,14 +2622,14 @@
     ],
     "models": [],
     "pricing": {
-      "model": "paid",
+      "model": "freemium",
       "free": false,
-      "freemium": false,
-      "paidOnly": true,
-      "startingPrice": null,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 9.99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
@@ -2725,10 +2725,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 5.99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-01"
     },
     "access": [],
     "status": "active",
