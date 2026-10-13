@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "suno"
-version: 2
+version: 3
 appliesTo: ["suno-ai"]
 modality: "music"
 promptLanguage: "user"

@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "text-to-video"
-version: 2
+version: 3
 appliesTo: ["google-veo-3", "sora-2-openai"]
 modality: "video"
 promptLanguage: "en"
@@ -133,7 +133,7 @@ slots:
       en: "Fast"
       tr: "Hızlı"
     value: "fast-paced"
-  default: "calm"
+  default: "infer"
 refinements:
 - id: "add-dialogue"
   label:

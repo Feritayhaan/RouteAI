@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "runway"
-version: 2
+version: 3
 appliesTo: ["runway-gen-3"]
 modality: "video"
 promptLanguage: "en"
@@ -133,7 +133,7 @@ slots:
       en: "Energetic"
       tr: "Enerjik"
     value: "energetic"
-  default: "slow"
+  default: "infer"
 refinements:
 - id: "slower"
   label:

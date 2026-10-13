@@ -7,6 +7,8 @@ export interface SlotState {
   /** null = üretici seçsin (varsayılan 'infer' ya da bilinmiyor). */
   value: string | null;
   source: SlotSource;
+  /** Değerin kullanıcı dilinde karşılığı ("Şunları varsaydım" listesi); yoksa seçenek etiketi ya da değer. */
+  label?: string;
 }
 
 export interface VariantValidation {

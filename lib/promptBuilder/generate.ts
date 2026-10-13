@@ -1,9 +1,22 @@
 // Prompt üretimi: TEK OpenAI çağrısı (json_schema strict). İki varyant:
 // 'safe' rehbere en sadık, 'creative' aynı amaçla daha cesur yorum.
+//
+// Evrensel prompt mühendisliği ilkeleri (systemPrompt):
+//  - Meta-sınır: model promptun mimarıdır, uygulayıcısı değil; konuyu cevaplamaz.
+//  - Niyet modu (intent.ts): build / solve / analyze / transform / learn; üretim
+//    isteği "kısa bilgi ver" ödevine küçültülmez.
+//  - Aracın doğal dili: metin/kod/sunum araçlarına doğal bölümlü uzman promptu
+//    (mekanik "Rol: X. Bağlam: Y." etiket zinciri yok); görsel/video/ses
+//    araçlarına doğrudan sahne/yapı tarifi.
+//  - howToUse: bu promptun araçta nasıl kullanılacağı (yer tutucular, ayar/ilk
+//    çıktı, takip komutu); konu hakkında genel tavsiye değil.
+//  - Varsayımlar kullanıcı dilinde; ham İngilizce seçenek değeri gösterilmez.
 
 import { z } from 'zod';
 import type { Guide } from './guideSchema';
+import { classifyIntent, INTENT_MODES, type IntentMode } from './intent';
 import { maxTokensFor, type JsonLLM } from './llm';
+import { displayValue } from './plan';
 import type { Assumption, PromptSession, SuggestedRefinement, Variant } from './types';
 
 export interface GenerateOutput {
@@ -11,9 +24,12 @@ export interface GenerateOutput {
   assumptions: Assumption[];
   suggestedRefinements: SuggestedRefinement[];
   howToUse: string[];
+  /** Modelin seçtiği niyet modu (eski yanıtlarda yok). */
+  intent?: IntentMode;
 }
 
 const outputSchema = z.object({
+  intent: z.enum(INTENT_MODES).optional(),
   variants: z.array(z.object({
     id: z.enum(['safe', 'creative']),
     prompt: z.string().min(1),
@@ -33,6 +49,7 @@ const outputSchema = z.object({
 const JSON_SCHEMA = {
   type: 'object',
   properties: {
+    intent: { type: 'string', enum: [...INTENT_MODES] },
     variants: {
       type: 'array',
       items: {
@@ -75,7 +92,7 @@ const JSON_SCHEMA = {
     },
     howToUse: { type: 'array', items: { type: 'string' } },
   },
-  required: ['variants', 'assumptions', 'suggestedRefinements', 'howToUse'],
+  required: ['intent', 'variants', 'assumptions', 'suggestedRefinements', 'howToUse'],
   additionalProperties: false,
 };
 
@@ -94,25 +111,48 @@ export interface GenerateInput {
   genericGuide?: boolean;
 }
 
+const LLM_MODALITIES = new Set(['text', 'code', 'slides']);
+const MEDIA_MODALITIES = new Set(['image', 'video', 'audio', 'music']);
+
 function systemPrompt(guide: Guide, productName: string, locale: 'en' | 'tr', generic = false): string {
   const userLang = locale === 'tr' ? 'Turkish' : 'English';
   const promptLang = guide.promptLanguage === 'en' ? 'English' : userLang;
   const guideNote = generic
     ? ` It is a general guide for this kind of tool, not specific to ${productName}: write plain instructions that work in ${productName}.`
     : '';
-  return `You write prompts for ${productName}. RouteAI's prompt guide below is your starting point.${guideNote}
+  const visual = guide.modality === 'image' || guide.modality === 'video';
+  const noNegative = ['text', 'code', 'slides', 'audio', 'music'].includes(guide.modality);
+  const toolForm = LLM_MODALITIES.has(guide.modality)
+    ? `${productName} is a text/code/document AI. Write a natural, professional system/task prompt in flowing sections: (1) the expert role and the goal, (2) the project/task context and constraints, (3) the expected output structure or working steps, (4) [square-bracket placeholders] for facts only the user can fill in. Never write a chain of mechanical labels like "Role: X. Context: Y. Task: Z. Format: W."`
+    : MEDIA_MODALITIES.has(guide.modality)
+      ? `${productName} generates ${guide.modality}. No conversational sentences: describe the subject, scene, composition, light, camera, or the sound/music structure directly, in the tool's own style.`
+      : `Write the prompt in the form ${productName} expects.`;
+  return `You are RouteAI's prompt architect for ${productName}. RouteAI's prompt guide below is your starting point.${guideNote}
+
+META-BOUNDARY (most important): you are the prompt architect, NEVER the executor.
+- Do not answer the user's request, explain the topic or give information about it yourself. You write the instruction that makes ${productName} do the work.
+- "prompt" is exactly the command the user pastes into ${productName}: no introduction, no explanation of the subject, no closing notes about the topic.
 
 Rules, most important first:
 1. The user's goal comes first. Deliver exactly what they asked for, including unusual, very specific or long requests. Keep every detail they gave (names, texts, numbers, languages, lengths, features, constraints), even when no slot covers it. Never water the request down to fit the guide or the slots.
-2. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
-3. Slots only fill in what the user did not say. A null slot is yours to choose, and every choice you make goes into "assumptions". If a slot does not fit this request, leave it out of the prompt instead of forcing it in.
-4. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically. Where a guide section says "KAYNAK GEREKLİ" (source needed), use plain, widely compatible wording and do not rely on undocumented tool syntax.
-5. Match depth to the request: a complex request (an app, a long document, a multi-part task) gets a complete, detailed prompt that lists every requirement; a simple request gets a short, clean prompt.
-6. ${productName} never sees this conversation: the prompt must be self-contained. Write it ready to paste: no preamble ("Sure", "Here is"), no references to the chat, no unfilled template brackets, no vague filler ("etc.", "something nice").${guide.modality === 'image' || guide.modality === 'video' ? ' Do not address the tool ("Please create an image of..."); start directly with the subject or shot and describe subject, setting, composition/camera, light and style.' : ''} negativePrompt and settings must not contradict the prompt${['text', 'code', 'slides', 'audio', 'music'].includes(guide.modality) ? '; this kind of tool has no negative prompt field, so negativePrompt is null and exclusions go into the prompt' : ''}.
+2. Intent: classify the goal into one mode, return it in "intent" and build the prompt for that mode. "intentHint" is a keyword guess; override it when the goal clearly says otherwise.
+   - build (make, create, produce, develop, design, write, launch): never write a prompt that asks for general information or a short overview. Put ${productName} in the role of a senior co-founder / lead architect / creative director who builds the thing end to end with the user, and ask for a concrete deliverable: a roadmap with milestones, a production draft, a structured spec or outline, or the work itself.
+   - solve (fix, debug, improve, optimize): ask for root-cause analysis, a step-by-step fix and how to verify it.
+   - analyze (compare, decide, plan a strategy): ask for explicit criteria, a decision matrix or table/framework and a recommendation.
+   - transform (rewrite, translate, summarize, convert): state what must be preserved from the input and the target tone/format; add a [placeholder] for the input if the user did not give it.
+   - learn: ONLY when the user explicitly asks what something is, how it works, or to be taught: an explanatory, teaching prompt.
+   Match depth to the intent: build, solve and analyze requests get a complete, detailed prompt. Never shrink a request to "a short paragraph" or "beginner level" unless the user asked for that.
+3. Tool-native form: ${toolForm}
+4. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
+5. Slots only fill in what the user did not say. A null slot is yours to choose, and every choice you make goes into "assumptions". If a slot does not fit this request, leave it out of the prompt instead of forcing it in.
+6. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically. Where a guide section says "KAYNAK GEREKLİ" (source needed), use plain, widely compatible wording and do not rely on undocumented tool syntax.
+7. ${productName} never sees this conversation: the prompt must be self-contained. Write it ready to paste: no preamble ("Sure", "Here is"), no references to the chat, no unfilled template brackets, no vague filler ("etc.", "something nice").${visual ? ' Do not address the tool ("Please create an image of..."); start directly with the subject or shot and describe subject, setting, composition/camera, light and style.' : ''} negativePrompt and settings must not contradict the prompt${noNegative ? '; this kind of tool has no negative prompt field, so negativePrompt is null and exclusions go into the prompt' : ''}.
 - Return exactly two variants: "safe" = closest to what the user said; "creative" = same goal, a bolder interpretation. They must differ meaningfully.
 - Do not refuse or dilute ordinary requests. The user's own brand, product, business or name can be used freely. Do not impersonate real people or produce deceptive content (fake endorsements, forged documents); for copyrighted characters or logos, describe an original look with a similar feel instead.
 - Do not invent facts, statistics, prices or quotes the user did not give; use clearly marked placeholders for them.
-- The prompt text is in ${promptLang}. "howToUse" (exactly 3 short steps), "assumptions[].why" and "suggestedRefinements[].label" are in ${userLang}.
+- The prompt text is in ${promptLang}. "howToUse", "assumptions" and "suggestedRefinements[].label" are in ${userLang}.
+- howToUse: exactly 3 short steps about using THIS prompt in ${productName}, never general advice about the user's topic: (1) paste it into ${productName} and what to write into each [placeholder] (or that it is ready as is); (2) which setting, or what in the first output, to check; (3) one concrete follow-up message to send to ${productName} to improve the result.
+- assumptions: value and why in ${userLang}, never raw English option codes (e.g. "a beginner", "friendly") in a ${userLang} interface; use the slot's "label" when given. value: a short phrase; why: one sentence on why it fits this request.
 - suggestedRefinements: at most 2, different from the guide's ready buttons. Each has either slotId + value, or an instruction.
 - settings: tool settings you recommend (key/value); empty if none.
 
@@ -133,15 +173,24 @@ ${guide.validators.map((v) => `- ${v.type} ${v.value}: ${v.message}`).join('\n')
 
 export async function generatePrompt(input: GenerateInput): Promise<{ output: GenerateOutput; tokens: number }> {
   const { session, guide, productName, llm, signal, previous, instruction, repairErrors } = input;
-  const slots = guide.slots.map((s) => ({
-    id: s.id,
-    question: s.question.en,
-    value: session.slots[s.id]?.value ?? null,
-    source: session.slots[s.id]?.source ?? 'default',
-    options: s.options.map((o) => o.value),
-  }));
+  const locale = session.locale;
+  const slots = guide.slots.map((s) => {
+    const state = session.slots[s.id];
+    const value = state?.value ?? null;
+    return {
+      id: s.id,
+      question: s.question.en,
+      value,
+      // Kullanıcı dilindeki karşılık: varsayım listesine bu yazılır.
+      label: value ? displayValue(s, value, locale, { label: state?.label, dynamic: session.questionOverrides?.[s.id] }) : null,
+      source: state?.source ?? 'default',
+      options: s.options.map((o) => o.value),
+    };
+  });
+  const intentHint = classifyIntent(session.goal);
   const user = JSON.stringify({
     goal: session.goal,
+    ...(intentHint ? { intentHint } : {}),
     slots,
     ...(previous ? { previousVersion: { variants: previous.variants.map((v) => ({ id: v.id, prompt: v.prompt })) } } : {}),
     ...(instruction ? { refinementInstruction: instruction } : {}),
@@ -165,11 +214,13 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
   const variants = [{ ...safe, id: 'safe' as const }, { ...creative, id: 'creative' as const }];
 
   const slotIds = new Set(guide.slots.map((s) => s.id));
-  const assumptions = parsed.assumptions.filter((a) => slotIds.has(a.slotId) && session.slots[a.slotId]?.source !== 'user');
+  const assumptions = parsed.assumptions
+    .filter((a) => slotIds.has(a.slotId) && session.slots[a.slotId]?.source !== 'user')
+    .map((a) => ({ ...a, value: localizedValue(guide, session, a.slotId, a.value) }));
   for (const s of guide.slots) {
     const state = session.slots[s.id];
     if (state && state.source !== 'user' && !assumptions.some((a) => a.slotId === s.id)) {
-      assumptions.push({ slotId: s.id, value: state.value ?? '—', why: session.locale === 'tr' ? 'Belirtilmedi; varsayılan kullanıldı.' : 'Not specified; used the default.' });
+      assumptions.push(fallbackAssumption(guide, session, s.id));
     }
   }
 
@@ -181,7 +232,39 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
         .filter((r) => (r.slotId && r.value && slotIds.has(r.slotId)) || r.instruction)
         .slice(0, 2),
       howToUse: parsed.howToUse.slice(0, 3),
+      ...(parsed.intent ? { intent: parsed.intent } : {}),
     },
     tokens,
+  };
+}
+
+/** Varsayım değeri kullanıcı dilinde: slot etiketi, dinamik ya da rehber seçeneğinin etiketi. */
+function localizedValue(guide: Guide, session: PromptSession, slotId: string, value: string): string {
+  const slot = guide.slots.find((s) => s.id === slotId);
+  const state = session.slots[slotId];
+  return displayValue(slot, value, session.locale, {
+    label: state?.value && state.value.trim().toLowerCase() === value.trim().toLowerCase() ? state.label : undefined,
+    dynamic: session.questionOverrides?.[slotId],
+  });
+}
+
+const FALLBACK_WHY = {
+  smart: { tr: 'Belirtmediğin için isteğine en uygun seçenek seçildi.', en: "You didn't specify this; chosen to fit your request." },
+  guide: { tr: 'Belirtmediğin için RouteAI varsayılanı kullanıldı.', en: "You didn't specify this; RouteAI's default was used." },
+  open: { tr: 'Belirtmediğin için isteğine göre seçilecek.', en: "You didn't specify this; it will be chosen to fit your request." },
+  openValue: { tr: 'İsteğe göre', en: 'To fit the request' },
+} as const;
+
+/** Model bir varsayımı yazmadıysa deterministik varsayım (kullanıcı dilinde). */
+function fallbackAssumption(guide: Guide, session: PromptSession, slotId: string): Assumption {
+  const slot = guide.slots.find((s) => s.id === slotId)!;
+  const state = session.slots[slotId];
+  const locale = session.locale;
+  if (!state?.value) return { slotId, value: FALLBACK_WHY.openValue[locale], why: FALLBACK_WHY.open[locale] };
+  const fromGuideDefault = slot.default !== 'infer' && slot.options.find((o) => o.id === slot.default)?.value === state.value && !state.label;
+  return {
+    slotId,
+    value: localizedValue(guide, session, slotId, state.value),
+    why: fromGuideDefault ? FALLBACK_WHY.guide[locale] : FALLBACK_WHY.smart[locale],
   };
 }

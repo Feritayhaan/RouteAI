@@ -12,7 +12,7 @@ import type { JsonLLM } from './llm';
 import type { PromptSessionStore } from './store';
 import { extractSlots } from './extract';
 import { resolveGuideId } from './fallback';
-import { applyAnswers, filledBy, planSlots, SLOT_VALUE_MAX } from './plan';
+import { applyAnswers, displayValue, filledBy, planSlots, SLOT_VALUE_MAX } from './plan';
 import { generatePrompt } from './generate';
 import { validateWithRepair } from './validate';
 import { MAX_REFINEMENTS, type PromptSession, type PromptVersion, type SlotState } from './types';
@@ -74,8 +74,11 @@ export function toPromptCard(session: PromptSession, guide: Guide, product: Prod
       const slot = guide.slots.find((s) => s.id === a.slotId)!;
       // Girişe göre üretilmiş soru varsa "Değiştir" aynı soruyu ve seçenekleri gösterir.
       const dynamic = session.questionOverrides?.[a.slotId];
+      const state = session.slots[a.slotId];
       return {
         ...a,
+        // Kullanıcı dilinde: Türkçe ekranda "a beginner" gibi ham seçenek değeri görünmez.
+        value: displayValue(slot, a.value, locale, { label: state?.value === a.value ? state.label : undefined, dynamic }),
         question: dynamic?.question ?? slot.question[locale],
         options: dynamic
           ? dynamic.options.map((o) => ({ id: o.id, label: o.label, value: o.value }))
@@ -167,7 +170,7 @@ export async function startPromptSession(
   for (const [id, value] of Object.entries(input.slots ?? {})) {
     if (guide.slots.some((s) => s.id === id) && value.trim()) extraction.slots[id] = { value: value.trim().slice(0, 200), source: 'user', confidence: 1 };
   }
-  const plan = planSlots(guide, extraction.slots, { questionAsked: false });
+  const plan = planSlots(guide, extraction.slots, { questionAsked: false, isBroadGoal: extraction.isBroadGoal });
   // Soru kartı atlansa da girişe göre üretilmiş sorular saklanır: PromptCard'daki
   // "Varsayımlar (Değiştir)" aynı soruyu ve seçenekleri gösterir (toPromptCard).
   const questionOverrides = extraction.questions;
@@ -209,7 +212,7 @@ export async function answerPromptQuestions(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
-  session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions, session.questionOverrides);
+  session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions, session.questionOverrides, session.locale);
   session.pendingQuestions = [];
   const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] }, generic);
   session.versions.push(version);
@@ -236,8 +239,11 @@ export async function refinePromptSession(
 
   let meta: { refinementIds: string[]; instruction?: string };
   const setSlot = (slotId: string, value: string): SlotState | null => {
-    if (!guide.slots.some((s) => s.id === slotId)) return null;
-    return { value: value.trim().slice(0, SLOT_VALUE_MAX), source: 'user' };
+    const slot = guide.slots.find((s) => s.id === slotId);
+    if (!slot) return null;
+    const v = value.trim().slice(0, SLOT_VALUE_MAX);
+    const label = displayValue(slot, v, session.locale, { dynamic: session.questionOverrides?.[slotId] });
+    return { value: v, source: 'user', ...(label !== v ? { label } : {}) };
   };
 
   if ('refinementId' in input) {

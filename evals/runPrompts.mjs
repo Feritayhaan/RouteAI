@@ -11,6 +11,8 @@
 //  - sufficiencyScore (0-100): hedef AI yeterlilik rubriği, ilk kartın iki
 //    varyantının ortalaması (bağlam tamlığı, araç sentaksı, somutluk, ayar/negatif
 //    tutarlılığı; lib/promptBuilder/sufficiency.ts). Düşen kriterler satırda.
+//  - kart: howToUse promptun araçta kullanımını anlatıyor, varsayımlar kullanıcı
+//    dilinde (sufficiency.cardIssues)
 //  - ortalama gecikme ve token
 // Sonuç: evals/results/<YYYY-MM-DD>-prompts.json
 
@@ -24,7 +26,7 @@ const { memoryPromptStore, newPromptSessionId } = await import('../lib/promptBui
 const { openAIJsonLLM } = await import('../lib/promptBuilder/llm.ts');
 const { loadGuides } = await import('../lib/promptBuilder/guides.ts');
 const { loadCatalog } = await import('../lib/catalog/index.ts');
-const { sufficiencyScore } = await import('../lib/promptBuilder/sufficiency.ts');
+const { cardIssues, sufficiencyScore } = await import('../lib/promptBuilder/sufficiency.ts');
 
 const scenarios = readFileSync(path.join(ROOT, 'evals/prompts.jsonl'), 'utf8').split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l));
 const guides = loadGuides();
@@ -83,6 +85,7 @@ for (const sc of scenarios) {
     const productName = loadCatalog().products.find((p) => p.id === sc.productId)?.name ?? '';
     const scores = card.variants.map((v) => sufficiencyScore(v, { guide, goal: sc.goal, productName }));
     row.sufficiencyScore = Math.round(scores.reduce((a, x) => a + x.score, 0) / scores.length);
+    row.cardOk = cardIssues({ howToUse: card.howToUse, assumptions: card.assumptions }, { guide, goal: sc.goal, productName, locale: sc.locale }).length === 0;
     row.sufficiencyFailed = [...new Set(scores.flatMap((x) => Object.entries(x.criteria).filter(([, ok]) => !ok).map(([c]) => c)))];
     if (sc.refinementId) {
       const refined = await quietly(() => refinePromptSession({ promptSessionId: card.promptSessionId, refinementId: sc.refinementId }, d));
@@ -121,13 +124,14 @@ const summary = {
   variantsDiffer: rate('variantsDiffer'),
   languageOk: rate('languageOk'),
   refineReflected: rate('refineReflected'),
+  cardOk: rate('cardOk'),
   avgSufficiency: avg('sufficiencyScore'),
   avgLatencyMs: avg('latencyMs'),
   avgTokens: avg('tokens'),
 };
 const fmt = ({ hits, n }) => (n ? `${hits}/${n}` : 'n/a');
 out('');
-out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | yeterlilik ort. ${summary.avgSufficiency ?? 'n/a'}/100 | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
+out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | yeterlilik ort. ${summary.avgSufficiency ?? 'n/a'}/100 | kart (howToUse/varsayım) ${fmt(summary.cardOk)} | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
 
 const date = new Date().toISOString().slice(0, 10);
 const file = path.join(ROOT, 'evals/results', `${date}-prompts.json`);

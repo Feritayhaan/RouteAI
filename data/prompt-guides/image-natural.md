@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "image-natural"
-version: 2
+version: 3
 appliesTo: ["chatgpt-gpt-4o-image", "dall-e-3", "google-imagen-4", "gemini-3-pro-image", "flux1-pro"]
 modality: "image"
 promptLanguage: "en"

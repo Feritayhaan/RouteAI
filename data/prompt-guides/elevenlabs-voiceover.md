@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "elevenlabs-voiceover"
-version: 2
+version: 3
 appliesTo: ["elevenlabs"]
 modality: "audio"
 promptLanguage: "user"

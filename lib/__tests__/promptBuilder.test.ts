@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { YamlError, parseYamlSubset, parseScalar, splitFrontmatter, splitSections } from '../promptBuilder/yaml';
 import { guideRuleErrors, type Guide } from '../promptBuilder/guideSchema';
 import { loadGuides } from '../promptBuilder/guides';
-import { applyAnswers, planSlots } from '../promptBuilder/plan';
+import { applyAnswers, hasEnoughDetail, planSlots } from '../promptBuilder/plan';
 import { sanitizeQuestions } from '../promptBuilder/extract';
 import { checkPrompt, validateWithRepair } from '../promptBuilder/validate';
 import { answerPromptQuestions, refinePromptSession, startPromptSession, type PromptDeps } from '../promptBuilder/service';
@@ -115,7 +115,10 @@ type FakeSlot = string | null | { value: string | null; source: 'user' | 'inferr
 /** Akıllı varsayım: kullanıcı söylemedi, LLM amaca göre seçti (güven < MIN_CONFIDENCE). */
 const guess = (value: string) => ({ value, source: 'inferred' as const, confidence: 0.45 });
 
-function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: number; questions?: RawQuestion[] } = {}) {
+/** Promptun araçta kullanımını anlatan howToUse (sufficiency.howToUseIssues'tan geçer). */
+const HOW_TO_USE = ['Promptu Midjourney içine yapıştır; ek bir yer tutucu yok.', 'İlk çıktıda en-boy oranını ve ışığı kontrol et.', 'Takip mesajı olarak "aynı sahneyi daha sıcak ışıkla üret" yaz.'];
+
+function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: number; questions?: RawQuestion[]; isBroadGoal?: boolean } = {}) {
   const calls: JsonRequest[] = [];
   let failures = opts.failRegexTimes ?? 0;
   const llm = async (req: JsonRequest) => {
@@ -125,7 +128,7 @@ function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: 
       const slots = Object.entries(opts.extracted ?? {}).map(([id, v]) =>
         v !== null && typeof v === 'object' ? { id, ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0 }
       );
-      return { data: { slots, goalSummary: 'summary', ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
+      return { data: { slots, goalSummary: 'summary', isBroadGoal: opts.isBroadGoal ?? false, ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
     }
     const values = Object.fromEntries(input.slots.map((s: { id: string; value: string | null }) => [s.id, s.value ?? 'auto']));
     const ar = failures > 0 ? '' : ` --ar ${values.aspect === 'auto' ? '1:1' : values.aspect}`;
@@ -139,7 +142,7 @@ function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: 
         ],
         assumptions: [{ slotId: 'mood', value: values.mood, why: 'chosen' }],
         suggestedRefinements: [{ label: 'Try teal', slotId: 'mood', value: 'teal', instruction: null }],
-        howToUse: ['1', '2', '3', '4'],
+        howToUse: [...HOW_TO_USE, 'fazladan adım'],
       },
       tokens: 20,
     };
@@ -157,21 +160,29 @@ const full = { subject: 'a bakery logo', style: 'illustration', aspect: '1:1', m
 describe('plan (LLM yok)', () => {
   const g = midjourney();
 
-  const known = { subject: { value: 'cat', source: 'user' as const, confidence: 0.9 }, style: { value: 'x', source: 'inferred' as const, confidence: 0.4 } };
+  const user = (value: string, confidence = 0.9) => ({ value, source: 'user' as const, confidence });
+  const known = { subject: user('cat'), aspect: user('16:9'), style: guess('x') };
 
-  it('anlamlı bağlam varsa (forceAutoGenerate varsayılan) soru kartı yok; akıllı varsayım ezilmez, source default', () => {
+  it('kullanıcı en az 2 açık ayrıntı verdiyse soru kartı yok; akıllı varsayım ezilmez, source default', () => {
     const plan = planSlots(g, known, { questionAsked: false });
     assert.deepStrictEqual(plan.questions, []);
     assert.deepStrictEqual(plan.slots.subject, { value: 'cat', source: 'user' });
     assert.deepStrictEqual(plan.slots.style, { value: 'x', source: 'default' }, 'LLM değeri kalır, varsayım olarak işaretlenir');
     assert.strictEqual(plan.slots.mood.source, 'default');
-    assert.strictEqual(plan.slots.detail.value, 'minimal'); // default seçenek değeri
+    assert.deepStrictEqual(plan.slots.detail, { value: null, source: 'default' }, "sığ varsayılan yok: detail 'infer'");
   });
 
-  it('güçlü ima (güven >= 0.65) inferred kalır ve tek başına anlamlı bağlam sayılır', () => {
-    const plan = planSlots(g, { style: { value: 'watercolor', source: 'inferred', confidence: 0.7 } }, { questionAsked: false });
+  it("tüm 'high' slotlar güvenle (>= 0.65) çıkarıldıysa soru yok", () => {
+    const inferred = (value: string) => ({ value, source: 'inferred' as const, confidence: 0.7 });
+    const plan = planSlots(g, { subject: inferred('a fox'), style: inferred('watercolor'), aspect: inferred('1:1') }, { questionAsked: false });
     assert.deepStrictEqual(plan.questions, []);
     assert.deepStrictEqual(plan.slots.style, { value: 'watercolor', source: 'inferred' });
+  });
+
+  it("tek açık ayrıntı yetmez: eksik 'high' slotlar sorulur (en fazla 3, rehber sırasıyla)", () => {
+    const plan = planSlots(g, { subject: user('cat'), style: guess('x') }, { questionAsked: false });
+    assert.deepStrictEqual(plan.questions.map((q) => q.id), ['style', 'aspect']);
+    assert.ok(!hasEnoughDetail(g, { subject: user('cat'), aspect: user('1:1', 0.7) }), 'güveni 0.75 altı açık ayrıntı sayılmaz');
   });
 
   it("giriş aşırı belirsizse eksik ya da düşük güvenli 'high' slotlar sorulur, en fazla 3, rehber sırasıyla", () => {
@@ -181,9 +192,14 @@ describe('plan (LLM yok)', () => {
     assert.deepStrictEqual(plan.slots.style, { value: 'illustration', source: 'default' }, 'sorulan slotta da LLM değeri kalır');
   });
 
+  it('geniş hedef (isBroadGoal): ayrıntı sayısına bakılmadan önce soru kartı', () => {
+    const plan = planSlots(g, { subject: user('cat'), mood: user('calm'), style: guess('x') }, { questionAsked: false, isBroadGoal: true });
+    assert.deepStrictEqual(plan.questions.map((q) => q.id), ['style', 'aspect']);
+  });
+
   it('forceAutoGenerate: false -> eski davranış: eksik/düşük güvenli high slotlar sorulur', () => {
     const plan = planSlots(g, known, { questionAsked: false, forceAutoGenerate: false });
-    assert.deepStrictEqual(plan.questions.map((q) => q.id), ['style', 'aspect']);
+    assert.deepStrictEqual(plan.questions.map((q) => q.id), ['style']);
     assert.strictEqual(plan.slots.subject.source, 'user');
   });
 
@@ -196,7 +212,7 @@ describe('plan (LLM yok)', () => {
   it("cevaplar: seçenek id'si -> değer, 'auto' -> default, metin -> serbest", () => {
     const plan = planSlots(g, {}, { questionAsked: false });
     const next = applyAnswers(g, plan.slots, { subject: 'product', style: 'auto', aspect: 'sinematik geniş' }, ['subject', 'style', 'aspect']);
-    assert.deepStrictEqual(next.subject, { value: 'a product', source: 'user' });
+    assert.deepStrictEqual(next.subject, { value: 'a product', source: 'user', label: 'Bir ürün' }, 'etiket kullanıcı dilinde');
     assert.deepStrictEqual(next.style, { value: null, source: 'default' });
     assert.deepStrictEqual(next.aspect, { value: 'sinematik geniş', source: 'user' });
   });
@@ -261,14 +277,25 @@ describe('prompt oturumu', () => {
     assert.strictEqual(r.tokens, 30);
   });
 
-  it("eksik 'high' slot olsa da kullanıcı bilgisi varsa soru kartı YOK: akıllı varsayımlarla doğrudan PromptCard", async () => {
-    const { llm } = fakeLLM({ extracted: { subject: 'a bakery logo', style: guess('warm hand-drawn logo'), aspect: guess('1:1') } });
+  it("detaylı hedef (en az 2 açık ayrıntı): eksik 'high' slotlar akıllı varsayımla dolar, doğrudan PromptCard", async () => {
+    const { llm } = fakeLLM({ extracted: { subject: 'a bakery logo', mood: 'warm and cozy', style: guess('warm hand-drawn logo'), aspect: guess('1:1') } });
     const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation, locale: 'en' }, deps(llm));
     if ('error' in r || r.card.type !== 'prompt') return assert.fail('prompt kartı yok');
     assert.match(r.card.variants[0].prompt, /a bakery logo, warm hand-drawn logo/, 'akıllı varsayım prompta girdi');
     assert.match(r.card.variants[0].prompt, /--ar 1:1/);
-    assert.deepStrictEqual(r.card.assumptions.map((a) => a.slotId).sort(), ['aspect', 'detail', 'mood', 'style']);
-    assert.deepStrictEqual(r.card.filledBy, { user: 1, inferred: 0, default: 4 });
+    assert.deepStrictEqual(r.card.assumptions.map((a) => a.slotId).sort(), ['aspect', 'detail', 'style']);
+    assert.deepStrictEqual(r.card.filledBy, { user: 2, inferred: 0, default: 3 });
+  });
+
+  it('geniş hedef ("logo yapmak istiyorum"): çıkarılan değerler güvenli görünse de önce navigasyon soru kartı', async () => {
+    const inferred = (value: string) => ({ value, source: 'inferred' as const, confidence: 0.8 });
+    const { llm, calls } = fakeLLM({ isBroadGoal: true, extracted: { subject: inferred('a logo'), style: inferred('flat vector logo'), aspect: inferred('1:1') } });
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'Logo yapmak istiyorum', conversation: [{ role: 'user', content: 'Logo yapmak istiyorum' }], locale: 'tr' }, deps(llm));
+    if ('error' in r || r.card.type !== 'prompt_question') return assert.fail('soru kartı yok');
+    assert.deepStrictEqual(r.card.questions.map((q) => q.slotId), ['subject', 'style', 'aspect']);
+    assert.deepStrictEqual(calls.map((c) => c.name), ['slot_extraction'], 'prompt üretilmedi');
+    assert.match(calls[0].system, /isBroadGoal: true when the user only names a general goal/);
+    assert.ok((calls[0].schema as { required: string[] }).required.includes('isBroadGoal'));
   });
 
   it("giriş aşırı belirsizse tek soru kartı; cevaptan sonra PromptCard", async () => {
@@ -440,7 +467,7 @@ describe('girişe göre dinamik sorular', () => {
 
   it('soru kartı atlansa da girişe göre üretilmiş soru PromptCard varsayımında "Değiştir" seçenekleri olur', async () => {
     const { llm, calls } = fakeLLM({
-      extracted: { subject: 'a bakery logo', style: guess('warm hand-drawn logo'), aspect: guess('1:1') },
+      extracted: { subject: 'a bakery logo', mood: 'warm', style: guess('warm hand-drawn logo'), aspect: guess('1:1') },
       questions: [{ slotId: 'style', question: 'Logon nasıl bir tarzda olsun?', options: [
         { label: 'Minimal ve modern', value: 'minimal modern flat logo' },
         { label: 'El çizimi, samimi', value: 'hand-drawn rustic logo' },
@@ -476,7 +503,7 @@ describe('girişe göre dinamik sorular', () => {
     const plan = planSlots(g, {}, { questionAsked: false });
     const overrides = { style: { question: 'q', options: [{ id: 'o1', label: 'Minimal', value: 'minimal flat' }, { id: 'o2', label: 'Vintage', value: 'vintage badge' }] } };
     const next = applyAnswers(g, plan.slots, { style: 'o2', aspect: 'kendi formatım' }, ['style', 'aspect'], overrides);
-    assert.deepStrictEqual(next.style, { value: 'vintage badge', source: 'user' });
+    assert.deepStrictEqual(next.style, { value: 'vintage badge', source: 'user', label: 'Vintage' });
     assert.deepStrictEqual(next.aspect, { value: 'kendi formatım', source: 'user' });
   });
 });
