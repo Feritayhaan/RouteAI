@@ -5,26 +5,27 @@ Durum: data/models.json güncellendi
 ## Karar: başarılı
 
 - Artificial Analysis: anahtar tanımlı değil, atlandı (hata sayılmadı).
+- Kısmi hata: 1 hata; beklenen kaynakların hepsinden veri geldi.
 
 ## Kaynaklar
 
 - Artificial Analysis: başarısız / atlandı — eski veri korundu
-- LMArena: 2026-10-12
+- LMArena: 2026-10-13
 - Artificial Analysis: AA_API_KEY yok, atlandı (eski veri korunur)
 
-Toplam model: 635 (Artificial Analysis: 0, LMArena: 635, iki kaynakta: 0)
+Toplam model: 621 (Artificial Analysis: 0, LMArena: 621, iki kaynakta: 0)
 
 ## Hatalar
 
-- yok
+- LMArena image_to_video offset=0: HTTP 429
 
 ## Yeni modeller
 
-11: gemini-4-argon-high, claude-sonnet-5-5-xhigh, gpt-6-1-sol-max, step-5-preview, mistral-large-4, claude-sonnet-5-5-high, claude-haiku-5-5-high, grok-imagine-image-2-0-canvas, gemini-nano-banana-2-1, grok-imagine-image-2-0-20260801, ideogram-4-5
+- yok
 
 ## Kaybolan modeller
 
-grok-imagine-image-2-0-low
+flux-3-video-20260811, grok-imagine-video-1-5-720p, grok-imagine-video-480p, hailuo-02-fast, hidream-o1-video-1-0, kling-v2-1-standard, kling-v3-pro, runway-gen4-turbo, vidu-q2-pro, vidu-q2-turbo, vidu-q3-pro, wan2-5-i2v-preview, wan2-6-i2v, wan2-7-i2v
 
 ## Olası eşleşmeler (alias adayı — data/model-aliases.json'a sadece eminsen ekle)
 
@@ -50,14 +51,12 @@ grok-imagine-image-2-0-low
 - LMArena image_edit: kategori 'overall' (59/103 satır)
 - LMArena text_to_video: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena text_to_video: kategori 'overall' (48/48 satır)
-- LMArena image_to_video: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena image_to_video: kategori 'overall' (48/48 satır)
 - LMArena video_edit: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena video_edit: kategori 'overall' (10/10 satır)
 
 ## Yanıtlarda görülen alanlar
 
-- LMArena configs: agent/latest, agent/full, agent_bash_recovery_steps/latest, agent_bash_recovery_steps/full, agent_praise_complaint/latest, agent_praise_complaint/full, agent_steerability/latest, agent_steerability/full, agent_task_outcome_explicit/latest, agent_task_outcome_explicit/full, agent_tool_hallucination/latest, agent_tool_hallucination/full, document/latest, document/full, document_style_control/latest, document_style_control/full, image_edit/latest, image_edit/full, image_to_video/latest, image_to_video/full, search/latest, search/full, search_factuality/latest, search_factuality/full, search_style_control/latest, search_style_control/full, text/latest, text/full, text_factuality/latest, text_factuality/full, text_style_control/latest, text_style_control/full, text_to_image/latest, text_to_image/full, text_to_video/latest, text_to_video/full, video_edit/latest, video_edit/full, vision/latest, vision/full, vision_style_control/latest, vision_style_control/full, webdev/latest, webdev/full
+- LMArena configs: agent/latest, agent/full, agent_bash_recovery_steps/latest, agent_bash_recovery_steps/full, agent_bash_reliability_no_prereq/latest, agent_bash_reliability_no_prereq/full, agent_praise_complaint/latest, agent_praise_complaint/full, agent_steerability/latest, agent_steerability/full, agent_task_outcome_explicit/latest, agent_task_outcome_explicit/full, agent_tool_hallucination/latest, agent_tool_hallucination/full, document/latest, document/full, document_style_control/latest, document_style_control/full, image_edit/latest, image_edit/full, image_to_video/latest, image_to_video/full, search/latest, search/full, search_factuality/latest, search_factuality/full, search_style_control/latest, search_style_control/full, text/latest, text/full, text_factuality/latest, text_factuality/full, text_style_control/latest, text_style_control/full, text_to_image/latest, text_to_image/full, text_to_video/latest, text_to_video/full, video_edit/latest, video_edit/full, vision/latest, vision/full, vision_style_control/latest, vision_style_control/full, webdev/latest, webdev/full
 - LMArena text: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena webdev: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena search: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
@@ -65,7 +64,6 @@ grok-imagine-image-2-0-low
 - LMArena text_to_image: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena image_edit: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena text_to_video: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
-- LMArena image_to_video: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena video_edit: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 
 Kaynak ve lisans: skorlar Artificial Analysis (artificialanalysis.ai) ve LMArena (lmarena.ai) verisidir; gösterilirken kaynak adı görünür olmalı.

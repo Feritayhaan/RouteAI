@@ -2685,16 +2685,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1474.5724124696908,
-        "ciLow": 1467.52256173987,
-        "ciHigh": 1481.6222631995113,
-        "votes": 121427,
-        "rank": 5,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1479.175705007644,
         "ciLow": 1471.160077642788,
@@ -2724,16 +2714,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1477.4129374929146,
-        "ciLow": 1470.1970331155082,
-        "ciHigh": 1484.628841870321,
-        "votes": 15729,
-        "rank": 4,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -3231,27 +3211,6 @@
         "ciHigh": 1510.2746495116771,
         "votes": 1302,
         "rank": 3,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "flux-3-video-20260811",
-    "name": "flux-3-video-20260811",
-    "creator": "bfl",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1449.4473750556915,
-        "ciLow": 1444.504025113913,
-        "ciHigh": 1454.39072499747,
-        "votes": 37042,
-        "rank": 9,
         "fetchedAt": "2026-10-12"
       }
     ]
@@ -4306,16 +4265,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1488.4906811724961,
-        "ciLow": 1477.5724223845652,
-        "ciHigh": 1499.408939960427,
-        "votes": 3734,
-        "rank": 2,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1516.2118921315541,
         "ciLow": 1500.7732630385372,
@@ -4335,16 +4284,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1464.827931386498,
-        "ciLow": 1459.286933491042,
-        "ciHigh": 1470.3689292819538,
-        "votes": 87155,
-        "rank": 6,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -7826,27 +7765,6 @@
     ]
   },
   {
-    "id": "grok-imagine-video-1-5-720p",
-    "name": "grok-imagine-video-1.5-720p",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1456.0170160700688,
-        "ciLow": 1451.8293083959477,
-        "ciHigh": 1460.2047237441898,
-        "votes": 137459,
-        "rank": 8,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
     "id": "grok-imagine-video-1-5-agent",
     "name": "grok-imagine-video-1.5-agent",
     "creator": "xai",
@@ -7868,27 +7786,6 @@
     ]
   },
   {
-    "id": "grok-imagine-video-480p",
-    "name": "grok-imagine-video-480p",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1384.855331216425,
-        "ciLow": 1376.441430920893,
-        "ciHigh": 1393.2692315119568,
-        "votes": 19429,
-        "rank": 16,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
     "id": "grok-imagine-video-720p",
     "name": "grok-imagine-video-720p",
     "creator": "xai",
@@ -7897,16 +7794,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1415.3041442928777,
-        "ciLow": 1411.1784058594844,
-        "ciHigh": 1419.429882726271,
-        "votes": 554050,
-        "rank": 12,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -7941,27 +7828,6 @@
     ]
   },
   {
-    "id": "hailuo-02-fast",
-    "name": "hailuo-02-fast",
-    "creator": "minimax",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1193.9192486573502,
-        "ciLow": 1183.2845499786897,
-        "ciHigh": 1204.5539473360109,
-        "votes": 22519,
-        "rank": 41,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
     "id": "hailuo-02-pro",
     "name": "hailuo-02-pro",
     "creator": "minimax",
@@ -7970,16 +7836,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1228.6496259989663,
-        "ciLow": 1218.0066708110235,
-        "ciHigh": 1239.292581186909,
-        "votes": 21743,
-        "rank": 35,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -8003,16 +7859,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1223.709098146764,
-        "ciLow": 1214.1562370929146,
-        "ciHigh": 1233.2619592006135,
-        "votes": 21785,
-        "rank": 38,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1181.0974550422366,
         "ciLow": 1169.0420685991041,
@@ -8034,16 +7880,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1261.9720613447057,
-        "ciLow": 1257.066083188608,
-        "ciHigh": 1266.8780395008037,
-        "votes": 405786,
-        "rank": 29,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1205.9682009698774,
         "ciLow": 1199.9894891614672,
@@ -8063,16 +7899,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1441.6631836234085,
-        "ciLow": 1431.8358007508234,
-        "ciHigh": 1451.4905664959936,
-        "votes": 70640,
-        "rank": 10,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -8112,27 +7938,6 @@
         "ciHigh": 1119.8795722060634,
         "votes": 66906,
         "rank": 47,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "hidream-o1-video-1-0",
-    "name": "hidream-o1-video-1.0",
-    "creator": "hidream",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1456.465317098215,
-        "ciLow": 1448.546782739169,
-        "ciHigh": 1464.383851457261,
-        "votes": 6488,
-        "rank": 7,
         "fetchedAt": "2026-10-12"
       }
     ]
@@ -8388,16 +8193,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1197.7731120974167,
-        "ciLow": 1182.1175144221288,
-        "ciHigh": 1213.4287097727051,
-        "votes": 5462,
-        "rank": 40,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -9117,16 +8912,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1275.5587970208678,
-        "ciLow": 1263.0424336234057,
-        "ciHigh": 1288.0751604183297,
-        "votes": 3795,
-        "rank": 27,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1219.8113419615956,
         "ciLow": 1202.4246318837777,
@@ -9146,16 +8931,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1293.953181223861,
-        "ciLow": 1286.1787690963451,
-        "ciHigh": 1301.727593351377,
-        "votes": 202113,
-        "rank": 26,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -9252,64 +9027,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1234.9951574127272,
-        "ciLow": 1227.1280144732912,
-        "ciHigh": 1242.8623003521632,
-        "votes": 29824,
-        "rank": 34,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1162.895222613543,
         "ciLow": 1153.0265816270844,
         "ciHigh": 1172.7638636000015,
         "votes": 14104,
         "rank": 40,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "kling-v2-1-standard",
-    "name": "kling-v2.1-standard",
-    "creator": "kling",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1228.632113891771,
-        "ciLow": 1220.2977599334608,
-        "ciHigh": 1236.966467850081,
-        "votes": 29957,
-        "rank": 36,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "kling-v3-pro",
-    "name": "kling-v3-pro",
-    "creator": "kling",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1354.014060785636,
-        "ciLow": 1348.501149004131,
-        "ciHigh": 1359.526972567141,
-        "votes": 206221,
-        "rank": 19,
         "fetchedAt": "2026-10-12"
       }
     ]
@@ -9976,16 +9699,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1159.3500255361387,
-        "ciLow": 1154.4836120529953,
-        "ciHigh": 1164.216439019282,
-        "votes": 262336,
-        "rank": 45,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1154.0723741728425,
         "ciLow": 1146.4491714412002,
@@ -10449,16 +10162,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1495.4129234217028,
-        "ciLow": 1490.2078197285562,
-        "ciHigh": 1500.6180271148494,
-        "votes": 57112,
-        "rank": 1,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -11976,16 +11679,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1243.5810110261416,
-        "ciLow": 1227.3901804332168,
-        "ciHigh": 1259.7718416190667,
-        "votes": 23364,
-        "rank": 32,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1207.2528505881646,
         "ciLow": 1191.596023722529,
@@ -12175,16 +11868,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 997.073436049672,
-        "ciLow": 983.4029799167074,
-        "ciHigh": 1010.7438921826363,
-        "votes": 8635,
-        "rank": 48,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1009.036038328957,
         "ciLow": 993.6952398408383,
@@ -12204,16 +11887,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1299.2575526319624,
-        "ciLow": 1291.9523015567133,
-        "ciHigh": 1306.5628037072115,
-        "votes": 126710,
-        "rank": 25,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -13532,16 +13205,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1225.904100719842,
-        "ciLow": 1206.9286716217057,
-        "ciHigh": 1244.8795298179784,
-        "votes": 1585,
-        "rank": 37,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1206.1559669963058,
         "ciLow": 1183.849021196529,
@@ -13561,16 +13224,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1108.474233542956,
-        "ciLow": 1092.2395207062023,
-        "ciHigh": 1124.70894637971,
-        "votes": 9521,
-        "rank": 46,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -14024,27 +13677,6 @@
     ]
   },
   {
-    "id": "runway-gen4-turbo",
-    "name": "runway-gen4-turbo",
-    "creator": "runway",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1052.348586663998,
-        "ciLow": 1038.9601203663601,
-        "ciHigh": 1065.7370529616358,
-        "votes": 6801,
-        "rank": 47,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
     "id": "rwkv-4-raven-14b",
     "name": "RWKV-4-Raven-14B",
     "creator": "unknown",
@@ -14097,16 +13729,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1307.197082115737,
-        "ciLow": 1300.0601507665936,
-        "ciHigh": 1314.3340134648806,
-        "votes": 245206,
-        "rank": 24,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1255.9639765937768,
         "ciLow": 1249.3121886412073,
@@ -14128,16 +13750,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1185.3004857912556,
-        "ciLow": 1177.5405334190627,
-        "ciHigh": 1193.0604381634485,
-        "votes": 33734,
-        "rank": 42,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1112.5816050440721,
         "ciLow": 1103.0025751660378,
@@ -14157,16 +13769,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1272.9701722884283,
-        "ciLow": 1265.2399265644385,
-        "ciHigh": 1280.7004180124177,
-        "votes": 34019,
-        "rank": 28,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -14964,16 +14566,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1165.789899762161,
-        "ciLow": 1149.6264663764498,
-        "ciHigh": 1181.9533331478724,
-        "votes": 10303,
-        "rank": 44,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1164.410364794047,
         "ciLow": 1148.0719241187599,
@@ -14993,16 +14585,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1258.0304185314144,
-        "ciLow": 1247.6516285350635,
-        "ciHigh": 1268.4092085277653,
-        "votes": 26081,
-        "rank": 30,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -15026,16 +14608,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1398.0958709582592,
-        "ciLow": 1387.5989501661693,
-        "ciHigh": 1408.5927917503493,
-        "votes": 25116,
-        "rank": 13,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1364.1829129498647,
         "ciLow": 1349.796374151496,
@@ -15055,16 +14627,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1390.2367113612709,
-        "ciLow": 1381.666469293481,
-        "ciHigh": 1398.806953429061,
-        "votes": 53089,
-        "rank": 14,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -15088,16 +14650,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1385.0582064359148,
-        "ciLow": 1376.2307955379201,
-        "ciHigh": 1393.8856173339093,
-        "votes": 99804,
-        "rank": 15,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1361.91151855212,
         "ciLow": 1351.462052318669,
@@ -15117,16 +14669,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1371.5950379327135,
-        "ciLow": 1362.1133405504402,
-        "ciHigh": 1381.076735314987,
-        "votes": 54380,
-        "rank": 17,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -15150,16 +14692,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1331.4941173383877,
-        "ciLow": 1319.8745407112247,
-        "ciHigh": 1343.1136939655507,
-        "votes": 32367,
-        "rank": 20,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1340.1572781135928,
         "ciLow": 1327.5659325280556,
@@ -15181,16 +14713,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1257.442598049954,
-        "ciLow": 1247.6252262835956,
-        "ciHigh": 1267.2599698163124,
-        "votes": 26272,
-        "rank": 31,
-        "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
         "key": "text_to_video",
         "value": 1248.1755661246511,
         "ciLow": 1236.2806199587467,
@@ -15210,16 +14732,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1326.044175905657,
-        "ciLow": 1316.53992250091,
-        "ciHigh": 1335.5484293104037,
-        "votes": 41194,
-        "rank": 21,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -15296,69 +14808,6 @@
     ]
   },
   {
-    "id": "vidu-q2-pro",
-    "name": "vidu-q2-pro",
-    "creator": "shengshu",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1223.3551139030083,
-        "ciLow": 1206.6162322379437,
-        "ciHigh": 1240.0939955680728,
-        "votes": 2614,
-        "rank": 39,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "vidu-q2-turbo",
-    "name": "vidu-q2-turbo",
-    "creator": "shengshu",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1243.5536818841956,
-        "ciLow": 1226.816996275521,
-        "ciHigh": 1260.2903674928707,
-        "votes": 2509,
-        "rank": 33,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "vidu-q3-pro",
-    "name": "vidu-q3-pro",
-    "creator": "shengshu",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1363.148682824981,
-        "ciLow": 1354.4169110974506,
-        "ciHigh": 1371.8804545525115,
-        "votes": 36679,
-        "rank": 18,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
     "id": "wan-v2-2-a14b",
     "name": "wan-v2.2-a14b",
     "creator": "alibaba",
@@ -15367,16 +14816,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1170.1965488322867,
-        "ciLow": 1160.1863483836935,
-        "ciHigh": 1180.2067492808799,
-        "votes": 27054,
-        "rank": 43,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
@@ -15406,27 +14845,6 @@
         "ciHigh": 1183.6938337021206,
         "votes": 723697,
         "rank": 50,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "wan2-5-i2v-preview",
-    "name": "wan2.5-i2v-preview",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1321.3786104559142,
-        "ciLow": 1311.0749254673865,
-        "ciHigh": 1331.682295444442,
-        "votes": 16907,
-        "rank": 22,
         "fetchedAt": "2026-10-12"
       }
     ]
@@ -15469,27 +14887,6 @@
         "ciHigh": 1254.017228392171,
         "votes": 36378,
         "rank": 25,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "wan2-6-i2v",
-    "name": "wan2.6-i2v",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1309.5358287019499,
-        "ciLow": 1302.762980447742,
-        "ciHigh": 1316.3086769561576,
-        "votes": 121082,
-        "rank": 23,
         "fetchedAt": "2026-10-12"
       }
     ]
@@ -15553,27 +14950,6 @@
         "ciHigh": 1334.1488360061576,
         "votes": 54050,
         "rank": 21,
-        "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "wan2-7-i2v",
-    "name": "wan2.7-i2v",
-    "creator": "wan",
-    "aliases": [],
-    "modalities": [
-      "video"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1428.2142043136757,
-        "ciLow": 1423.3784181201736,
-        "ciHigh": 1433.0499905071777,
-        "votes": 85521,
-        "rank": 11,
         "fetchedAt": "2026-10-12"
       }
     ]
@@ -15670,16 +15046,6 @@
       "video"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "image_to_video",
-        "value": 1479.8060779755199,
-        "ciLow": 1469.0141977027752,
-        "ciHigh": 1490.5979582482646,
-        "votes": 3442,
-        "rank": 3,
-        "fetchedAt": "2026-10-12"
-      },
       {
         "source": "lmarena",
         "key": "text_to_video",
