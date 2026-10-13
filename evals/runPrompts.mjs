@@ -3,7 +3,7 @@
 //   npm run eval:prompts        (OPENAI_API_KEY gerekir; yoksa her senaryo skipped)
 //
 // Kontroller:
-//  - soru kartı: bilgi konuşmada verilmişse ÇIKMAMALI; eksik 'high' slot varsa tek kart çıkmalı
+//  - soru kartı: konuşmada anlamlı bilgi varsa ÇIKMAMALI (eksikler akıllı varsayımla dolar); giriş aşırı belirsizse tek kart çıkmalı
 //  - rehber doğrulayıcıları geçiyor mu (iki varyant da)
 //  - iki varyant anlamlı ölçüde farklı mı (kelime Jaccard benzerliği < 0.9)
 //  - prompt dili doğru mu (promptLanguage 'en' -> Türkçe harf yok; 'user' + tr -> Türkçe)

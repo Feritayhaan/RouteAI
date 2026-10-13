@@ -1,5 +1,5 @@
 // Prompt oturumu akışı:
-//   başlat: oturum -> extract -> plan -> (soru kartı) ya da (generate -> validate -> PromptCard)
+//   başlat: oturum -> extract -> plan -> (giriş aşırı belirsizse soru kartı) ya da (generate -> validate -> PromptCard)
 //   cevap:  soru kartı cevapları -> generate -> validate -> PromptCard
 //   iyileştir: hazır buton | varsayım değişikliği | serbest talimat -> yeni versiyon
 // Her sonuç oturuma yeni versiyon olarak eklenir. Oturum başına en fazla
@@ -168,9 +168,9 @@ export async function startPromptSession(
     if (guide.slots.some((s) => s.id === id) && value.trim()) extraction.slots[id] = { value: value.trim().slice(0, 200), source: 'user', confidence: 1 };
   }
   const plan = planSlots(guide, extraction.slots, { questionAsked: false });
-  const questionOverrides = Object.fromEntries(
-    plan.questions.filter((q) => extraction.questions[q.id]).map((q) => [q.id, extraction.questions[q.id]])
-  );
+  // Soru kartı atlansa da girişe göre üretilmiş sorular saklanır: PromptCard'daki
+  // "Varsayımlar (Değiştir)" aynı soruyu ve seçenekleri gösterir (toPromptCard).
+  const questionOverrides = extraction.questions;
 
   const session: PromptSession = {
     id: deps.newId(),
