@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "chat-general"
-version: 1
+version: 2
 appliesTo: ["chatgpt-gpt-5", "claude-ai-claude-4", "gemini-25-pro"]
 modality: "text"
 promptLanguage: "user"
@@ -171,12 +171,18 @@ refinements:
     tr: "Adım adım"
   patch:
     format: "numbered steps"
-checklist: ["Role", "Context", "Task", "Output format", "Constraints"]
+checklist: ["Role", "Context", "Task", "Output format", "Length", "Constraints"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 6000
   message: "RouteAI limit: keep the prompt under 6000 characters."
+- id: "format"
+  type: "regex"
+  value: "(format|bullet|madde|table|tablo|paragraph|paragraf|steps|adım|list|liste|words|kelime|sentences|cümle|json|markdown|başlık|heading|outline)"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the output format (e.g. bullet list, table, numbered steps)."
 ---
 
 ## Sözdizimi
@@ -185,11 +191,20 @@ KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber 
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Rol: [rol]. Bağlam: [bağlam]. Görev: [görev]. Format: [format], [uzunluk]. Kısıtlar: [kısıtlar]. Kitle: [kitle]. Ton: [ton].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Rol: [rol]. Bağlam: [kullanıcının durumu ve verdiği tüm ayrıntılar]. Görev: [tek, net görev]. Format: [format], [uzunluk]. Kısıtlar: [kısıtlar]. Kitle: [kitle]. Ton: [ton].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
+- Bağlam, görev ve çıktı formatı ayrı ayrı yazılır; model sohbeti görmediği için bağlam eksiksiz verilir.
 
 ## Örnekler
 

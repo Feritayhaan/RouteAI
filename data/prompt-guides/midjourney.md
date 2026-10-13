@@ -2,7 +2,7 @@
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 # Not: `aspect-ratio` doğrulayıcısı P7 promptundaki örnekten; resmi dokümanla doğrulanmalı.
 id: "midjourney"
-version: 1
+version: 2
 appliesTo: ["midjourney-v7"]
 modality: "image"
 promptLanguage: "en"
@@ -169,7 +169,7 @@ refinements:
     tr: "Fotogerçekçi"
   patch:
     style: "photorealistic photo"
-checklist: ["Concrete main subject", "Style or medium stated", "Lighting or mood stated", "Aspect ratio set"]
+checklist: ["Concrete main subject", "Setting stated", "Style or medium stated", "Composition or camera angle stated", "Lighting or mood stated", "Aspect ratio set once"]
 validators:
 - id: "aspect-ratio"
   type: "regex"
@@ -179,6 +179,11 @@ validators:
   type: "maxLength"
   value: 1500
   message: "RouteAI limit: keep the prompt under 1500 characters."
+- id: "single-aspect"
+  type: "forbidRegex"
+  value: "--ar[\\s\\S]*--ar"
+  criterion: "consistency"
+  message: "Use a single --ar parameter."
 ---
 
 ## Sözdizimi
@@ -187,11 +192,21 @@ KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken er
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu], [stil/araç], [kompozisyon], [ışık ve hava], [ayrıntılar], ardından en-boy oranı.
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu ve eylem], [ortam], [stil/araç], [kompozisyon ve çekim açısı], [ışık ve hava], [renk paleti], [ayrıntılar], ardından en-boy oranı. Virgülle ayrılmış kısa tarifler; tam cümle şart değil.
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Araca seslenme yok ("Please create an image of...", "Lütfen..."): doğrudan konu/sahne ile başla.
+- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.
+- Tek bir en-boy oranı verilir; ayarlarda farklı bir oran yazılmaz.
 
 ## Örnekler
 

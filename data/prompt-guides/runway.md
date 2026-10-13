@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "runway"
-version: 1
+version: 2
 appliesTo: ["runway-gen-3"]
 modality: "video"
 promptLanguage: "en"
@@ -169,12 +169,24 @@ refinements:
     en: "More motion detail"
     tr: "Hareketi detaylandır"
   instruction: "Describe the subject movement more precisely."
-checklist: ["One clear subject and action", "Camera movement stated", "Lighting stated", "Style stated"]
+checklist: ["One clear subject and action", "Setting stated", "Camera movement stated", "Lighting stated", "Style stated"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 1000
   message: "RouteAI limit: keep the prompt under 1000 characters."
+- id: "camera"
+  type: "regex"
+  value: "\\b(camera|shot|pan|panning|tilt|zoom|dolly|push-in|pull-back|orbit|orbiting|tracking|handheld|static|crane|aerial|close-up|wide)\\b"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the camera movement or framing (e.g. slow push-in, static wide shot)."
+- id: "no-foreign-params"
+  type: "forbidRegex"
+  value: "(^|\\s)--[a-z]+"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
 ---
 
 ## Sözdizimi
@@ -183,11 +195,21 @@ KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişi
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [kamera hareketi]: [konu] [eylem], [ortam]. [ışık]. [stil]. [tempo].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [kamera hareketi ve çekim]: [konu] [tek, net eylem], [ortam]. [ışık]. [stil]. [tempo].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Araca seslenme yok ("Please create an image of...", "Lütfen..."): doğrudan konu/sahne ile başla.
+- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.
+- Tek sahne, tek ana eylem; kamera hareketi açıkça yazılır.
 
 ## Örnekler
 

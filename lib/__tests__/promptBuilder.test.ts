@@ -221,14 +221,15 @@ describe('doğrulama ve tek onarım', () => {
 
   it('başarısız varyant için BİR onarım; ikinci kez de başarısızsa "kontrol edilmedi"', async () => {
     const session = { id: 's', productId: 'midjourney-v7', guideId: g.id, guideVersion: 1, goal: 'logo', locale: 'en' as const, slots: {}, questionAsked: false, pendingQuestions: [], versions: [], refinementCount: 0 };
-    const base = { variants: [{ id: 'safe' as const, prompt: 'cat --ar 1:1', negativePrompt: null, settings: [] }, { id: 'creative' as const, prompt: 'cat', negativePrompt: null, settings: [] }], assumptions: [], suggestedRefinements: [], howToUse: [] };
+    const cat = 'a ginger cat asleep on a sunny windowsill, watercolor, soft morning light';
+    const base = { variants: [{ id: 'safe' as const, prompt: `${cat} --ar 1:1`, negativePrompt: null, settings: [] }, { id: 'creative' as const, prompt: cat, negativePrompt: null, settings: [] }], assumptions: [], suggestedRefinements: [], howToUse: [] };
 
     const ok = fakeLLM();
     const fixed = await validateWithRepair(base, { session, guide: g, productName: 'MJ', llm: ok.llm });
     assert.strictEqual(ok.calls.length, 1);
     assert.ok(fixed.repaired);
     assert.deepStrictEqual(fixed.variants.map((v) => v.validation.status), ['passed', 'passed']);
-    assert.strictEqual(fixed.variants[0].prompt, 'cat --ar 1:1', 'geçen varyant korunur');
+    assert.strictEqual(fixed.variants[0].prompt, `${cat} --ar 1:1`, 'geçen varyant korunur');
     assert.ok(JSON.parse(ok.calls[0].user).fixTheseValidatorErrors.creative);
 
     const bad = fakeLLM({ failRegexTimes: 5 });

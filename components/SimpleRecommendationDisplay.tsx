@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AlertTriangle, ExternalLink, Rocket, Wand2 } from "lucide-react"
+import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
 import { displayPriceLabel } from "@/lib/pricing"
 import { format, getDictionary } from "@/lib/i18n"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
+import PromptCta from "./PromptCta"
 import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox } from "./Evidence"
 import { onToolOpen } from "./toolOpen"
 import { trackEvent } from "@/lib/analytics/client"
@@ -44,11 +45,14 @@ export default function SimpleRecommendationDisplay({
   recommendation,
   query,
   onPrompt,
+  promptOpen = false,
 }: {
   recommendation: SimpleRecommendation
   query: string
-  /** "Prompt yaz": ana araç için prompt kutusunu açar (HomeClient). */
+  /** Seçimsel prompt çağrısı: ana araç için prompt kutusunu bu arama için açar (HomeClient). */
   onPrompt?: (toolName: string) => void
+  /** Prompt kutusu zaten açık ("Prompt da yaz" ya da çağrı tıklandı): çağrı gizlenir. */
+  promptOpen?: boolean
 }) {
   const { main, taskId } = recommendation
   const editor = main.basis === "editor"
@@ -122,18 +126,18 @@ export default function SimpleRecommendationDisplay({
                 <ExternalLink className="w-4 h-4" />
                 <span>Araca Git</span>
               </a>
-              {onPrompt && promptProductId(main.toolName) && (
-                <button
-                  type="button"
-                  onClick={() => onPrompt(main.toolName)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-medium transition-all text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <Wand2 className="w-4 h-4" aria-hidden />
-                  <span>{dict.prompt.forTool}</span>
-                </button>
-              )}
             </div>
           </div>
+
+          {/* Prompt: seçimsel, tıklanınca bu sorgu ve araç için üretilir */}
+          {onPrompt && !promptOpen && promptProductId(main.toolName) && (
+            <PromptCta
+              label={format(dict.prompt.cta, { product: main.toolName })}
+              hint={format(dict.prompt.ctaHint, { product: main.toolName })}
+              query={query}
+              onClick={() => onPrompt(main.toolName)}
+            />
+          )}
 
           <div className="space-y-3 md:space-y-4">
             {recommendation.relaxedPricing && (
