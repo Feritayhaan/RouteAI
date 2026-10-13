@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "ideogram"
-version: 2
+version: 3
 appliesTo: ["ideogram-20"]
 modality: "image"
 promptLanguage: "en"

@@ -5,6 +5,13 @@
 // altında kalan 'high' slotlar için girişe uygun soru + 2-4 seçenek de yazılır;
 // PromptCard'daki "Varsayımlar (Değiştir)" bunları gösterir. Sorular
 // sanitizeQuestions ile doğrulanır; geçersizse rehberdeki soru kullanılır.
+//
+// Geniş hedef (isBroadGoal): giriş sadece genel bir hedef söylüyor, alt kapsam,
+// tür/stil, hedef çıktı ya da yön hakkında hiçbir ayrıntı yok ("bir uygulama
+// yapmak istiyorum"). O zaman çıkarılan 'high' slotların güveni MIN_CONFIDENCE
+// altına çekilir; plan.ts önce navigasyon soru kartını gösterir.
+// Her slot değerinin kullanıcı dilinde kısa etiketi (label) "Şunları varsaydım"
+// listesinde gösterilir (prompt dili İngilizce olsa bile).
 
 import { z } from 'zod';
 import type { Guide } from './guideSchema';
@@ -15,11 +22,18 @@ export interface ExtractedSlot {
   value: string | null;
   source: 'user' | 'inferred';
   confidence: number;
+  /** Değerin kullanıcı dilinde kısa karşılığı (varsayım listesinde gösterilir). */
+  label?: string | null;
 }
+
+/** Geniş hedefte 'high' slot güveninin üst sınırı (MIN_CONFIDENCE 0.65'in altı). */
+export const BROAD_GOAL_CONFIDENCE_CAP = 0.6;
 
 export interface Extraction {
   slots: Record<string, ExtractedSlot>;
   goalSummary: string;
+  /** Sadece genel bir hedef: alt kapsam, tür, çıktı ya da yön yok. */
+  isBroadGoal: boolean;
   /** Girişe göre üretilmiş sorular (slotId -> soru). Boş olabilir. */
   questions: Record<string, DynamicQuestion>;
   tokens: number;
@@ -37,8 +51,10 @@ const outputSchema = z.object({
     value: z.string().nullable(),
     source: z.enum(['user', 'inferred']),
     confidence: z.number(),
+    label: z.string().nullable().optional(),
   })),
   goalSummary: z.string(),
+  isBroadGoal: z.boolean().default(false),
   questions: z.array(rawQuestionSchema).default([]),
 });
 
@@ -103,13 +119,17 @@ export async function extractSlots(
 - Not mentioned: do NOT return null. Choose the value that best fits this user's specific goal and conversation, as an expert prompt engineer would, in ${promptLanguage} (max 12 words). Mark it source "inferred", confidence 0.35-0.55, so it is shown to the user as a smart assumption they can change.
 - Return null ONLY if the goal and conversation are empty or meaningless.
 - Prefer one of the slot's option values when it fits; otherwise a short free-text value (max 12 words).
+- label: the same choice as a short phrase (max 6 words) in ${userLanguage} for the user to read; null when value is null.
 - An assumed value is a choice (style, format, tone, length, structure), never a fact: do not invent names, numbers, prices, dates, quotes or statistics the user did not give.
 - goalSummary: one sentence in ${userLanguage} describing what the user wants to create.
 Return every slot id exactly once.
 
+isBroadGoal: true when the user only names a general goal or topic (often 2-6 words, e.g. "I want to make an app", "I'll make a song") and gives NO specific detail about scope, sub-part, type/style, target output or technical/creative direction. Then no "high" slot can be known: give every "high" slot confidence below 0.65 (keep your smart assumption as its value). false when the user gave at least one such specific detail.
+
 questions: for EVERY slot with impact "high" whose confidence is below 0.65 (including the smart assumptions above), write ONE question tailored to the user's goal so they can change the assumption with one tap. For all other slots write no question.
 - question: short (max 12 words), in ${userLanguage}, about THIS goal (e.g. for a bakery logo ask about the logo's style, not generic image topics). Never ask about something the user already said.
-- options: 2-4 clearly different answers that make sense for this goal. label: max 5 words in ${userLanguage}. value: the phrase that goes into the prompt, in ${promptLanguage}, max 12 words.
+- For a broad goal, ask the 2-3 navigation questions that really shape the work: which stage or deliverable of the project the prompt is for, which type/style/approach, what the output should be. Never ask shallow format questions ("a short paragraph?").
+- options: 2-4 clearly different, concrete answers that make sense for this goal. label: max 5 words in ${userLanguage}. value: the phrase that goes into the prompt, in ${promptLanguage}, max 12 words.
 - The slot's example options are only hints; adapt them to the goal.
 - Do not add "you choose" or "other" options (the UI has them). Keep the user's own names and brands; do not introduce real people or copyrighted characters.`;
   const user = JSON.stringify({
@@ -137,12 +157,14 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
               value: { type: ['string', 'null'] },
               source: { type: 'string', enum: ['user', 'inferred'] },
               confidence: { type: 'number' },
+              label: { type: ['string', 'null'] },
             },
-            required: ['id', 'value', 'source', 'confidence'],
+            required: ['id', 'value', 'source', 'confidence', 'label'],
             additionalProperties: false,
           },
         },
         goalSummary: { type: 'string' },
+        isBroadGoal: { type: 'boolean' },
         questions: {
           type: 'array',
           items: {
@@ -165,22 +187,28 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
           },
         },
       },
-      required: ['slots', 'goalSummary', 'questions'],
+      required: ['slots', 'goalSummary', 'isBroadGoal', 'questions'],
       additionalProperties: false,
     },
   });
 
   const parsed = outputSchema.parse(data);
   const known = new Set(slotIds);
+  const high = new Set(guide.slots.filter((s) => s.impact === 'high').map((s) => s.id));
   const slots: Record<string, ExtractedSlot> = {};
   for (const s of parsed.slots) {
     if (!known.has(s.id) || s.id in slots) continue;
     const value = s.value?.trim() ? s.value.trim().slice(0, 200) : null;
-    slots[s.id] = { value, source: s.source, confidence: Math.max(0, Math.min(1, s.confidence)) };
+    let confidence = Math.max(0, Math.min(1, s.confidence));
+    // Geniş hedefte çıkarılan 'high' slot yüksek güvenli sayılmaz (kullanıcının açıkça söylediği hariç).
+    if (parsed.isBroadGoal && high.has(s.id) && s.source !== 'user') confidence = Math.min(confidence, BROAD_GOAL_CONFIDENCE_CAP);
+    const label = value && s.label?.trim() ? s.label.trim().slice(0, 80) : null;
+    slots[s.id] = { value, source: s.source, confidence, ...(label ? { label } : {}) };
   }
   return {
     slots,
     goalSummary: parsed.goalSummary.slice(0, 300),
+    isBroadGoal: parsed.isBroadGoal,
     questions: sanitizeQuestions(parsed.questions, guide),
     tokens,
   };

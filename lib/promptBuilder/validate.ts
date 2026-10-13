@@ -1,10 +1,11 @@
 // Deterministik doğrulama: rehberin validators'ı + hedef AI yeterlilik rubriği
 // (lib/promptBuilder/sufficiency.ts). Başarısız varyant varsa hata mesajlarıyla
-// BİR kez onarım üretimi; yine başarısızsa "kontrol edilmedi".
+// BİR kez onarım üretimi; yine başarısızsa "kontrol edilmedi". howToUse araçta
+// kullanım anlatmıyorsa aynı onarım turunda o da düzeltilir.
 
 import type { GuideValidator } from './guideSchema';
 import { generatePrompt, type GenerateInput, type GenerateOutput } from './generate';
-import { allIssues, validatorFails, type SufficiencyContext } from './sufficiency';
+import { allIssues, howToUseIssues, validatorFails, type SufficiencyContext } from './sufficiency';
 import type { Variant } from './types';
 
 export function checkPrompt(prompt: string, validators: GuideValidator[]): string[] {
@@ -18,6 +19,7 @@ export function sufficiencyContext(input: GenerateInput): SufficiencyContext {
     goal: input.session.goal,
     productName: input.productName,
     checkGoalEntities: !input.previous && !input.instruction,
+    locale: input.session.locale,
   };
 }
 
@@ -39,15 +41,18 @@ export async function validateWithRepair(
   let tokens = 0;
   let failing = check(current, ctx);
   let repaired = false;
+  const usage = howToUseIssues(current.howToUse, input.productName);
 
-  if (Object.keys(failing).length > 0) {
-    const repair = await generatePrompt({ ...input, repairErrors: failing, previous: current });
+  if (Object.keys(failing).length > 0 || usage.length > 0) {
+    const repairErrors = { ...failing, ...(usage.length > 0 ? { howToUse: usage } : {}) };
+    const repair = await generatePrompt({ ...input, repairErrors, previous: current });
     tokens += repair.tokens;
     repaired = true;
     // Sadece başarısız varyantlar değiştirilir; geçen varyant korunur.
     current = {
       ...current,
       variants: current.variants.map((v) => (failing[v.id] ? repair.output.variants.find((r) => r.id === v.id) ?? v : v)),
+      ...(usage.length > 0 && howToUseIssues(repair.output.howToUse, input.productName).length === 0 ? { howToUse: repair.output.howToUse } : {}),
     };
     failing = check(current, ctx);
   }

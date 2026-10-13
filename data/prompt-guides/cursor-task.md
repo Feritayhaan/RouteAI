@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "cursor-task"
-version: 2
+version: 3
 appliesTo: ["cursor"]
 modality: "code"
 promptLanguage: "user"
@@ -184,7 +184,13 @@ KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişi
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [tek cümlelik amaç]. Beklenen davranış: [değişiklikten sonra ne olmalı]. Kapsam: [dosyalar/alanlar]. Bağlam: [hata mesajı, ilgili yollar]. Kurallar: [kısıtlar]. Doğrulama: [çalıştırılacak kontrol]. Kabul kriterleri: [madde listesi].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Etiket zinciri değil, kıdemli bir mühendise verilen doğal bir görev tanımı:
+
+1. Amaç ve rol: değişikliğin ne olduğu ve neden gerektiği; ajanın bu kod tabanında kıdemli mühendis gibi çalışması.
+2. Bağlam: ilgili dosyalar/alanlar, hata mesajı, mevcut davranış; kullanıcının vermediği yollar için köşeli parantezli yer tutucular.
+3. Beklenen davranış ve kısıtlar: değişiklikten sonra ne olmalı, neyin kesinlikle değişmemesi gerektiği (dış API, stil, bağımlılıklar).
+4. Çalışma şekli: önce kök nedeni ya da planı kısaca açıklaması, sonra küçük ve gözden geçirilebilir adımlarla uygulaması.
+5. Doğrulama ve kabul kriterleri: çalıştırılacak kontroller (test, tip kontrolü, lint) ve madde madde kabul kriterleri.
 
 ## Yap / Yapma
 
@@ -198,6 +204,8 @@ RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, l
 - Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
 - Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
 - Beklenen davranış, kısıtlar (neyin değişmeyeceği) ve doğrulama adımı açıkça yazılır.
+- Meta-sınır: prompt konuyu anlatmaz ve isteği kendisi cevaplamaz; hedef araca ne yapacağını ve neyi teslim edeceğini söyler.
+- Mekanik etiket zinciri yok ("Görev: X. Kapsam: Y. Kurallar: Z. Doğrulama: W."); doğal, akıcı bölümler. Yalnızca kullanıcının bilebileceği bilgiler köşeli parantezli yer tutucu olur.
 
 ## Örnekler
 

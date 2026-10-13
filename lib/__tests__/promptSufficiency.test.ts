@@ -83,21 +83,21 @@ const FIXTURES: Fixture[] = [
   {
     guideId: 'gamma', locale: 'tr',
     goal: 'Yatırımcılar için 10 slaytlık sunum: yapay zekâ destekli tarım uygulamamız TarlaAI',
-    good: v('TarlaAI hakkında yatırımcılar için 10 slaytlık sunum. Amaç: tohum yatırımı görüşmesine hazırlık. Bölümler: 1) Problem, 2) Çözüm, 3) Ürün demosu, 4) Pazar, 5) İş modeli, 6) Rekabet, 7) Yol haritası, 8) Ekip, 9) Finansal plan [rakamlar eklenecek], 10) Yatırım talebi. Ton: güvenli ve net. Görseller: sade, veri grafikleri.'),
+    good: v('TarlaAI için yatırımcılara yönelik 10 slaytlık bir sunum hazırla. Sunumun amacı, tohum yatırımı görüşmesinde yatırımcıyı ikinci görüşmeye ikna etmek. Slayt akışı şöyle olsun: 1) Problem, 2) Çözüm, 3) Ürün demosu, 4) Pazar, 5) İş modeli, 6) Rekabet, 7) Yol haritası, 8) Ekip, 9) Finansal plan [rakamlar eklenecek], 10) Yatırım talebi. Ton güvenli ve net olsun; her slaytta tek ana mesaj ve sade veri grafikleri kullan.'),
     bad: v('Bir sunum hazırla, TarlaAI anlatılsın, güzel bir şey olsun, slaytlar etkileyici olsun'),
     fails: ['selfContainment', 'toolReadiness', 'actionability'],
   },
   {
     guideId: 'cursor-task', locale: 'tr',
     goal: 'Next.js projemde /api/login 500 hatası veriyor, düzelt; public API değişmesin',
-    good: v('Görev: /api/login uç noktasının döndürdüğü 500 hatasını düzelt. Beklenen davranış: geçerli kimlik bilgileriyle 200 ve oturum çerezi, hatalıda 401. Kapsam: app/api/login/route.ts ve ilgili yardımcılar. Kurallar: public API değişmesin, yeni bağımlılık ekleme. Doğrulama: testleri ve tip kontrolünü çalıştır. Kabul kriterleri: 500 hatası tekrar etmiyor; mevcut testler geçiyor.'),
+    good: v('Bu Next.js projesinde kıdemli bir backend mühendisi gibi çalış. /api/login uç noktası 500 hatası veriyor; kök nedeni bul ve düzelt. Beklenen davranış: geçerli kimlik bilgileriyle 200 ve oturum çerezi, hatalı bilgilerde 401 dönmeli. İlgili dosya büyük olasılıkla [login route dosyasının yolu]; önce kök nedeni iki üç cümleyle açıkla, sonra küçük adımlarla uygula. Kısıtlar: public API değişmesin ve yeni bağımlılık ekleme. Bitince testleri ve tip kontrolünü çalıştır; kabul kriteri olarak 500 hatası tekrar etmemeli ve mevcut testler geçmeli.'),
     bad: v('Login hatasını düzelt', 'no refactor'),
     fails: ['selfContainment', 'toolReadiness', 'actionability', 'consistency'],
   },
   {
     guideId: 'chat-general', locale: 'tr',
     goal: "Pazartesi toplantısı için Ayşe'ye kısa bir e-posta taslağı yaz, 3 madde",
-    good: v("Rol: deneyimli bir iş yazışması editörü. Bağlam: Pazartesi günkü ekip toplantısı öncesinde Ayşe'ye bilgi vermek istiyorum. Görev: kısa ve kibar bir e-posta taslağı yaz. Format: selamlama, 3 maddelik gündem listesi ve kapanış; en fazla 120 kelime. Ton: samimi ama profesyonel."),
+    good: v("Deneyimli bir iş yazışması editörü olarak Ayşe'ye gönderilecek kısa ve kibar bir e-posta taslağı yaz. Amaç, Pazartesi günkü ekip toplantısından önce Ayşe'yi gündem hakkında bilgilendirmek. E-postayı selamlama, 3 maddelik gündem listesi ve kapanış cümlesiyle kur; en fazla 120 kelime olsun. Ton samimi ama profesyonel olsun; gündem maddelerinin içeriği için [gündem maddeleri] yer tutucusunu kullan."),
     bad: v("Yukarıda konuştuğumuz toplantı için Ayşe'ye e-posta yaz, vb."),
     fails: ['selfContainment', 'toolReadiness', 'actionability'],
   },
@@ -125,6 +125,9 @@ describe('yeterlilik rubriği: 10 rehberin hepsi', () => {
   }
 });
 
+/** Promptun araçta kullanımını anlatan howToUse (kart düzeyi kontrolden geçer). */
+const HOW = ['Promptu TestTool aracına yapıştır ve [..] yer tutucularını doldur.', 'İlk çıktıyı ve önerilen ayarları kontrol et.', 'Takip mesajıyla sonucu bir adım daha iyileştirmesini iste.'];
+
 /** Onarım için sahte LLM: her çağrıda verilen varyantları döndürür, istekleri saklar. */
 function repairLLM(variants: { safe: V; creative: V }) {
   const calls: JsonRequest[] = [];
@@ -135,7 +138,7 @@ function repairLLM(variants: { safe: V; creative: V }) {
         variants: [{ id: 'safe', ...variants.safe }, { id: 'creative', ...variants.creative }],
         assumptions: [],
         suggestedRefinements: [],
-        howToUse: ['1', '2', '3'],
+        howToUse: HOW,
       },
       tokens: 20,
     };
@@ -152,7 +155,7 @@ describe('validateWithRepair: eksik bağlam ve yanlış sentaks onarılır', () 
   for (const f of FIXTURES) {
     it(`${f.guideId}: kötü varyant yakalanır, tek onarımda düzelir; iyi varyant korunur`, async () => {
       const { llm, calls } = repairLLM({ safe: f.good, creative: f.good });
-      const output = { variants: [{ id: 'safe' as const, ...f.bad }, { id: 'creative' as const, ...f.good }], assumptions: [], suggestedRefinements: [], howToUse: [] };
+      const output = { variants: [{ id: 'safe' as const, ...f.bad }, { id: 'creative' as const, ...f.good }], assumptions: [], suggestedRefinements: [], howToUse: HOW };
       const r = await validateWithRepair(output, { session: sessionFor(f), guide: guide(f.guideId), productName: 'TestTool', llm });
 
       assert.strictEqual(calls.length, 1, 'tek onarım');
@@ -169,7 +172,7 @@ describe('validateWithRepair: eksik bağlam ve yanlış sentaks onarılır', () 
   it('onarım da yetersizse varyant "kontrol edilmedi" ve hatalar kartta', async () => {
     const f = FIXTURES.find((x) => x.guideId === 'cursor-task')!;
     const { llm, calls } = repairLLM({ safe: f.bad, creative: f.bad });
-    const output = { variants: [{ id: 'safe' as const, ...f.bad }, { id: 'creative' as const, ...f.good }], assumptions: [], suggestedRefinements: [], howToUse: [] };
+    const output = { variants: [{ id: 'safe' as const, ...f.bad }, { id: 'creative' as const, ...f.good }], assumptions: [], suggestedRefinements: [], howToUse: HOW };
     const r = await validateWithRepair(output, { session: sessionFor(f), guide: guide(f.guideId), productName: 'TestTool', llm });
     assert.strictEqual(calls.length, 1);
     assert.strictEqual(r.variants[0].validation.status, 'unchecked');
@@ -273,7 +276,7 @@ describe('prompt oturumu ile uçtan uca', () => {
       }
       const isRepair = 'fixTheseValidatorErrors' in JSON.parse(req.user);
       const p = isRepair ? repaired : first;
-      return { data: { variants: [{ id: 'safe', ...p }, { id: 'creative', ...p }], assumptions: [], suggestedRefinements: [], howToUse: ['1', '2', '3'] }, tokens: 20 };
+      return { data: { variants: [{ id: 'safe', ...p }, { id: 'creative', ...p }], assumptions: [], suggestedRefinements: [], howToUse: HOW }, tokens: 20 };
     };
     return { llm, calls };
   }

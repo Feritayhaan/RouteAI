@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "gamma"
-version: 2
+version: 3
 appliesTo: ["gamma-ai"]
 modality: "slides"
 promptLanguage: "user"
@@ -57,7 +57,7 @@ slots:
       en: "15 or more"
       tr: "15 ve üzeri"
     value: "15 slides"
-  default: "medium"
+  default: "infer"
 - id: "tone"
   impact: "medium"
   question:
@@ -173,7 +173,12 @@ KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişil
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Amaç: [sunumdan beklenen sonuç]. Bölümler: [slayt slayt taslak]. Ton: [ton]. Görseller: [görseller]. Bilinmeyen rakamlar için açıkça işaretli yer tutucu.
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Etiket zinciri değil, sunum aracına verilen doğal bir brif:
+
+1. Sunumun konusu, kime yapılacağı ve sunumdan beklenen sonuç (karar, onay, öğrenme, satış) bir iki cümlede.
+2. Slayt sayısı ve slayt slayt akış: her slaydın başlığı ve tek cümlelik amacı.
+3. Ton, görsel dil ve yoğunluk: metin/görsel dengesi, grafik ihtiyacı.
+4. Bilinmeyen rakamlar ve kullanıcıya özel bilgiler için açıkça işaretli köşeli parantezli yer tutucular; rakam uydurulmaz.
 
 ## Yap / Yapma
 
@@ -187,6 +192,8 @@ RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, l
 - Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
 - Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
 - Slayt sayısı, kitle ve bölüm taslağı her zaman yazılır; rakam uydurulmaz.
+- Meta-sınır: prompt konuyu anlatmaz ve isteği kendisi cevaplamaz; hedef araca ne yapacağını ve neyi teslim edeceğini söyler.
+- Mekanik etiket zinciri yok ("Görev: X. Kapsam: Y. Kurallar: Z. Doğrulama: W."); doğal, akıcı bölümler. Yalnızca kullanıcının bilebileceği bilgiler köşeli parantezli yer tutucu olur.
 
 ## Örnekler
 

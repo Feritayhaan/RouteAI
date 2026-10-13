@@ -2,7 +2,7 @@
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 # Not: `aspect-ratio` doğrulayıcısı P7 promptundaki örnekten; resmi dokümanla doğrulanmalı.
 id: "midjourney"
-version: 2
+version: 3
 appliesTo: ["midjourney-v7"]
 modality: "image"
 promptLanguage: "en"
@@ -134,7 +134,7 @@ slots:
       en: "Highly detailed"
       tr: "Çok detaylı"
     value: "highly detailed"
-  default: "minimal"
+  default: "infer"
 refinements:
 - id: "more-detail"
   label:

@@ -5,14 +5,21 @@
 //  - selfContainment: amaçtaki kritik varlıklar (tırnaklı metin, sayılar, özel
 //    adlar) promptta var; "yukarıda konuştuğumuz" gibi konuşmaya atıf yok.
 //  - toolReadiness: görsel/videoda sohbet dolgusu yok ("Please create an image
-//    of..."), asistan meta metni yok, şablon yer tutucusu boş kalmamış; araca
-//    özel işaretler rehberin validator'larından gelir (criterion alanı).
-//  - actionability: muğlak ifade yok ("etc.", "bir şeyler"), çok kısa değil.
+//    of..."), asistan meta metni yok, şablon yer tutucusu boş kalmamış; metin/
+//    kod/sunum araçlarında mekanik etiket zinciri yok ("Rol: X. Bağlam: Y.
+//    Görev: Z. Format: W."); araca özel işaretler rehberin validator'larından
+//    gelir (criterion alanı).
+//  - actionability: muğlak ifade yok ("etc.", "bir şeyler"), çok kısa değil;
+//    prompt hedef AI'a talimat veriyor (konuyu kendisi cevaplamıyor); üretim/
+//    çözüm/analiz/dönüştürme isteği "kısa bilgi ver" ödevine küçültülmemiş.
 //  - consistency: negativePrompt ve settings promptla ve araçla çelişmiyor.
+// Kart düzeyi (varyant dışı) kontroller: howToUse bu promptun araçta nasıl
+// kullanılacağını anlatıyor mu; varsayımlar kullanıcı dilinde mi (cardIssues).
 // Hata mesajları İngilizce: validateWithRepair onarım turunda LLM'e gider.
 
 import type { Guide, GuideValidator } from './guideSchema';
-import type { Variant } from './types';
+import { classifyIntent } from './intent';
+import type { Assumption, Variant } from './types';
 
 export const CRITERIA = ['selfContainment', 'toolReadiness', 'actionability', 'consistency'] as const;
 export type Criterion = (typeof CRITERIA)[number];
@@ -33,6 +40,8 @@ export interface SufficiencyContext {
    * talimatı ya da slot değişikliği bir varlığı bilerek değiştirebilir) hayır.
    */
   checkGoalEntities?: boolean;
+  /** Arayüz dili: varsayımların dili denetlenir (cardIssues). */
+  locale?: 'en' | 'tr';
 }
 
 type CheckedVariant = Pick<Variant, 'prompt' | 'negativePrompt' | 'settings'>;
@@ -127,6 +136,44 @@ const CONVERSATION_REF = /\b(?:as (?:we )?discussed|as (?:i )?mentioned (?:above
 const VAGUE = /(?<![\/\p{L}])(?:etc\.(?=\s|$|\))|and so on|something (?:nice|cool|good|interesting)|whatever you (?:like|want|think)|bir şeyler|güzel bir şey(?:ler)?|falan(?: filan)?|vesaire|vb\.(?=\s|$|\)))/iu;
 const RATIO = /(?<!\d)(\d{1,2}):(\d{1,2})(?!\d)/g;
 
+/** Metin/kod/sunum araçları: talimat alan LLM'ler (meta-sınır ve etiket kontrolleri). */
+const LLM_TOOLS = new Set(['text', 'code', 'slides']);
+/** Ardışık "Etiket: değer" parçası bu sayıya ulaşınca mekanik etiket zinciri. */
+export const MAX_LABEL_CHAIN = 3;
+
+const segments = (prompt: string) => prompt.split(/(?<=[.!?;])\s+|\n+/).map((x) => x.trim()).filter(Boolean);
+
+/**
+ * En uzun ardışık "Etiket: kısa değer" zinciri ("Rol: X. Bağlam: Y. Görev: Z.").
+ * Başlık satırı (iki noktadan sonra metin yok) ve "Bütçe: [bütçen]" gibi
+ * kullanıcının dolduracağı yer tutucu satırları zincire sayılmaz.
+ */
+export function labelChainLength(prompt: string): number {
+  let best = 0;
+  let run = 0;
+  for (const seg of segments(prompt)) {
+    const m = /^(?:[-•*]|\d+[.)])?\s*\**(\p{Lu}[\p{L}\p{N} /&'-]{0,30}?)\**\s*:\s*(\S.*)$/u.exec(seg);
+    const isLabel = !!m && m[1].trim().split(/\s+/).length <= 3 && !/^\[[^\]]+\][.;]?$/.test(m[2].trim());
+    run = isLabel ? run + 1 : 0;
+    best = Math.max(best, run);
+  }
+  return best;
+}
+
+const EN_IMPERATIVE = /^(?:[-•*]|\d+[.)])?\s*(?:\*\*)?(?:act|write|create|build|design|produce|generate|draft|analy[sz]e|compare|list|explain|return|output|provide|give|help|make|plan|develop|implement|fix|review|rewrite|translate|ask|include|use|start|begin|identify|propose|outline|prepare|define|describe|summari[sz]e|evaluate|recommend|structure|organi[sz]e|focus|keep|avoid|do not|don't|never|always|ensure|follow|check|test|run|add|remove|update|refactor|turn|convert|guide|lead|work|break|first|then|finally|deliver|cover|end|tailor|assume|treat|play|take|show|walk)\b/i;
+const EN_ADDRESS = /\b(?:you|your|yourself)\b/i;
+const TR_ADDRESS = /(?<![\p{L}])(?:sen|senden|sana|seni|görevin|rolün|amacın|hedefin|istiyorum|rica ediyorum|\p{L}+(?:malısın|melisin|malısınız|melisiniz))(?![\p{L}])/iu;
+const TR_IMPERATIVE_END = /(?<![\p{L}])(?:yaz|oluştur|hazırla|tasarla|üret|geliştir|et|karşılaştır|listele|açıkla|ver|çıkar|planla|düzelt|incele|çevir|sor|kullan|başla|ekle|uygula|kur|belirle|öner|değerlendir|sırala|tanımla|özetle|göster|anlat|yap|tamamla|bitir|kaçın|koru|tut|odaklan|ilerle|davran|üstlen|al|getir|bul|seç|doğrula|çalıştır|yürüt|böl|ayır|bağla|yönet|yönlendir|eşlik et|rehberlik et|varsay)(?:ın|in|un|ün|ma|me)?[.!:;)]*$/iu;
+
+/** Promptta hedef AI'a verilen en az bir talimat var mı (emir, "sen"/"you" hitabı, "istiyorum")? */
+export function hasInstruction(prompt: string): boolean {
+  return segments(prompt).some(
+    (seg) => EN_IMPERATIVE.test(seg) || EN_ADDRESS.test(seg) || TR_ADDRESS.test(seg) || seg.split(/[,;]/).some((clause) => TR_IMPERATIVE_END.test(clause.trim()))
+  );
+}
+
+const DOWNGRADE = /(?<![\p{L}])(?:(?:a |one )?(?:short|brief|single) (?:paragraph|overview|summary|introduction)|general (?:information|overview)|basic overview|beginner[- ]level (?:introduction|overview|explanation)|kısa bir (?:paragraf|özet|bilgi|giriş)|genel (?:bir )?bilgi|hakkında (?:kısa )?bilgi ver\p{L}*|başlangıç seviyesinde (?:bir )?(?:giriş|bilgi|açıklama|özet))(?![\p{L}])/iu;
+
 /** Rehber şablonundaki yer tutucular ("[konu]", "[stil/araç]"): promptta boş kalmamalı. */
 function templatePlaceholders(guide: Guide): string[] {
   return [...new Set([...guide.body.template.matchAll(/\[[^\]\n]{2,40}\]/g)].map((m) => m[0]))];
@@ -169,11 +216,23 @@ export function sufficiencyIssues(variant: CheckedVariant, ctx: SufficiencyConte
   }
   const leftover = templatePlaceholders(guide).filter((p) => prompt.includes(p));
   if (leftover.length > 0) add('toolReadiness', `Fill in the template placeholders instead of copying them: ${leftover.join(', ')}.`);
+  if (LLM_TOOLS.has(guide.modality) && labelChainLength(prompt) > MAX_LABEL_CHAIN) {
+    add('toolReadiness', 'Do not write a chain of mechanical labels ("Role: X. Context: Y. Task: Z. Format: W."); write natural sections: the expert role and goal, the context and constraints, the expected output structure, and [placeholders] for what the user must fill in.');
+  }
 
   // 3. Somutluk
   if (VAGUE.test(prompt)) add('actionability', 'Replace vague phrases ("etc.", "something nice") with concrete instructions the tool can follow.');
   const min = MIN_WORDS[guide.modality] ?? 8;
   if (wordCount(prompt) < min) add('actionability', `Too short to act on: describe the request concretely in at least ${min} words.`);
+  if (LLM_TOOLS.has(guide.modality)) {
+    if (segments(prompt).length >= 2 && !hasInstruction(prompt)) {
+      add('actionability', `This reads like an answer about the topic, not a prompt: you are the prompt architect, not the executor. Write instructions that tell ${ctx.productName || 'the tool'} what to do and what to deliver.`);
+    }
+    const intent = classifyIntent(ctx.goal);
+    if (intent && intent !== 'learn' && DOWNGRADE.test(prompt) && !DOWNGRADE.test(ctx.goal)) {
+      add('actionability', `The user wants to ${intent} something; do not shrink it to a short overview or general information. Ask for the concrete deliverable (a roadmap, a draft, a structured plan, a fix or a decision framework).`);
+    }
+  }
 
   // 4. Ayar ve negatif prompt tutarlılığı
   const negative = variant.negativePrompt?.trim();
@@ -225,4 +284,45 @@ export function sufficiencyScore(variant: CheckedVariant, ctx: SufficiencyContex
   const criteria = Object.fromEntries(CRITERIA.map((c) => [c, !issues.some((i) => i.criterion === c)])) as Record<Criterion, boolean>;
   const passed = CRITERIA.filter((c) => criteria[c]).length;
   return { score: Math.round((passed / CRITERIA.length) * 100), criteria, issues };
+}
+
+// ------------------------------------------------------------------
+// Kart düzeyi: howToUse ve varsayımlar (varyanttan bağımsız)
+// ------------------------------------------------------------------
+
+const USAGE = /prompt|yapıştır|kopyala|yer tutucu|köşeli|\[|ayar|çıktı|yanıt|cevab|sonuç|takip|komut|mesaj|iste|paste|copy|placeholder|setting|output|response|result|follow-up|follow up|reply|message|ask|regenerate|generate|üret/i;
+
+/** howToUse: bu promptun araçta nasıl kullanılacağı (yapıştır + yer tutucu, ayar/ilk çıktı, takip komutu). */
+export function howToUseIssues(howToUse: string[], productName = ''): string[] {
+  const issues: string[] = [];
+  const tool = fold(productName).split(/\s+/)[0] ?? '';
+  const usage = howToUse.filter((step) => USAGE.test(step) || (tool.length > 2 && fold(step).includes(tool)));
+  const mentionsPrompt = howToUse.some((step) => /prompt/i.test(step) || (tool.length > 2 && fold(step).includes(tool)));
+  if (howToUse.length < 3 || usage.length < 2 || !mentionsPrompt) {
+    issues.push(`howToUse must be 3 steps about using THIS prompt in ${productName || 'the tool'}, not general advice about the topic: (1) paste it and what to put in each [placeholder], (2) which setting or what in the first output to check, (3) a concrete follow-up message to improve the result.`);
+  }
+  return issues;
+}
+
+/** Türkçe arayüzde ham İngilizce seçenek değeri ya da İngilizce sabit gerekçe kalmış mı? */
+export function assumptionLeaks(assumptions: Assumption[], guide: Guide, locale: 'en' | 'tr'): string[] {
+  if (locale !== 'tr') return [];
+  const leaks: string[] = [];
+  for (const a of assumptions) {
+    const slot = guide.slots.find((s) => s.id === a.slotId);
+    const value = a.value.trim().toLowerCase();
+    const raw = slot?.options.find((o) => o.value.trim().toLowerCase() === value && o.label.tr.trim().toLowerCase() !== value);
+    if (raw) leaks.push(`${a.slotId}: "${a.value}" -> "${raw.label.tr}"`);
+    if (/^(?:not specified|used the default|you didn't specify)/i.test(a.why.trim())) leaks.push(`${a.slotId}: why is in English`);
+  }
+  return leaks;
+}
+
+/** Kart düzeyi sorunlar: howToUse ve varsayım dili. */
+export function cardIssues(output: { howToUse: string[]; assumptions: Assumption[] }, ctx: SufficiencyContext): string[] {
+  const leaks = assumptionLeaks(output.assumptions, ctx.guide, ctx.locale ?? 'en');
+  return [
+    ...howToUseIssues(output.howToUse, ctx.productName),
+    ...(leaks.length > 0 ? [`assumptions must be in the user's language, not raw option values: ${leaks.join('; ')}.`] : []),
+  ];
 }
