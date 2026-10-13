@@ -6,7 +6,7 @@
 // biriktikçe payı düşer. Tarih her zaman ctx.now'dan okunur (Date.now yok).
 
 import { PRICE_STALE_AFTER_DAYS, hasFreeTier } from '../pricing';
-import { matchesRule } from './currentModel';
+import { matchesRule, resolveModelIds } from './currentModel';
 import type { BenchmarkSource, ExpertReview, Model, Product, Signal, Task } from './schema';
 import {
   FRESH_DAYS,
@@ -99,7 +99,7 @@ const day = (d: string) => d.slice(0, 10);
  * Yüzdelik = (altında kalan model + eşitlerin yarısı) / (toplam - 1).
  * Arenada tek model varsa karşılaştırma yapılamaz: null.
  */
-function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, models: Model[]): BenchmarkComponent | null {
+export function arenaBenchmark(product: Pick<Product, 'models' | 'modelRule'>, source: BenchmarkSource, key: string, models: Model[]): BenchmarkComponent | null {
   const arena = models
     .map((m) => ({ m, s: m.scores.find((x) => x.source === source && x.key === key) }))
     .filter((x): x is { m: Model; s: NonNullable<typeof x.s> } => x.s !== undefined);
@@ -108,8 +108,9 @@ function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, 
   // Elle bağlanmış modeller varsa onlar; yoksa modelRule'a uyanlar (ROADMAP-v2:
   // model listesi elle tutulmaz, güncel model gece senkronundan kuralla bulunur —
   // "Güncel model" satırıyla aynı kaynak, lib/catalog/currentModel.ts).
+  const linked = product.models.length > 0 ? resolveModelIds(product.models, models) : [];
   const own = product.models.length > 0
-    ? arena.filter((x) => product.models.includes(x.m.id))
+    ? arena.filter((x) => linked.includes(x.m.id))
     : product.modelRule
       ? arena.filter((x) => matchesRule(x.m, product.modelRule!))
       : [];

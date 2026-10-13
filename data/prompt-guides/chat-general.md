@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "chat-general"
-version: 3
+version: 4
 appliesTo: ["chatgpt-gpt-5", "claude-ai-claude-4", "gemini-25-pro"]
 modality: "text"
 promptLanguage: "user"
@@ -227,7 +227,7 @@ RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Mekanik etik
 1. Uzmanlık rolü ve amaç: hedef AI'ı işin gerektirdiği kıdemli uzman olarak konumlandıran ve kullanıcının asıl hedefini net söyleyen giriş. Üretim isteğinde işi kullanıcıyla uçtan uca inşa eden rol (kıdemli kurucu ortak, baş mimar, baş yaratıcı yönetmen gibi).
 2. Bağlam ve kısıtlar: kullanıcının verdiği tüm ayrıntılar (adlar, sayılar, dil, bütçe, süre, teknik sınırlar), bulunduğu aşama ve henüz bilinmeyenler.
 3. Beklenen çıktı: niyete göre somut teslimat (kilometre taşlı yol haritası, üretim taslağı, yapılandırılmış plan ya da şema, kriterli karar matrisi, kök neden analizi ve çözüm adımları) ve bölüm bölüm yapısı.
-4. Kalite ölçütleri ve çalışma şekli: derinlik, kitle, ton; kritik bir bilgi eksikse önce en fazla 3 net soru sorması, sonra teslim etmesi.
+4. Kalite ölçütleri ve çalışma kuralı: derinlik, kitle, ton; ardından yüzeysel özeti engelleyen kısa bir kural: genel bilgi değil somut teslimatı hemen üret; kritik bir bilgi eksikse başlamadan önce en fazla 1-2 soru sor.
 5. Kullanıcının dolduracağı bilgiler: yalnızca kullanıcının bilebileceği gerçekler için köşeli parantezli yer tutucular.
 
 ## Yap / Yapma

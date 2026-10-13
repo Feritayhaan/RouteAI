@@ -1,7 +1,7 @@
 [
   {
     "id": "chat-general",
-    "version": 3,
+    "version": 4,
     "appliesTo": [
       "chatgpt-gpt-5",
       "claude-ai-claude-4",
@@ -350,7 +350,7 @@
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Mekanik etiket zinciri değil; doğal ve akıcı bölümlerden oluşan bir uzman promptu:\n\n1. Uzmanlık rolü ve amaç: hedef AI'ı işin gerektirdiği kıdemli uzman olarak konumlandıran ve kullanıcının asıl hedefini net söyleyen giriş. Üretim isteğinde işi kullanıcıyla uçtan uca inşa eden rol (kıdemli kurucu ortak, baş mimar, baş yaratıcı yönetmen gibi).\n2. Bağlam ve kısıtlar: kullanıcının verdiği tüm ayrıntılar (adlar, sayılar, dil, bütçe, süre, teknik sınırlar), bulunduğu aşama ve henüz bilinmeyenler.\n3. Beklenen çıktı: niyete göre somut teslimat (kilometre taşlı yol haritası, üretim taslağı, yapılandırılmış plan ya da şema, kriterli karar matrisi, kök neden analizi ve çözüm adımları) ve bölüm bölüm yapısı.\n4. Kalite ölçütleri ve çalışma şekli: derinlik, kitle, ton; kritik bir bilgi eksikse önce en fazla 3 net soru sorması, sonra teslim etmesi.\n5. Kullanıcının dolduracağı bilgiler: yalnızca kullanıcının bilebileceği gerçekler için köşeli parantezli yer tutucular.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Mekanik etiket zinciri değil; doğal ve akıcı bölümlerden oluşan bir uzman promptu:\n\n1. Uzmanlık rolü ve amaç: hedef AI'ı işin gerektirdiği kıdemli uzman olarak konumlandıran ve kullanıcının asıl hedefini net söyleyen giriş. Üretim isteğinde işi kullanıcıyla uçtan uca inşa eden rol (kıdemli kurucu ortak, baş mimar, baş yaratıcı yönetmen gibi).\n2. Bağlam ve kısıtlar: kullanıcının verdiği tüm ayrıntılar (adlar, sayılar, dil, bütçe, süre, teknik sınırlar), bulunduğu aşama ve henüz bilinmeyenler.\n3. Beklenen çıktı: niyete göre somut teslimat (kilometre taşlı yol haritası, üretim taslağı, yapılandırılmış plan ya da şema, kriterli karar matrisi, kök neden analizi ve çözüm adımları) ve bölüm bölüm yapısı.\n4. Kalite ölçütleri ve çalışma kuralı: derinlik, kitle, ton; ardından yüzeysel özeti engelleyen kısa bir kural: genel bilgi değil somut teslimatı hemen üret; kritik bir bilgi eksikse başlamadan önce en fazla 1-2 soru sor.\n5. Kullanıcının dolduracağı bilgiler: yalnızca kullanıcının bilebileceği gerçekler için köşeli parantezli yer tutucular.",
       "dosDonts": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Meta-sınır: prompt konuyu anlatmaz ve kullanıcının sorusunu cevaplamaz; hedef AI'a ne yapacağını ve neyi teslim edeceğini söyler.\n- Niyet korunur: \"X yapmak/üretmek istiyorum\" diyen kullanıcıya \"X hakkında kısa bilgi ver\" promptu yazılmaz; hedef AI işi birlikte inşa eden kıdemli rolde somut teslimat üretir (yol haritası, taslak, şema, eserin kendisi).\n- Öğretici/açıklayıcı prompt sadece kullanıcı açıkça \"nedir, nasıl çalışır, anlat/öğret\" dediğinde.\n- Mekanik etiket zinciri yok (\"Rol: X. Bağlam: Y. Görev: Z. Format: W.\"); doğal, akıcı bölümler.\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır; yalnızca kullanıcının bilebileceği gerçekler köşeli parantezli yer tutucu olur.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf yok; muğlak ifade (\"vb.\", \"güzel bir şey\") yok.\n- Derinlik isteğin ağırlığına göre seçilir; varsayılan olarak \"başlangıç seviyesi\" ya da \"kısa paragraf\" seçilmez.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.",
       "examples": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
@@ -648,7 +648,7 @@
   },
   {
     "id": "elevenlabs-voiceover",
-    "version": 3,
+    "version": 4,
     "appliesTo": [
       "elevenlabs"
     ],
@@ -804,7 +804,7 @@
             "value": "fast"
           }
         ],
-        "default": "normal"
+        "default": "infer"
       },
       {
         "id": "use",
@@ -2437,7 +2437,7 @@
   },
   {
     "id": "suno",
-    "version": 3,
+    "version": 4,
     "appliesTo": [
       "suno-ai"
     ],
@@ -2617,7 +2617,7 @@
             "value": "fast tempo"
           }
         ],
-        "default": "mid"
+        "default": "infer"
       },
       {
         "id": "theme",

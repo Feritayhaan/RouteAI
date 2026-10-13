@@ -5,7 +5,7 @@
 
 import type { GuideValidator } from './guideSchema';
 import { generatePrompt, type GenerateInput, type GenerateOutput } from './generate';
-import { allIssues, howToUseIssues, validatorFails, type SufficiencyContext } from './sufficiency';
+import { allIssues, assumptionLeaks, howToUseIssues, validatorFails, type SufficiencyContext } from './sufficiency';
 import type { Variant } from './types';
 
 export function checkPrompt(prompt: string, validators: GuideValidator[]): string[] {
@@ -42,9 +42,14 @@ export async function validateWithRepair(
   let failing = check(current, ctx);
   let repaired = false;
   const usage = howToUseIssues(current.howToUse, input.productName);
+  const leaks = assumptionLeaks(current.assumptions, input.guide, input.session.locale);
 
-  if (Object.keys(failing).length > 0 || usage.length > 0) {
-    const repairErrors = { ...failing, ...(usage.length > 0 ? { howToUse: usage } : {}) };
+  if (Object.keys(failing).length > 0 || usage.length > 0 || leaks.length > 0) {
+    const repairErrors = {
+      ...failing,
+      ...(usage.length > 0 ? { howToUse: usage } : {}),
+      ...(leaks.length > 0 ? { assumptions: [`assumptions must be in the user's language, not raw option values: ${leaks.join('; ')}.`] } : {}),
+    };
     const repair = await generatePrompt({ ...input, repairErrors, previous: current });
     tokens += repair.tokens;
     repaired = true;
@@ -53,6 +58,7 @@ export async function validateWithRepair(
       ...current,
       variants: current.variants.map((v) => (failing[v.id] ? repair.output.variants.find((r) => r.id === v.id) ?? v : v)),
       ...(usage.length > 0 && howToUseIssues(repair.output.howToUse, input.productName).length === 0 ? { howToUse: repair.output.howToUse } : {}),
+      ...(leaks.length > 0 && assumptionLeaks(repair.output.assumptions, input.guide, input.session.locale).length === 0 ? { assumptions: repair.output.assumptions } : {}),
     };
     failing = check(current, ctx);
   }

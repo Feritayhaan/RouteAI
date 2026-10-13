@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "elevenlabs-voiceover"
-version: 3
+version: 4
 appliesTo: ["elevenlabs"]
 modality: "audio"
 promptLanguage: "user"
@@ -101,7 +101,7 @@ slots:
       en: "Fast"
       tr: "Hızlı"
     value: "fast"
-  default: "normal"
+  default: "infer"
 - id: "use"
   impact: "low"
   question:

@@ -20,8 +20,10 @@ import { classifyTask, type ClassifyTaskOptions, type TaskClassification } from 
 import { extractConstraints } from './intent/parser';
 import { defaultSearchContext, searchCatalog, type SearchContext, type SearchItem } from './catalog/search';
 import type { ConstraintKey, Constraints } from './catalog/fit';
+import { detectNeeds, headToHead, type DimensionMeasure, type FitDimension, type HeadToHead, type QueryNeeds } from './catalog/queryFit';
 import type { Confidence, Reason } from './catalog/score';
 import { loadCatalog } from './catalog/index';
+import { resolveCurrentModel, type CurrentModel } from './catalog/currentModel';
 import type { BenchmarkSource, EditorPick, LocaleText, Product } from './catalog/schema';
 import { matchesPricingFilter, type PricingFilter } from './pricing';
 import { findMatchingTemplate, MAX_WORKFLOW_STEPS } from './workflow/workflowTemplates';
@@ -49,6 +51,10 @@ export interface RecommendationItem {
   basis: 'evidence' | 'editor';
   /** basis 'editor' ise seçimin tarafsız gerekçesi. */
   editorNote?: LocaleText;
+  /** Sorgunun istediği boyutlarda bu ürünün ölçümü (lib/catalog/queryFit.ts). */
+  fit?: DimensionMeasure[];
+  /** Ürünün güncel modeli: models.json'dan dinamik (ad, tarih, kaynak; varsa bağlam ve fiyat). */
+  currentModel?: CurrentModel | null;
 }
 
 export interface RecommendV3Recommendation {
@@ -63,6 +69,10 @@ export interface RecommendV3Recommendation {
   relaxedConstraint?: ConstraintKey[];
   /** Editör seçimi varken görevdeki diğer aktif ürünler: puansız, alfabetik, "doğrulanmadı". */
   unverified?: Product[];
+  /** Sorgunun istediği boyutlar ve her birinin katalogda ölçülüp ölçülemediği (signals hariç). */
+  queryNeeds?: { dimension: FitDimension; measured: boolean }[];
+  /** "Neden alternatifleri yerine bu seçildi?": kazanan vs ilk alternatifler, sadece ölçülmüş farklar. */
+  comparisons?: HeadToHead[];
 }
 
 export interface RecommendV3Clarify {
@@ -125,14 +135,18 @@ function chosenTask(query: string, taskId: string): ResolvedTask {
 // Yardımcılar
 // ------------------------------------------------------------------
 
-function toItem(item: SearchItem): RecommendationItem {
+function toItem(item: SearchItem, ctx: SearchContext): RecommendationItem {
+  const fitSources = (item.queryFit?.measures ?? []).flatMap((m) => (m.arena ? [m.arena.source] : []));
   return {
     product: item.product,
     confidence: item.score.confidence,
     reasons: item.score.reasons,
     dataDate: item.score.dataDate,
-    sources: [...new Set(item.score.components.benchmarks.map((b) => b.source))],
+    // Kanıtta kullanılan her benchmark kaynağı kartta adıyla görünür (lisans şartı).
+    sources: [...new Set([...item.score.components.benchmarks.map((b) => b.source), ...fitSources])],
     basis: 'evidence',
+    ...(item.queryFit ? { fit: item.queryFit.measures } : {}),
+    currentModel: resolveCurrentModel(item.product, ctx.models),
   };
 }
 
@@ -152,6 +166,8 @@ const activeForTask = (ctx: SearchContext, taskId: string): Product[] =>
 
 interface TaskOutcome {
   items: RecommendationItem[];
+  comparisons?: HeadToHead[];
+  queryNeeds?: RecommendV3Recommendation['queryNeeds'];
   noEvidence: boolean;
   products: Product[];
   relaxedConstraint?: ConstraintKey[];
@@ -169,8 +185,8 @@ interface Env {
  * filtresiyle sonradan ele (asla gevşetilmez) → RecommendationItem'lara çevir.
  * Kanıt yoksa products dolu döner (no_evidence listesi için).
  */
-function recommendForTask(taskId: string, { ctx, pricingFilter, picks }: Env, softPricing?: Constraints['pricing']): TaskOutcome {
-  const result = searchCatalog({ taskId, constraints: { pricing: softPricing } }, ctx);
+function recommendForTask(taskId: string, { ctx, pricingFilter, picks }: Env, softPricing?: Constraints['pricing'], needs?: QueryNeeds): TaskOutcome {
+  const result = searchCatalog({ taskId, constraints: { pricing: softPricing }, ...(needs ? { needs } : {}) }, ctx);
   if (result.noEvidence) {
     const active = activeForTask(ctx, taskId);
     // Kanıt yok ama editör seçimi var: "RouteAI tavsiyesi" (puansız). Arayüz
@@ -182,8 +198,22 @@ function recommendForTask(taskId: string, { ctx, pricingFilter, picks }: Env, so
     }
     return { items: [], noEvidence: true, products: active };
   }
-  const items = result.items.filter((i) => matchesPricingFilter(i.product.pricing, pricingFilter)).map(toItem);
-  return { items, noEvidence: false, products: [], relaxedConstraint: result.relaxedConstraint };
+  const kept = result.items.filter((i) => matchesPricingFilter(i.product.pricing, pricingFilter));
+  const items = kept.map((i) => toItem(i, ctx));
+  if (!needs || kept.length === 0) return { items, noEvidence: false, products: [], relaxedConstraint: result.relaxedConstraint };
+  const contender = (i: SearchItem) => ({ product: i.product, score: i.score, fit: i.queryFit ?? { measures: [], adjustment: 0 } });
+  const [winner, ...rest] = kept;
+  const queryNeeds = needs.dimensions
+    .filter((d) => d !== 'signals')
+    .map((dimension) => ({ dimension, measured: kept.some((i) => i.queryFit?.measures.some((m) => m.dimension === dimension && m.measured)) }));
+  return {
+    items,
+    noEvidence: false,
+    products: [],
+    relaxedConstraint: result.relaxedConstraint,
+    queryNeeds,
+    comparisons: headToHead(contender(winner), rest.map(contender)),
+  };
 }
 
 /** Birden fazla görevi olan bir adım: sonuçlar birleşir (görev sırasıyla, tekrarsız). */
@@ -269,8 +299,9 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
     };
   }
 
-  const taskLabel = ctx.tasksById.get(classified.taskId)!.label;
-  const outcome = recommendForTask(classified.taskId, env, toSoftPricing(classified.constraints.pricing));
+  const task = ctx.tasksById.get(classified.taskId)!;
+  const taskLabel = task.label;
+  const outcome = recommendForTask(classified.taskId, env, toSoftPricing(classified.constraints.pricing), detectNeeds(query, task));
   if (outcome.noEvidence) {
     return { kind: 'no_evidence', taskId: classified.taskId, taskLabel, products: outcome.products };
   }
@@ -284,5 +315,7 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
     items: outcome.items,
     ...(outcome.relaxedConstraint ? { relaxedConstraint: outcome.relaxedConstraint } : {}),
     ...(outcome.unverified?.length ? { unverified: outcome.unverified } : {}),
+    ...(outcome.queryNeeds?.length ? { queryNeeds: outcome.queryNeeds } : {}),
+    ...(outcome.comparisons?.length ? { comparisons: outcome.comparisons } : {}),
   };
 }

@@ -67,6 +67,18 @@ export function fold(s: string): string {
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const wordCount = (s: string) => (s.match(/[\p{L}\p{N}]+/gu) ?? []).length;
 
+/**
+ * Yaygın platform/mecra adları özel ad zorunluluğundan muaftır: hedef araç
+ * için "Instagram gönderisi" yerine "kare sosyal medya görseli" yazmak doğru
+ * olabilir. Kullanıcının kendi marka/ürün adları muaf değildir.
+ */
+export const PLATFORMS = new Set([
+  'instagram', 'tiktok', 'youtube', 'reels', 'shorts', 'linkedin', 'twitter', 'spotify', 'pinterest', 'facebook',
+  'whatsapp', 'telegram', 'threads', 'snapchat', 'twitch', 'discord', 'medium', 'substack', 'behance', 'dribbble',
+  'etsy', 'shopify', 'amazon', 'google', 'apple', 'android', 'ios', 'windows', 'mac', 'macos', 'linux', 'web',
+  'podcast', 'netflix', 'steam', 'reddit', 'quora', 'kickstarter', 'patreon', 'soundcloud', 'vimeo', 'canva',
+]);
+
 export interface GoalEntities {
   /** Tırnak içindeki metin: promptta aynen (büyük/küçük harf hariç) geçmeli. */
   quoted: string[];
@@ -98,7 +110,7 @@ export function goalEntities(goal: string, productName = ''): GoalEntities {
     // Cümle başı (ya da başlık/madde başı) büyük harfi özel ad sayılmaz.
     if (before === '' || /[.!?:;\n(\[•\-–—]$/.test(before)) continue;
     const word = m[0].replace(/['’]\p{L}+$/u, '');
-    if (word.length < 3 || product.has(fold(word))) continue;
+    if (word.length < 3 || product.has(fold(word)) || PLATFORMS.has(fold(word))) continue;
     names.push(word);
   }
   return { quoted: [...new Set(quoted)], numbers: [...new Set(numbers)], names: [...new Set(names)] };
@@ -165,14 +177,52 @@ const EN_ADDRESS = /\b(?:you|your|yourself)\b/i;
 const TR_ADDRESS = /(?<![\p{L}])(?:sen|senden|sana|seni|görevin|rolün|amacın|hedefin|istiyorum|rica ediyorum|\p{L}+(?:malısın|melisin|malısınız|melisiniz))(?![\p{L}])/iu;
 const TR_IMPERATIVE_END = /(?<![\p{L}])(?:yaz|oluştur|hazırla|tasarla|üret|geliştir|et|karşılaştır|listele|açıkla|ver|çıkar|planla|düzelt|incele|çevir|sor|kullan|başla|ekle|uygula|kur|belirle|öner|değerlendir|sırala|tanımla|özetle|göster|anlat|yap|tamamla|bitir|kaçın|koru|tut|odaklan|ilerle|davran|üstlen|al|getir|bul|seç|doğrula|çalıştır|yürüt|böl|ayır|bağla|yönet|yönlendir|eşlik et|rehberlik et|varsay)(?:ın|in|un|ün|ma|me)?[.!:;)]*$/iu;
 
-/** Promptta hedef AI'a verilen en az bir talimat var mı (emir, "sen"/"you" hitabı, "istiyorum")? */
-export function hasInstruction(prompt: string): boolean {
-  return segments(prompt).some(
-    (seg) => EN_IMPERATIVE.test(seg) || EN_ADDRESS.test(seg) || TR_ADDRESS.test(seg) || seg.split(/[,;]/).some((clause) => TR_IMPERATIVE_END.test(clause.trim()))
-  );
+const TR_JUSSIVE = /(?<![\p{L}])(?:olsun|olmalı|olmasın|olmamalı|gerekir|gerekiyor|lazım|\p{L}+(?:malı|meli|malıdır|melidir|sın|sin|sun|sün|sınlar|sinler))[.!:;)]*$/iu;
+const EN_MODAL = /\b(?:should|must|needs? to|make sure|ensure|be sure to|aim for|limit)\b/i;
+
+/** Tek parça hedef AI'a talimat mı (emir, "sen"/"you" hitabı, "istiyorum", "olsun/olmalı", "should/must")? */
+export function isInstruction(seg: string): boolean {
+  return EN_IMPERATIVE.test(seg) || EN_ADDRESS.test(seg) || EN_MODAL.test(seg) || TR_ADDRESS.test(seg)
+    || seg.split(/[,;]/).some((clause) => TR_IMPERATIVE_END.test(clause.trim()) || TR_JUSSIVE.test(clause.trim()));
 }
 
-const DOWNGRADE = /(?<![\p{L}])(?:(?:a |one )?(?:short|brief|single) (?:paragraph|overview|summary|introduction)|general (?:information|overview)|basic overview|beginner[- ]level (?:introduction|overview|explanation)|kısa bir (?:paragraf|özet|bilgi|giriş)|genel (?:bir )?bilgi|hakkında (?:kısa )?bilgi ver\p{L}*|başlangıç seviyesinde (?:bir )?(?:giriş|bilgi|açıklama|özet))(?![\p{L}])/iu;
+/** Promptta hedef AI'a verilen en az bir talimat var mı? */
+export function hasInstruction(prompt: string): boolean {
+  return segments(prompt).some(isInstruction);
+}
+
+/** Bir promptta asla yeri olmayan, okura konuşan kapanış/övgü kalıpları (makale/cevap dili). */
+const ADVICE = /(?:harika|muhteşem|eşsiz|büyük) bir fırsat|(?:great|wonderful|amazing|fantastic) opportunity|(?:heyecan verici|keyifli) bir yolculuk|exciting journey|iyi şanslar|bol şans|başarılar dilerim|keyifli çalışmalar|good luck|best of luck|hope this helps|umarım (?:bu )?(?:yardımcı|faydalı)|in conclusion|sonuç olarak,|hayal gücünüzü|hayallerinizi gerçeğe|turn your (?:dream|vision|imagination)|bring your (?:dream|vision|imagination)/iu;
+const LIST_OR_HEADING = /^(?:[-•*#]|\d+[.)]|\*\*)/;
+
+/**
+ * Talimatlardan SONRA gelen, hedef AI'a değil okura konuşan açıklama bloğu
+ * ("Film yapmak harika bir fırsattır. İlk adım senaryoyu yazmaktır.").
+ * Son talimattan sonra en az 2 düz cümle ve toplam en az 12 kelime ise cevap dili.
+ */
+export function trailingAnswer(prompt: string): string[] {
+  const segs = segments(prompt);
+  let last = -1;
+  segs.forEach((seg, i) => { if (isInstruction(seg)) last = i; });
+  if (last < 0) return [];
+  const tail = segs.slice(last + 1).filter((seg) => !LIST_OR_HEADING.test(seg) && !/\[[^\]]+\]/.test(seg) && wordCount(seg) >= 4);
+  return tail.length >= 2 && tail.reduce((a, seg) => a + wordCount(seg), 0) >= 12 ? tail : [];
+}
+
+const DOWNGRADE_SOURCE = /(?<![\p{L}])(?:(?:a |one )?(?:short|brief|single) (?:paragraph|overview|summary|introduction)|general (?:information|overview)|basic overview|beginner[- ]level (?:introduction|overview|explanation)|kısa bir (?:paragraf|özet|bilgi|giriş)|genel (?:bir )?bilgi|hakkında (?:kısa )?bilgi ver\p{L}*|başlangıç seviyesinde (?:bir )?(?:giriş|bilgi|açıklama|özet))(?![\p{L}])/giu;
+
+const NEGATED_BEFORE = /(?:\b(?:not|no|never|don't|do not|avoid|instead of|rather than|without|beyond|more than)\s+(?:\p{L}+\s+){0,3}|değil\s+)$/iu;
+const NEGATED_AFTER = /^\s*(?:\p{L}+\s+)?(?:verme|vermeyin|vermeden|değil|yazma|yazmayın|yazmadan|yerine|olmasın|olmamalı|istemiyorum|üretme|üretmeyin|sunma|sunmayın)(?![\p{L}])/iu;
+
+/** "Kısa paragraf / genel bilgi" isteniyor mu? Olumsuzlanmış kullanım ("genel bilgi verme", "not a short overview") sayılmaz. */
+export function asksForShallowOutput(text: string): boolean {
+  for (const m of text.matchAll(new RegExp(DOWNGRADE_SOURCE.source, 'giu'))) {
+    const before = text.slice(Math.max(0, m.index - 40), m.index);
+    const after = text.slice(m.index + m[0].length, m.index + m[0].length + 30);
+    if (!NEGATED_BEFORE.test(before) && !NEGATED_AFTER.test(after)) return true;
+  }
+  return false;
+}
 
 /** Rehber şablonundaki yer tutucular ("[konu]", "[stil/araç]"): promptta boş kalmamalı. */
 function templatePlaceholders(guide: Guide): string[] {
@@ -227,9 +277,11 @@ export function sufficiencyIssues(variant: CheckedVariant, ctx: SufficiencyConte
   if (LLM_TOOLS.has(guide.modality)) {
     if (segments(prompt).length >= 2 && !hasInstruction(prompt)) {
       add('actionability', `This reads like an answer about the topic, not a prompt: you are the prompt architect, not the executor. Write instructions that tell ${ctx.productName || 'the tool'} what to do and what to deliver.`);
+    } else if (ADVICE.test(prompt) || trailingAnswer(prompt).length > 0) {
+      add('actionability', `Remove the sentences that talk to the user about the topic (encouragement, explanations, "the first step is..."): you are the prompt architect, not the executor. The prompt must contain only instructions for ${ctx.productName || 'the tool'}.`);
     }
     const intent = classifyIntent(ctx.goal);
-    if (intent && intent !== 'learn' && DOWNGRADE.test(prompt) && !DOWNGRADE.test(ctx.goal)) {
+    if (intent && intent !== 'learn' && asksForShallowOutput(prompt) && !asksForShallowOutput(ctx.goal)) {
       add('actionability', `The user wants to ${intent} something; do not shrink it to a short overview or general information. Ask for the concrete deliverable (a roadmap, a draft, a structured plan, a fix or a decision framework).`);
     }
   }
@@ -290,7 +342,8 @@ export function sufficiencyScore(variant: CheckedVariant, ctx: SufficiencyContex
 // Kart düzeyi: howToUse ve varsayımlar (varyanttan bağımsız)
 // ------------------------------------------------------------------
 
-const USAGE = /prompt|yapıştır|kopyala|yer tutucu|köşeli|\[|ayar|çıktı|yanıt|cevab|sonuç|takip|komut|mesaj|iste|paste|copy|placeholder|setting|output|response|result|follow-up|follow up|reply|message|ask|regenerate|generate|üret/i;
+/** Araç kullanımı sözcükleri (kelime başına bağlı: "listeleyin" içindeki "iste" sayılmaz). */
+const USAGE = /(?<![\p{L}])(?:prompt|yapıştır|kopyala|yer tutucu|köşeli|ayar|çıktı|yanıt|cevab|sonuç|takip|komut|mesaj|iste\p{L}*|üret\p{L}*|yeniden|varyasyon|sürüm|paste|copy|placeholder|setting|output|response|result|follow-up|follow up|reply|message|ask|regenerate|generate|variation|version|rerun|upscale)|\[/iu;
 
 /** howToUse: bu promptun araçta nasıl kullanılacağı (yapıştır + yer tutucu, ayar/ilk çıktı, takip komutu). */
 export function howToUseIssues(howToUse: string[], productName = ''): string[] {
@@ -298,7 +351,8 @@ export function howToUseIssues(howToUse: string[], productName = ''): string[] {
   const tool = fold(productName).split(/\s+/)[0] ?? '';
   const usage = howToUse.filter((step) => USAGE.test(step) || (tool.length > 2 && fold(step).includes(tool)));
   const mentionsPrompt = howToUse.some((step) => /prompt/i.test(step) || (tool.length > 2 && fold(step).includes(tool)));
-  if (howToUse.length < 3 || usage.length < 2 || !mentionsPrompt) {
+  // Her adım araç/prompt kullanımı anlatmalı: tek bir genel hayat tavsiyesi bile kabul edilmez.
+  if (howToUse.length < 3 || usage.length < howToUse.length || !mentionsPrompt) {
     issues.push(`howToUse must be 3 steps about using THIS prompt in ${productName || 'the tool'}, not general advice about the topic: (1) paste it and what to put in each [placeholder], (2) which setting or what in the first output to check, (3) a concrete follow-up message to improve the result.`);
   }
   return issues;

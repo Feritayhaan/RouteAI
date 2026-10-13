@@ -184,7 +184,9 @@ describe('validateWithRepair: eksik bağlam ve yanlış sentaks onarılır', () 
 describe('bağlam tamlığı: amaçtaki kritik varlıklar', () => {
   it('tırnaklı metin, sayılar (binlik ayırıcı, oran) ve cümle ortasındaki özel adlar (ek atılır)', () => {
     const e = goalEntities('Kafem "Mavi Kahve" için Instagram gönderisi; şubemiz Ankara\'da, 1.500 takipçi, 9:16.');
-    assert.deepStrictEqual(e, { quoted: ['Mavi Kahve'], numbers: ['1.500', '9:16'], names: ['Instagram', 'Ankara'] });
+    assert.deepStrictEqual(e, { quoted: ['Mavi Kahve'], numbers: ['1.500', '9:16'], names: ['Ankara'] }, 'Instagram platform adı: zorunlu değil');
+    const platforms = goalEntities('Kafem için TikTok, YouTube Shorts, LinkedIn ve Pinterest içerikleri, markamız Lumora');
+    assert.deepStrictEqual(platforms.names, ['Lumora'], 'platform/mecra adları muaf; kullanıcının marka adı değil');
   });
 
   it('cümle başı, ürün adı, harfe yapışık sürüm ve iş akışı adım bağlamı varlık sayılmaz', () => {

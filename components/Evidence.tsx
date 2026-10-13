@@ -10,7 +10,7 @@ import * as Tooltip from "@radix-ui/react-tooltip"
 import { ShieldAlert, ShieldCheck, ShieldQuestion } from "lucide-react"
 import { format, reasonText, type Dictionary } from "@/lib/i18n"
 import { SOURCES } from "@/lib/catalog/sources"
-import type { Confidence, RecommendationTool } from "@/lib/types"
+import { versusTitle, type Confidence, type RecommendationTool, type SimpleRecommendation } from "@/lib/types"
 
 const STYLE: Record<Confidence, string> = {
   high: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
@@ -175,5 +175,47 @@ export function EditorReasonsBox({ tool, dict, locale = "tr" }: { tool: Recommen
         {after}
       </p>
     </div>
+  )
+}
+
+/**
+ * "Neden alternatifleri yerine bu seçildi?" / "Why chosen over alternatives?":
+ * sorgunun istediği boyutlar (ölçülen ve katalogda henüz ölçülemeyen) ve kazanan
+ * ile her alternatif arasındaki ölçülmüş farklar. Her satır katalog verisinden
+ * (lib/catalog/queryFit.ts); fark yoksa bunu açıkça söyler, uydurmaz.
+ */
+export function WhyChosenBox({ recommendation, dict }: { recommendation: SimpleRecommendation; dict: Dictionary }) {
+  const { whyChosen, queryNeeds, main } = recommendation
+  if (!whyChosen?.length && !queryNeeds) return null
+  return (
+    <section className="mt-3 space-y-2 rounded-lg border border-border/60 bg-muted/30 p-3" aria-label={dict.fit.title}>
+      <p className="text-xs font-semibold text-foreground">{dict.fit.title}</p>
+      {queryNeeds && queryNeeds.measured.length > 0 && (
+        <p className="text-[11px] md:text-xs text-muted-foreground">{format(dict.fit.needs, { list: queryNeeds.measured.join(", ") })}</p>
+      )}
+      {queryNeeds && queryNeeds.unmeasured.length > 0 && (
+        <p className="text-[11px] md:text-xs text-muted-foreground">{format(dict.fit.unmeasured, { list: queryNeeds.unmeasured.join(", ") })}</p>
+      )}
+      {whyChosen?.map((c) => (
+        <div key={c.altName} className="space-y-1">
+          <p className="text-[11px] md:text-xs font-semibold text-foreground/90">{versusTitle(dict, main.toolName, c.altName)}</p>
+          {c.winner.length > 0 ? (
+            <ul className="space-y-0.5 text-xs text-muted-foreground">
+              {c.winner.map((line) => (
+                <li key={line} className="flex gap-2">
+                  <span className="text-emerald-600" aria-hidden>+</span>
+                  <span className="min-w-0 break-words">{line}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-muted-foreground">{dict.fit.noDifference}</p>
+          )}
+          {c.alt.length > 0 && (
+            <p className="text-xs text-muted-foreground">{format(dict.fit.altFocus, { alt: c.altName, list: c.alt.join("; ") })}</p>
+          )}
+        </div>
+      ))}
+    </section>
   )
 }

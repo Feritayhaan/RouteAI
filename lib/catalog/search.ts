@@ -2,7 +2,8 @@
 //
 // Sıra: sadece status 'active' → kanıtı olmayanlar elenir → sert filtreler →
 // boş kalırsa kısıt gevşetilir ve relaxedConstraint ile BİLDİRİLİR (sessiz
-// gevşetme yok) → sıralama anahtarı q + fit düzeltmesi.
+// gevşetme yok) → sıralama anahtarı q + fit düzeltmesi + sorgu uyumu
+// (lib/catalog/queryFit.ts; sorgu boyutları verilmişse, kendi kanıt arttıkça küçülür).
 // Eşitlikte: ownN büyük > dataDate yeni > ücretsiz katmanı olan > ad.
 // Sponsorluk ya da affiliate bilgisi sıralamaya ASLA girmez: anahtar sadece
 // yukarıdaki alanlardan hesaplanır (search.test.ts kilitler).
@@ -10,6 +11,7 @@
 import { hasFreeTier } from '../pricing';
 import { loadCatalog } from './index';
 import { fit, type ConstraintKey, type Constraints, type FitReason } from './fit';
+import { productFit, type ProductFit, type QueryNeeds } from './queryFit';
 import { scoreProduct, type ScoreContext, type ScoreResult } from './score';
 import type { Product, Task } from './schema';
 
@@ -17,6 +19,8 @@ export interface SearchItem {
   product: Product;
   score: ScoreResult;
   fitReasons: FitReason[];
+  /** Sorgu-araç uyumu (needs verildiyse). */
+  queryFit?: ProductFit;
   sortKey: number;
 }
 
@@ -34,6 +38,8 @@ export interface SearchInput {
   taskId: string;
   constraints?: Constraints;
   limit?: number;
+  /** Sorgunun istediği boyutlar (detectNeeds). Yoksa sıralama sadece q + fit. */
+  needs?: QueryNeeds;
 }
 
 export interface SearchContext extends ScoreContext {
@@ -84,7 +90,8 @@ export function searchCatalog(input: SearchInput, ctx: SearchContext = defaultSe
         counts.set(f.failed!, (counts.get(f.failed!) ?? 0) + 1);
         continue;
       }
-      kept.push({ product, score, fitReasons: f.reasons, sortKey: score.q + f.adjustment });
+      const queryFit = input.needs ? productFit(product, task, input.needs, ctx, score) : undefined;
+      kept.push({ product, score, fitReasons: f.reasons, ...(queryFit ? { queryFit } : {}), sortKey: score.q + f.adjustment + (queryFit?.adjustment ?? 0) });
     }
     return { kept, counts };
   };

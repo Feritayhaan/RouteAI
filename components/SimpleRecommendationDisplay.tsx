@@ -9,7 +9,7 @@ import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
 import PromptCta from "./PromptCta"
-import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox } from "./Evidence"
+import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox, WhyChosenBox } from "./Evidence"
 import { onToolOpen } from "./toolOpen"
 import { trackEvent } from "@/lib/analytics/client"
 import { getSessionId } from "@/lib/chat/session"
@@ -30,6 +30,13 @@ function CurrentModelLine({ model }: { model: CurrentModel }) {
       <a href={source.leaderboardUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">{source.label}</a>
       {" · "}
       <span className="whitespace-nowrap">{date}</span>
+      {/* Bağlam penceresi sadece models.json'da kaynağıyla varsa (uydurulmaz). */}
+      {model.contextWindow && (
+        <>
+          {" · "}
+          <span className="whitespace-nowrap">{model.contextWindow.tokens.toLocaleString("tr-TR")} token bağlam</span>
+        </>
+      )}
     </p>
   )
 }
@@ -167,7 +174,10 @@ export default function SimpleRecommendationDisplay({
               {editor ? (
                 <EditorReasonsBox tool={main} dict={dict} />
               ) : main.reasons ? (
-                <ReasonsBox tool={main} dict={dict} />
+                <>
+                  <ReasonsBox tool={main} dict={dict} />
+                  <WhyChosenBox recommendation={recommendation} dict={dict} />
+                </>
               ) : main.why && (
                 <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="flex items-start gap-2">

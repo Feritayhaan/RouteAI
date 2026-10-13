@@ -17,6 +17,7 @@
 
 import { recommendV1 } from '../lib/recommendV1.ts';
 import { searchCatalog } from '../lib/catalog/search.ts';
+import { detectNeeds } from '../lib/catalog/queryFit.ts';
 import { loadCatalog } from '../lib/catalog/index.ts';
 import { runAgent } from '../lib/agent/loop.ts';
 import { openAIChatClient } from '../lib/agent/client.ts';
@@ -64,11 +65,14 @@ async function v1(query) {
 
 /**
  * v2-oracle: görevi golden'dan DOĞRU kabul eder, sadece RouteAI Skoru
- * sıralamasını ölçer ("soğuk başlangıç kalitesi"). Görev döndürmez: taskMatch
+ * sıralamasını (sorgu-araç uyumu dahil) ölçer ("soğuk başlangıç kalitesi"). Görev döndürmez: taskMatch
  * burada anlamsız olurdu.
  */
-async function v2Oracle(_query, golden) {
-  const result = searchCatalog({ taskId: golden.expectedTask, limit: 5 });
+async function v2Oracle(query, golden) {
+  // Sorgu-araç uyumu (7 boyut) da dahil: canlı v3 akışıyla aynı sıralama anahtarı.
+  const task = loadCatalog().tasksById.get(golden.expectedTask);
+  const needs = task ? detectNeeds(query, task) : undefined;
+  const result = searchCatalog({ taskId: golden.expectedTask, limit: 5, ...(needs ? { needs } : {}) });
   return {
     tools: result.items.map((i) => i.product.name),
     clarification: false,

@@ -42,6 +42,23 @@ export function reasonText(dict: Dictionary, reason: ReasonLike): string | null 
   return format(template, p);
 }
 
+/**
+ * Karşılaştırmalı kanıt kodunu (lib/catalog/queryFit.ts ProofEdge) metne çevirir.
+ * Kaynak ve arena adı her zaman görünür (AA/LMArena lisans şartı). other: karşılaştırılan ürün.
+ */
+export function proofText(dict: Dictionary, edge: ReasonLike, other: string): string | null {
+  const template = (dict.fit.edges as Record<string, string>)[edge.code];
+  if (!template) return null;
+  const p = { ...(edge.params ?? {}), other } as Record<string, string | number>;
+  if (p.source) {
+    const source = String(p.source) as BenchmarkSource;
+    p.arena = findArena(source, String(p.arena))?.label ?? String(p.arena);
+    p.source = SOURCES[source]?.label ?? String(p.source);
+  }
+  if (p.dimension) p.dimension = (dict.fit.dims as Record<string, string>)[String(p.dimension)] ?? String(p.dimension);
+  return format(template, p);
+}
+
 /** lib/pricing formatPrice ile aynı kural, dile göre. */
 export function priceText(dict: Dictionary, pricing: PricingLike | null | undefined): string {
   if (getPricingModel(pricing) === 'free') return dict.price.free;

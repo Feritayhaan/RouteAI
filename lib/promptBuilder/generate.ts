@@ -123,7 +123,7 @@ function systemPrompt(guide: Guide, productName: string, locale: 'en' | 'tr', ge
   const visual = guide.modality === 'image' || guide.modality === 'video';
   const noNegative = ['text', 'code', 'slides', 'audio', 'music'].includes(guide.modality);
   const toolForm = LLM_MODALITIES.has(guide.modality)
-    ? `${productName} is a text/code/document AI. Write a natural, professional system/task prompt in flowing sections: (1) the expert role and the goal, (2) the project/task context and constraints, (3) the expected output structure or working steps, (4) [square-bracket placeholders] for facts only the user can fill in. Never write a chain of mechanical labels like "Role: X. Context: Y. Task: Z. Format: W."`
+    ? `${productName} is a text/code/document AI. Write a natural, professional, copy-paste-ready system/task prompt in flowing sections: (1) the expert role and the goal, (2) the project/task context and constraints, (3) the expected deliverable structure or working steps, (4) [square-bracket placeholders] for facts only the user can fill in. End with a short working rule that stops shallow answers: produce the concrete deliverable now (no generic overview), and if one critical detail is missing ask at most 1-2 questions before starting. Never write a chain of mechanical labels like "Role: X. Context: Y. Task: Z. Format: W."`
     : MEDIA_MODALITIES.has(guide.modality)
       ? `${productName} generates ${guide.modality}. No conversational sentences: describe the subject, scene, composition, light, camera, or the sound/music structure directly, in the tool's own style.`
       : `Write the prompt in the form ${productName} expects.`;
@@ -142,12 +142,13 @@ Rules, most important first:
    - transform (rewrite, translate, summarize, convert): state what must be preserved from the input and the target tone/format; add a [placeholder] for the input if the user did not give it.
    - learn: ONLY when the user explicitly asks what something is, how it works, or to be taught: an explanatory, teaching prompt.
    Match depth to the intent: build, solve and analyze requests get a complete, detailed prompt. Never shrink a request to "a short paragraph" or "beginner level" unless the user asked for that.
+   Discipline method: identify the discipline of the goal and ask for its real professional deliverable structure, step by step. Examples of the idea, not a closed list: creative production -> concept/logline, characters and atmosphere, scene/act flow; software -> architecture, data schema, edge cases, code and tests; business/marketing -> target persona, value proposition, action plan with owners and timeline; education -> learning outcomes, module plan, exercises and assessment; data -> questions, data sources, method, deliverable charts/tables.
 3. Tool-native form: ${toolForm}
 4. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
 5. Slots only fill in what the user did not say. A null slot is yours to choose, and every choice you make goes into "assumptions". If a slot does not fit this request, leave it out of the prompt instead of forcing it in.
 6. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically. Where a guide section says "KAYNAK GEREKLİ" (source needed), use plain, widely compatible wording and do not rely on undocumented tool syntax.
 7. ${productName} never sees this conversation: the prompt must be self-contained. Write it ready to paste: no preamble ("Sure", "Here is"), no references to the chat, no unfilled template brackets, no vague filler ("etc.", "something nice").${visual ? ' Do not address the tool ("Please create an image of..."); start directly with the subject or shot and describe subject, setting, composition/camera, light and style.' : ''} negativePrompt and settings must not contradict the prompt${noNegative ? '; this kind of tool has no negative prompt field, so negativePrompt is null and exclusions go into the prompt' : ''}.
-- Return exactly two variants: "safe" = closest to what the user said; "creative" = same goal, a bolder interpretation. They must differ meaningfully.
+- Return exactly two variants that both solve the same goal and differ meaningfully: "safe" = direct, structured, industry-standard and immediately usable; "creative" = an alternative expert prompt that takes a bolder, more original and deeper approach to the same goal.
 - Do not refuse or dilute ordinary requests. The user's own brand, product, business or name can be used freely. Do not impersonate real people or produce deceptive content (fake endorsements, forged documents); for copyrighted characters or logos, describe an original look with a similar feel instead.
 - Do not invent facts, statistics, prices or quotes the user did not give; use clearly marked placeholders for them.
 - The prompt text is in ${promptLang}. "howToUse", "assumptions" and "suggestedRefinements[].label" are in ${userLang}.
@@ -216,7 +217,12 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
   const slotIds = new Set(guide.slots.map((s) => s.id));
   const assumptions = parsed.assumptions
     .filter((a) => slotIds.has(a.slotId) && session.slots[a.slotId]?.source !== 'user')
-    .map((a) => ({ ...a, value: localizedValue(guide, session, a.slotId, a.value) }));
+    .map((a) => ({
+      ...a,
+      value: localizedValue(guide, session, a.slotId, a.value),
+      // Anlamsız kalıp gerekçe ("Belirtilmedi; varsayılan kullanıldı.") bağlama uygun, yerelleştirilmiş gerekçeyle değişir.
+      why: STOCK_WHY.test(a.why.trim()) || !a.why.trim() ? fallbackAssumption(guide, session, a.slotId).why : a.why,
+    }));
   for (const s of guide.slots) {
     const state = session.slots[s.id];
     if (state && state.source !== 'user' && !assumptions.some((a) => a.slotId === s.id)) {
@@ -247,6 +253,9 @@ function localizedValue(guide: Guide, session: PromptSession, slotId: string, va
     dynamic: session.questionOverrides?.[slotId],
   });
 }
+
+/** Modelin bazen yazdığı içi boş kalıp gerekçeler (TR/EN). */
+const STOCK_WHY = /^(?:belirtilmedi[;,.]?\s*varsayılan kullanıldı|not specified[;,.]?\s*used the default|varsayılan kullanıldı|used the default)\.?$/i;
 
 const FALLBACK_WHY = {
   smart: { tr: 'Belirtmediğin için isteğine en uygun seçenek seçildi.', en: "You didn't specify this; chosen to fit your request." },

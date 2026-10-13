@@ -44,6 +44,12 @@ Kendi gözlemler: iş sonucu w = 1 (evet 1, kısmen 0.5, hayır 0), karşılaşt
 Kanıt kuralı: B yok, uzman değerlendirmesi yok ve kendi gözlem ağırlığı 3'ten azsa ürün önerilmez. Sponsorluk ve affiliate bilgisi sıralamaya asla girmez.
 Güven: high = kendi gözlem ağırlığı ≥ 30 VE en yeni gözlem ≤ 30 gün; medium = kendi gözlem ≥ 10 VEYA (benchmark ≤ 30 gün VE uzman değerlendirmesi); low = diğer.
 
+### Sorgu-araç uyumu (2026-10-13, Ferit'in isteğiyle)
+- `lib/catalog/queryFit.ts`: sorgunun istediği 7 boyut (dil, uzun doküman, akıl yürütme, canlı web, özel çıktı kontrolü, bütçe, sinyaller) katalogdaki gerçek veriyle ölçülür: LMArena `document` / `search` / `webdev` / `image_edit` / `video_edit` arenaları, AA Intelligence (yoksa LMArena `text`), ürün fiyat modeli, `facts.languages`, `signals.json`. Verisi olmayan boyut "ölçülmedi" olarak bildirilir, sıralamayı etkilemez.
+- Sıralama anahtarı = q + fit + sorgu uyumu. q DEĞİŞMEZ. Ağırlıklar `weights.ts`: `QUERY_FIT_MAX_ADJUSTMENT = 0.15` (en fazla ±0.15), `K_QUERY_FIT = 10` (etki K/(K+ownN) ile küçülür: soğuk başlangıçta tam, kendi kanıtımız arttıkça kanıt öne geçer). Sinyal boyutu q'nun içinde zaten Bayesçi olduğu için ayarlamaya ikinci kez girmez.
+- Kartta "Neden alternatifleri yerine bu seçildi?": kazanan vs ilk 2 alternatif, sadece ölçülmüş farklar (arena sırası, ücretsiz katman, dil desteği, iş sonucu); fark yoksa açıkça "ölçülmüş fark yok".
+- v2-oracle (sorgu uyumu dahil), 2026-10-13: top3Hit 61/125, değişiklik öncesiyle aynı (gerileme yok).
+
 ## Fazlar
 P0 zemin | P1 altın eval seti | P2 veri modeli + taksonomi | P3 gece model senkronu | P4 RouteAI Skoru motoru | P5 sohbet ajanı API | P6 sohbet arayüzü + i18n | P7 etkileşimli prompt oluşturucu | P8 keşif, geri bildirim, analitik, lansman
 

@@ -109,6 +109,14 @@ export const modelSchema = z.object({
   modalities: z.array(z.enum(MODALITIES)),
   releaseDate: dateStringSchema.optional(),
   scores: z.array(modelScoreSchema),
+  /** Bağlam penceresi (token). Sadece kaynağı olan senkron yazar; bilinmiyorsa alan yok. */
+  contextWindow: z
+    .object({
+      tokens: z.number().int().positive(),
+      source: z.enum(BENCHMARK_SOURCES),
+      fetchedAt: dateStringSchema,
+    })
+    .optional(),
   pricing: z
     .object({
       inputPerMTok: z.number().nonnegative().optional(),
@@ -150,6 +158,8 @@ export const productFactsSchema = z.object({
   freeTierLimit: z.string().min(1).optional(),
   watermarkOnFree: z.boolean().optional(),
   commercialUse: z.enum(['yes', 'paid-only', 'no']).optional(),
+  /** Desteklenen dil kodları (ISO 639-1, ör. "tr"); sorgu-araç uyumunda "dil" boyutu. Bilinmiyorsa yazılmaz. */
+  languages: z.array(z.string().regex(/^[a-z]{2}$/)).min(1).optional(),
   source: z.string().url(),
   checkedAt: dateStringSchema,
 });

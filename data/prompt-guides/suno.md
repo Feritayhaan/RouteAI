@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "suno"
-version: 3
+version: 4
 appliesTo: ["suno-ai"]
 modality: "music"
 promptLanguage: "user"
@@ -116,7 +116,7 @@ slots:
       en: "Fast"
       tr: "Hızlı"
     value: "fast tempo"
-  default: "mid"
+  default: "infer"
 - id: "theme"
   impact: "medium"
   question:

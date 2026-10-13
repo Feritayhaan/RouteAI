@@ -5,7 +5,7 @@
 // Doğrudan üretim için şunlardan biri gerekir (ve hedef geniş olmamalı):
 //  - kullanıcının açıkça söylediği (source 'user', güven >= USER_DETAIL_CONFIDENCE)
 //    en az MIN_USER_DETAILS anlamlı ayrıntı, ya da
-//  - tüm 'high' slotların güvenle (>= MIN_CONFIDENCE) çıkarılmış olması.
+//  - tüm 'high' slotların yüksek güvenle (>= HIGH_SLOTS_KNOWN_CONFIDENCE) çıkarılmış olması.
 // Kart çıkarsa aday: impact 'high' ve değeri yok ya da güveni < MIN_CONFIDENCE;
 // rehber sırasıyla en fazla 3 tanesi TEK kartta. Oturum başına en fazla 1 soru kartı.
 //
@@ -22,6 +22,8 @@ export const MIN_CONFIDENCE = 0.65;
 /** Doğrudan üretim için kullanıcının açıkça söylediği en az ayrıntı sayısı ve güveni. */
 export const MIN_USER_DETAILS = 2;
 export const USER_DETAIL_CONFIDENCE = 0.75;
+/** Tüm 'high' slotlar bu güvenle çıkarıldıysa da soru kartı atlanır. */
+export const HIGH_SLOTS_KNOWN_CONFIDENCE = 0.7;
 /** Serbest cevap ve varsayım değişikliği üst sınırı (lib/validations/prompt.ts ile aynı). */
 export const SLOT_VALUE_MAX = 300;
 
@@ -47,7 +49,7 @@ export function hasEnoughDetail(guide: Guide, extracted: Record<string, Extracte
     .filter((s) => s.impact === 'high')
     .every((s) => {
       const e = extracted[s.id];
-      return !!e && e.value !== null && e.confidence >= MIN_CONFIDENCE;
+      return !!e && e.value !== null && e.confidence >= HIGH_SLOTS_KNOWN_CONFIDENCE;
     });
   return userDetails >= MIN_USER_DETAILS || allHighKnown;
 }

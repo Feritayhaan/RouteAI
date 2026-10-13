@@ -2,6 +2,7 @@ import { PricingLike } from './pricing'
 import type { CurrentModel } from './catalog/currentModel'
 import type { BenchmarkSource, Product } from './catalog/schema'
 import type { Dictionary } from './i18n/types'
+import { format, proofText } from './i18n/index'
 import type { RecommendationItem as V3Item, RecommendV3Result } from './recommendV3'
 
 export type Confidence = 'high' | 'medium' | 'low'
@@ -74,6 +75,10 @@ export interface SimpleRecommendation {
   relaxedConstraint?: string[]
   /** v3 editör seçimi varken görevdeki diğer araçlar (puansız, "doğrulanmadı"). */
   unverified?: RecommendationTool[]
+  /** v3: sorgunun istediği boyutlar (kullanıcı dilinde): ölçülen ve katalogda henüz ölçülemeyen. */
+  queryNeeds?: { measured: string[]; unmeasured: string[] }
+  /** v3: "Neden alternatifleri yerine bu seçildi?" — kazanan vs her alternatif, sadece ölçülmüş farklar. */
+  whyChosen?: { altName: string; winner: string[]; alt: string[] }[]
 }
 
 export interface WorkflowRecommendation {
@@ -118,7 +123,40 @@ function itemTool(i: V3Item, locale: Locale): RecommendationTool {
     sources: i.sources,
     basis: i.basis,
     ...(i.editorNote ? { editorNote: i.editorNote[locale] } : {}),
+    ...(i.currentModel ? { currentModel: i.currentModel } : {}),
   }
+}
+
+type V3Rec = Extract<RecommendV3Result, { kind: 'recommendation' }>
+
+/** Sorgu boyutları ve karşılaştırmalı kanıt: kod -> kullanıcı dilinde metin (lib/i18n). */
+function evidenceTexts(result: V3Rec, dict: Dictionary): Pick<SimpleRecommendation, 'queryNeeds' | 'whyChosen'> {
+  const out: Pick<SimpleRecommendation, 'queryNeeds' | 'whyChosen'> = {}
+  const dims = dict.fit.dims as Record<string, string>
+  if (result.queryNeeds?.length) {
+    out.queryNeeds = {
+      measured: result.queryNeeds.filter((n) => n.measured).map((n) => dims[n.dimension] ?? n.dimension),
+      unmeasured: result.queryNeeds.filter((n) => !n.measured).map((n) => dims[n.dimension] ?? n.dimension),
+    }
+  }
+  const names = new Map(result.items.map((i) => [i.product.id, i.product.name]))
+  if (result.comparisons?.length) {
+    out.whyChosen = result.comparisons.map((c) => {
+      const winnerName = names.get(c.winnerId) ?? c.winnerId
+      const altName = names.get(c.altId) ?? c.altId
+      return {
+        altName,
+        winner: c.winnerEdges.map((e) => proofText(dict, e, altName)).filter((t): t is string => t !== null),
+        alt: c.altEdges.map((e) => proofText(dict, e, winnerName)).filter((t): t is string => t !== null),
+      }
+    })
+  }
+  return out
+}
+
+/** "{winner} ile {alt}" başlığı için yardımcı (Evidence.tsx). */
+export function versusTitle(dict: Dictionary, winner: string, alt: string): string {
+  return format(dict.fit.vs, { winner, alt })
 }
 
 /**
@@ -139,6 +177,7 @@ export function apiResponseFromV3(result: RecommendV3Result, dict: Dictionary, l
         alternatives: alternatives.map((i) => itemTool(i, locale)),
         ...(result.relaxedConstraint?.length ? { relaxedConstraint: result.relaxedConstraint } : {}),
         ...(result.unverified?.length ? { unverified: result.unverified.map((p) => productTool(p, locale)) } : {}),
+        ...evidenceTexts(result, dict),
       }
     }
     case 'clarify': {

@@ -29,6 +29,16 @@ export const FRESH_DAYS = 30;
 /** B ve E yoksa, en az bu kadar kendi gözlem ağırlığı olmadan ürün önerilmez. */
 export const MIN_OWN_N_AS_EVIDENCE = 3;
 
+/**
+ * Sorgu-araç uyumu (lib/catalog/queryFit.ts): sorgunun istediği boyutlarda
+ * (uzun doküman, canlı web, akıl yürütme, özel çıktı, bütçe, dil) ürünün
+ * ölçülmüş verisi sıralama anahtarını en fazla bu kadar oynatır (q değişmez).
+ * Kendi gözlemimiz (ownN) arttıkça etkisi K_QUERY_FIT / (K_QUERY_FIT + ownN)
+ * oranında küçülür: soğuk başlangıçta tam güç, kanıt biriktikçe kanıt öne geçer.
+ */
+export const QUERY_FIT_MAX_ADJUSTMENT = 0.15;
+export const K_QUERY_FIT = 10;
+
 /** Yeni başlayan kullanıcı için rubrikteki "ease" en fazla bu kadar sıralama anahtarını oynatır (q değişmez). */
 export const BEGINNER_EASE_MAX_ADJUSTMENT = 0.05;
 
