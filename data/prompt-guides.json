@@ -1,7 +1,7 @@
 [
   {
     "id": "chat-general",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "chatgpt-gpt-5",
       "claude-ai-claude-4",
@@ -280,6 +280,7 @@
       "Context",
       "Task",
       "Output format",
+      "Length",
       "Constraints"
     ],
     "validators": [
@@ -288,18 +289,26 @@
         "type": "maxLength",
         "value": 6000,
         "message": "RouteAI limit: keep the prompt under 6000 characters."
+      },
+      {
+        "id": "format",
+        "type": "regex",
+        "value": "(format|bullet|madde|table|tablo|paragraph|paragraf|steps|adım|list|liste|words|kelime|sentences|cümle|json|markdown|başlık|heading|outline)",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the output format (e.g. bullet list, table, numbered steps)."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Rol: [rol]. Bağlam: [bağlam]. Görev: [görev]. Format: [format], [uzunluk]. Kısıtlar: [kısıtlar]. Kitle: [kitle]. Ton: [ton].",
-      "dosDonts": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Rol: [rol]. Bağlam: [kullanıcının durumu ve verdiği tüm ayrıntılar]. Görev: [tek, net görev]. Format: [format], [uzunluk]. Kısıtlar: [kısıtlar]. Kitle: [kitle]. Ton: [ton].",
+      "dosDonts": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.\n- Bağlam, görev ve çıktı formatı ayrı ayrı yazılır; model sohbeti görmediği için bağlam eksiksiz verilir.",
       "examples": "KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "cursor-task",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "cursor"
     ],
@@ -551,6 +560,7 @@
     ],
     "checklist": [
       "Goal in one sentence",
+      "Expected behavior",
       "Scope and files",
       "Constraints",
       "How to verify",
@@ -562,18 +572,34 @@
         "type": "maxLength",
         "value": 4000,
         "message": "RouteAI limit: keep the prompt under 4000 characters."
+      },
+      {
+        "id": "verification",
+        "type": "regex",
+        "value": "(test|lint|typecheck|type-check|tsc|build|verify|doğrula|kabul|acceptance|tip kontrol)",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State how to verify the change (tests, typecheck, a manual check)."
+      },
+      {
+        "id": "constraints",
+        "type": "regex",
+        "value": "(constraint|rule|do not|don't|must|keep|kural|kısıt|değiştirme|olmalı|zorunlu|koru)",
+        "flags": "i",
+        "criterion": "actionability",
+        "message": "State the constraints: what must not change and what must hold."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [amaç]. Kapsam: [kapsam]. Bağlam: [bağlam]. Kurallar: [kısıtlar]. Doğrulama: [doğrulama]. Kabul kriterleri: [liste].",
-      "dosDonts": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [tek cümlelik amaç]. Beklenen davranış: [değişiklikten sonra ne olmalı]. Kapsam: [dosyalar/alanlar]. Bağlam: [hata mesajı, ilgili yollar]. Kurallar: [kısıtlar]. Doğrulama: [çalıştırılacak kontrol]. Kabul kriterleri: [madde listesi].",
+      "dosDonts": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.\n- Beklenen davranış, kısıtlar (neyin değişmeyeceği) ve doğrulama adımı açıkça yazılır.",
       "examples": "KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "elevenlabs-voiceover",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "elevenlabs"
     ],
@@ -832,9 +858,10 @@
       }
     ],
     "checklist": [
-      "Final script text",
+      "Final script text, labelled",
       "Tone and pace",
       "Voice choice",
+      "Language",
       "Pronunciation notes for names or numbers"
     ],
     "validators": [
@@ -843,18 +870,34 @@
         "type": "maxLength",
         "value": 5000,
         "message": "RouteAI limit: keep the prompt under 5000 characters."
+      },
+      {
+        "id": "script",
+        "type": "regex",
+        "value": "(script|metin|text|seslendirme)\\s*:|\"[^\"]{20,}\"|“[^”]{20,}”",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "Include the exact script to be read, labelled \"Script:\" (or \"Metin:\")."
+      },
+      {
+        "id": "delivery",
+        "type": "regex",
+        "value": "(tone|ton|pace|hız|tempo|voice|ses|calm|sakin|energetic|enerjik|warm|sıcak)",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the delivery: voice, tone and pace."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız]. Metin: [okunacak metin, kısa cümleler].",
-      "dosDonts": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız], [dil]. Metin: [okunacak metnin tamamı, kısa cümleler, doğal duraklar]. Telaffuz notları: [adlar ve sayılar].",
+      "dosDonts": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.\n- Okunacak metin eksiksiz yazılır ve \"Metin:\" / \"Script:\" ile etiketlenir; ton ve hız ayrıca belirtilir.",
       "examples": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "gamma",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "gamma-ai"
     ],
@@ -1090,18 +1133,42 @@
         "type": "maxLength",
         "value": 4000,
         "message": "RouteAI limit: keep the prompt under 4000 characters."
+      },
+      {
+        "id": "slide-count",
+        "type": "regex",
+        "value": "\\d+\\s*(-\\s*\\d+\\s*)?(slides?|slayt)",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the number of slides (e.g. 8 slides)."
+      },
+      {
+        "id": "audience",
+        "type": "regex",
+        "value": "(audience|kitle|dinleyici|investor|yatırımcı|customer|müşteri|student|öğrenci|team|ekip|for )",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State who the deck is for."
+      },
+      {
+        "id": "outline",
+        "type": "regex",
+        "value": "(outline|section|agenda|structure|bölüm|akış|başlık|slide 1|slayt 1)",
+        "flags": "i",
+        "criterion": "actionability",
+        "message": "Give an outline of the sections or slides."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Bölümler: [taslak]. Ton: [ton]. Görseller: [görseller].",
-      "dosDonts": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Amaç: [sunumdan beklenen sonuç]. Bölümler: [slayt slayt taslak]. Ton: [ton]. Görseller: [görseller]. Bilinmeyen rakamlar için açıkça işaretli yer tutucu.",
+      "dosDonts": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.\n- Slayt sayısı, kitle ve bölüm taslağı her zaman yazılır; rakam uydurulmaz.",
       "examples": "KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "ideogram",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "ideogram-20"
     ],
@@ -1376,6 +1443,7 @@
     "checklist": [
       "Exact text written in quotes",
       "Design type stated",
+      "Typography character stated",
       "Colors or palette stated",
       "Layout described"
     ],
@@ -1385,18 +1453,34 @@
         "type": "maxLength",
         "value": 1500,
         "message": "RouteAI limit: keep the prompt under 1500 characters."
+      },
+      {
+        "id": "quoted-text",
+        "type": "regex",
+        "value": "\"[^\"]+\"|“[^”]+”|\\bno text\\b|\\bwithout (any )?text\\b|\\btext-free\\b",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "Write the exact text to render in double quotes, or state \"no text\"."
+      },
+      {
+        "id": "no-foreign-params",
+        "type": "forbidRegex",
+        "value": "(^|\\s)--[a-z]+",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [tasarım türü], \"[tam metin]\", [konu], [renkler], [yerleşim], [format].",
-      "dosDonts": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [tasarım türü], \"[tam metin]\" (tırnak içinde, aynen), [konu], [yazı tipi karakteri], [renkler], [yerleşim: metin nerede, ne kadar büyük]. Format ayarlarda.",
+      "dosDonts": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.\n- Görselde yazacak metin çift tırnak içinde, kullanıcının yazdığı gibi (dil ve harfler korunur); metin istenmiyorsa \"no text\" yazılır.",
       "examples": "KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "image-natural",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "chatgpt-gpt-4o-image",
       "dall-e-3",
@@ -1662,6 +1746,7 @@
     ],
     "checklist": [
       "Full-sentence description of the subject",
+      "Setting or background stated",
       "Style stated",
       "Composition and format stated",
       "Lighting or mood stated"
@@ -1672,18 +1757,26 @@
         "type": "maxLength",
         "value": 2000,
         "message": "RouteAI limit: keep the prompt under 2000 characters."
+      },
+      {
+        "id": "no-foreign-params",
+        "type": "forbidRegex",
+        "value": "(^|\\s)--[a-z]+",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Tam cümlelerle: [konu ve eylem]. [stil]. [kompozisyon ve format]. [ışık ve hava]. [arka plan].",
-      "dosDonts": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Tam cümlelerle: [konu ve eylem]. [ortam ve arka plan]. [stil]. [kompozisyon, çekim açısı ve format]. [ışık ve hava]. [görselde yazı varsa tırnak içinde].",
+      "dosDonts": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.\n- Format (kare/yatay/dikey) kelimeyle yazılır; başka araçların --parametreleri kullanılmaz.",
       "examples": "KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "midjourney",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "midjourney-v7"
     ],
@@ -1951,9 +2044,11 @@
     ],
     "checklist": [
       "Concrete main subject",
+      "Setting stated",
       "Style or medium stated",
+      "Composition or camera angle stated",
       "Lighting or mood stated",
-      "Aspect ratio set"
+      "Aspect ratio set once"
     ],
     "validators": [
       {
@@ -1967,18 +2062,25 @@
         "type": "maxLength",
         "value": 1500,
         "message": "RouteAI limit: keep the prompt under 1500 characters."
+      },
+      {
+        "id": "single-aspect",
+        "type": "forbidRegex",
+        "value": "--ar[\\s\\S]*--ar",
+        "criterion": "consistency",
+        "message": "Use a single --ar parameter."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu], [stil/araç], [kompozisyon], [ışık ve hava], [ayrıntılar], ardından en-boy oranı.",
-      "dosDonts": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu ve eylem], [ortam], [stil/araç], [kompozisyon ve çekim açısı], [ışık ve hava], [renk paleti], [ayrıntılar], ardından en-boy oranı. Virgülle ayrılmış kısa tarifler; tam cümle şart değil.",
+      "dosDonts": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.\n- Tek bir en-boy oranı verilir; ayarlarda farklı bir oran yazılmaz.",
       "examples": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "runway",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "runway-gen-3"
     ],
@@ -2248,6 +2350,7 @@
     ],
     "checklist": [
       "One clear subject and action",
+      "Setting stated",
       "Camera movement stated",
       "Lighting stated",
       "Style stated"
@@ -2258,18 +2361,34 @@
         "type": "maxLength",
         "value": 1000,
         "message": "RouteAI limit: keep the prompt under 1000 characters."
+      },
+      {
+        "id": "camera",
+        "type": "regex",
+        "value": "\\b(camera|shot|pan|panning|tilt|zoom|dolly|push-in|pull-back|orbit|orbiting|tracking|handheld|static|crane|aerial|close-up|wide)\\b",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the camera movement or framing (e.g. slow push-in, static wide shot)."
+      },
+      {
+        "id": "no-foreign-params",
+        "type": "forbidRegex",
+        "value": "(^|\\s)--[a-z]+",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [kamera hareketi]: [konu] [eylem], [ortam]. [ışık]. [stil]. [tempo].",
-      "dosDonts": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [kamera hareketi ve çekim]: [konu] [tek, net eylem], [ortam]. [ışık]. [stil]. [tempo].",
+      "dosDonts": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.\n- Tek sahne, tek ana eylem; kamera hareketi açıkça yazılır.",
       "examples": "KAYNAK GEREKLİ — Runway resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "suno",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "suno-ai"
     ],
@@ -2554,7 +2673,8 @@
     "checklist": [
       "Genre",
       "Mood",
-      "Vocal type",
+      "Vocal type or instrumental",
+      "Tempo",
       "Theme or lyrics"
     ],
     "validators": [
@@ -2563,18 +2683,34 @@
         "type": "maxLength",
         "value": 3000,
         "message": "RouteAI limit: keep the prompt under 3000 characters."
+      },
+      {
+        "id": "vocals",
+        "type": "regex",
+        "value": "(vocal|vokal|instrumental|enstrümantal|singer|şarkıcı|voice|duet|düet|rap|choir|koro)",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the vocal type, or that the track is instrumental."
+      },
+      {
+        "id": "genre",
+        "type": "regex",
+        "value": "(style|stil|genre|tür|pop|rock|hip-hop|electronic|elektronik|acoustic|akustik|jazz|caz|folk|türkü|r&b|metal|classical|klasik|lo-fi|house|techno|ambient|arabesk)",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the genre or musical style."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Stil: [tür], [duygu], [vokal], [tempo]. Sözler: [tema].",
-      "dosDonts": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Stil: [tür], [duygu], [vokal ya da enstrümantal], [tempo], [öne çıkan enstrümanlar]. Sözler: [tema; kullanıcı söz verdiyse aynen, bölümler ayrı satırlarda].",
+      "dosDonts": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.\n- Tür ve vokal tipi (ya da enstrümantal) açıkça yazılır; kullanıcının verdiği söz ve adlar aynen korunur.",
       "examples": "KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   },
   {
     "id": "text-to-video",
-    "version": 1,
+    "version": 2,
     "appliesTo": [
       "google-veo-3",
       "sora-2-openai"
@@ -2847,6 +2983,7 @@
       "Subject and action",
       "Setting",
       "Camera framing",
+      "Lighting",
       "Audio intent",
       "Style"
     ],
@@ -2856,12 +2993,36 @@
         "type": "maxLength",
         "value": 1500,
         "message": "RouteAI limit: keep the prompt under 1500 characters."
+      },
+      {
+        "id": "camera",
+        "type": "regex",
+        "value": "\\b(camera|shot|pan|panning|tilt|zoom|dolly|push-in|pull-back|orbit|orbiting|tracking|handheld|static|crane|aerial|close-up|wide)\\b",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the camera movement or framing (e.g. slow push-in, static wide shot)."
+      },
+      {
+        "id": "audio",
+        "type": "regex",
+        "value": "\\b(audio|sound|sounds|dialogue|dialog|music|silent|silence|ambient|ambience|voice|voiceover|narration|says)\\b",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "State the audio intent (dialogue, ambient sound, music or silent)."
+      },
+      {
+        "id": "no-foreign-params",
+        "type": "forbidRegex",
+        "value": "(^|\\s)--[a-z]+",
+        "flags": "i",
+        "criterion": "toolReadiness",
+        "message": "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
       }
     ],
     "body": {
       "syntax": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [çekim/kamera]: [konu] [eylem], [ortam], [ışık]. [stil]. Ses: [ses].",
-      "dosDonts": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
+      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [çekim/kamera]: [konu] [eylem], [ortam], [ışık]. [stil]. Ses: [diyalog, ortam sesi, müzik ya da sessiz].",
+      "dosDonts": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.\n- Ses niyeti her zaman yazılır (diyalog varsa konuşan ve söylenen cümle).",
       "examples": "KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
     }
   }

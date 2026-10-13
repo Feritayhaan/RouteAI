@@ -1,7 +1,9 @@
 // Konuşmadan slot değerlerini çıkarır: TEK OpenAI çağrısı (json_schema strict).
-// Sadece söylenen ya da güçlü şekilde ima edilen bilgi; tahmin gerekiyorsa null.
-// Aynı çağrıda, eksik kalan 'high' slotlar için kullanıcının girişine uygun
-// soru + 2-4 seçenek de yazılır (rehberdeki sabit sorunun yerine). Sorular
+// Söylenen bilgi (user, 0.9-1), güçlü ima (inferred, 0.65-0.85); söylenmeyen
+// slot için amaca uygun akıllı varsayım (inferred, 0.35-0.55). null sadece
+// giriş boş ya da anlamsızsa. Aynı çağrıda, güveni MIN_CONFIDENCE (0.65)
+// altında kalan 'high' slotlar için girişe uygun soru + 2-4 seçenek de yazılır;
+// PromptCard'daki "Varsayımlar (Değiştir)" bunları gösterir. Sorular
 // sanitizeQuestions ile doğrulanır; geçersizse rehberdeki soru kullanılır.
 
 import { z } from 'zod';
@@ -95,14 +97,17 @@ export async function extractSlots(
     question: s.question.en,
     options: s.options.map((o) => o.value),
   }));
-  const system = `You extract details for building a prompt for an AI tool. For each slot, fill a value ONLY if the conversation states it or strongly implies it. If you would have to guess, return null.
-- source "user": the user said it explicitly; "inferred": strongly implied.
-- confidence: 0-1, how sure you are.
-- Prefer one of the slot's option values when it matches; otherwise a short free-text value (max 12 words).
+  const system = `You are an expert prompt engineer extracting details for a prompt for an AI tool. Return a value for EVERY slot:
+- Stated explicitly by the user: source "user", confidence 0.9-1.0.
+- Strongly implied by the conversation: source "inferred", confidence 0.65-0.85.
+- Not mentioned: do NOT return null. Choose the value that best fits this user's specific goal and conversation, as an expert prompt engineer would, in ${promptLanguage} (max 12 words). Mark it source "inferred", confidence 0.35-0.55, so it is shown to the user as a smart assumption they can change.
+- Return null ONLY if the goal and conversation are empty or meaningless.
+- Prefer one of the slot's option values when it fits; otherwise a short free-text value (max 12 words).
+- An assumed value is a choice (style, format, tone, length, structure), never a fact: do not invent names, numbers, prices, dates, quotes or statistics the user did not give.
 - goalSummary: one sentence in ${userLanguage} describing what the user wants to create.
 Return every slot id exactly once.
 
-questions: for EVERY slot with impact "high" that you return as null or with confidence below 0.6, write ONE question tailored to the user's goal so they can answer with one tap. For all other slots write no question.
+questions: for EVERY slot with impact "high" whose confidence is below 0.65 (including the smart assumptions above), write ONE question tailored to the user's goal so they can change the assumption with one tap. For all other slots write no question.
 - question: short (max 12 words), in ${userLanguage}, about THIS goal (e.g. for a bakery logo ask about the logo's style, not generic image topics). Never ask about something the user already said.
 - options: 2-4 clearly different answers that make sense for this goal. label: max 5 words in ${userLanguage}. value: the phrase that goes into the prompt, in ${promptLanguage}, max 12 words.
 - The slot's example options are only hints; adapt them to the goal.
@@ -117,8 +122,8 @@ questions: for EVERY slot with impact "high" that you return as null or with con
     name: 'slot_extraction',
     system,
     user,
-    maxTokens: 900,
-    temperature: 0,
+    maxTokens: 1000,
+    temperature: 0.1,
     signal,
     schema: {
       type: 'object',

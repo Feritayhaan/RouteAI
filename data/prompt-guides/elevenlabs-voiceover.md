@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "elevenlabs-voiceover"
-version: 1
+version: 2
 appliesTo: ["elevenlabs"]
 modality: "audio"
 promptLanguage: "user"
@@ -163,12 +163,24 @@ refinements:
     en: "More formal"
     tr: "Daha resmî"
   instruction: "Use a more formal register."
-checklist: ["Final script text", "Tone and pace", "Voice choice", "Pronunciation notes for names or numbers"]
+checklist: ["Final script text, labelled", "Tone and pace", "Voice choice", "Language", "Pronunciation notes for names or numbers"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 5000
   message: "RouteAI limit: keep the prompt under 5000 characters."
+- id: "script"
+  type: "regex"
+  value: "(script|metin|text|seslendirme)\\s*:|\"[^\"]{20,}\"|“[^”]{20,}”"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "Include the exact script to be read, labelled \"Script:\" (or \"Metin:\")."
+- id: "delivery"
+  type: "regex"
+  value: "(tone|ton|pace|hız|tempo|voice|ses|calm|sakin|energetic|enerjik|warm|sıcak)"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the delivery: voice, tone and pace."
 ---
 
 ## Sözdizimi
@@ -177,11 +189,20 @@ KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken er
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız]. Metin: [okunacak metin, kısa cümleler].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız], [dil]. Metin: [okunacak metnin tamamı, kısa cümleler, doğal duraklar]. Telaffuz notları: [adlar ve sayılar].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
+- Okunacak metin eksiksiz yazılır ve "Metin:" / "Script:" ile etiketlenir; ton ve hız ayrıca belirtilir.
 
 ## Örnekler
 

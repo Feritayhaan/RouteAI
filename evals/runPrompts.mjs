@@ -3,11 +3,14 @@
 //   npm run eval:prompts        (OPENAI_API_KEY gerekir; yoksa her senaryo skipped)
 //
 // Kontroller:
-//  - soru kartı: bilgi konuşmada verilmişse ÇIKMAMALI; eksik 'high' slot varsa tek kart çıkmalı
+//  - soru kartı: konuşmada anlamlı bilgi varsa ÇIKMAMALI (eksikler akıllı varsayımla dolar); giriş aşırı belirsizse tek kart çıkmalı
 //  - rehber doğrulayıcıları geçiyor mu (iki varyant da)
 //  - iki varyant anlamlı ölçüde farklı mı (kelime Jaccard benzerliği < 0.9)
 //  - prompt dili doğru mu (promptLanguage 'en' -> Türkçe harf yok; 'user' + tr -> Türkçe)
 //  - hazır iyileştirme uygulanınca değer yeni prompta yansıdı mı
+//  - sufficiencyScore (0-100): hedef AI yeterlilik rubriği, ilk kartın iki
+//    varyantının ortalaması (bağlam tamlığı, araç sentaksı, somutluk, ayar/negatif
+//    tutarlılığı; lib/promptBuilder/sufficiency.ts). Düşen kriterler satırda.
 //  - ortalama gecikme ve token
 // Sonuç: evals/results/<YYYY-MM-DD>-prompts.json
 
@@ -21,6 +24,7 @@ const { memoryPromptStore, newPromptSessionId } = await import('../lib/promptBui
 const { openAIJsonLLM } = await import('../lib/promptBuilder/llm.ts');
 const { loadGuides } = await import('../lib/promptBuilder/guides.ts');
 const { loadCatalog } = await import('../lib/catalog/index.ts');
+const { sufficiencyScore } = await import('../lib/promptBuilder/sufficiency.ts');
 
 const scenarios = readFileSync(path.join(ROOT, 'evals/prompts.jsonl'), 'utf8').split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l));
 const guides = loadGuides();
@@ -76,6 +80,10 @@ for (const sc of scenarios) {
     row.similarity = Math.round(jaccard(safe.prompt, creative.prompt) * 100) / 100;
     row.variantsDiffer = row.similarity < 0.9;
     row.languageOk = card.variants.every((v) => languageOk(v.prompt, guide, sc.locale));
+    const productName = loadCatalog().products.find((p) => p.id === sc.productId)?.name ?? '';
+    const scores = card.variants.map((v) => sufficiencyScore(v, { guide, goal: sc.goal, productName }));
+    row.sufficiencyScore = Math.round(scores.reduce((a, x) => a + x.score, 0) / scores.length);
+    row.sufficiencyFailed = [...new Set(scores.flatMap((x) => Object.entries(x.criteria).filter(([, ok]) => !ok).map(([c]) => c)))];
     if (sc.refinementId) {
       const refined = await quietly(() => refinePromptSession({ promptSessionId: card.promptSessionId, refinementId: sc.refinementId }, d));
       tokens += refined.tokens;
@@ -94,7 +102,7 @@ for (const sc of scenarios) {
   }
   rows.push(row);
   const mark = (v) => (v === undefined ? '–' : v ? '✓' : '✗');
-  out(`${sc.id.padEnd(16)} soru ${mark(row.questionCorrect)}  doğrulayıcı ${mark(row.validatorsPass)}  farklı ${mark(row.variantsDiffer)}  dil ${mark(row.languageOk)}  iyileştirme ${mark(row.refineReflected)}  ${row.skipped ?? row.error ?? `${row.latencyMs} ms, ${row.tokens} token`}`);
+  out(`${sc.id.padEnd(16)} soru ${mark(row.questionCorrect)}  doğrulayıcı ${mark(row.validatorsPass)}  farklı ${mark(row.variantsDiffer)}  dil ${mark(row.languageOk)}  iyileştirme ${mark(row.refineReflected)}  yeterlilik ${row.sufficiencyScore ?? '–'}${row.sufficiencyFailed?.length ? ` (${row.sufficiencyFailed.join(', ')})` : ''}  ${row.skipped ?? row.error ?? `${row.latencyMs} ms, ${row.tokens} token`}`);
 }
 
 const done = rows.filter((r) => !r.skipped && !r.error);
@@ -113,12 +121,13 @@ const summary = {
   variantsDiffer: rate('variantsDiffer'),
   languageOk: rate('languageOk'),
   refineReflected: rate('refineReflected'),
+  avgSufficiency: avg('sufficiencyScore'),
   avgLatencyMs: avg('latencyMs'),
   avgTokens: avg('tokens'),
 };
 const fmt = ({ hits, n }) => (n ? `${hits}/${n}` : 'n/a');
 out('');
-out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
+out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | yeterlilik ort. ${summary.avgSufficiency ?? 'n/a'}/100 | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
 
 const date = new Date().toISOString().slice(0, 10);
 const file = path.join(ROOT, 'evals/results', `${date}-prompts.json`);

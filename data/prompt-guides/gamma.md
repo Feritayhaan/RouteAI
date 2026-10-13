@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "gamma"
-version: 1
+version: 2
 appliesTo: ["gamma-ai"]
 modality: "slides"
 promptLanguage: "user"
@@ -147,6 +147,24 @@ validators:
   type: "maxLength"
   value: 4000
   message: "RouteAI limit: keep the prompt under 4000 characters."
+- id: "slide-count"
+  type: "regex"
+  value: "\\d+\\s*(-\\s*\\d+\\s*)?(slides?|slayt)"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the number of slides (e.g. 8 slides)."
+- id: "audience"
+  type: "regex"
+  value: "(audience|kitle|dinleyici|investor|yatırımcı|customer|müşteri|student|öğrenci|team|ekip|for )"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State who the deck is for."
+- id: "outline"
+  type: "regex"
+  value: "(outline|section|agenda|structure|bölüm|akış|başlık|slide 1|slayt 1)"
+  flags: "i"
+  criterion: "actionability"
+  message: "Give an outline of the sections or slides."
 ---
 
 ## Sözdizimi
@@ -155,11 +173,20 @@ KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişil
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Bölümler: [taslak]. Ton: [ton]. Görseller: [görseller].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Amaç: [sunumdan beklenen sonuç]. Bölümler: [slayt slayt taslak]. Ton: [ton]. Görseller: [görseller]. Bilinmeyen rakamlar için açıkça işaretli yer tutucu.
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
+- Slayt sayısı, kitle ve bölüm taslağı her zaman yazılır; rakam uydurulmaz.
 
 ## Örnekler
 

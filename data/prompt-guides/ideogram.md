@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "ideogram"
-version: 1
+version: 2
 appliesTo: ["ideogram-20"]
 modality: "image"
 promptLanguage: "en"
@@ -172,12 +172,24 @@ refinements:
     en: "More contrast"
     tr: "Daha yüksek kontrast"
   instruction: "Increase contrast between text and background."
-checklist: ["Exact text written in quotes", "Design type stated", "Colors or palette stated", "Layout described"]
+checklist: ["Exact text written in quotes", "Design type stated", "Typography character stated", "Colors or palette stated", "Layout described"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 1500
   message: "RouteAI limit: keep the prompt under 1500 characters."
+- id: "quoted-text"
+  type: "regex"
+  value: "\"[^\"]+\"|“[^”]+”|\\bno text\\b|\\bwithout (any )?text\\b|\\btext-free\\b"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "Write the exact text to render in double quotes, or state \"no text\"."
+- id: "no-foreign-params"
+  type: "forbidRegex"
+  value: "(^|\\s)--[a-z]+"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
 ---
 
 ## Sözdizimi
@@ -186,11 +198,21 @@ KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken eri�
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [tasarım türü], "[tam metin]", [konu], [renkler], [yerleşim], [format].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [tasarım türü], "[tam metin]" (tırnak içinde, aynen), [konu], [yazı tipi karakteri], [renkler], [yerleşim: metin nerede, ne kadar büyük]. Format ayarlarda.
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Ideogram resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Araca seslenme yok ("Please create an image of...", "Lütfen..."): doğrudan konu/sahne ile başla.
+- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.
+- Görselde yazacak metin çift tırnak içinde, kullanıcının yazdığı gibi (dil ve harfler korunur); metin istenmiyorsa "no text" yazılır.
 
 ## Örnekler
 

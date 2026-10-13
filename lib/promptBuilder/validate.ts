@@ -1,24 +1,30 @@
-// Deterministik doğrulama: rehberin validators'ı. Başarısız varyant varsa hata
-// mesajlarıyla BİR kez onarım üretimi; yine başarısızsa "kontrol edilmedi".
+// Deterministik doğrulama: rehberin validators'ı + hedef AI yeterlilik rubriği
+// (lib/promptBuilder/sufficiency.ts). Başarısız varyant varsa hata mesajlarıyla
+// BİR kez onarım üretimi; yine başarısızsa "kontrol edilmedi".
 
-import type { Guide, GuideValidator } from './guideSchema';
+import type { GuideValidator } from './guideSchema';
 import { generatePrompt, type GenerateInput, type GenerateOutput } from './generate';
+import { allIssues, validatorFails, type SufficiencyContext } from './sufficiency';
 import type { Variant } from './types';
 
 export function checkPrompt(prompt: string, validators: GuideValidator[]): string[] {
-  const errors: string[] = [];
-  for (const v of validators) {
-    if (v.type === 'regex' && !new RegExp(String(v.value)).test(prompt)) errors.push(v.message);
-    if (v.type === 'maxLength' && prompt.length > Number(v.value)) errors.push(v.message);
-    if (v.type === 'mustInclude' && !prompt.toLowerCase().includes(String(v.value).toLowerCase())) errors.push(v.message);
-  }
-  return errors;
+  return validators.filter((v) => validatorFails(prompt, v)).map((v) => v.message);
 }
 
-function check(output: GenerateOutput, guide: Guide): Record<string, string[]> {
+/** İlk üretimde amaçtaki varlıklar aranır; iyileştirmede kullanıcı bilerek değiştirmiş olabilir. */
+export function sufficiencyContext(input: GenerateInput): SufficiencyContext {
+  return {
+    guide: input.guide,
+    goal: input.session.goal,
+    productName: input.productName,
+    checkGoalEntities: !input.previous && !input.instruction,
+  };
+}
+
+function check(output: GenerateOutput, ctx: SufficiencyContext): Record<string, string[]> {
   const failing: Record<string, string[]> = {};
   for (const v of output.variants) {
-    const errors = checkPrompt(v.prompt, guide.validators);
+    const errors = [...new Set(allIssues(v, ctx).map((i) => i.message))];
     if (errors.length > 0) failing[v.id] = errors;
   }
   return failing;
@@ -28,9 +34,10 @@ export async function validateWithRepair(
   output: GenerateOutput,
   input: GenerateInput
 ): Promise<{ variants: Variant[]; output: GenerateOutput; tokens: number; repaired: boolean }> {
+  const ctx = sufficiencyContext(input);
   let current = output;
   let tokens = 0;
-  let failing = check(current, input.guide);
+  let failing = check(current, ctx);
   let repaired = false;
 
   if (Object.keys(failing).length > 0) {
@@ -42,7 +49,7 @@ export async function validateWithRepair(
       ...current,
       variants: current.variants.map((v) => (failing[v.id] ? repair.output.variants.find((r) => r.id === v.id) ?? v : v)),
     };
-    failing = check(current, input.guide);
+    failing = check(current, ctx);
   }
 
   const variants: Variant[] = current.variants.map((v) => ({

@@ -24,10 +24,17 @@ export const guideRefinementSchema = z
   })
   .refine((r) => (r.patch ? 1 : 0) + (r.instruction ? 1 : 0) === 1, 'patch ya da instruction (sadece biri)');
 
+/**
+ * regex: eşleşmeli; forbidRegex: eşleşmemeli; maxLength; mustInclude.
+ * criterion: hangi yeterlilik kriterine sayılır (lib/promptBuilder/sufficiency.ts); yoksa toolReadiness.
+ */
 export const guideValidatorSchema = z.object({
   id: idSchema,
-  type: z.enum(['regex', 'maxLength', 'mustInclude']),
+  type: z.enum(['regex', 'forbidRegex', 'maxLength', 'mustInclude']),
   value: z.union([z.string().min(1), z.number().int().positive()]),
+  /** Sadece regex/forbidRegex: JS regex bayrakları (i, m, s, u). */
+  flags: z.string().regex(/^[imsu]{0,4}$/).optional(),
+  criterion: z.enum(['selfContainment', 'toolReadiness', 'actionability', 'consistency']).optional(),
   message: z.string().min(3),
 });
 
@@ -80,14 +87,15 @@ export function guideRuleErrors(guide: Guide): string[] {
     }
   }
   for (const v of guide.validators) {
-    if (v.type === 'regex') {
+    if (v.type === 'regex' || v.type === 'forbidRegex') {
       try {
-        new RegExp(String(v.value));
+        new RegExp(String(v.value), v.flags ?? '');
       } catch {
         errors.push(`validator ${v.id}: regex derlenmiyor`);
       }
     }
     if (v.type === 'maxLength' && typeof v.value !== 'number') errors.push(`validator ${v.id}: maxLength sayı olmalı`);
+    if (v.flags && v.type !== 'regex' && v.type !== 'forbidRegex') errors.push(`validator ${v.id}: flags sadece regex için`);
   }
   return errors;
 }

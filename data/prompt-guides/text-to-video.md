@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "text-to-video"
-version: 1
+version: 2
 appliesTo: ["google-veo-3", "sora-2-openai"]
 modality: "video"
 promptLanguage: "en"
@@ -169,12 +169,30 @@ refinements:
     en: "Tighter scene"
     tr: "Daha kısa sahne"
   instruction: "Keep a single continuous moment; remove extra beats."
-checklist: ["Subject and action", "Setting", "Camera framing", "Audio intent", "Style"]
+checklist: ["Subject and action", "Setting", "Camera framing", "Lighting", "Audio intent", "Style"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 1500
   message: "RouteAI limit: keep the prompt under 1500 characters."
+- id: "camera"
+  type: "regex"
+  value: "\\b(camera|shot|pan|panning|tilt|zoom|dolly|push-in|pull-back|orbit|orbiting|tracking|handheld|static|crane|aerial|close-up|wide)\\b"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the camera movement or framing (e.g. slow push-in, static wide shot)."
+- id: "audio"
+  type: "regex"
+  value: "\\b(audio|sound|sounds|dialogue|dialog|music|silent|silence|ambient|ambience|voice|voiceover|narration|says)\\b"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the audio intent (dialogue, ambient sound, music or silent)."
+- id: "no-foreign-params"
+  type: "forbidRegex"
+  value: "(^|\\s)--[a-z]+"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
 ---
 
 ## Sözdizimi
@@ -183,11 +201,21 @@ KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırk
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [çekim/kamera]: [konu] [eylem], [ortam], [ışık]. [stil]. Ses: [ses].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [çekim/kamera]: [konu] [eylem], [ortam], [ışık]. [stil]. Ses: [diyalog, ortam sesi, müzik ya da sessiz].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Veo 3 ve Sora 2 resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Araca seslenme yok ("Please create an image of...", "Lütfen..."): doğrudan konu/sahne ile başla.
+- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.
+- Ses niyeti her zaman yazılır (diyalog varsa konuşan ve söylenen cümle).
 
 ## Örnekler
 

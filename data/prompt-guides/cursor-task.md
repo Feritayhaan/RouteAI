@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "cursor-task"
-version: 1
+version: 2
 appliesTo: ["cursor"]
 modality: "code"
 promptLanguage: "user"
@@ -158,12 +158,24 @@ refinements:
     en: "Plan first"
     tr: "Önce plan"
   instruction: "Ask the agent to propose a plan and wait before editing."
-checklist: ["Goal in one sentence", "Scope and files", "Constraints", "How to verify", "Acceptance criteria"]
+checklist: ["Goal in one sentence", "Expected behavior", "Scope and files", "Constraints", "How to verify", "Acceptance criteria"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 4000
   message: "RouteAI limit: keep the prompt under 4000 characters."
+- id: "verification"
+  type: "regex"
+  value: "(test|lint|typecheck|type-check|tsc|build|verify|doğrula|kabul|acceptance|tip kontrol)"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State how to verify the change (tests, typecheck, a manual check)."
+- id: "constraints"
+  type: "regex"
+  value: "(constraint|rule|do not|don't|must|keep|kural|kısıt|değiştirme|olmalı|zorunlu|koru)"
+  flags: "i"
+  criterion: "actionability"
+  message: "State the constraints: what must not change and what must hold."
 ---
 
 ## Sözdizimi
@@ -172,11 +184,20 @@ KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişi
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [amaç]. Kapsam: [kapsam]. Bağlam: [bağlam]. Kurallar: [kısıtlar]. Doğrulama: [doğrulama]. Kabul kriterleri: [liste].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [tek cümlelik amaç]. Beklenen davranış: [değişiklikten sonra ne olmalı]. Kapsam: [dosyalar/alanlar]. Bağlam: [hata mesajı, ilgili yollar]. Kurallar: [kısıtlar]. Doğrulama: [çalıştırılacak kontrol]. Kabul kriterleri: [madde listesi].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
+- Beklenen davranış, kısıtlar (neyin değişmeyeceği) ve doğrulama adımı açıkça yazılır.
 
 ## Örnekler
 

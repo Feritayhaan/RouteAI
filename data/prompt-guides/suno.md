@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "suno"
-version: 1
+version: 2
 appliesTo: ["suno-ai"]
 modality: "music"
 promptLanguage: "user"
@@ -178,12 +178,24 @@ refinements:
     en: "Catchier chorus"
     tr: "Akılda kalan nakarat"
   instruction: "Make the chorus a short, repeatable hook."
-checklist: ["Genre", "Mood", "Vocal type", "Theme or lyrics"]
+checklist: ["Genre", "Mood", "Vocal type or instrumental", "Tempo", "Theme or lyrics"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 3000
   message: "RouteAI limit: keep the prompt under 3000 characters."
+- id: "vocals"
+  type: "regex"
+  value: "(vocal|vokal|instrumental|enstrümantal|singer|şarkıcı|voice|duet|düet|rap|choir|koro)"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the vocal type, or that the track is instrumental."
+- id: "genre"
+  type: "regex"
+  value: "(style|stil|genre|tür|pop|rock|hip-hop|electronic|elektronik|acoustic|akustik|jazz|caz|folk|türkü|r&b|metal|classical|klasik|lo-fi|house|techno|ambient|arabesk)"
+  flags: "i"
+  criterion: "toolReadiness"
+  message: "State the genre or musical style."
 ---
 
 ## Sözdizimi
@@ -192,11 +204,20 @@ KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişile
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Stil: [tür], [duygu], [vokal], [tempo]. Sözler: [tema].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Stil: [tür], [duygu], [vokal ya da enstrümantal], [tempo], [öne çıkan enstrümanlar]. Sözler: [tema; kullanıcı söz verdiyse aynen, bölümler ayrı satırlarda].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+
+RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
+- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
+- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
+- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
+- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
+- Tür ve vokal tipi (ya da enstrümantal) açıkça yazılır; kullanıcının verdiği söz ve adlar aynen korunur.
 
 ## Örnekler
 

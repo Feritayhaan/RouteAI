@@ -11,6 +11,7 @@ import { format, type Dictionary, type Locale } from "@/lib/i18n"
 import { promptProductId } from "@/lib/promptBuilder/products"
 import type { WorkflowStep } from "@/lib/types"
 import PricingBadges from "./PricingBadges"
+import PromptCta from "./PromptCta"
 import PromptPanel from "./PromptPanel"
 import { onToolOpen } from "./toolOpen"
 
@@ -57,6 +58,11 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
           <span className="font-medium">{step.name}</span>
           <ArrowRight className="w-3.5 h-3.5 shrink-0 text-muted-foreground" aria-hidden />
           <span className="font-bold text-primary">{step.primary.toolName}</span>
+          {productId && !isExpanded && (
+            <span className="rounded-full border border-primary/30 bg-primary/5 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+              ✨ {dict.workflow.promptAvailable}
+            </span>
+          )}
         </span>
         <ChevronDown
           className={`w-4 h-4 shrink-0 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`}
@@ -122,15 +128,26 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
 
           {prompt && productId && (
             <div className="space-y-3">
-              <button
-                type="button"
-                onClick={prompt.onToggle}
-                aria-pressed={prompt.open}
-                className="min-h-11 inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <Wand2 className="w-3.5 h-3.5" aria-hidden />
-                {prompt.open ? dict.workflow.hidePrompt : dict.workflow.writePrompt}
-              </button>
+              {prompt.open ? (
+                <button
+                  type="button"
+                  onClick={prompt.onToggle}
+                  aria-pressed
+                  className="min-h-11 inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Wand2 className="w-3.5 h-3.5" aria-hidden />
+                  {dict.workflow.hidePrompt}
+                </button>
+              ) : (
+                // Seçimsel: tıklanmadan prompt üretilmez ("Prompt da yaz" açıksa ilk adım kendiliğinden açılır)
+                <PromptCta
+                  compact
+                  label={format(dict.workflow.stepCta, { product: step.primary.toolName })}
+                  hint={format(dict.prompt.ctaHint, { product: step.primary.toolName })}
+                  query={prompt.goal}
+                  onClick={prompt.onToggle}
+                />
+              )}
               {prompt.open && (
                 <PromptPanel
                   target={{ productId, toolName: step.primary.toolName }}
