@@ -590,6 +590,16 @@ describe('prompt oturumu', () => {
     }
   });
 
+  it('onarım mesajı yasaklı ifadenin geçtiği yeri gösterir (genel mesaj onarımı tutturmuyordu)', async () => {
+    const el = loadGuides().find((g) => g.id === 'elevenlabs-voiceover')!;
+    const { allIssues } = await import('../promptBuilder/sufficiency');
+    const prompt = "Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'";
+    const issue = allIssues({ prompt, negativePrompt: null, settings: [] }, { guide: el, goal: 'x' }).find((i) => /Do not describe the voiceover/.test(i.message))!;
+    assert.match(issue.message, /Found: "[^"]*net bir kadın sesiyle: 'Bu derste[^"]*"\. Rewrite or remove that part\./);
+    const regexOnly = allIssues({ prompt: 'a fox in a library', negativePrompt: null, settings: [] }, { guide: midjourney(), goal: 'x' }).find((i) => /aspect ratio parameter/.test(i.message))!;
+    assert.doesNotMatch(regexOnly.message, /Found:/, 'eşleşmesi gereken kuralda alıntı yok');
+  });
+
   it('ses aracı için üretici kuralı: prompt sesli okunur, ayarlar settings\'e', async () => {
     const { llm, calls } = fakeLLM({ extracted: { language: 'Turkish', tone: 'calm', voice: 'female voice' } });
     await startPromptSession({ productId: 'elevenlabs', goal: 'ders seslendirmesi', conversation: [{ role: 'user', content: 'Türkçe sakin kadın sesiyle ders seslendirmesi' }], locale: 'tr' }, deps(llm));
@@ -597,7 +607,13 @@ describe('prompt oturumu', () => {
     assert.match(system, /reads "prompt" aloud word for word/);
     assert.match(system, /voice and speed go into "settings"/);
     assert.match(system, /never appear as words in "prompt"/);
-    assert.match(system, /never a description of them/);
+    assert.match(system, /Never a description of the voiceover/);
+    assert.match(system, /delivery details \(voice, tone, pace, language, purpose\) are kept by putting them into "settings"/, 'kural 1 ile çelişki yok (2026-10-14 kısmi eval)');
+    assert.match(system, /a single placeholder: \[okunacak metin\]/, 'metin ve konu yoksa tek yer tutucu (tr)');
+    // Ses dışı araçta bu istisna yok
+    const mj = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(mj.llm));
+    assert.doesNotMatch(mj.calls.find((c) => c.name === 'prompt_generation')!.system, /delivery details/);
     assert.doesNotMatch(system, /describe the subject, scene/);
   });
 
