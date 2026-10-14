@@ -773,6 +773,8 @@ describe('düşünen model desteği (lib/promptBuilder/llm.ts)', () => {
     assert.strictEqual(promptTimeoutMs('gpt-4o-mini'), PROMPT_TIMEOUT_MS);
     assert.strictEqual(promptTimeoutMs('o4-mini'), REASONING_PROMPT_TIMEOUT_MS);
     assert.ok(REASONING_PROMPT_TIMEOUT_MS < 60_000, 'route maxDuration (60 sn) altında');
+    assert.strictEqual(PROMPT_TIMEOUT_MS, 40_000, '2026-10-14 kararı: uzun promptlarda hata yerine bekleme');
+    assert.ok(PROMPT_TIMEOUT_MS <= REASONING_PROMPT_TIMEOUT_MS && PROMPT_TIMEOUT_MS < 60_000);
   });
 
   it('prompt uçları Node çalışma zamanında, maxDuration 60', () => {
