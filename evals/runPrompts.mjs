@@ -1,6 +1,11 @@
 // Prompt oluşturucu eval'i: evals/prompts.jsonl (rehber başına 2 senaryo).
 //
 //   npm run eval:prompts        (OPENAI_API_KEY gerekir; yoksa her senaryo skipped)
+//   npm run eval:prompts -- --only=gamma-full,el-missing --repeat=3
+//     --only: sadece bu senaryolar (ucuz yeniden deneme); --repeat: her senaryo N
+//     kez (1-10; tek çalıştırmadaki şans ile gerçek değişikliği ayırmak için).
+//     İkisinden biri verilince sonuç <tarih>-prompts-partial.json'a yazılır, tam
+//     çalıştırmanın dosyası ezilmez.
 //
 // Kontroller:
 //  - soru kartı: konuşmada anlamlı bilgi varsa ÇIKMAMALI (eksikler akıllı varsayımla dolar); giriş aşırı belirsizse tek kart çıkmalı
@@ -34,7 +39,19 @@ const { loadGuides } = await import('../lib/promptBuilder/guides.ts');
 const { loadCatalog } = await import('../lib/catalog/index.ts');
 const { cardIssues, sufficiencyScore } = await import('../lib/promptBuilder/sufficiency.ts');
 
-const scenarios = readFileSync(path.join(ROOT, 'evals/prompts.jsonl'), 'utf8').split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l));
+const allScenarios = readFileSync(path.join(ROOT, 'evals/prompts.jsonl'), 'utf8').split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l));
+const arg = (name) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
+const only = arg('only')?.split(',').map((x) => x.trim()).filter(Boolean);
+const repeat = Math.max(1, Math.min(10, Math.floor(Number(arg('repeat'))) || 1));
+const unknownIds = (only ?? []).filter((id) => !allScenarios.some((sc) => sc.id === id));
+if (unknownIds.length) {
+  console.error(`[eval:prompts] bilinmeyen senaryo: ${unknownIds.join(', ')} (evals/prompts.jsonl)`);
+  process.exit(1);
+}
+const partial = Boolean(only) || repeat > 1;
+const scenarios = (only ? allScenarios.filter((sc) => only.includes(sc.id)) : allScenarios).flatMap((sc) =>
+  Array.from({ length: repeat }, (_, k) => (repeat > 1 ? { ...sc, run: k + 1 } : sc))
+);
 const guides = loadGuides();
 const deps = () => ({
   llm: openAIJsonLLM(),
@@ -60,11 +77,11 @@ function languageOk(prompt, guide, locale) {
   return locale === 'tr' ? TR_CHARS.test(prompt) || /\b(ve|için|bir|ile)\b/i.test(prompt) : !TR_CHARS.test(prompt);
 }
 
-out(`[eval:prompts] ${scenarios.length} senaryo | OpenAI anahtarı: ${hasOpenAIKey ? 'var' : 'YOK — senaryolar skipped'}`);
+out(`[eval:prompts] ${scenarios.length} senaryo${partial ? ` (kısmi: ${only ? `--only ${only.length}` : 'hepsi'} x ${repeat})` : ''} | OpenAI anahtarı: ${hasOpenAIKey ? 'var' : 'YOK — senaryolar skipped'}`);
 const rows = [];
 for (const sc of scenarios) {
   const guide = guides.find((g) => g.id === sc.guideId);
-  const row = { id: sc.id, guideId: sc.guideId, expectQuestion: sc.expectQuestion };
+  const row = { id: sc.run ? `${sc.id}#${sc.run}` : sc.id, guideId: sc.guideId, expectQuestion: sc.expectQuestion };
   const callsBefore = openaiCallCount();
   const started = performance.now();
   try {
@@ -135,7 +152,7 @@ for (const sc of scenarios) {
   rows.push(row);
   const mark = (v) => (v === undefined ? '–' : v ? '✓' : '✗');
   const stepsText = (r) => (r.steps ?? []).map((x) => `${x.step} ${(x.ms / 1000).toFixed(1)} sn`).join(' / ');
-  out(`${sc.id.padEnd(16)} soru ${mark(row.questionCorrect)}  doğrulayıcı ${mark(row.validatorsPass)}  farklı ${mark(row.variantsDiffer)}  dil ${mark(row.languageOk)}  iyileştirme ${mark(row.refineReflected)}  yeterlilik ${row.sufficiencyScore ?? '–'}${row.sufficiencyFailed?.length ? ` (${row.sufficiencyFailed.join(', ')})` : ''}  ${row.skipped ?? row.error ?? `${stepsText(row)}, ${row.tokens} token${row.overTimeout ? ` ⚠ canlı sınır ${PROMPT_TIMEOUT_MS / 1000} sn aşıldı` : ''}`}`);
+  out(`${row.id.padEnd(16)} soru ${mark(row.questionCorrect)}  doğrulayıcı ${mark(row.validatorsPass)}  farklı ${mark(row.variantsDiffer)}  dil ${mark(row.languageOk)}  iyileştirme ${mark(row.refineReflected)}  yeterlilik ${row.sufficiencyScore ?? '–'}${row.sufficiencyFailed?.length ? ` (${row.sufficiencyFailed.join(', ')})` : ''}  ${row.skipped ?? row.error ?? `${stepsText(row)}, ${row.tokens} token${row.overTimeout ? ` ⚠ canlı sınır ${PROMPT_TIMEOUT_MS / 1000} sn aşıldı` : ''}`}`);
 }
 
 const done = rows.filter((r) => !r.skipped && !r.error);
@@ -165,7 +182,7 @@ out('');
 out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | yeterlilik ort. ${summary.avgSufficiency ?? 'n/a'}/100 | kart (howToUse/varsayım) ${fmt(summary.cardOk)} | canlı sınırı aşan ${fmt(summary.overTimeout)} | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
 
 const date = new Date().toISOString().slice(0, 10);
-const file = path.join(ROOT, 'evals/results', `${date}-prompts.json`);
+const file = path.join(ROOT, 'evals/results', `${date}-prompts${partial ? '-partial' : ''}.json`);
 mkdirSync(path.dirname(file), { recursive: true });
-writeFileSync(file, `${JSON.stringify({ date, generatedAt: new Date().toISOString(), openaiKey: hasOpenAIKey, summary, rows }, null, 2)}\n`);
+writeFileSync(file, `${JSON.stringify({ date, generatedAt: new Date().toISOString(), openaiKey: hasOpenAIKey, ...(partial ? { only: only ?? null, repeat } : {}), summary, rows }, null, 2)}\n`);
 out(`[eval:prompts] sonuç yazıldı: ${path.relative(ROOT, file)}`);
