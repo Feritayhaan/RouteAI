@@ -1,0 +1,1992 @@
+{
+  "date": "2026-10-14",
+  "generatedAt": "2026-10-14T14:47:17.122Z",
+  "openaiKey": true,
+  "summary": {
+    "total": 24,
+    "evaluated": 24,
+    "skipped": 0,
+    "errors": 0,
+    "questionCorrect": {
+      "hits": 17,
+      "n": 24
+    },
+    "validatorsPass": {
+      "hits": 21,
+      "n": 24
+    },
+    "variantsDiffer": {
+      "hits": 24,
+      "n": 24
+    },
+    "languageOk": {
+      "hits": 23,
+      "n": 24
+    },
+    "refineReflected": {
+      "hits": 11,
+      "n": 11
+    },
+    "overTimeout": {
+      "hits": 1,
+      "n": 24
+    },
+    "cardOk": {
+      "hits": 23,
+      "n": 24
+    },
+    "avgSufficiency": 98,
+    "avgLatencyMs": 11728,
+    "avgTokens": 6214
+  },
+  "rows": [
+    {
+      "id": "mj-full",
+      "guideId": "midjourney",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 8243,
+          "tokens": 3878
+        },
+        {
+          "step": "refine",
+          "ms": 3406,
+          "tokens": 2484
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a character",
+          "source": "inferred"
+        },
+        "style": {
+          "value": "illustration",
+          "source": "inferred"
+        },
+        "aspect": {
+          "value": "1:1",
+          "source": "inferred"
+        },
+        "mood": {
+          "value": "soft pastel",
+          "source": "user"
+        },
+        "detail": {
+          "value": "highly detailed",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.41,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "A cozy library scene featuring a fox reading a book, surrounded by shelves filled with books, warm lighting creating a soft pastel mood, highly detailed illustration, square format 1:1.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "A whimsical illustration of a fox immersed in a book in a charming library, with pastel-colored walls and soft lighting, books scattered around, evoking a warm and inviting atmosphere, highly detailed, square format 1:1.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into Midjourney as is.",
+        "Check the first output for the cozy atmosphere and character details.",
+        "Send a follow-up to adjust the color palette or add more elements."
+      ],
+      "refinedPrompt": "A charming illustration of a fox reading a book, sitting comfortably in a cozy library with shelves full of colorful books, warm soft pastel lighting creating a gentle atmosphere, highly detailed, aspect ratio 9:16.",
+      "refineReflected": true,
+      "tokens": 6362,
+      "latencyMs": 11668,
+      "overTimeout": false
+    },
+    {
+      "id": "mj-missing",
+      "guideId": "midjourney",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 3671,
+          "tokens": 1374
+        },
+        {
+          "step": "answer",
+          "ms": 3321,
+          "tokens": 2364
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": null,
+          "source": "default"
+        },
+        "style": {
+          "value": null,
+          "source": "default"
+        },
+        "aspect": {
+          "value": null,
+          "source": "default"
+        },
+        "mood": {
+          "value": null,
+          "source": "default"
+        },
+        "detail": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 3,
+      "askedSlots": [
+        "subject",
+        "style",
+        "aspect"
+      ],
+      "validatorsPass": true,
+      "similarity": 0.2,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": false,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "a serene landscape with rolling hills and a clear blue sky, photorealistic photo, vibrant colors, highly detailed, 16:9",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "a whimsical fantasy landscape with colorful, oversized flowers and a rainbow, illustration, bright and cheerful mood, minimal detail, 16:9",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "paste it into Midjourney and it's ready as is",
+        "check the first output for clarity and detail",
+        "ask for more specific elements to be added or adjusted in the image"
+      ],
+      "tokens": 3738,
+      "latencyMs": 6993,
+      "overTimeout": false
+    },
+    {
+      "id": "ideo-full",
+      "guideId": "ideogram",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 5465,
+          "tokens": 3676
+        },
+        {
+          "step": "refine",
+          "ms": 3879,
+          "tokens": 2593
+        }
+      ],
+      "slots": {
+        "text": {
+          "value": "Friday Jazz",
+          "source": "user"
+        },
+        "style": {
+          "value": "typographic poster",
+          "source": "user"
+        },
+        "subject": {
+          "value": "a saxophone silhouette",
+          "source": "user"
+        },
+        "aspect": {
+          "value": "9:16",
+          "source": "user"
+        },
+        "palette": {
+          "value": "vibrant colors",
+          "source": "user"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.53,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "typographic poster, \"Friday Jazz\", a saxophone silhouette, vibrant colors, vertical 9:16 layout. Format settings: 9:16 aspect ratio, vibrant color palette, large bold typography for the text, saxophone silhouette integrated into the design.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "typographic poster, \"Friday Jazz\", a dynamic saxophone silhouette with flowing musical notes, vibrant colors, vertical 9:16 layout. Format settings: 9:16 aspect ratio, bright and contrasting color palette, large expressive typography that captures the essence of jazz, saxophone silhouette artistically blended with the text.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "paste it into Ideogram as is",
+        "check that the aspect ratio is set to 9:16",
+        "send a follow-up message to refine the color scheme or typography style if needed."
+      ],
+      "refinedPrompt": "typographic poster, \"Friday Jazz\", a saxophone silhouette, vibrant colors, square 1:1 layout. Format settings: 1:1 aspect ratio, vibrant color palette, large bold typography for the text, saxophone silhouette integrated into the design.",
+      "refineReflected": true,
+      "tokens": 6269,
+      "latencyMs": 9344,
+      "overTimeout": false
+    },
+    {
+      "id": "ideo-missing",
+      "guideId": "ideogram",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 3794,
+          "tokens": 1366
+        },
+        {
+          "step": "answer",
+          "ms": 3845,
+          "tokens": 2277
+        }
+      ],
+      "slots": {
+        "text": {
+          "value": null,
+          "source": "default"
+        },
+        "style": {
+          "value": null,
+          "source": "default"
+        },
+        "subject": {
+          "value": null,
+          "source": "default"
+        },
+        "aspect": {
+          "value": "1:1",
+          "source": "user"
+        },
+        "palette": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 3,
+      "askedSlots": [
+        "text",
+        "style",
+        "subject"
+      ],
+      "validatorsPass": true,
+      "similarity": 0.3,
+      "variantsDiffer": true,
+      "languageOk": false,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "logo, \"Ideogram Tasarımı\", a product, sans-serif, brand colors, centered layout, large size.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "illustration, \"Ideogram Tasarımı\", a character, modern font, vibrant colors, dynamic layout, medium size.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "(1) Paste it into Ideogram as is.",
+        "(2) Check the output for design alignment with the brand identity.",
+        "(3) Send a follow-up request for adjustments or variations."
+      ],
+      "tokens": 3643,
+      "latencyMs": 7640,
+      "overTimeout": false
+    },
+    {
+      "id": "img-full",
+      "guideId": "image-natural",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 6175,
+          "tokens": 3559
+        },
+        {
+          "step": "refine",
+          "ms": 3248,
+          "tokens": 2419
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a product",
+          "source": "user"
+        },
+        "style": {
+          "value": "photorealistic photo",
+          "source": "user"
+        },
+        "aspect": {
+          "value": "square",
+          "source": "user"
+        },
+        "mood": {
+          "value": "bright and cheerful",
+          "source": "inferred"
+        },
+        "background": {
+          "value": "plain background",
+          "source": "user"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.34,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "A photorealistic product photo of a ceramic mug on a plain white background. Square format. Bright light enhances the details of the mug, creating a clean and inviting look.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "A striking photorealistic image of a ceramic mug placed on a pristine white background. The square format captures the mug's intricate design, illuminated by bright, natural light that highlights its glossy finish and vibrant colors.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste this prompt into ChatGPT (görsel) as is.",
+        "Check the output for clarity and detail in the product photo.",
+        "Ask ChatGPT (görsel) to adjust lighting or background if needed."
+      ],
+      "refinedPrompt": "A photorealistic product photo of a ceramic mug on a plain background. Landscape format. Bright and cheerful lighting enhances the details of the mug, creating a clean and inviting look.",
+      "refineReflected": true,
+      "tokens": 5978,
+      "latencyMs": 9424,
+      "overTimeout": false
+    },
+    {
+      "id": "img-missing",
+      "guideId": "image-natural",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 7535,
+          "tokens": 3716
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a product",
+          "source": "inferred"
+        },
+        "style": {
+          "value": "photorealistic photo",
+          "source": "inferred"
+        },
+        "aspect": {
+          "value": "landscape",
+          "source": "inferred"
+        },
+        "mood": {
+          "value": "bright and cheerful",
+          "source": "user"
+        },
+        "background": {
+          "value": "plain background",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": true,
+      "similarity": 0.43,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "A photorealistic photo of a product on a plain background. The composition is landscape format, showcasing the product prominently in the center. The lighting is bright and cheerful, creating an inviting atmosphere.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "A vibrant, photorealistic photo of a product displayed on a plain background, emphasizing its features. The landscape composition captures the product in a dynamic angle, with bright and cheerful lighting that enhances its appeal.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste it into Google Imagen as is.",
+        "Check for the clarity and focus on the product in the image.",
+        "Send a follow-up message to enhance the lighting or background if needed."
+      ],
+      "tokens": 3716,
+      "latencyMs": 7535,
+      "overTimeout": false
+    },
+    {
+      "id": "runway-full",
+      "guideId": "runway",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 4932,
+          "tokens": 3556
+        },
+        {
+          "step": "refine",
+          "ms": 3306,
+          "tokens": 2586
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a product",
+          "source": "inferred"
+        },
+        "camera": {
+          "value": "slow push-in",
+          "source": "user"
+        },
+        "style": {
+          "value": "cinematic",
+          "source": "user"
+        },
+        "lighting": {
+          "value": "golden hour light",
+          "source": "user"
+        },
+        "pace": {
+          "value": "slow",
+          "source": "user"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.33,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Cinematic slow push-in on a barista pouring latte art, golden hour light illuminating the scene softly. The shot captures the intricate details of the latte art being created, with a slow pace that enhances the artistry and skill of the barista. The background is blurred, focusing on the latte art process, creating an intimate atmosphere.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Cinematic slow push-in on a barista pouring latte art, bathed in the warm glow of golden hour light. The camera captures the delicate swirl of the milk as it meets the espresso, emphasizing the artistry in a dreamlike manner. The pace is slow, allowing viewers to savor the moment, with a soft focus on the barista's hands and the intricate patterns forming in the cup.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste it into Runway as is.",
+        "Check the output for clarity and focus on the latte art.",
+        "Request adjustments for specific details or elements you'd like to emphasize."
+      ],
+      "refinedPrompt": "Cinematic slow push-in on a latte art shot, night lighting creating a moody atmosphere. The camera captures the intricate details of the latte art being poured, with a slow pace that enhances the artistry and skill involved. The background is softly blurred, focusing on the latte art process, creating an intimate and engaging scene.",
+      "refineReflected": true,
+      "tokens": 6142,
+      "latencyMs": 8238,
+      "overTimeout": false
+    },
+    {
+      "id": "runway-missing",
+      "guideId": "runway",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 6601,
+          "tokens": 3752
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a person",
+          "source": "inferred"
+        },
+        "camera": {
+          "value": "static camera",
+          "source": "inferred"
+        },
+        "style": {
+          "value": "cinematic",
+          "source": "user"
+        },
+        "lighting": {
+          "value": "golden hour light",
+          "source": "default"
+        },
+        "pace": {
+          "value": "slow",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": true,
+      "similarity": 0.34,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "static camera: a person standing in a serene outdoor setting, golden hour light casting a warm glow, cinematic style. slow pace.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "static camera: a person gazing thoughtfully into the distance, surrounded by lush greenery at sunset, golden hour light enhancing the scene, cinematic style. slow pace.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Runway'e yapıştırın ve her [placeholder] için uygun bilgileri yazın.",
+        "Çekim ve stil ayarlarını kontrol edin.",
+        "Sonucu geliştirmek için 'Daha fazla ayrıntı ekleyin' mesajı gönderin."
+      ],
+      "tokens": 3752,
+      "latencyMs": 6602,
+      "overTimeout": false
+    },
+    {
+      "id": "t2v-full",
+      "guideId": "text-to-video",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 9289,
+          "tokens": 3938
+        },
+        {
+          "step": "refine",
+          "ms": 6972,
+          "tokens": 2754
+        }
+      ],
+      "slots": {
+        "scene": {
+          "value": "wide shot of a foggy pine forest",
+          "source": "user"
+        },
+        "camera": {
+          "value": "wide shot",
+          "source": "user"
+        },
+        "audio": {
+          "value": "ambient sound",
+          "source": "user"
+        },
+        "style": {
+          "value": "realistic",
+          "source": "user"
+        },
+        "pace": {
+          "value": "calm",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.41,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Wide shot of a foggy pine forest at dawn with a river flowing gently through it, soft mist hanging in the air, trees silhouetted against the soft morning light. The camera captures the serene landscape, emphasizing the tranquility of the scene. Ambient forest sounds of rustling leaves and distant bird calls fill the air, enhancing the peaceful atmosphere. Realistic style, calm pace.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "A sweeping wide shot of a mystical foggy pine forest at dawn, with a shimmering river winding through the scene. The early morning light filters through the trees, casting ethereal shadows and illuminating the mist. The composition captures the enchanting beauty of nature, with gentle ambient sounds of water flowing and birds chirping in harmony. Realistic style, calm pace.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste this prompt into Google Veo as is.",
+        "Check the audio settings to ensure ambient sounds are included.",
+        "Send a follow-up request to enhance the visual effects."
+      ],
+      "refinedPrompt": "Close-up of a foggy pine forest at dawn, with dew glistening on the pine needles and soft mist enveloping the trees. The camera captures the intricate details of the forest, highlighting the textures of the bark and the delicate webs spun by spiders. Ambient sounds of gentle rustling leaves and distant bird calls create a serene atmosphere. Realistic style, calm pace.",
+      "refineReflected": true,
+      "tokens": 6692,
+      "latencyMs": 16261,
+      "overTimeout": false
+    },
+    {
+      "id": "t2v-missing",
+      "guideId": "text-to-video",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 7514,
+          "tokens": 3821
+        }
+      ],
+      "slots": {
+        "scene": {
+          "value": "a person in action",
+          "source": "inferred"
+        },
+        "camera": {
+          "value": "wide shot",
+          "source": "inferred"
+        },
+        "audio": {
+          "value": "music",
+          "source": "inferred"
+        },
+        "style": {
+          "value": "cinematic",
+          "source": "user"
+        },
+        "pace": {
+          "value": "calm",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": true,
+      "similarity": 0.25,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Wide shot: a person in action, engaging in a dynamic activity such as jogging in a park, surrounded by trees and a clear blue sky. The lighting is bright and natural, highlighting the person's movements. Cinematic style. Sound: music playing softly in the background.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Wide shot: a person in action, performing an intricate dance routine on a vibrant city street, with colorful graffiti on the walls and bustling pedestrians in the background. The lighting is dramatic, casting shadows that enhance the movement. Cinematic style. Sound: an upbeat music track that complements the dance rhythm.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste it into Sora (OpenAI) as is.",
+        "Check the first output for visual coherence and audio quality.",
+        "Ask for specific adjustments or enhancements based on the output."
+      ],
+      "tokens": 3821,
+      "latencyMs": 7515,
+      "overTimeout": false
+    },
+    {
+      "id": "suno-full",
+      "guideId": "suno",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 11430,
+          "tokens": 3939
+        },
+        {
+          "step": "refine",
+          "ms": 8532,
+          "tokens": 3128
+        }
+      ],
+      "slots": {
+        "genre": {
+          "value": "pop",
+          "source": "user"
+        },
+        "mood": {
+          "value": "upbeat",
+          "source": "user"
+        },
+        "vocals": {
+          "value": "female vocals",
+          "source": "user"
+        },
+        "tempo": {
+          "value": "fast tempo",
+          "source": "user"
+        },
+        "theme": {
+          "value": "love",
+          "source": "inferred"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.27,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Style: pop, upbeat, female vocals, fast tempo. Lyrics: \nVerse 1: Sun is shining, hearts are racing, \nSummer nights, our love embracing. \nChasing waves, laughter in the air, \nIn this moment, nothing can compare. \n\nChorus: Summer love, oh, it feels so right, \nDancing under stars, holding you tight. \nEvery heartbeat, a melody sweet, \nIn this summer love, we’re complete. \n\nVerse 2: Ice cream kisses, sunset views, \nEvery day feels like brand new. \nHand in hand, we’ll make a vow, \nThis summer love, it’s magic now. \n\nChorus: Summer love, oh, it feels so right, \nDancing under stars, holding you tight. \nEvery heartbeat, a melody sweet, \nIn this summer love, we’re complete.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Style: pop, upbeat, female vocals, fast tempo. Lyrics: \nVerse 1: Golden rays and ocean breeze, \nWhispers of love dance through the trees. \nEvery moment, a spark ignites, \nSummer love, our hearts take flight. \n\nChorus: Summer love, shining bright, \nUnderneath the moonlight, everything's right. \nWith every laugh, the world fades away, \nIn this summer love, forever we’ll stay. \n\nVerse 2: Fireworks light the night sky, \nWith you by my side, we’ll soar high. \nEvery sunset, a promise made, \nIn this summer love, we’ll never fade. \n\nChorus: Summer love, shining bright, \nUnderneath the moonlight, everything's right. \nWith every laugh, the world fades away, \nIn this summer love, forever we’ll stay.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste this prompt into Suno AI as is.",
+        "Check the lyrics for flow and catchiness in the first output.",
+        "Ask Suno AI to refine the lyrics for more emotional impact."
+      ],
+      "refinedPrompt": "Style: pop, upbeat, instrumental, fast tempo. Lyrics: \nVerse 1: Sun is shining, hearts are racing, \nSummer nights, our love embracing. \nChasing waves, laughter in the air, \nIn this moment, nothing can compare. \n\nChorus: Summer love, oh, it feels so right, \nDancing under stars, holding you tight. \nEvery heartbeat, a melody sweet, \nIn this summer love, we’re complete. \n\nVerse 2: Ice cream kisses, sunset views, \nEvery day feels like brand new. \nHand in hand, we’ll make a vow, \nThis summer love, it’s magic now. \n\nChorus: Summer love, oh, it feels so right, \nDancing under stars, holding you tight. \nEvery heartbeat, a melody sweet, \nIn this summer love, we’re complete.",
+      "refineReflected": true,
+      "tokens": 7067,
+      "latencyMs": 19962,
+      "overTimeout": false
+    },
+    {
+      "id": "suno-missing",
+      "guideId": "suno",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 3221,
+          "tokens": 1347
+        },
+        {
+          "step": "answer",
+          "ms": 4186,
+          "tokens": 2423
+        }
+      ],
+      "slots": {
+        "genre": {
+          "value": "pop",
+          "source": "inferred"
+        },
+        "mood": {
+          "value": "upbeat",
+          "source": "inferred"
+        },
+        "vocals": {
+          "value": "female vocals",
+          "source": "default"
+        },
+        "tempo": {
+          "value": "mid tempo",
+          "source": "user"
+        },
+        "theme": {
+          "value": "love",
+          "source": "default"
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 1,
+      "askedSlots": [
+        "vocals"
+      ],
+      "validatorsPass": true,
+      "similarity": 0.45,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Stil: pop, neşeli, kadın vokaller, orta tempo. Sözler: Aşk teması.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Stil: pop, neşeli, kadın vokaller, orta tempo. Sözler: Aşk üzerine coşkulu bir hikaye, kalbin heyecanını ve romantizmi yansıtan bölümler.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Suno AI'ye yapıştırın ve şarkının sözlerini oluşturacak şekilde kullanın.",
+        "Çıktıda sözlerin akışını ve uyumunu kontrol edin.",
+        "Sonuçları iyileştirmek için 'Daha fazla detay ekle' mesajı gönderin."
+      ],
+      "tokens": 3770,
+      "latencyMs": 7407,
+      "overTimeout": false
+    },
+    {
+      "id": "el-full",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 5923,
+          "tokens": 3653
+        },
+        {
+          "step": "refine",
+          "ms": 3531,
+          "tokens": 2517
+        }
+      ],
+      "slots": {
+        "language": {
+          "value": "Türkçe",
+          "source": "user"
+        },
+        "tone": {
+          "value": "sakin",
+          "source": "user"
+        },
+        "voice": {
+          "value": "kadın sesi",
+          "source": "user"
+        },
+        "pace": {
+          "value": "normal",
+          "source": "default"
+        },
+        "use": {
+          "value": "e-learning",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.62,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Ses ayarları: kadın sesi, sakin, normal, Türkçe. Metin: 'Bu derste bütçe yapmayı öğreneceğiz.'",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Ses ayarları: kadın sesi, sakin, normal, Türkçe. Metin: 'Bu derste bütçe yapmayı öğreneceğiz.' Seslendirme, dinleyiciyi rahatlatacak ve dikkatini çekecek şekilde yapılmalı.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu promptu ElevenLabs'a yapıştırın ve metni kontrol edin.",
+        "Ses ayarlarını kontrol edin ve uygun sesi seçin.",
+        "Sonucu iyileştirmek için, seslendirme sonrası geri bildirim verin."
+      ],
+      "refinedPrompt": "Ses ayarları: kadın sesi, sakin, yavaş, Türkçe. Metin: 'Bu derste bütçe yapmayı öğreneceğiz.'",
+      "refineReflected": true,
+      "tokens": 6170,
+      "latencyMs": 9456,
+      "overTimeout": false
+    },
+    {
+      "id": "el-missing",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 8366,
+          "tokens": 3654
+        }
+      ],
+      "slots": {
+        "language": {
+          "value": "English",
+          "source": "user"
+        },
+        "tone": {
+          "value": "calm",
+          "source": "inferred"
+        },
+        "voice": {
+          "value": "neutral voice",
+          "source": "default"
+        },
+        "pace": {
+          "value": "normal",
+          "source": "default"
+        },
+        "use": {
+          "value": "ad",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": true,
+      "similarity": 0.47,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Voice settings: neutral voice, calm tone, normal pace, English. Script: I want a voiceover. Usage context: ad.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Voice settings: neutral voice, calm tone, normal pace, English. Script: Create a soothing and engaging voiceover for an advertisement that captures attention and conveys a sense of tranquility. Usage context: ad.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste it into ElevenLabs as is.",
+        "Check the voice settings to ensure they match your preferences.",
+        "Send a follow-up message to refine the script for specific product details."
+      ],
+      "tokens": 3654,
+      "latencyMs": 8366,
+      "overTimeout": false
+    },
+    {
+      "id": "gamma-full",
+      "guideId": "gamma",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 21140,
+          "tokens": 8330
+        },
+        {
+          "step": "refine",
+          "ms": 10692,
+          "tokens": 6575
+        }
+      ],
+      "slots": {
+        "audience": {
+          "value": "investors",
+          "source": "user"
+        },
+        "length": {
+          "value": "8-10 slides",
+          "source": "user"
+        },
+        "tone": {
+          "value": "formal",
+          "source": "user"
+        },
+        "visuals": {
+          "value": "data charts",
+          "source": "inferred"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": false,
+      "similarity": 0.46,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 88,
+      "cardOk": true,
+      "sufficiencyFailed": [
+        "actionability"
+      ],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Yatırımcılar için yemek planlama uygulaması üzerine 8-10 slaytlık bir pitch deck oluşturacak bir uzman olarak, sunumun amacı yatırımcıların dikkatini çekmek ve uygulamanın potansiyelini göstermek. Sunumun akışı şu şekilde olmalıdır: 1. Giriş: Projenin tanıtımı ve hedefleri; 2. Pazar analizi: Hedef kitle ve pazar büyüklüğü; 3. Rekabet analizi: Rakipler ve farklılıklar; 4. Ürün tanıtımı: Uygulamanın özellikleri ve faydaları; 5. İş modeli: Gelir akışları ve fiyatlandırma; 6. Pazarlama stratejisi: Müşteri kazanım planı; 7. Finansal projeksiyonlar: Beklenen gelir ve giderler; 8. Sonuç: Yatırım talebi ve kapanış. Sunumun tonu resmî olmalı ve veri grafiklerine yer verilmelidir.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "This reads like an answer about the topic, not a prompt: you are the prompt architect, not the executor. Write instructions that tell Gamma AI what to do and what to deliver."
+            ]
+          },
+          "issues": [
+            "actionability: This reads like an answer about the topic, not a prompt: you are the prompt architect, not the executor. Write instructions that tell Gamma AI what to do and what to deliver."
+          ]
+        },
+        {
+          "id": "creative",
+          "prompt": "Yatırımcılar için yenilikçi bir yemek planlama uygulaması üzerine 8-10 slaytlık etkileyici bir pitch deck oluşturun. Sunumun amacı, yatırımcıların ilgisini çekmek ve uygulamanın benzersiz yönlerini vurgulamak. Slayt akışı şu şekilde olmalıdır: 1. Vizyon: Uygulamanın arkasındaki ilham; 2. Pazar fırsatları: Hedef kitle ve pazar dinamikleri; 3. Rekabet avantajı: Rakiplerden nasıl ayrıştığımız; 4. Ürün detayları: Uygulamanın kullanıcı dostu özellikleri; 5. İş modeli: Sürdürülebilir gelir stratejileri; 6. Pazarlama planı: Etkili müşteri edinme yöntemleri; 7. Finansal öngörüler: Beklenen büyüme ve kârlılık; 8. Yatırım fırsatı: Yatırımcılar için sağlanacak değer. Sunumun tonu resmî olmalı ve veri grafiklerine odaklanılmalıdır.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu promptu Gamma AI'ye yapıştırın ve her [placeholder] için uygun bilgileri girin.",
+        "İlk çıktıda sunum akışını ve slayt başlıklarını kontrol edin.",
+        "Sonucu geliştirmek için Gamma AI'ye 'Sunumun görsellerini ve grafiklerini daha detaylı açıklayabilir misin?' mesajını gönderin."
+      ],
+      "refinedPrompt": "Yatırımcılar için yemek planlama uygulaması üzerine 5 slaytlık bir pitch deck oluşturacak bir uzman olarak, sunumun amacı yatırımcıların dikkatini çekmek ve uygulamanın potansiyelini göstermek. Sunumun akışı şu şekilde olmalıdır: 1. Giriş: Projenin tanıtımı ve hedefleri; 2. Pazar analizi: Hedef kitle ve pazar büyüklüğü; 3. Rekabet analizi: Rakipler ve farklılıklar; 4. Ürün tanıtımı: Uygulamanın özellikleri ve faydaları; 5. İş modeli: Gelir akışları ve fiyatlandırma. Sunumun tonu resmî olmalı ve veri grafiklerine yer verilmelidir.",
+      "refineReflected": true,
+      "tokens": 14905,
+      "latencyMs": 31834,
+      "overTimeout": true
+    },
+    {
+      "id": "gamma-missing",
+      "guideId": "gamma",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 6897,
+          "tokens": 3949
+        }
+      ],
+      "slots": {
+        "audience": {
+          "value": "investors",
+          "source": "user"
+        },
+        "length": {
+          "value": "8-10 slides",
+          "source": "user"
+        },
+        "tone": {
+          "value": "formal",
+          "source": "inferred"
+        },
+        "visuals": {
+          "value": "data charts",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": true,
+      "similarity": 0.37,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "You are a senior creative director tasked with creating a presentation for investors. The presentation should consist of 8-10 slides. The outline is as follows: \n1. **Introduction** - Briefly introduce the company and its mission. \n2. **Market Opportunity** - Highlight the market potential and key trends. \n3. **Product Overview** - Describe the product and its unique features. \n4. **Business Model** - Explain how the company plans to make money. \n5. **Financial Projections** - Present data charts showing projected revenue and growth. \n6. **Competitive Analysis** - Compare with competitors and outline advantages. \n7. **Team Overview** - Introduce key team members and their backgrounds. \n8. **Funding Request** - State the amount of funding needed and its intended use. \nThe tone should be formal, and the visuals should primarily include data charts to support the information presented. \nPlease include placeholders for any specific data or figures that should be filled in later.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "You are a lead architect creating a compelling presentation for investors. The presentation should span 8-10 slides, structured as follows: \n1. **Welcome & Vision** - Set the stage with an inspiring vision statement. \n2. **Industry Landscape** - Use data charts to illustrate market dynamics and opportunities. \n3. **Innovative Product Features** - Showcase the product's standout features with visuals. \n4. **Revenue Model** - Clearly outline how the business intends to generate revenue. \n5. **Financial Highlights** - Present key financial projections with engaging data charts. \n6. **Competitive Edge** - Analyze competitors and emphasize your unique advantages. \n7. **Meet the Team** - Highlight the team’s expertise and credentials. \n8. **Investment Opportunity** - Conclude with a strong call to action for funding. \nThe tone should remain formal, and visuals should focus on impactful data charts to enhance understanding. \nPlease add placeholders for specific data points and figures throughout the presentation.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into Gamma AI and fill in any specific data or figures in the placeholders.",
+        "Check the first output for clarity and completeness of the presentation structure.",
+        "Follow up with a request for additional details or adjustments to the presentation content."
+      ],
+      "tokens": 3949,
+      "latencyMs": 6899,
+      "overTimeout": false
+    },
+    {
+      "id": "cursor-full",
+      "guideId": "cursor-task",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 14482,
+          "tokens": 7772
+        },
+        {
+          "step": "refine",
+          "ms": 13654,
+          "tokens": 6797
+        }
+      ],
+      "slots": {
+        "goal": {
+          "value": "fix expired token bug",
+          "source": "user"
+        },
+        "scope": {
+          "value": "a single file",
+          "source": "inferred"
+        },
+        "constraints": {
+          "value": "do not change the public API",
+          "source": "user"
+        },
+        "verification": {
+          "value": "run the test suite",
+          "source": "user"
+        },
+        "context": {
+          "value": "the error message",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": false,
+      "similarity": 0.32,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 75,
+      "cardOk": true,
+      "sufficiencyFailed": [
+        "actionability"
+      ],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "As a senior engineer, your task is to fix the bug in the TypeScript project located in src/auth/login.ts where expired tokens are being accepted. Ensure that the public API remains unchanged during this process. Begin by analyzing the code to identify the root cause of the issue with expired tokens. Then, implement a step-by-step fix that includes necessary changes to validate token expiration properly. After making the changes, verify the fix by running the test suite to ensure all tests pass and the functionality is intact. Document any modifications made to the code for future reference.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "State the constraints: what must not change and what must hold."
+            ]
+          },
+          "issues": [
+            "actionability: State the constraints: what must not change and what must hold."
+          ]
+        },
+        {
+          "id": "creative",
+          "prompt": "As a lead architect, you need to address the issue in your TypeScript project found in src/auth/login.ts, where expired tokens are incorrectly accepted. Your solution must not alter the public API. Start with a thorough review of the existing logic handling token validation to pinpoint why expired tokens are allowed. Develop a robust solution that enforces expiration checks effectively, ensuring the code remains clean and maintainable. After implementing the fix, run the entire test suite to confirm that all tests succeed and the system behaves as expected. Additionally, provide a brief summary of the changes made for clarity.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "The user wants to solve something; do not shrink it to a short overview or general information. Ask for the concrete deliverable (a roadmap, a draft, a structured plan, a fix or a decision framework)."
+            ]
+          },
+          "issues": [
+            "actionability: The user wants to solve something; do not shrink it to a short overview or general information. Ask for the concrete deliverable (a roadmap, a draft, a structured plan, a fix or a decision framework)."
+          ]
+        }
+      ],
+      "howToUse": [
+        "Paste this prompt into Cursor as is.",
+        "Check the output for a detailed plan and implementation steps.",
+        "Send a follow-up message to refine the implementation details if needed."
+      ],
+      "refinedPrompt": "As a senior engineer, your task is to fix the bug in the TypeScript project located in src/auth/login.ts where expired tokens are being accepted. Ensure that no new dependencies are introduced during this process. Begin by analyzing the error message to identify the root cause of the issue with expired tokens. Then, implement a step-by-step fix that includes necessary changes to validate token expiration properly. After making the changes, verify the fix by running the test suite to ensure all tests pass and the functionality is intact. Document any modifications made to the code for future reference.",
+      "refineReflected": true,
+      "tokens": 14569,
+      "latencyMs": 28138,
+      "overTimeout": false
+    },
+    {
+      "id": "cursor-missing",
+      "guideId": "cursor-task",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 13059,
+          "tokens": 7378
+        }
+      ],
+      "slots": {
+        "goal": {
+          "value": "Cursor görevi",
+          "source": "user"
+        },
+        "scope": {
+          "value": "a single file",
+          "source": "inferred"
+        },
+        "constraints": {
+          "value": "do not change the public API",
+          "source": "default"
+        },
+        "verification": {
+          "value": "run the test suite",
+          "source": "default"
+        },
+        "context": {
+          "value": "relevant file paths",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": false,
+      "similarity": 0.57,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 88,
+      "cardOk": true,
+      "sufficiencyFailed": [
+        "actionability"
+      ],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Kıdemli bir mühendis olarak, Cursor'a bir görev yazdırmak istiyorum. Değişiklik, tek bir dosyada yapılacak ve kamu API'sini değiştirmemeliyim. İlgili dosya yollarını belirterek, testleri çalıştırarak doğrulama yapacağım. Lütfen bu değişiklik için gerekli adımları ve planı oluştur.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Kıdemli bir mühendis olarak, Cursor'a bir görev yazdırmak istiyorum. Bu görev, tek bir dosyada gerçekleştirilecek ve kamu API'sinde herhangi bir değişiklik yapılmayacak. İlgili dosya yollarını göz önünde bulundurarak, testleri çalıştırarak doğrulama sürecini belirle. Lütfen bu değişiklik için kapsamlı bir uygulama planı ve adım adım talimatlar oluştur.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "State the constraints: what must not change and what must hold."
+            ]
+          },
+          "issues": [
+            "actionability: State the constraints: what must not change and what must hold."
+          ]
+        }
+      ],
+      "howToUse": [
+        "Bu promptu Cursor'a yapıştırın ve ilgili dosya yollarını doldurun.",
+        "İlk çıktıda testlerin çalıştırılması gerektiğini kontrol edin.",
+        "Sonuçları iyileştirmek için Cursor'a daha fazla detay verin."
+      ],
+      "tokens": 7378,
+      "latencyMs": 13060,
+      "overTimeout": false
+    },
+    {
+      "id": "chat-full",
+      "guideId": "chat-general",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 8487,
+          "tokens": 4728
+        },
+        {
+          "step": "refine",
+          "ms": 4724,
+          "tokens": 3341
+        }
+      ],
+      "slots": {
+        "intent": {
+          "value": "analyze the options and recommend a decision",
+          "source": "user"
+        },
+        "deliverable": {
+          "value": "a comparison table with explicit criteria",
+          "source": "user"
+        },
+        "stage": {
+          "value": "starting from an idea, nothing built yet",
+          "source": "inferred"
+        },
+        "depth": {
+          "value": "concise and to the point",
+          "source": "default"
+        },
+        "audience": {
+          "value": "an executive",
+          "source": "user"
+        },
+        "tone": {
+          "value": "formal",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.44,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Act as an analyst and provide a concise comparison table of three CRM tools suitable for a 10-person sales team. The table should include explicit criteria such as pricing, features, user-friendliness, integration capabilities, and customer support. Ensure the tone is formal and the output is tailored for an executive audience.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Assume the role of an analyst and create an engaging comparison table for three CRM tools designed for a 10-person sales team. Highlight key criteria such as cost, essential features, ease of use, integration options, and quality of customer support. The output should be formal and crafted specifically for an executive audience, ensuring clarity and precision in the presentation.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into ChatGPT and ensure to specify the three CRM tools you want to compare.",
+        "Check that the output is a clear and concise comparison table.",
+        "Follow up with a request for more detailed analysis or specific features of the CRM tools if needed."
+      ],
+      "refinedPrompt": "Act as an analyst and create a detailed comparison table for three CRM tools suitable for a 10-person sales team. The table should include explicit criteria such as pricing, features, user-friendliness, integration capabilities, and customer support. Ensure the tone is formal and the output is tailored for an executive audience. Present the information clearly in a structured format with distinct columns for each criterion.",
+      "refineReflected": true,
+      "tokens": 8069,
+      "latencyMs": 13213,
+      "overTimeout": false
+    },
+    {
+      "id": "chat-missing",
+      "guideId": "chat-general",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 13884,
+          "tokens": 8055
+        }
+      ],
+      "slots": {
+        "intent": {
+          "value": "transform my existing text",
+          "source": "inferred"
+        },
+        "deliverable": {
+          "value": "a ready-to-use first draft of the work",
+          "source": "inferred"
+        },
+        "stage": {
+          "value": "starting from an idea, nothing built yet",
+          "source": "inferred"
+        },
+        "depth": {
+          "value": "concise and to the point",
+          "source": "default"
+        },
+        "audience": {
+          "value": "a beginner",
+          "source": "default"
+        },
+        "tone": {
+          "value": "neutral",
+          "source": "user"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": false,
+      "validatorsPass": true,
+      "similarity": 0.4,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Claude, aşağıdaki metni koruyarak, daha akıcı ve anlaşılır bir hale dönüştür: [mevcut metin]. Lütfen metnin ana mesajını ve içeriğini koruyarak, dilini sadeleştir ve akıcı bir anlatım oluştur. Çıktının yapısı, metnin ana noktalarını vurgulayan paragraflar halinde olmalıdır.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Claude, aşağıdaki metni daha yaratıcı ve etkileyici bir şekilde yeniden yaz: [mevcut metin]. Metnin ana temasını ve mesajını koruyarak, daha ilgi çekici bir dil ve anlatım tarzı kullan. Çıktının yapısı, dikkat çekici başlıklar ve akıcı paragraflar içermelidir.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu promptu Claude'a yapıştırın ve [mevcut metin] kısmını dönüştürmek istediğiniz metinle doldurun.",
+        "Çıktıda metnin akıcılığına ve anlaşılabilirliğine dikkat edin.",
+        "Claude'un verdiği sonucu geliştirmek için, 'Daha fazla detay ekleyebilir misin?' şeklinde bir takip mesajı gönderin."
+      ],
+      "tokens": 8055,
+      "latencyMs": 13885,
+      "overTimeout": false
+    },
+    {
+      "id": "leonardo-generic",
+      "guideId": "image-natural",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 6436,
+          "tokens": 3722
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "red fox",
+          "source": "user"
+        },
+        "style": {
+          "value": "photorealistic photo",
+          "source": "user"
+        },
+        "aspect": {
+          "value": "portrait",
+          "source": "user"
+        },
+        "mood": {
+          "value": "soft morning light",
+          "source": "inferred"
+        },
+        "background": {
+          "value": "in a natural scene",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.38,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "A photorealistic close-up of a red fox in fresh snow. The setting is in a natural scene with soft morning light illuminating the fox's fur. The composition is in vertical 9:16 format, capturing the intricate details of the fox's face and the texture of the snow around it. The mood is serene and tranquil, showcasing the beauty of nature in winter.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "A stunning photorealistic close-up of a red fox nestled in a blanket of fresh snow. The scene is set in a beautiful natural landscape, with soft morning light casting a gentle glow on the fox's vibrant fur. The vertical 9:16 format enhances the intimate feel of the image, drawing attention to the fox's expressive eyes and the delicate snowflakes resting on its whiskers. The overall mood is peaceful and enchanting, inviting viewers into a serene winter wonderland.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into Leonardo AI as is.",
+        "Check the output for photorealism and detail in the fox and snow.",
+        "Ask Leonardo AI to enhance the lighting or add more natural elements if needed."
+      ],
+      "tokens": 3722,
+      "latencyMs": 6436,
+      "overTimeout": false
+    },
+    {
+      "id": "replit-generic",
+      "guideId": "cursor-task",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 8566,
+          "tokens": 4583
+        }
+      ],
+      "slots": {
+        "goal": {
+          "value": "kuaför randevu sitesi",
+          "source": "user"
+        },
+        "scope": {
+          "value": "bütün sayfaları oluştur",
+          "source": "inferred"
+        },
+        "constraints": {
+          "value": "hizmet listesi ve fiyatlar olmalı",
+          "source": "default"
+        },
+        "verification": {
+          "value": "online randevu formu çalışmalı",
+          "source": "default"
+        },
+        "context": {
+          "value": "WhatsApp butonu eklenmeli",
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.45,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "RouteAI, bir kuaför randevu sitesi geliştirmek için kıdemli mühendis olarak çalış. Proje, hizmet listesi, fiyatlar, online randevu formu ve WhatsApp butonu içermelidir. Tüm sayfaları sıfırdan oluştur ve her bir sayfanın işlevselliğini sağla. Hizmet listesi ve fiyatlar kesinlikle olmalı. Online randevu formunun çalıştığını doğrulamak için gerekli kontrolleri yap. Ayrıca, WhatsApp butonunun eklenmesini de sağla.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "RouteAI, bir kuaför randevu sitesi tasarlamak için kıdemli mühendis olarak görev al. Proje, hizmet listesi, fiyatlar, online randevu formu ve WhatsApp butonu ile donatılmış tüm sayfaları içermelidir. Her sayfanın kullanıcı dostu ve estetik olmasına dikkat et. Hizmet listesi ve fiyatların bulunması zorunludur. Online randevu formunun işlevselliğini test et ve doğrula. WhatsApp butonunun kullanıcıya ulaşabilir olmasını sağla.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu promptu Replit Agent'a yapıştır ve gerekli yer tutucuları doldur.",
+        "Çıkan ilk çıktıda, tüm sayfaların işlevselliğini kontrol et.",
+        "Sonuçları iyileştirmek için Replit Agent'a 'Tasarımı daha kullanıcı dostu hale getir' mesajını gönder."
+      ],
+      "tokens": 4583,
+      "latencyMs": 8567,
+      "overTimeout": false
+    },
+    {
+      "id": "app-broad",
+      "guideId": "chat-general",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 3121,
+          "tokens": 1451
+        },
+        {
+          "step": "answer",
+          "ms": 5408,
+          "tokens": 3229
+        }
+      ],
+      "slots": {
+        "intent": {
+          "value": "build it with me end to end",
+          "source": "user"
+        },
+        "deliverable": {
+          "value": "a structured plan or specification",
+          "source": "default"
+        },
+        "stage": {
+          "value": "starting from an idea, nothing built yet",
+          "source": "default"
+        },
+        "depth": {
+          "value": "concise and to the point",
+          "source": "default"
+        },
+        "audience": {
+          "value": "my team",
+          "source": "default"
+        },
+        "tone": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 2,
+      "askedSlots": [
+        "deliverable",
+        "stage"
+      ],
+      "validatorsPass": true,
+      "similarity": 0.73,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Bir uygulama geliştirmek için kıdemli bir kurucu ortak olarak, kullanıcı ile birlikte uçtan uca bir yapılandırılmış plan oluşturun. Kullanıcının şu anda fikir aşamasında olduğunu ve henüz hiçbir şey inşa edilmediğini göz önünde bulundurarak, uygulamanın ana özelliklerini, hedef kitlesini ve temel işlevselliğini belirleyin. Planın, uygulamanın geliştirilmesi için gerekli adımları, kilometre taşlarını ve zaman çizelgesini içermesi bekleniyor. İşte başlayacak noktalar: [uygulamanın ana özellikleri], [hedef kitle], [zaman çizelgesi].",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Bir uygulama geliştirmek için baş mimar olarak, kullanıcı ile birlikte yenilikçi bir yapılandırılmış plan oluşturun. Kullanıcının henüz fikir aşamasında olduğunu ve hiçbir şey inşa edilmediğini göz önünde bulundurarak, uygulamanın benzersiz özelliklerini, hedef kitlesini ve temel işlevselliğini belirleyin. Plan, uygulamanın geliştirilmesi için gerekli adımları, kilometre taşlarını ve yaratıcı bir zaman çizelgesini içermelidir. İşte başlayacak noktalar: [uygulamanın benzersiz özellikleri], [hedef kitle], [yaratıcı zaman çizelgesi].",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu promptu ChatGPT'ye yapıştırın ve [uygulamanın ana özellikleri], [hedef kitle], [zaman çizelgesi] alanlarını doldurun.",
+        "Çıktının detaylarına ve kapsamına dikkat edin.",
+        "Sonuçları iyileştirmek için 'Bu planı daha fazla detaylandırabilir misin?' mesajını gönderin."
+      ],
+      "tokens": 4680,
+      "latencyMs": 8530,
+      "overTimeout": false
+    },
+    {
+      "id": "app-detailed",
+      "guideId": "chat-general",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 9451,
+          "tokens": 4862
+        },
+        {
+          "step": "refine",
+          "ms": 5055,
+          "tokens": 3586
+        }
+      ],
+      "slots": {
+        "intent": {
+          "value": "build it with me end to end",
+          "source": "user"
+        },
+        "deliverable": {
+          "value": "a ready-to-use first draft of the work",
+          "source": "user"
+        },
+        "stage": {
+          "value": "starting from an idea, nothing built yet",
+          "source": "inferred"
+        },
+        "depth": {
+          "value": "concise and to the point",
+          "source": "default"
+        },
+        "audience": {
+          "value": "my team",
+          "source": "default"
+        },
+        "tone": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.71,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Kıdemli bir baş mimar olarak, diş klinikleri için randevu ve hatırlatma özellikli bir mobil uygulama geliştirmek istiyorum. Hedefim, React Native kullanarak 3 ay içinde bir MVP (Minimum Viable Product) çıkarmak. Projeye başlarken, uygulamanın temel özelliklerini ve kullanıcı arayüzünü belirlemek için bir yol haritası oluştur. Uygulamanın taslağını ve işlevselliğini detaylandırarak, her aşamada hangi adımları atmam gerektiğini belirt. Çıktının, kullanıma hazır ilk taslağına yönelik olması gerektiğini unutma.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Kıdemli bir baş mimar olarak, diş klinikleri için randevu ve hatırlatma özellikli bir mobil uygulama geliştirmek istiyorum. React Native kullanarak 3 ay içinde bir MVP (Minimum Viable Product) oluşturmayı hedefliyorum. Proje sürecinde, kullanıcı deneyimini ön planda tutarak yenilikçi bir tasarım ve işlevsellik geliştirmek için bir yol haritası oluştur. Uygulamanın temel bileşenlerini ve kullanıcı arayüzünü detaylandırarak, her aşamada hangi adımları atmam gerektiğini belirt. Çıktının, kullanıma hazır ilk taslağına yönelik olması gerektiğini unutma.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu promptu ChatGPT'ye yapıştırın ve uygulamanın temel özelliklerini belirtin.",
+        "İlk çıktıda yol haritasının detaylarına dikkat edin.",
+        "Sonuçları iyileştirmek için 'Uygulamanın kullanıcı arayüzü ile ilgili önerilerde bulun' mesajını gönderin."
+      ],
+      "refinedPrompt": "Kıdemli bir baş mimar olarak, diş klinikleri için randevu ve hatırlatma özellikli bir mobil uygulama geliştirmek istiyorum. Hedefim, React Native kullanarak 3 ay içinde bir MVP (Minimum Viable Product) çıkarmak. Projeye başlarken, uygulamanın temel özelliklerini ve kullanıcı arayüzünü belirlemek için bir yol haritası oluştur. Uygulamanın taslağını ve işlevselliğini detaylandırarak, her aşamada hangi adımları atmam gerektiğini belirt. Çıktının, kilometre taşları ile birlikte adım adım bir yol haritası şeklinde olmasını istiyorum.",
+      "refineReflected": true,
+      "tokens": 8448,
+      "latencyMs": 14507,
+      "overTimeout": false
+    }
+  ]
+}
