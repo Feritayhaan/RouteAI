@@ -163,7 +163,7 @@ export async function extractSlots(
 - Return null ONLY if the goal and conversation are empty or meaningless.
 - Prefer one of the slot's option values when it fits; otherwise a short free-text value (max 12 words).
 - label: the same choice as a short phrase (max 6 words) in ${userLanguage} for the user to read; null when value is null.
-- evidence: for source "user" and for "strongly implied" values, copy the exact words from the user's messages in the conversation (max 12 words, unchanged) that state or imply the value. null for a smart assumption. "goal" is RouteAI's short summary, not the user's words: never quote it. A tool or product name alone is not evidence. If you cannot quote the user, the value is a smart assumption (confidence 0.35-0.55).
+- evidence (write it FIRST, before the value): copy the exact words from the user's messages in the conversation (max 12 words, unchanged) that the value comes from. This is required for source "user" AND for strongly implied values: quote the words that imply it (e.g. "React Native ile 3 ayda MVP" implies the deliverable and the stage; "Yeni bir proje, bütün sayfaları sen oluştur" implies the scope; a list of features the user wrote is evidence for the slot it fills). null only for a smart assumption that nothing the user wrote supports. "goal" is RouteAI's short summary, not the user's words: never quote it. A tool or product name alone is not evidence. If you cannot quote the user, the value is a smart assumption (confidence 0.35-0.55).
 - An assumed value is a choice (style, format, tone, length, structure), never a fact: do not invent names, numbers, prices, dates, quotes or statistics the user did not give.
 - goalSummary: one sentence in ${userLanguage} describing what the user wants to create.
 Return every slot id exactly once.
@@ -196,15 +196,16 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
           type: 'array',
           items: {
             type: 'object',
+            // Sıra önemli: model alanları bu sırayla yazar. Önce alıntı (kanıt), sonra karar.
             properties: {
               id: { type: 'string', enum: slotIds },
+              evidence: { type: ['string', 'null'] },
               value: { type: ['string', 'null'] },
               source: { type: 'string', enum: ['user', 'inferred'] },
               confidence: { type: 'number' },
               label: { type: ['string', 'null'] },
-              evidence: { type: ['string', 'null'] },
             },
-            required: ['id', 'value', 'source', 'confidence', 'label', 'evidence'],
+            required: ['id', 'evidence', 'value', 'source', 'confidence', 'label'],
             additionalProperties: false,
           },
         },

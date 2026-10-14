@@ -170,6 +170,16 @@ describe('çıkarım: kanıt (alıntı) denetimi', () => {
     assert.ok(verifyEvidence('bir görsel', 'Midjourney ile bir görsel yapmak istiyorum', 'Midjourney'));
   });
 
+  it('şemada alıntı değerden önce gelir (model önce kanıtı yazar, sonra karar verir); ima için de alıntı istenir', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation: [{ role: 'user', content: 'logo for my bakery' }], locale: 'en' }, deps(llm));
+    const ex = calls.find((c) => c.name === 'slot_extraction')!;
+    const item = (ex.schema as { properties: { slots: { items: { properties: Record<string, unknown>; required: string[] } } } }).properties.slots.items;
+    assert.deepStrictEqual(Object.keys(item.properties).slice(0, 3), ['id', 'evidence', 'value']);
+    assert.ok(item.required.includes('evidence'));
+    assert.match(ex.system, /required for source "user" AND for strongly implied values/);
+  });
+
   it('kanıtsız "user" ya da yüksek güvenli değer akıllı varsayıma iner (2026-10-14 eval: "Make me a presentation.")', async () => {
     const llm = async () => ({
       data: {

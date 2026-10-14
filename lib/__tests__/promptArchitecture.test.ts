@@ -219,8 +219,9 @@ describe('uçtan uca: navigasyon eşiği, derinlik, yerelleştirme, onarım', ()
     const gen = calls[1];
     assert.strictEqual(JSON.parse(gen.user).intentHint, 'build');
     assert.match(gen.system, /you are the prompt architect, NEVER the executor/);
-    assert.match(gen.system, /given to ChatGPT in the second person/);
-    assert.match(gen.system, /the role never belongs to the user/);
+    assert.match(gen.system, /the role belongs to ChatGPT, in the second person/);
+    assert.match(gen.system, /the goal and situation belong to the user, in the first person/);
+    assert.match(gen.system, /never give the user's goal to ChatGPT/, '2026-10-14 eval: "... geliştirmek istiyorsun"');
     assert.match(gen.system, /never mentions RouteAI/);
     assert.match(gen.system, /build \(make, create, produce.*never write a prompt that asks for general information/);
     assert.match(gen.system, /Never write a chain of mechanical labels/);
