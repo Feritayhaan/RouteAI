@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { YamlError, parseYamlSubset, parseScalar, splitFrontmatter, splitSections } from '../promptBuilder/yaml';
 import { guideRuleErrors, type Guide } from '../promptBuilder/guideSchema';
 import { loadGuides } from '../promptBuilder/guides';
-import { applyAnswers, hasEnoughDetail, planSlots } from '../promptBuilder/plan';
+import { applyAnswers, distinctDetails, hasEnoughDetail, planSlots } from '../promptBuilder/plan';
 import { extractSlots, sanitizeQuestions, UNVERIFIED_CONFIDENCE_CAP, verifyEvidence } from '../promptBuilder/extract';
 import { checkPrompt, validateWithRepair } from '../promptBuilder/validate';
 import { answerPromptQuestions, refinePromptSession, startPromptSession, userMessagesFrom, USER_MESSAGES_CHARS, USER_MESSAGES_MAX, type PromptDeps } from '../promptBuilder/service';
@@ -119,6 +119,12 @@ const guess = (value: string) => ({ value, source: 'inferred' as const, confiden
 /** Promptun araçta kullanımını anlatan howToUse (sufficiency.howToUseIssues'tan geçer). */
 const HOW_TO_USE = ['Promptu Midjourney içine yapıştır; ek bir yer tutucu yok.', 'İlk çıktıda en-boy oranını ve ışığı kontrol et.', 'Takip mesajı olarak "aynı sahneyi daha sıcak ışıkla üret" yaz.'];
 
+/** Sahte kanıt: konuşmadaki ilk kullanıcı mesajının i. kelimesi (döngüsel). */
+function fakeQuotes(conversation: string) {
+  const words = (/(?:^|\n)user: ([^\n]*)/.exec(conversation)?.[1] ?? '').split(/\s+/).filter((w) => w.length >= 2);
+  return (i: number) => (words.length ? words[i % words.length] : null);
+}
+
 function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: number; questions?: RawQuestion[]; isBroadGoal?: boolean } = {}) {
   const calls: JsonRequest[] = [];
   let failures = opts.failRegexTimes ?? 0;
@@ -126,10 +132,10 @@ function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: 
     calls.push(req);
     const input = JSON.parse(req.user);
     if (req.name === 'slot_extraction') {
-      // Kanıt: kullanıcının ilk mesajı (verifyEvidence geçer); uydurma kanıt testi ayrı.
-      const quote = /(?:^|\n)user: ([^\n]*)/.exec(input.conversation)?.[1] ?? null;
-      const slots = Object.entries(opts.extracted ?? {}).map(([id, v]) =>
-        v !== null && typeof v === 'object' ? { id, evidence: quote, ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0, evidence: quote }
+      // Kanıt: slot başına kullanıcının ilk mesajından farklı bir kelime (verifyEvidence geçer, ayrı ayrıntı sayılır).
+      const quote = fakeQuotes(input.conversation);
+      const slots = Object.entries(opts.extracted ?? {}).map(([id, v], i) =>
+        v !== null && typeof v === 'object' ? { id, evidence: quote(i), ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0, evidence: quote(i) }
       );
       return { data: { slots, goalSummary: 'summary', isBroadGoal: opts.isBroadGoal ?? false, ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
     }
@@ -170,6 +176,21 @@ describe('çıkarım: kanıt (alıntı) denetimi', () => {
     assert.ok(verifyEvidence('bir görsel', 'Midjourney ile bir görsel yapmak istiyorum', 'Midjourney'));
   });
 
+  it('aynı alıntı birden çok slota verilse de tek ayrıntı sayılır (2026-10-14 eval, gamma-missing)', () => {
+    const gamma = loadGuides().find((g) => g.id === 'gamma')!;
+    const same = (value: string, confidence: number) => ({ value, source: 'inferred' as const, confidence, evidence: 'make me a presentation' });
+    const gamed = { audience: same('investors', 0.65), length: same('8-10 slides', 0.65), tone: same('formal', 0.35), visuals: same('data charts', 0.35) };
+    assert.strictEqual(distinctDetails(Object.entries(gamed)), 1);
+    assert.ok(!hasEnoughDetail(gamma, gamed), 'tek cümle her slota alıntılanmış: soru kartı');
+    assert.ok(planSlots(gamma, gamed, { questionAsked: false }).questions.length > 0);
+    // Gerçekten ayrıntılı istek: farklı alıntılar
+    const said = (value: string, evidence: string) => ({ value, source: 'user' as const, confidence: 0.9, evidence });
+    const detailed = { audience: said('investors', 'yatirimcilar icin'), length: said('8-10 slides', '8 10 slaytlik'), tone: said('formal', 'resmi tonda') };
+    assert.ok(hasEnoughDetail(gamma, detailed));
+    // Alıntısız (ajanın verdiği) slotlar kendi başına sayılır
+    assert.strictEqual(distinctDetails([['a', { value: 'x', source: 'user', confidence: 1 }], ['b', { value: 'y', source: 'user', confidence: 1 }]]), 2);
+  });
+
   it('şemada alıntı değerden önce gelir (model önce kanıtı yazar, sonra karar verir); ima için de alıntı istenir', async () => {
     const { llm, calls } = fakeLLM({ extracted: full });
     await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation: [{ role: 'user', content: 'logo for my bakery' }], locale: 'en' }, deps(llm));
@@ -197,7 +218,7 @@ describe('çıkarım: kanıt (alıntı) denetimi', () => {
     const x = await extractSlots({ conversation: [{ role: 'user', content: 'Make me a presentation.' }, { role: 'assistant', content: 'For investors? 8-10 slides?' }], goal: 'investor presentation', guide: gamma, locale: 'en', llm, productName: 'Gamma AI' });
     assert.deepStrictEqual(x.slots.audience, { value: 'investors', source: 'inferred', confidence: UNVERIFIED_CONFIDENCE_CAP }, 'goal ve asistan mesajı kanıt değil');
     assert.strictEqual(x.slots.length.source, 'inferred');
-    assert.deepStrictEqual(x.slots.tone, { value: 'formal', source: 'inferred', confidence: 0.8 }, 'kanıtı doğru alıntı: korunur');
+    assert.deepStrictEqual(x.slots.tone, { value: 'formal', source: 'inferred', confidence: 0.8, evidence: 'presentation' }, 'kanıtı doğru alıntı: korunur (normalize alıntıyla)');
     assert.strictEqual(x.slots.visuals.confidence, 0.45, 'akıllı varsayım dokunulmaz');
     assert.deepStrictEqual(x.evidence.audience, { claimed: 'user', claimedConfidence: 0.9, quote: 'investors', verified: false }, 'teşhis: iddia, alıntı, doğrulama');
     assert.strictEqual(x.evidence.tone.verified, true);
@@ -479,12 +500,13 @@ describe('prompt oturumu', () => {
   it('teşhis (alıntılar) sonuçta var ama depoya yazılmaz', async () => {
     const { llm } = fakeLLM({ extracted: full });
     const store = memoryPromptStore();
-    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation, locale: 'en' }, deps(llm, store));
+    const chat = [{ role: 'user' as const, content: 'zanzibar bakery logo, illustration, square' }];
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation: chat, locale: 'en' }, deps(llm, store));
     if ('error' in r) return assert.fail(r.error);
-    assert.strictEqual(r.diagnostics?.evidence.subject.quote, 'logo for my bakery');
+    assert.strictEqual(r.diagnostics?.evidence.subject.quote, 'zanzibar');
     assert.strictEqual(r.diagnostics?.evidence.subject.verified, true);
     const stored = await store.get(r.card.promptSessionId);
-    assert.ok(!JSON.stringify(stored).includes('logo for my bakery'), 'alıntı KV oturumunda yok');
+    assert.ok(!JSON.stringify(stored).toLowerCase().includes('zanzibar'), 'alıntı KV oturumunda yok');
   });
 
   it('userMessagesFrom: sadece kullanıcı mesajları, sınırlar, amaçla aynı tek mesaj boş', () => {
@@ -507,6 +529,12 @@ describe('prompt oturumu', () => {
     assert.match(system, /## Template\n/);
     assert.match(system, /## Do \/ Don't\nRouteAI kuralları/);
     assert.match(system, /no verified Midjourney documentation yet/);
+  });
+
+  it('Cursor kısıt kuralı Türkçe zorunluluk ekini tanır (2026-10-14 eval, replit-generic yanlış alarmı)', () => {
+    const v = loadGuides().find((g) => g.id === 'cursor-task')!.validators.filter((x) => x.id === 'constraints');
+    for (const p of ['Tüm sayfaları sen oluşturmalısın.', 'Site hizmet listesi içermelidir.', 'Mevcut koda uyulmalıdır.', 'Never add dependencies.', 'Public API değiştirme.']) assert.deepStrictEqual(checkPrompt(p, v), [], p);
+    assert.strictEqual(checkPrompt('Bir kuaför sitesi yap ve sayfaları oluştur.', v).length, 1, 'kısıt yoksa yine uyarır');
   });
 
   it('Midjourney oran kuralı sözdiziminden bağımsız: "16:9" de "--ar 16:9" da geçer', () => {
