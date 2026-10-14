@@ -561,7 +561,7 @@ describe('prompt oturumu', () => {
 
   it('Cursor kısıt kuralı Türkçe zorunluluk ekini tanır (2026-10-14 eval, replit-generic yanlış alarmı)', () => {
     const v = loadGuides().find((g) => g.id === 'cursor-task')!.validators.filter((x) => x.id === 'constraints');
-    for (const p of ['Tüm sayfaları sen oluşturmalısın.', 'Site hizmet listesi içermelidir.', 'Mevcut koda uyulmalıdır.', 'Never add dependencies.', 'Public API değiştirme.']) assert.deepStrictEqual(checkPrompt(p, v), [], p);
+    for (const p of ['Tüm sayfaları sen oluşturmalısın.', 'Site hizmet listesi içermelidir.', 'Mevcut koda uyulmalıdır.', 'Never add dependencies.', 'Public API değiştirme.', 'Ensure that the public API does not change.', "It's crucial that the public API remains intact."]) assert.deepStrictEqual(checkPrompt(p, v), [], p);
     assert.strictEqual(checkPrompt('Bir kuaför sitesi yap ve sayfaları oluştur.', v).length, 1, 'kısıt yoksa yine uyarır');
   });
 
@@ -579,7 +579,14 @@ describe('prompt oturumu', () => {
     assert.deepStrictEqual(checkPrompt('Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.', v), []);
     assert.deepStrictEqual(checkPrompt('Dur — bu ses ne? Saat on dörtte buluşalım.', v), [], 'cümle içi iki nokta yok, tire serbest');
     for (const bad of ["Ses ayarları: kadın sesi, sakin. Metin: 'Bu derste bütçe yapmayı öğreneceğiz.'", 'Voice settings: neutral voice. Script: I want a voiceover.', 'Merhaba. Ton: sakin.', 'Dur bir düşüneyim. <break time="1.5s" /> Tamam.']) {
-      assert.strictEqual(checkPrompt(bad, v).length, 1, bad);
+      assert.ok(checkPrompt(bad, v).length >= 1, bad);
+    }
+    // Etiketsiz ama tarifli metin de okunur (2026-10-14 kısmi eval)
+    for (const bad of ["Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'", 'This is a voiceover for an ad in another language, delivered in a calm tone using a neutral voice.', 'Read this in a warm voice: welcome to our store.']) {
+      assert.ok(checkPrompt(bad, v).some((m) => /Do not describe the voiceover/.test(m)), bad);
+    }
+    for (const ok of ['Bu derste bütçe yapmayı öğreneceğiz. Hadi başlayalım!', 'Bu… şey, işe yarayabilir. Dur — bu ses ne?', 'Lumina ile alışveriş artık çok kolay. Lumina\'yı bugün indir.']) {
+      assert.deepStrictEqual(checkPrompt(ok, v), [], ok);
     }
   });
 
@@ -588,7 +595,9 @@ describe('prompt oturumu', () => {
     await startPromptSession({ productId: 'elevenlabs', goal: 'ders seslendirmesi', conversation: [{ role: 'user', content: 'Türkçe sakin kadın sesiyle ders seslendirmesi' }], locale: 'tr' }, deps(llm));
     const system = calls.find((c) => c.name === 'prompt_generation')!.system;
     assert.match(system, /reads "prompt" aloud word for word/);
-    assert.match(system, /put voice, speed and model into "settings"/);
+    assert.match(system, /voice and speed go into "settings"/);
+    assert.match(system, /never appear as words in "prompt"/);
+    assert.match(system, /never a description of them/);
     assert.doesNotMatch(system, /describe the subject, scene/);
   });
 

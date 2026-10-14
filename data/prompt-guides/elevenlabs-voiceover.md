@@ -3,7 +3,8 @@
 # Kaynak: Ferit'in TTS best practices sayfasını okuması (2026-10-14); bu ortam sayfaya erişemedi.
 # v4: prompt sesli okunan metnin kendisi; etiket ve ses ayarları metne girmez (2026-10-14 eval:
 # "Ses ayarları: kadın sesi… Metin: …" ElevenLabs'ta sesli okunuyordu; v3'teki "script" ve
-# "delivery" doğrulayıcıları bu etiketleri zorunlu kılıyordu).
+# "delivery" doğrulayıcıları bu etiketleri zorunlu kılıyordu). Aynı gün: etiketsiz ama tarifli
+# metin ("… kadın sesiyle: 'Bu derste…'", "This is a voiceover for an ad…") -> no-delivery-description.
 id: "elevenlabs-voiceover"
 version: 4
 appliesTo: ["elevenlabs"]
@@ -179,6 +180,12 @@ validators:
   flags: "iu"
   criterion: "toolReadiness"
   message: "ElevenLabs reads the whole prompt aloud: no labels such as \"Script:\" or \"Voice settings:\". Keep only the words to be spoken; put voice, speed and model in settings."
+- id: "no-delivery-description"
+  type: "forbidRegex"
+  value: "(?<![\\p{L}])(?:voice-?over|seslendirme\\p{L}*|\\p{L}+ (?:sesiyle|sesle|tonunda|tonuyla)|in an? [\\p{L}-]+ (?:voice|tone)|(?:calm|warm|energetic|neutral|female|male|authoritative) (?:voice|tone))(?![\\p{L}])"
+  flags: "iu"
+  criterion: "toolReadiness"
+  message: "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
 - id: "no-break-tags"
   type: "forbidRegex"
   value: "<break\\b"
@@ -206,6 +213,7 @@ RouteAI iskeleti. Prompt alanına yalnızca okunacak metin yazılır, başında 
 Kaynağa dayanan kurallar (yukarıdaki sayfa):
 
 - Prompt sesli okunur: "Metin:", "Script:", "Ses ayarları:" gibi etiket ya da yönetmen notu yazma.
+- Seslendirmenin tarifini yazma ("sakin bir kadın sesiyle:", "Bu bir reklam seslendirmesidir"): o da okunur. Kullanıcı metin vermediyse konuşmacının söyleyeceği metni yaz (reklamda reklam metninin kendisi).
 - Ses, hız ve model `settings`'e yazılır: ör. `Speed: 0.9` (sakin anlatım). Speed 0.7–1.2 aralığında kalır.
 - Duraklamayı `…` ve `—` ile ver; `<break>` etiketi kullanma (her modelde çalışmaz).
 - Köşeli parantezli ses etiketlerini sadece kullanıcı v3/v4 kullandığını söylediyse kullan.
