@@ -590,6 +590,40 @@ describe('prompt oturumu', () => {
     }
   });
 
+  it('ses aracı: tırnaklı metin kodla alınır, LLM onarımı yok (2026-10-14 eval, el-full)', async () => {
+    const { quotedScript } = await import('../promptBuilder/sufficiency');
+    const { useQuotedScript } = await import('../promptBuilder/validate');
+    const msg = "Türkçe e-öğrenme videom için sakin, net bir kadın sesi lazım; metin: 'Bu derste bütçe yapmayı öğreneceğiz.'";
+    assert.strictEqual(quotedScript([msg]), 'Bu derste bütçe yapmayı öğreneceğiz.');
+    assert.strictEqual(quotedScript(['Lumina\'yı bugün Ankara\'da indir']), null, 'kesme işareti tırnak değil');
+    assert.strictEqual(quotedScript(['Posterde "Friday Jazz" yazsın']), null, '3 kelimeden kısa: metin değil');
+    assert.strictEqual(quotedScript(['metin: “Hoş geldiniz, bugün başlıyoruz.”']), 'Hoş geldiniz, bugün başlıyoruz.');
+
+    const el = loadGuides().find((g) => g.id === 'elevenlabs-voiceover')!;
+    const session = { id: 's', productId: 'elevenlabs', guideId: el.id, guideVersion: el.version, goal: 'e-öğrenme seslendirmesi', userMessages: [msg], locale: 'tr' as const, slots: {}, questionAsked: false, pendingQuestions: [], versions: [], refinementCount: 0 };
+    const bad = "Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'";
+    const good = 'Evet, bu derste bütçe yapmayı öğreneceğiz. Haydi başlayalım!';
+    const how = ["Bu promptu ElevenLabs'a yapıştır; metin hazır.", 'İlk çıktıda hızı (Speed) kontrol et.', "Takip mesajı: 'biraz daha yavaş oku'."];
+    const output = { variants: [{ id: 'safe' as const, prompt: bad, negativePrompt: null, settings: [{ key: 'Speed', value: '1.0' }] }, { id: 'creative' as const, prompt: good, negativePrompt: null, settings: [] }], assumptions: [], suggestedRefinements: [], howToUse: how };
+    const llm = fakeLLM();
+    const r = await validateWithRepair(output, { session, guide: el, productName: 'ElevenLabs', llm: llm.llm });
+    assert.strictEqual(llm.calls.length, 0, 'onarım çağrısı yok');
+    assert.strictEqual(r.variants[0].prompt, 'Bu derste bütçe yapmayı öğreneceğiz.');
+    assert.deepStrictEqual(r.variants[0].settings, [{ key: 'Speed', value: '1.0' }], 'ayarlar korunur');
+    assert.strictEqual(r.variants[1].prompt, good, 'geçen varyanta dokunulmaz');
+    assert.deepStrictEqual(r.variants.map((v) => v.validation.status), ['passed', 'passed']);
+    // İyileştirmede (kullanıcı metni bilerek değiştirmiş olabilir) ve ses dışı araçta uygulanmaz
+    const ctxFor = (x: Parameters<typeof useQuotedScript>[1]) => ({ guide: x.guide, goal: x.session.goal });
+    const refineInput = { session, guide: el, productName: 'ElevenLabs', llm: llm.llm, previous: { variants: [] } };
+    assert.strictEqual(useQuotedScript(output, refineInput, ctxFor(refineInput)).variants[0].prompt, bad);
+  });
+
+  it('kural 6: rehber örnekleri sadece biçimdir, içerikleri kopyalanmaz (örnek cümlesi prompta sızmıştı)', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(llm));
+    assert.match(calls.find((c) => c.name === 'prompt_generation')!.system, /examples show the form only: never copy their words or content/);
+  });
+
   it('onarım mesajı yasaklı ifadenin geçtiği yeri gösterir (genel mesaj onarımı tutturmuyordu)', async () => {
     const el = loadGuides().find((g) => g.id === 'elevenlabs-voiceover')!;
     const { allIssues } = await import('../promptBuilder/sufficiency');
