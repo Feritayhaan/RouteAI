@@ -5,27 +5,26 @@ Durum: data/models.json güncellendi
 ## Karar: başarılı
 
 - Artificial Analysis: anahtar tanımlı değil, atlandı (hata sayılmadı).
-- Kısmi hata: 1 hata; beklenen kaynakların hepsinden veri geldi.
 
 ## Kaynaklar
 
 - Artificial Analysis: başarısız / atlandı — eski veri korundu
-- LMArena: 2026-10-13
+- LMArena: 2026-10-14
 - Artificial Analysis: AA_API_KEY yok, atlandı (eski veri korunur)
 
-Toplam model: 621 (Artificial Analysis: 0, LMArena: 621, iki kaynakta: 0)
+Toplam model: 638 (Artificial Analysis: 0, LMArena: 638, iki kaynakta: 0)
 
 ## Hatalar
 
-- LMArena image_to_video offset=0: HTTP 429
+- yok
 
 ## Yeni modeller
 
-- yok
+17: muse-wonder-max, claude-fable-5-1-high, claude-opus-5-5-medium, hidream-o1-video-1-0, grok-imagine-video-1-5-720p, flux-3-video-20260811, wan2-7-i2v, grok-imagine-video-480p, vidu-q3-pro, kling-v3-pro, wan2-5-i2v-preview, wan2-6-i2v, vidu-q2-turbo, kling-v2-1-standard, vidu-q2-pro, hailuo-02-fast, runway-gen4-turbo
 
 ## Kaybolan modeller
 
-flux-3-video-20260811, grok-imagine-video-1-5-720p, grok-imagine-video-480p, hailuo-02-fast, hidream-o1-video-1-0, kling-v2-1-standard, kling-v3-pro, runway-gen4-turbo, vidu-q2-pro, vidu-q2-turbo, vidu-q3-pro, wan2-5-i2v-preview, wan2-6-i2v, wan2-7-i2v
+- yok
 
 ## Olası eşleşmeler (alias adayı — data/model-aliases.json'a sadece eminsen ekle)
 
@@ -33,16 +32,16 @@ flux-3-video-20260811, grok-imagine-video-1-5-720p, grok-imagine-video-480p, hai
 
 ## Uyarılar
 
-- gpt-5-3-codex-codex-harness: lmarena:webdev iki kez geldi (1408.6005875043013 / 1371.4188946798915); yüksek olan tutuldu
+- gpt-5-3-codex-codex-harness: lmarena:webdev iki kez geldi (1406.0443767771428 / 1370.9404407394484); yüksek olan tutuldu
 
 ## Alan eşlemesi (doğrula)
 
 - LMArena text: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena text: kategori 'overall' (414/10974 satır)
+- LMArena text: kategori 'overall' (415/11006 satır)
 - LMArena webdev: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena webdev: kategori 'overall' (141/610 satır)
+- LMArena webdev: kategori 'overall' (142/614 satır)
 - LMArena search: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena search: kategori 'overall' (34/34 satır)
+- LMArena search: kategori 'overall' (42/42 satır)
 - LMArena document: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena document: kategori 'overall' (44/44 satır)
 - LMArena text_to_image: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
@@ -51,6 +50,8 @@ flux-3-video-20260811, grok-imagine-video-1-5-720p, grok-imagine-video-480p, hai
 - LMArena image_edit: kategori 'overall' (59/103 satır)
 - LMArena text_to_video: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena text_to_video: kategori 'overall' (48/48 satır)
+- LMArena image_to_video: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
+- LMArena image_to_video: kategori 'overall' (48/48 satır)
 - LMArena video_edit: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena video_edit: kategori 'overall' (10/10 satır)
 
@@ -64,6 +65,7 @@ flux-3-video-20260811, grok-imagine-video-1-5-720p, grok-imagine-video-480p, hai
 - LMArena text_to_image: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena image_edit: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena text_to_video: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
+- LMArena image_to_video: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena video_edit: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 
 Kaynak ve lisans: skorlar Artificial Analysis (artificialanalysis.ai) ve LMArena (lmarena.ai) verisidir; gösterilirken kaynak adı görünür olmalı.
@@ -81,20 +83,20 @@ Kaynak ve lisans: skorlar Artificial Analysis (artificialanalysis.ai) ve LMArena
 | FLUX (Black Forest Labs) | flux-2-max | — | lmarena, 2026-10-12 |
 | Leonardo AI | lucid-origin | — | lmarena, 2026-10-12 |
 | Ideogram | ideogram-4.0-quality | — | lmarena, 2026-10-12 |
-| ChatGPT | gpt-5.6-sol-xhigh | — | lmarena, 2026-10-12 |
-| Claude | claude-opus-5-high | — | lmarena, 2026-10-12 |
-| Gemini | gemini-4-argon-high | — | lmarena, 2026-10-12 |
-| Claude Code (Anthropic) | claude-opus-5-high | — | lmarena, 2026-10-12 |
+| ChatGPT | gpt-5.6-sol-xhigh | — | lmarena, 2026-10-14 |
+| Claude | claude-opus-5-high | — | lmarena, 2026-10-14 |
+| Gemini | gemini-4-argon-high | — | lmarena, 2026-10-14 |
+| Claude Code (Anthropic) | claude-opus-5-high | — | lmarena, 2026-10-14 |
 | ElevenLabs | (eşleşen model yok) | — | — |
 | Murf.ai | (eşleşen model yok) | — | — |
 | Sora (OpenAI) | sora-2-pro | — | lmarena, 2026-10-12 |
-| Google Veo | veo-3.1-audio | — | lmarena, 2026-10-12 |
-| Perplexity AI | ppl-sonar-reasoning-pro-high | — | lmarena, 2026-10-12 |
+| Google Veo | veo-3.1-audio | — | lmarena, 2026-10-14 |
+| Perplexity AI | ppl-sonar-reasoning-pro-high | — | lmarena, 2026-10-14 |
 | Runway | runway-gen4-aleph | — | lmarena, 2026-10-12 |
-| Pika Labs | pika-v2.2 | — | lmarena, 2026-10-12 |
-| Grok | grok-4.5 | — | lmarena, 2026-10-12 |
+| Pika Labs | pika-v2.2 | — | lmarena, 2026-10-14 |
+| Grok | grok-4.5 | — | lmarena, 2026-10-14 |
 | Kling AI | kling-o3-pro | — | lmarena, 2026-10-12 |
-| Luma Dream Machine | ray-3 | — | lmarena, 2026-10-12 |
+| Luma Dream Machine | ray-3 | — | lmarena, 2026-10-14 |
 | Gemini (görsel) | gemini-nano-banana-2.1 | — | lmarena, 2026-10-12 |
-| Le Chat (Mistral) | mistral-large-4 | — | lmarena, 2026-10-12 |
+| Le Chat (Mistral) | mistral-large-4 | — | lmarena, 2026-10-14 |
 | Grok Imagine (xAI) | grok-imagine-video-1.5-agent | — | lmarena, 2026-10-12 |
