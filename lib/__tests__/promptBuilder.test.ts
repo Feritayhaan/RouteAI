@@ -417,6 +417,26 @@ describe('prompt oturumu', () => {
     assert.deepStrictEqual(await refinePromptSession({ promptSessionId: id, refinementId: 'yok' }, d), { error: 'unknown_refinement', tokens: 0 });
   });
 
+  it('iyileştirmede değişen slot üreticiye ayrıca söylenir; önceki versiyon temel alınır (2026-10-14 eval, cursor-full)', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    const d = deps(llm);
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation, locale: 'en' }, d);
+    if ('error' in r || r.card.type !== 'prompt') return assert.fail('kart yok');
+    const id = r.card.promptSessionId;
+    const lastGen = () => JSON.parse(calls.filter((c) => c.name === 'prompt_generation').at(-1)!.user);
+
+    await refinePromptSession({ promptSessionId: id, refinementId: 'vertical' }, d);
+    assert.deepStrictEqual(lastGen().changedSlots, { aspect: '9:16' }, 'hazır buton (patch)');
+    assert.ok(lastGen().previousVersion);
+    await refinePromptSession({ promptSessionId: id, slotId: 'mood', value: 'soft pastel' }, d);
+    assert.deepStrictEqual(lastGen().changedSlots, { mood: 'soft pastel' }, 'varsayım değişikliği');
+    await refinePromptSession({ promptSessionId: id, instruction: 'more playful' }, d);
+    assert.strictEqual(lastGen().changedSlots, undefined, 'serbest talimatta slot değişmez');
+    const system = calls.at(-1)!.system;
+    assert.match(system, /previousVersion \(when given\) is the base: keep every concrete detail/);
+    assert.match(system, /changedSlots are the slots the user just changed/);
+  });
+
   it(`oturum başına en fazla ${MAX_REFINEMENTS} iyileştirme`, async () => {
     const { llm } = fakeLLM({ extracted: full });
     const d = deps(llm);

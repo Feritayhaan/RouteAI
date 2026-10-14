@@ -107,6 +107,8 @@ export interface GenerateInput {
   /** İyileştirmede ya da onarımda önceki varyantlar. */
   previous?: { variants: { id: string; prompt: string }[] };
   instruction?: string;
+  /** İyileştirmede kullanıcının az önce değiştirdiği slotlar (slotId -> yeni değer). */
+  changedSlots?: Record<string, string>;
   /** Doğrulayıcı onarımı: varyant başına hata mesajları. */
   repairErrors?: Record<string, string[]>;
   /** Ürünün özel rehberi yok; aynı türdeki araçlar için genel rehber (fallback.ts). */
@@ -175,7 +177,7 @@ Rules, most important first:
    - learn: ONLY when the user explicitly asks what something is, how it works, or to be taught: an explanatory, teaching prompt.
    Match depth to the intent: build, solve and analyze requests get a complete, detailed prompt. Never shrink a request to "a short paragraph" or "beginner level" unless the user asked for that.
 3. Tool-native form: ${toolForm}
-4. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
+4. previousVersion (when given) is the base: keep every concrete detail it has (names, file paths, quoted texts, numbers, constraints) and change only what changedSlots or refinementInstruction ask for. changedSlots are the slots the user just changed: the new value must appear in the new prompt, replacing the old one. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
 5. Slots only fill in what the user did not say. A null slot is yours to choose, and every choice you make goes into "assumptions". If a slot does not fit this request, leave it out of the prompt instead of forcing it in.
 6. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically.${guide.sources.length === 0 ? ` This guide has no verified ${productName} documentation yet: use plain, widely compatible wording and do not rely on undocumented tool syntax.` : ''}
 7. ${productName} never sees this conversation: the prompt must be self-contained. ${productName} has never heard of RouteAI, so the prompt never mentions RouteAI (if it addresses anyone, it addresses ${productName}). Write it ready to paste: no preamble ("Sure", "Here is"), no references to the chat, no unfilled template brackets, no vague filler ("etc.", "something nice").${visual ? ' Do not address the tool ("Please create an image of..."); start directly with the subject or shot and describe subject, setting, composition/camera, light and style.' : ''} negativePrompt and settings must not contradict the prompt${noNegative ? '; this kind of tool has no negative prompt field, so negativePrompt is null and exclusions go into the prompt' : ''}.
@@ -219,6 +221,7 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
     slots,
     ...(previous ? { previousVersion: { variants: previous.variants.map((v) => ({ id: v.id, prompt: v.prompt })) } } : {}),
     ...(instruction ? { refinementInstruction: instruction } : {}),
+    ...(input.changedSlots && Object.keys(input.changedSlots).length ? { changedSlots: input.changedSlots } : {}),
     ...(repairErrors ? { fixTheseValidatorErrors: repairErrors } : {}),
   });
 

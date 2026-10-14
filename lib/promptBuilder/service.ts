@@ -147,13 +147,25 @@ function toQuestionCard(session: PromptSession, guide: Guide, product: Product):
   };
 }
 
+/**
+ * Yeni versiyonun nedeni. changedSlots: iyileştirmede kullanıcının az önce
+ * değiştirdiği slotlar; üreticiye ayrıca söylenir (2026-10-14 eval, cursor-full:
+ * "Yeni bağımlılık yok" butonu yansımadı, model farkı bilmediği için önceki
+ * promptteki dosya yolunu da yer tutucuyla değiştirdi).
+ */
+interface RefineMeta {
+  refinementIds: string[];
+  instruction?: string;
+  changedSlots?: Record<string, string>;
+}
+
 /** generate -> validate (+1 onarım) -> yeni versiyon. */
 async function produceVersion(
   session: PromptSession,
   guide: Guide,
   product: Product,
   deps: PromptDeps,
-  meta: { refinementIds: string[]; instruction?: string },
+  meta: RefineMeta,
   generic: boolean
 ): Promise<{ version: PromptVersion; tokens: number }> {
   const previous = session.versions.at(-1);
@@ -166,6 +178,7 @@ async function produceVersion(
     signal: deps.signal,
     ...(previous && (meta.instruction || meta.refinementIds.length) ? { previous } : {}),
     ...(meta.instruction ? { instruction: meta.instruction } : {}),
+    ...(meta.changedSlots && Object.keys(meta.changedSlots).length ? { changedSlots: meta.changedSlots } : {}),
   };
   const gen = await generatePrompt(input);
   const checked = await validateWithRepair(gen.output, input);
@@ -274,7 +287,8 @@ export async function refinePromptSession(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
-  let meta: { refinementIds: string[]; instruction?: string };
+  let meta: RefineMeta;
+  const changed: Record<string, string> = {};
   const setSlot = (slotId: string, value: string): SlotState | null => {
     const slot = guide.slots.find((s) => s.id === slotId);
     if (!slot) return null;
@@ -291,15 +305,21 @@ export async function refinePromptSession(
     if (guideRef) {
       for (const [slotId, value] of Object.entries(guideRef.patch ?? {})) {
         const state = setSlot(slotId, value);
-        if (state) session.slots[slotId] = state;
+        if (state?.value) {
+          session.slots[slotId] = state;
+          changed[slotId] = state.value;
+        }
       }
-      meta = { refinementIds: [guideRef.id], ...(guideRef.instruction ? { instruction: guideRef.instruction } : {}) };
+      meta = { refinementIds: [guideRef.id], ...(guideRef.instruction ? { instruction: guideRef.instruction } : {}), changedSlots: changed };
     } else if (suggested) {
       if (suggested.slotId && suggested.value) {
         const state = setSlot(suggested.slotId, suggested.value);
-        if (state) session.slots[suggested.slotId] = state;
+        if (state?.value) {
+          session.slots[suggested.slotId] = state;
+          changed[suggested.slotId] = state.value;
+        }
       }
-      meta = { refinementIds: [input.refinementId], ...(suggested.instruction ? { instruction: suggested.instruction } : {}) };
+      meta = { refinementIds: [input.refinementId], ...(suggested.instruction ? { instruction: suggested.instruction } : {}), changedSlots: changed };
     } else {
       return { error: 'unknown_refinement', tokens: 0 };
     }
@@ -308,7 +328,7 @@ export async function refinePromptSession(
     const state = setSlot(input.slotId, input.value);
     if (!state || !state.value) return { error: 'invalid', tokens: 0 };
     session.slots[input.slotId] = state;
-    meta = { refinementIds: ['assumption'] };
+    meta = { refinementIds: ['assumption'], changedSlots: { [input.slotId]: state.value } };
   } else {
     // Serbest talimat: önceki versiyon + talimat
     const instruction = input.instruction.trim().slice(0, 1000);
