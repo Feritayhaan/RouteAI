@@ -1,11 +1,16 @@
 ---
-# TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
+# TASLAK — reviewedBy boş (rehberin tamamı incelenmedi).
+# Kaynak: Ferit'in TTS best practices sayfasını okuması (2026-10-14); bu ortam sayfaya erişemedi.
+# v4: prompt sesli okunan metnin kendisi; etiket ve ses ayarları metne girmez (2026-10-14 eval:
+# "Ses ayarları: kadın sesi… Metin: …" ElevenLabs'ta sesli okunuyordu; v3'teki "script" ve
+# "delivery" doğrulayıcıları bu etiketleri zorunlu kılıyordu). Aynı gün: etiketsiz ama tarifli
+# metin ("… kadın sesiyle: 'Bu derste…'", "This is a voiceover for an ad…") -> no-delivery-description.
 id: "elevenlabs-voiceover"
-version: 3
+version: 4
 appliesTo: ["elevenlabs"]
 modality: "audio"
 promptLanguage: "user"
-sources: []
+sources: ["https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices"]
 reviewedBy: ""
 reviewedAt: ""
 slots:
@@ -152,7 +157,7 @@ refinements:
   label:
     en: "Add pauses"
     tr: "Duraklama ekle"
-  instruction: "Split long sentences and mark natural pauses in the script."
+  instruction: "Split long sentences and mark natural pauses with ellipses (…) or dashes (—); do not use break tags."
 - id: "shorter"
   label:
     en: "Shorter script"
@@ -163,47 +168,66 @@ refinements:
     en: "More formal"
     tr: "Daha resmî"
   instruction: "Use a more formal register."
-checklist: ["Final script text, labelled", "Tone and pace", "Voice choice", "Language", "Pronunciation notes for names or numbers"]
+checklist: ["Only the words to be spoken", "No labels, settings or stage notes in the text", "Voice, speed and model in settings", "Natural pauses with punctuation", "Symbols and abbreviations written as they are spoken", "Tone carried by the wording"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 5000
   message: "RouteAI limit: keep the prompt under 5000 characters."
-- id: "script"
-  type: "regex"
-  value: "(script|metin|text|seslendirme)\\s*:|\"[^\"]{20,}\"|“[^”]{20,}”"
+- id: "spoken-only"
+  type: "forbidRegex"
+  value: "(?:^|\\n|[.!?]\\s)\\s*(?:ses ayarları|voice settings|metin|script|telaffuz notları|pronunciation notes|ton|tone|hız|speed|pace|ses|voice)\\s*:"
+  flags: "iu"
+  criterion: "toolReadiness"
+  message: "ElevenLabs reads the whole prompt aloud: no labels such as \"Script:\" or \"Voice settings:\". Keep only the words to be spoken; put voice, speed and model in settings."
+- id: "no-delivery-description"
+  type: "forbidRegex"
+  value: "(?<![\\p{L}])(?:voice-?over|seslendirme\\p{L}*|\\p{L}+ (?:sesiyle|sesle|tonunda|tonuyla)|in an? [\\p{L}-]+ (?:voice|tone)|(?:calm|warm|energetic|neutral|female|male|authoritative) (?:voice|tone))(?![\\p{L}])"
+  flags: "iu"
+  criterion: "toolReadiness"
+  message: "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+- id: "no-break-tags"
+  type: "forbidRegex"
+  value: "<break\\b"
   flags: "i"
   criterion: "toolReadiness"
-  message: "Include the exact script to be read, labelled \"Script:\" (or \"Metin:\")."
-- id: "delivery"
-  type: "regex"
-  value: "(tone|ton|pace|hız|tempo|voice|ses|calm|sakin|energetic|enerjik|warm|sıcak)"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "State the delivery: voice, tone and pace."
+  message: "Break tags work only on some models: mark pauses with ellipses (…) or dashes (—)."
 ---
 
 ## Sözdizimi
 
-KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+Kaynak: [TTS best practices](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices), Ferit'in okuması (2026-10-14).
+
+- Metin kutusundaki her şey sesli okunur; anlatı içindeki duygu ifadeleri de ("diye sordu, sesi titreyerek") okunur. Bu yüzden prompt sadece seslendirilecek metindir.
+- Duraklama: `<break time="1.5s" />` etiketi yalnızca v2/Flash modellerinde çalışır (en fazla 3 sn); v3/v4'te çalışmaz. Her modelde çalışan yol noktalamadır: `…` ve `—`.
+- Hız: Voice settings içindeki Speed kaydırıcısı; varsayılan 1.0, aralık 0.7–1.2. Uç değerler kaliteyi düşürür.
+- Ses etiketleri (köşeli parantez, ör. `[whispers]`) yalnızca v3/v4 modellerinde; sesin niteliği açıkça tarif edilmeli (`[low, steady voice]`).
+- Metin normalleştirme varsayılan olarak açık; küçük modeller (Flash v2.5) sayı, tarih ve kısaltmalarda zayıf, Multilingual v2 daha iyi okur.
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız], [dil]. Metin: [okunacak metnin tamamı, kısa cümleler, doğal duraklar]. Telaffuz notları: [adlar ve sayılar].
+RouteAI iskeleti. Prompt alanına yalnızca okunacak metin yazılır, başında ya da sonunda etiket olmadan. Kullanıcı metni verdiyse o metin aynen kullanılır; sadece kısa cümleler ve noktalamayla (… —) doğal duraklamalar eklenir. Metni vermediyse amacına ve tonuna uygun, kısa cümlelerden oluşan bir taslak metin yazılır. Ton kelime seçimiyle verilir; "sakin bir sesle" gibi tarifler metne yazılmaz. Ses, hız (Speed) ve model `settings` alanına yazılır.
 
 ## Yap / Yapma
 
-KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+Kaynağa dayanan kurallar (yukarıdaki sayfa):
 
-RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+- Prompt sesli okunur: "Metin:", "Script:", "Ses ayarları:" gibi etiket ya da yönetmen notu yazma.
+- Seslendirmenin tarifini yazma ("sakin bir kadın sesiyle:", "Bu bir reklam seslendirmesidir"): o da okunur. Kullanıcı metin vermediyse konuşmacının söyleyeceği metni yaz (reklamda reklam metninin kendisi).
+- Ses, hız ve model `settings`'e yazılır: ör. `Speed: 0.9` (sakin anlatım). Speed 0.7–1.2 aralığında kalır.
+- Duraklamayı `…` ve `—` ile ver; `<break>` etiketi kullanma (her modelde çalışmaz).
+- Köşeli parantezli ses etiketlerini sadece kullanıcı v3/v4 kullandığını söylediyse kullan.
+- Sembol ve kısaltmaları okunduğu gibi yaz (`Ctrl + Z` → "kontrol z").
 
-- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
-- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
-- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
-- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
-- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
-- Okunacak metin eksiksiz yazılır ve "Metin:" / "Script:" ile etiketlenir; ton ve hız ayrıca belirtilir.
+RouteAI kuralları (hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
+
+- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler ve sayılar metinde aynen yer alır.
+- Sadece okunacak metin: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf yok.
+- Bu araçta negatif prompt alanı yok: negativePrompt boş kalır.
 
 ## Örnekler
 
-KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
+Kaynaktaki örnekler (Ferit'in notları):
+
+- Duraklama noktalamayla: `Bu… şey, işe yarayabilir. Dur — bu ses ne?`
+- Sakin anlatım: `settings` içinde `Speed: 0.9`; metin: `Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.`

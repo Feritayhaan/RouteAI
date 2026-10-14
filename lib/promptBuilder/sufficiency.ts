@@ -289,11 +289,27 @@ export function sufficiencyIssues(variant: CheckedVariant, ctx: SufficiencyConte
   return issues;
 }
 
+/**
+ * Yasaklı ifadenin promptta geçtiği yer (onarım mesajına eklenir). Genel mesaj
+ * ("tarif yazma") onarımda yetmedi: 2026-10-14 kısmi eval'de model aynı cümleyi
+ * tekrar yazdı, onarım turu sadece token harcadı. Hangi ifadenin sorun olduğunu
+ * göstermek onarımı tutturur.
+ */
+function foundSnippet(prompt: string, v: GuideValidator): string {
+  if (v.type !== 'forbidRegex') return '';
+  const m = new RegExp(String(v.value), v.flags ?? '').exec(prompt);
+  if (!m) return '';
+  const start = Math.max(0, m.index - 40);
+  const end = Math.min(prompt.length, m.index + m[0].length + 40);
+  const text = `${start > 0 ? '…' : ''}${prompt.slice(start, end).replace(/\s+/g, ' ').trim()}${end < prompt.length ? '…' : ''}`;
+  return ` Found: "${text}". Rewrite or remove that part.`;
+}
+
 /** Rehber validator'ları + rubrik: kriter başına sorunlar. Validator'ın kriteri yoksa toolReadiness. */
 export function allIssues(variant: CheckedVariant, ctx: SufficiencyContext): SufficiencyIssue[] {
   const fromGuide = ctx.guide.validators
     .filter((v) => validatorFails(variant.prompt, v))
-    .map((v) => ({ criterion: v.criterion ?? ('toolReadiness' as const), message: v.message }));
+    .map((v) => ({ criterion: v.criterion ?? ('toolReadiness' as const), message: `${v.message}${foundSnippet(variant.prompt, v)}` }));
   return [...fromGuide, ...sufficiencyIssues(variant, ctx)];
 }
 

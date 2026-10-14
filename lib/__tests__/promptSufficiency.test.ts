@@ -76,8 +76,9 @@ const FIXTURES: Fixture[] = [
   {
     guideId: 'elevenlabs-voiceover', locale: 'tr',
     goal: 'E-ticaret reklamı için 30 saniyelik seslendirme, marka adı Lumina',
-    good: v('Ses: sıcak kadın sesi, enerjik ama net ton, normal hız, Türkçe. Yaklaşık 30 saniyelik reklam. Metin: "Lumina ile alışveriş artık çok kolay. Aradığın her şey tek uygulamada. Lumina\'yı bugün indir." Telaffuz: Lumina, "Lu-mi-na" diye okunur.'),
-    bad: v('Lumina için reklam seslendirmesi yap, enerjik olsun'),
+    // v4 rehber: prompt sesli okunan metnin kendisi; ses, hız ve süre ayarlarda (2026-10-14 eval).
+    good: v('Lumina ile alışveriş artık çok kolay. Aradığın her şey… tek uygulamada. Hemen keşfet — Lumina\'yı bugün indir.', null, [{ key: 'Speed', value: '1.0' }, { key: 'Süre', value: 'yaklaşık 30 saniye' }]),
+    bad: v('Ses ayarları: enerjik kadın sesi. Metin: Lumina için kısa bir reklam.'),
     fails: ['selfContainment', 'toolReadiness'],
   },
   {
@@ -268,7 +269,7 @@ describe('araç sentaksı, somutluk ve tutarlılık', () => {
     const issues = allIssues(v('A photorealistic photo of a ceramic mug on a plain white background, soft light --ar 1:1'), { guide: guide('image-natural'), goal: 'x' });
     assert.deepStrictEqual(issues.map((i) => i.criterion), ['toolReadiness']);
     assert.match(issues[0].message, /--parameters/);
-    assert.ok(allIssues(v('a b c --ar 1:1 d e f g --ar 9:16'), { guide: mj, goal: 'x' }).some((i) => i.criterion === 'consistency' && /single --ar/.test(i.message)));
+    assert.ok(allIssues(v('a b c --ar 1:1 d e f g --ar 9:16'), { guide: mj, goal: 'x' }).some((i) => i.criterion === 'consistency' && /single aspect ratio/.test(i.message)));
   });
 });
 

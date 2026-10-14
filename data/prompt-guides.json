@@ -357,7 +357,7 @@
   },
   {
     "id": "cursor-task",
-    "version": 4,
+    "version": 5,
     "appliesTo": [
       "cursor"
     ],
@@ -633,7 +633,7 @@
       {
         "id": "constraints",
         "type": "regex",
-        "value": "(constraint|rule|do not|don't|must|keep|never|avoid|kural|kısıt|değiştirme|olmalı|zorunlu|koru|asla|\\p{L}+(?:malı|meli)\\p{L}*)",
+        "value": "(constraint|rule|do not|don't|does not|must|keep|never|avoid|remains?|intact|unchanged|kural|kısıt|değiştirme|değişmeden|olmalı|zorunlu|koru|asla|\\p{L}+(?:malı|meli)\\p{L}*)",
         "flags": "iu",
         "criterion": "actionability",
         "message": "State the constraints: what must not change and what must hold."
@@ -648,13 +648,15 @@
   },
   {
     "id": "elevenlabs-voiceover",
-    "version": 3,
+    "version": 4,
     "appliesTo": [
       "elevenlabs"
     ],
     "modality": "audio",
     "promptLanguage": "user",
-    "sources": [],
+    "sources": [
+      "https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices"
+    ],
     "reviewedBy": "",
     "reviewedAt": "",
     "slots": [
@@ -887,7 +889,7 @@
           "en": "Add pauses",
           "tr": "Duraklama ekle"
         },
-        "instruction": "Split long sentences and mark natural pauses in the script."
+        "instruction": "Split long sentences and mark natural pauses with ellipses (…) or dashes (—); do not use break tags."
       },
       {
         "id": "shorter",
@@ -907,11 +909,12 @@
       }
     ],
     "checklist": [
-      "Final script text, labelled",
-      "Tone and pace",
-      "Voice choice",
-      "Language",
-      "Pronunciation notes for names or numbers"
+      "Only the words to be spoken",
+      "No labels, settings or stage notes in the text",
+      "Voice, speed and model in settings",
+      "Natural pauses with punctuation",
+      "Symbols and abbreviations written as they are spoken",
+      "Tone carried by the wording"
     ],
     "validators": [
       {
@@ -921,27 +924,35 @@
         "message": "RouteAI limit: keep the prompt under 5000 characters."
       },
       {
-        "id": "script",
-        "type": "regex",
-        "value": "(script|metin|text|seslendirme)\\s*:|\"[^\"]{20,}\"|“[^”]{20,}”",
-        "flags": "i",
+        "id": "spoken-only",
+        "type": "forbidRegex",
+        "value": "(?:^|\\n|[.!?]\\s)\\s*(?:ses ayarları|voice settings|metin|script|telaffuz notları|pronunciation notes|ton|tone|hız|speed|pace|ses|voice)\\s*:",
+        "flags": "iu",
         "criterion": "toolReadiness",
-        "message": "Include the exact script to be read, labelled \"Script:\" (or \"Metin:\")."
+        "message": "ElevenLabs reads the whole prompt aloud: no labels such as \"Script:\" or \"Voice settings:\". Keep only the words to be spoken; put voice, speed and model in settings."
       },
       {
-        "id": "delivery",
-        "type": "regex",
-        "value": "(tone|ton|pace|hız|tempo|voice|ses|calm|sakin|energetic|enerjik|warm|sıcak)",
+        "id": "no-delivery-description",
+        "type": "forbidRegex",
+        "value": "(?<![\\p{L}])(?:voice-?over|seslendirme\\p{L}*|\\p{L}+ (?:sesiyle|sesle|tonunda|tonuyla)|in an? [\\p{L}-]+ (?:voice|tone)|(?:calm|warm|energetic|neutral|female|male|authoritative) (?:voice|tone))(?![\\p{L}])",
+        "flags": "iu",
+        "criterion": "toolReadiness",
+        "message": "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+      },
+      {
+        "id": "no-break-tags",
+        "type": "forbidRegex",
+        "value": "<break\\b",
         "flags": "i",
         "criterion": "toolReadiness",
-        "message": "State the delivery: voice, tone and pace."
+        "message": "Break tags work only on some models: mark pauses with ellipses (…) or dashes (—)."
       }
     ],
     "body": {
-      "syntax": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Ses ayarları: [ses], [ton], [hız], [dil]. Metin: [okunacak metnin tamamı, kısa cümleler, doğal duraklar]. Telaffuz notları: [adlar ve sayılar].",
-      "dosDonts": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.\n- Okunacak metin eksiksiz yazılır ve \"Metin:\" / \"Script:\" ile etiketlenir; ton ve hız ayrıca belirtilir.",
-      "examples": "KAYNAK GEREKLİ — ElevenLabs resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+      "syntax": "Kaynak: [TTS best practices](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices), Ferit'in okuması (2026-10-14).\n\n- Metin kutusundaki her şey sesli okunur; anlatı içindeki duygu ifadeleri de (\"diye sordu, sesi titreyerek\") okunur. Bu yüzden prompt sadece seslendirilecek metindir.\n- Duraklama: `<break time=\"1.5s\" />` etiketi yalnızca v2/Flash modellerinde çalışır (en fazla 3 sn); v3/v4'te çalışmaz. Her modelde çalışan yol noktalamadır: `…` ve `—`.\n- Hız: Voice settings içindeki Speed kaydırıcısı; varsayılan 1.0, aralık 0.7–1.2. Uç değerler kaliteyi düşürür.\n- Ses etiketleri (köşeli parantez, ör. `[whispers]`) yalnızca v3/v4 modellerinde; sesin niteliği açıkça tarif edilmeli (`[low, steady voice]`).\n- Metin normalleştirme varsayılan olarak açık; küçük modeller (Flash v2.5) sayı, tarih ve kısaltmalarda zayıf, Multilingual v2 daha iyi okur.",
+      "template": "RouteAI iskeleti. Prompt alanına yalnızca okunacak metin yazılır, başında ya da sonunda etiket olmadan. Kullanıcı metni verdiyse o metin aynen kullanılır; sadece kısa cümleler ve noktalamayla (… —) doğal duraklamalar eklenir. Metni vermediyse amacına ve tonuna uygun, kısa cümlelerden oluşan bir taslak metin yazılır. Ton kelime seçimiyle verilir; \"sakin bir sesle\" gibi tarifler metne yazılmaz. Ses, hız (Speed) ve model `settings` alanına yazılır.",
+      "dosDonts": "Kaynağa dayanan kurallar (yukarıdaki sayfa):\n\n- Prompt sesli okunur: \"Metin:\", \"Script:\", \"Ses ayarları:\" gibi etiket ya da yönetmen notu yazma.\n- Seslendirmenin tarifini yazma (\"sakin bir kadın sesiyle:\", \"Bu bir reklam seslendirmesidir\"): o da okunur. Kullanıcı metin vermediyse konuşmacının söyleyeceği metni yaz (reklamda reklam metninin kendisi).\n- Ses, hız ve model `settings`'e yazılır: ör. `Speed: 0.9` (sakin anlatım). Speed 0.7–1.2 aralığında kalır.\n- Duraklamayı `…` ve `—` ile ver; `<break>` etiketi kullanma (her modelde çalışmaz).\n- Köşeli parantezli ses etiketlerini sadece kullanıcı v3/v4 kullandığını söylediyse kullan.\n- Sembol ve kısaltmaları okunduğu gibi yaz (`Ctrl + Z` → \"kontrol z\").\n\nRouteAI kuralları (hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler ve sayılar metinde aynen yer alır.\n- Sadece okunacak metin: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf yok.\n- Bu araçta negatif prompt alanı yok: negativePrompt boş kalır.",
+      "examples": "Kaynaktaki örnekler (Ferit'in notları):\n\n- Duraklama noktalamayla: `Bu… şey, işe yarayabilir. Dur — bu ses ne?`\n- Sakin anlatım: `settings` içinde `Speed: 0.9`; metin: `Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.`"
     }
   },
   {
@@ -1825,13 +1836,15 @@
   },
   {
     "id": "midjourney",
-    "version": 4,
+    "version": 5,
     "appliesTo": [
       "midjourney-v7"
     ],
     "modality": "image",
     "promptLanguage": "en",
-    "sources": [],
+    "sources": [
+      "https://docs.midjourney.com/hc/en-us/articles/31894244298125-Aspect-Ratio"
+    ],
     "reviewedBy": "",
     "reviewedAt": "",
     "slots": [
@@ -2103,8 +2116,15 @@
       {
         "id": "aspect-ratio",
         "type": "regex",
-        "value": "(?<!\\d)\\d{1,2}:\\d{1,2}(?!\\d)",
-        "message": "State the aspect ratio in the prompt, e.g. 16:9."
+        "value": "--(?:ar|aspect) \\d+:\\d+",
+        "message": "End the prompt with the aspect ratio parameter in whole numbers, e.g. --ar 16:9."
+      },
+      {
+        "id": "whole-numbers",
+        "type": "forbidRegex",
+        "value": "--(?:ar|aspect) \\d*[.,]\\d",
+        "criterion": "consistency",
+        "message": "Aspect ratio values must be whole numbers (e.g. --ar 16:9, not 1.5:1)."
       },
       {
         "id": "length",
@@ -2115,16 +2135,16 @@
       {
         "id": "single-aspect",
         "type": "forbidRegex",
-        "value": "--ar[\\s\\S]*--ar",
+        "value": "--(?:ar|aspect)\\b[\\s\\S]*--(?:ar|aspect)\\b",
         "criterion": "consistency",
-        "message": "Use a single --ar parameter."
+        "message": "Use a single aspect ratio parameter."
       }
     ],
     "body": {
-      "syntax": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.",
-      "template": "RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu ve eylem], [ortam], [stil/araç], [kompozisyon ve çekim açısı], [ışık ve hava], [renk paleti], [ayrıntılar], ardından en-boy oranı. Virgülle ayrılmış kısa tarifler; tam cümle şart değil.",
-      "dosDonts": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.\n\nRouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.\n- Tek bir en-boy oranı verilir; ayarlarda farklı bir oran yazılmaz.",
-      "examples": "KAYNAK GEREKLİ — Midjourney resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli."
+      "syntax": "Kaynak: [Aspect Ratio](https://docs.midjourney.com/hc/en-us/articles/31894244298125-Aspect-Ratio), Ferit'in okuması (2026-10-14).\n\n- En-boy oranı promptun sonuna parametre olarak eklenir: `--ar genişlik:yükseklik` (ya da `--aspect`). Değerler tam sayıdır, ondalık kullanılamaz: `--ar 16:9`.\n- Diğer parametreler (sürüm, stil vb.) için KAYNAK GEREKLİ: bu rehberde kullanılmaz.",
+      "template": "RouteAI iskeleti: [konu ve eylem], [ortam], [stil/araç], [kompozisyon ve çekim açısı], [ışık ve hava], [renk paleti], [ayrıntılar] ve en sonda tek bir `--ar G:Y` parametresi. Virgülle ayrılmış kısa tarifler; tam cümle şart değil.",
+      "dosDonts": "Kaynağa dayanan kurallar (yukarıdaki sayfa):\n\n- Oranı düz metin olarak yazma (\"square format 1:1\" değil); promptun sonuna `--ar 1:1` ekle.\n- Tek bir oran parametresi; değerler tam sayı.\n\nRouteAI kuralları (hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):\n\n- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.\n- Sadece prompt metni: \"Elbette\", \"İşte promptun\" gibi giriş yok; konuşmaya atıf (\"yukarıda konuştuğumuz\") yok.\n- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.\n- Muğlak ifade (\"vb.\", \"etc.\", \"güzel bir şey\") yerine somut tarif.\n- Araca seslenme yok (\"Please create an image of...\", \"Lütfen...\"): doğrudan konu/sahne ile başla.\n- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlarda farklı bir oran yazılmaz.",
+      "examples": "Kaynaktaki örnekler (Ferit'in notları):\n\n- `a lighthouse at dusk, cinematic lighting --ar 16:9`\n- `portrait of an astronaut, studio light --ar 2:3`"
     }
   },
   {

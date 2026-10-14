@@ -1,0 +1,334 @@
+{
+  "date": "2026-10-14",
+  "generatedAt": "2026-10-14T21:18:55.101Z",
+  "openaiKey": true,
+  "only": [
+    "el-full",
+    "el-missing"
+  ],
+  "repeat": 1,
+  "summary": {
+    "total": 2,
+    "evaluated": 2,
+    "skipped": 0,
+    "errors": 0,
+    "questionCorrect": {
+      "hits": 2,
+      "n": 2
+    },
+    "validatorsPass": {
+      "hits": 0,
+      "n": 2
+    },
+    "variantsDiffer": {
+      "hits": 2,
+      "n": 2
+    },
+    "languageOk": {
+      "hits": 2,
+      "n": 2
+    },
+    "refineReflected": {
+      "hits": 0,
+      "n": 1
+    },
+    "overTimeout": {
+      "hits": 0,
+      "n": 2
+    },
+    "cardOk": {
+      "hits": 2,
+      "n": 2
+    },
+    "avgSufficiency": 82,
+    "avgLatencyMs": 11267,
+    "avgTokens": 11785
+  },
+  "rows": [
+    {
+      "id": "el-full",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 8359,
+          "tokens": 8293
+        },
+        {
+          "step": "refine",
+          "ms": 5337,
+          "tokens": 6868
+        }
+      ],
+      "slots": {
+        "language": {
+          "value": "Türkçe",
+          "source": "user"
+        },
+        "tone": {
+          "value": "sakin",
+          "source": "user"
+        },
+        "voice": {
+          "value": "kadın sesi",
+          "source": "user"
+        },
+        "pace": {
+          "value": "normal",
+          "source": "default"
+        },
+        "use": {
+          "value": "e-öğrenme",
+          "source": "user"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": false,
+        "evidence": {
+          "language": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "Türkçe e-öğrenme videom için",
+            "verified": true
+          },
+          "tone": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "sakin, net bir kadın sesi lazım",
+            "verified": true
+          },
+          "voice": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "bir kadın sesi lazım",
+            "verified": true
+          },
+          "pace": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "null",
+            "verified": false
+          },
+          "use": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "e-öğrenme videom için",
+            "verified": true
+          }
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": false,
+      "similarity": 0.28,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 88,
+      "cardOk": true,
+      "sufficiencyFailed": [
+        "toolReadiness"
+      ],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'.",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "Speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+            ]
+          },
+          "issues": [
+            "toolReadiness: Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+          ]
+        },
+        {
+          "id": "creative",
+          "prompt": "Evet, bu derste bütçe yapmayı öğreneceğiz. Haydi başlayalım!",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "female"
+            },
+            {
+              "key": "speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "1) Bunu ElevenLabs'a yapıştırın ve metin alanına metni yazın.",
+        "2) Sesi ve hızı kontrol edin.",
+        "3) Sonuçları iyileştirmek için metni gözden geçirin."
+      ],
+      "refinedPrompt": "Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.",
+      "refineReflected": false,
+      "tokens": 15161,
+      "latencyMs": 13734,
+      "overTimeout": false
+    },
+    {
+      "id": "el-missing",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 2944,
+          "tokens": 1491
+        },
+        {
+          "step": "answer",
+          "ms": 5854,
+          "tokens": 6917
+        }
+      ],
+      "slots": {
+        "language": {
+          "value": "another language",
+          "source": "default"
+        },
+        "tone": {
+          "value": "another language",
+          "source": "default"
+        },
+        "voice": {
+          "value": "neutral voice",
+          "source": "default"
+        },
+        "pace": {
+          "value": "normal",
+          "source": "default"
+        },
+        "use": {
+          "value": "ad",
+          "source": "default"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": true,
+        "evidence": {
+          "language": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "tone": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "voice": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "pace": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "use": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "I want a voiceover.",
+            "verified": true
+          }
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 2,
+      "askedSlots": [
+        "language",
+        "tone"
+      ],
+      "validatorsPass": false,
+      "similarity": 0.27,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 75,
+      "cardOk": true,
+      "sufficiencyFailed": [
+        "toolReadiness"
+      ],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "This is an ad that speaks in another language. The content should engage the audience effectively. Let's create an impactful voiceover that captures attention.",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "neutral voice"
+            },
+            {
+              "key": "Speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+            ]
+          },
+          "issues": [
+            "toolReadiness: Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+          ]
+        },
+        {
+          "id": "creative",
+          "prompt": "Craft a compelling ad that resonates with the audience in another language. The delivery should maintain a neutral voice and a normal speaking pace to effectively engage listeners.",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "neutral voice"
+            },
+            {
+              "key": "Speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+            ]
+          },
+          "issues": [
+            "toolReadiness: Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
+          ]
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into ElevenLabs, replacing any placeholders with your specific details.",
+        "Check the settings to ensure the language, tone, voice, and speed are as desired.",
+        "Send a follow-up message to ElevenLabs if you need adjustments or improvements."
+      ],
+      "tokens": 8408,
+      "latencyMs": 8800,
+      "overTimeout": false
+    }
+  ]
+}
