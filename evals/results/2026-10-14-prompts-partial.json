@@ -1,6 +1,6 @@
 {
   "date": "2026-10-14",
-  "generatedAt": "2026-10-14T21:18:55.101Z",
+  "generatedAt": "2026-10-14T21:28:43.282Z",
   "openaiKey": true,
   "only": [
     "el-full",
@@ -17,7 +17,7 @@
       "n": 2
     },
     "validatorsPass": {
-      "hits": 0,
+      "hits": 1,
       "n": 2
     },
     "variantsDiffer": {
@@ -40,9 +40,9 @@
       "hits": 2,
       "n": 2
     },
-    "avgSufficiency": 82,
-    "avgLatencyMs": 11267,
-    "avgTokens": 11785
+    "avgSufficiency": 94,
+    "avgLatencyMs": 11023,
+    "avgTokens": 10130
   },
   "rows": [
     {
@@ -52,13 +52,13 @@
       "steps": [
         {
           "step": "start",
-          "ms": 8359,
-          "tokens": 8293
+          "ms": 9674,
+          "tokens": 8367
         },
         {
           "step": "refine",
-          "ms": 5337,
-          "tokens": 6868
+          "ms": 5533,
+          "tokens": 6907
         }
       ],
       "slots": {
@@ -79,7 +79,7 @@
           "source": "default"
         },
         "use": {
-          "value": "e-öğrenme",
+          "value": "e-learning",
           "source": "user"
         }
       },
@@ -95,7 +95,7 @@
           "tone": {
             "claimed": "user",
             "claimedConfidence": 0.9,
-            "quote": "sakin, net bir kadın sesi lazım",
+            "quote": "sakin, net bir kadın sesi",
             "verified": true
           },
           "voice": {
@@ -132,7 +132,7 @@
       "variants": [
         {
           "id": "safe",
-          "prompt": "Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'.",
+          "prompt": "Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'",
           "negativePrompt": null,
           "settings": [
             {
@@ -172,14 +172,14 @@
         }
       ],
       "howToUse": [
-        "1) Bunu ElevenLabs'a yapıştırın ve metin alanına metni yazın.",
-        "2) Sesi ve hızı kontrol edin.",
-        "3) Sonuçları iyileştirmek için metni gözden geçirin."
+        "1) Bunu ElevenLabs'a yapıştırın; metin zaten hazır.",
+        "2) Ses ayarlarını kontrol edin; kadın sesi ve normal hızda olmalı.",
+        "3) Sonucu iyileştirmek için 'Farklı bir metin dene' mesajını gönderin."
       ],
       "refinedPrompt": "Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.",
       "refineReflected": false,
-      "tokens": 15161,
-      "latencyMs": 13734,
+      "tokens": 15274,
+      "latencyMs": 15233,
       "overTimeout": false
     },
     {
@@ -189,22 +189,22 @@
       "steps": [
         {
           "step": "start",
-          "ms": 2944,
-          "tokens": 1491
+          "ms": 3793,
+          "tokens": 1638
         },
         {
           "step": "answer",
-          "ms": 5854,
-          "tokens": 6917
+          "ms": 3018,
+          "tokens": 3348
         }
       ],
       "slots": {
         "language": {
-          "value": "another language",
+          "value": "English",
           "source": "default"
         },
         "tone": {
-          "value": "another language",
+          "value": "calm",
           "source": "default"
         },
         "voice": {
@@ -225,25 +225,25 @@
         "evidence": {
           "language": {
             "claimed": "inferred",
-            "claimedConfidence": 0.4,
+            "claimedConfidence": 0.5,
             "quote": "I want a voiceover.",
             "verified": true
           },
           "tone": {
             "claimed": "inferred",
-            "claimedConfidence": 0.4,
+            "claimedConfidence": 0.5,
             "quote": "I want a voiceover.",
             "verified": true
           },
           "voice": {
             "claimed": "inferred",
-            "claimedConfidence": 0.5,
+            "claimedConfidence": 0.4,
             "quote": "I want a voiceover.",
             "verified": true
           },
           "pace": {
             "claimed": "inferred",
-            "claimedConfidence": 0.5,
+            "claimedConfidence": 0.4,
             "quote": "I want a voiceover.",
             "verified": true
           },
@@ -262,72 +262,62 @@
         "language",
         "tone"
       ],
-      "validatorsPass": false,
-      "similarity": 0.27,
+      "validatorsPass": true,
+      "similarity": 0.13,
       "variantsDiffer": true,
       "languageOk": true,
-      "sufficiencyScore": 75,
+      "sufficiencyScore": 100,
       "cardOk": true,
-      "sufficiencyFailed": [
-        "toolReadiness"
-      ],
+      "sufficiencyFailed": [],
       "variants": [
         {
           "id": "safe",
-          "prompt": "This is an ad that speaks in another language. The content should engage the audience effectively. Let's create an impactful voiceover that captures attention.",
+          "prompt": "This is an advertisement for our new product. It’s designed to make your life easier and more enjoyable. With its innovative features, you can save time and focus on what really matters. Don’t miss out on this opportunity to enhance your daily routine!",
           "negativePrompt": null,
           "settings": [
             {
-              "key": "voice",
-              "value": "neutral voice"
-            },
-            {
               "key": "Speed",
               "value": "1.0"
+            },
+            {
+              "key": "Voice",
+              "value": "neutral voice"
             }
           ],
           "validation": {
-            "status": "unchecked",
-            "errors": [
-              "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
-            ]
+            "status": "passed",
+            "errors": []
           },
-          "issues": [
-            "toolReadiness: Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
-          ]
+          "issues": []
         },
         {
           "id": "creative",
-          "prompt": "Craft a compelling ad that resonates with the audience in another language. The delivery should maintain a neutral voice and a normal speaking pace to effectively engage listeners.",
+          "prompt": "Introducing the future of convenience! Our latest product transforms the mundane into the extraordinary. Imagine saving precious time while enjoying life to the fullest. Join us on this journey and elevate your everyday experiences. Act now and be part of the revolution!",
           "negativePrompt": null,
           "settings": [
             {
-              "key": "voice",
-              "value": "neutral voice"
-            },
-            {
               "key": "Speed",
               "value": "1.0"
+            },
+            {
+              "key": "Voice",
+              "value": "neutral voice"
             }
           ],
           "validation": {
-            "status": "unchecked",
-            "errors": [
-              "Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
-            ]
+            "status": "passed",
+            "errors": []
           },
-          "issues": [
-            "toolReadiness: Do not describe the voiceover (\"in a calm female voice\", \"this is a voiceover for…\"): ElevenLabs would read it aloud. Write only the words the speaker says; voice and speed go into settings."
-          ]
+          "issues": []
         }
       ],
       "howToUse": [
-        "Paste the prompt into ElevenLabs, replacing any placeholders with your specific details.",
-        "Check the settings to ensure the language, tone, voice, and speed are as desired.",
-        "Send a follow-up message to ElevenLabs if you need adjustments or improvements."
+        "Paste the prompt into ElevenLabs.",
+        "Check that the voice is set to neutral and the speed is at 1.0.",
+        "Consider asking for adjustments to the tone or pace based on the first output."
       ],
-      "tokens": 8408,
-      "latencyMs": 8800,
+      "tokens": 4986,
+      "latencyMs": 6812,
       "overTimeout": false
     }
   ]
