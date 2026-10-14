@@ -201,6 +201,12 @@ describe('bağlam tamlığı: amaçtaki kritik varlıklar', () => {
     assert.deepStrictEqual(missingEntities(goal, v('a café logo')), ['1.500', 'İstanbul']);
   });
 
+  it('kullanıcı mesajlarındaki tırnaklı metin de aranır; oradaki sayı, ad ve ürün adı aranmaz', () => {
+    const messages = ['Bütçem aylık 20 dolar, Canva da olur.', 'Posterde "Cuma Caz Gecesi" yazsın, Midjourney ile yapalım: "Midjourney"'];
+    assert.deepStrictEqual(missingEntities('jazz poster', v('a jazz night poster, saxophone silhouette'), 'Midjourney', messages), ['"Cuma Caz Gecesi"']);
+    assert.deepStrictEqual(missingEntities('jazz poster', v('poster with the text "cuma caz gecesi", saxophone'), 'Midjourney', messages), []);
+  });
+
   it('konuşmaya atıf yakalanır', () => {
     const issues = sufficiencyIssues(v('As discussed above, write the summary in a short table for executives with three columns.'), { guide: guide('chat-general'), goal: 'özet' });
     assert.ok(issues.some((i) => i.criterion === 'selfContainment' && /refer to the conversation/.test(i.message)));

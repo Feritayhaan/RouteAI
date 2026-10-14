@@ -21,7 +21,7 @@ import { ROOT, hasOpenAIKey, openaiCallCount, out, quietly } from './env.mjs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-const { startPromptSession, answerPromptQuestions, refinePromptSession } = await import('../lib/promptBuilder/service.ts');
+const { startPromptSession, answerPromptQuestions, refinePromptSession, userMessagesFrom } = await import('../lib/promptBuilder/service.ts');
 const { memoryPromptStore, newPromptSessionId } = await import('../lib/promptBuilder/store.ts');
 const { openAIJsonLLM } = await import('../lib/promptBuilder/llm.ts');
 const { loadGuides } = await import('../lib/promptBuilder/guides.ts');
@@ -83,7 +83,7 @@ for (const sc of scenarios) {
     row.variantsDiffer = row.similarity < 0.9;
     row.languageOk = card.variants.every((v) => languageOk(v.prompt, guide, sc.locale));
     const productName = loadCatalog().products.find((p) => p.id === sc.productId)?.name ?? '';
-    const scores = card.variants.map((v) => sufficiencyScore(v, { guide, goal: sc.goal, productName }));
+    const scores = card.variants.map((v) => sufficiencyScore(v, { guide, goal: sc.goal, productName, userMessages: userMessagesFrom(sc.conversation, sc.goal) }));
     row.sufficiencyScore = Math.round(scores.reduce((a, x) => a + x.score, 0) / scores.length);
     row.cardOk = cardIssues({ howToUse: card.howToUse, assumptions: card.assumptions }, { guide, goal: sc.goal, productName, locale: sc.locale }).length === 0;
     row.sufficiencyFailed = [...new Set(scores.flatMap((x) => Object.entries(x.criteria).filter(([, ok]) => !ok).map(([c]) => c)))];

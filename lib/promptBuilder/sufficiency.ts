@@ -42,6 +42,8 @@ export interface SufficiencyContext {
   checkGoalEntities?: boolean;
   /** Arayüz dili: varsayımların dili denetlenir (cardIssues). */
   locale?: 'en' | 'tr';
+  /** Kullanıcının kendi mesajları (session.userMessages): tırnaklı metinleri de promptta aranır. */
+  userMessages?: string[];
 }
 
 type CheckedVariant = Pick<Variant, 'prompt' | 'negativePrompt' | 'settings'>;
@@ -80,11 +82,16 @@ export interface GoalEntities {
  * Amaçtaki kritik varlıklar. Boş satırdan sonrası RouteAI'ın eklediği bağlamdır
  * (iş akışı adımı: "Bu adım: ..."), sadece ilk paragraf kullanıcının sözüdür.
  */
-export function goalEntities(goal: string, productName = ''): GoalEntities {
-  const text = goal.split(/\n\s*\n/)[0] ?? '';
-  const quoted = [...text.matchAll(/"([^"\n]{1,120})"|“([^”\n]{1,120})”|«([^»\n]{1,120})»/g)]
+/** Tırnak içindeki metinler ("…", “…”, «…»). */
+function quotedTexts(text: string): string[] {
+  return [...text.matchAll(/"([^"\n]{1,120})"|“([^”\n]{1,120})”|«([^»\n]{1,120})»/g)]
     .map((m) => (m[1] ?? m[2] ?? m[3]).trim())
     .filter(Boolean);
+}
+
+export function goalEntities(goal: string, productName = ''): GoalEntities {
+  const text = goal.split(/\n\s*\n/)[0] ?? '';
+  const quoted = quotedTexts(text);
   const unquoted = text.replace(/"[^"\n]*"|“[^”\n]*”|«[^»\n]*»/g, ' ');
   const product = new Set((fold(productName).match(/[\p{L}\p{N}]+/gu) ?? []));
 
@@ -104,9 +111,17 @@ export function goalEntities(goal: string, productName = ''): GoalEntities {
   return { quoted: [...new Set(quoted)], numbers: [...new Set(numbers)], names: [...new Set(names)] };
 }
 
-/** Amaçtaki varlıklardan promptta (negatif prompt ve ayarlar dahil) olmayanlar. */
-export function missingEntities(goal: string, variant: CheckedVariant, productName = ''): string[] {
+/**
+ * Amaçtaki varlıklardan promptta (negatif prompt ve ayarlar dahil) olmayanlar.
+ * Kullanıcı mesajlarından sadece tırnaklı metinler alınır: oradaki sayılar ve
+ * adlar araç seçimiyle ilgili olabilir (bütçe, platform, başka araç adı).
+ */
+export function missingEntities(goal: string, variant: CheckedVariant, productName = '', userMessages: string[] = []): string[] {
   const e = goalEntities(goal, productName);
+  const product = fold(productName);
+  for (const q of userMessages.flatMap(quotedTexts)) {
+    if (fold(q) !== product && !e.quoted.some((x) => fold(x) === fold(q))) e.quoted.push(q);
+  }
   const haystack = [variant.prompt, variant.negativePrompt ?? '', ...variant.settings.map((s) => `${s.key} ${s.value}`)].join('\n');
   const lower = haystack.toLocaleLowerCase('tr');
   const folded = fold(haystack);
@@ -200,9 +215,9 @@ export function sufficiencyIssues(variant: CheckedVariant, ctx: SufficiencyConte
 
   // 1. Bağlam tamlığı
   if (ctx.checkGoalEntities !== false) {
-    const missing = missingEntities(ctx.goal, variant, ctx.productName);
+    const missing = missingEntities(ctx.goal, variant, ctx.productName, ctx.userMessages);
     if (missing.length > 0) {
-      add('selfContainment', `The target tool never sees the conversation: keep these details from the user's goal verbatim (unless a rule above forbids it): ${missing.join(', ')}.`);
+      add('selfContainment', `The target tool never sees the conversation: keep these details from the user's goal and messages verbatim (unless a rule above forbids it): ${missing.join(', ')}.`);
     }
   }
   if (CONVERSATION_REF.test(prompt)) add('selfContainment', 'Do not refer to the conversation ("as discussed", "above"); state every detail inside the prompt.');

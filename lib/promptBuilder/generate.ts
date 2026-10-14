@@ -11,6 +11,8 @@
 //  - howToUse: bu promptun araçta nasıl kullanılacağı (yer tutucular, ayar/ilk
 //    çıktı, takip komutu); konu hakkında genel tavsiye değil.
 //  - Varsayımlar kullanıcı dilinde; ham İngilizce seçenek değeri gösterilmez.
+//  - Kullanıcının kendi sözleri (session.userMessages) ayrıntının kaynağıdır;
+//    goal ajanın kısa özetidir ve slotu olmayan ayrıntıyı (ör. mekân) taşımaz.
 
 import { z } from 'zod';
 import type { Guide } from './guideSchema';
@@ -134,7 +136,7 @@ META-BOUNDARY (most important): you are the prompt architect, NEVER the executor
 - "prompt" is exactly the command the user pastes into ${productName}: no introduction, no explanation of the subject, no closing notes about the topic.
 
 Rules, most important first:
-1. The user's goal comes first. Deliver exactly what they asked for, including unusual, very specific or long requests. Keep every detail they gave (names, texts, numbers, languages, lengths, features, constraints), even when no slot covers it. Never water the request down to fit the guide or the slots.
+1. The user's goal comes first. "userMessages" (when given) are the user's own words, oldest first; "goal" is RouteAI's short summary of them. Take the details from userMessages: a later message overrides an earlier one, and what is only about choosing a tool (budget, price, platform, which tool to use) does not go into the prompt. Deliver exactly what they asked for, including unusual, very specific or long requests. Keep every detail they gave (names, texts, numbers, languages, lengths, features, constraints), even when no slot covers it. Never water the request down to fit the guide or the slots.
 2. Intent: classify the goal into one mode, return it in "intent" and build the prompt for that mode. "intentHint" is a keyword guess; override it when the goal clearly says otherwise.
    - build (make, create, produce, develop, design, write, launch): never write a prompt that asks for general information or a short overview. Put ${productName} in the role of a senior co-founder / lead architect / creative director who builds the thing end to end with the user, and ask for a concrete deliverable: a roadmap with milestones, a production draft, a structured spec or outline, or the work itself.
    - solve (fix, debug, improve, optimize): ask for root-cause analysis, a step-by-step fix and how to verify it.
@@ -190,6 +192,7 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
   const intentHint = classifyIntent(session.goal);
   const user = JSON.stringify({
     goal: session.goal,
+    ...(session.userMessages?.length ? { userMessages: session.userMessages } : {}),
     ...(intentHint ? { intentHint } : {}),
     slots,
     ...(previous ? { previousVersion: { variants: previous.variants.map((v) => ({ id: v.id, prompt: v.prompt })) } } : {}),

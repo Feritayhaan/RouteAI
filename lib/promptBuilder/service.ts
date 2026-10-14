@@ -34,6 +34,30 @@ export type PromptResult =
   | { card: PromptCard | PromptQuestionCard; tokens: number; session: PromptSession }
   | { error: PromptError; tokens: number };
 
+/** Üreticiye giden kullanıcı mesajları: en fazla bu kadar mesaj ve toplam karakter (en yeniler korunur). */
+export const USER_MESSAGES_MAX = 6;
+export const USER_MESSAGES_CHARS = 2000;
+
+/**
+ * Konuşmadaki kullanıcı mesajları (asistan mesajları değil), eskiden yeniye.
+ * Tek mesaj amaçla aynıysa (/api/prompt/start) boş: goal zaten o metin.
+ */
+export function userMessagesFrom(conversation: { role: 'user' | 'assistant'; content: string }[], goal = ''): string[] {
+  const out: string[] = [];
+  let total = 0;
+  for (let i = conversation.length - 1; i >= 0 && out.length < USER_MESSAGES_MAX; i--) {
+    const m = conversation[i];
+    if (m.role !== 'user') continue;
+    const room = USER_MESSAGES_CHARS - total;
+    if (room <= 0) break;
+    const text = m.content.trim().slice(0, room);
+    if (!text) continue;
+    out.unshift(text);
+    total += text.length;
+  }
+  return out.length === 1 && out[0] === goal.trim() ? [] : out;
+}
+
 function context(deps: PromptDeps, productId: string) {
   const product = deps.products.find((p) => p.id === productId && p.status === 'active');
   if (!product) return { error: 'unknown_product' as const };
@@ -174,6 +198,8 @@ export async function startPromptSession(
   // Soru kartı atlansa da girişe göre üretilmiş sorular saklanır: PromptCard'daki
   // "Varsayımlar (Değiştir)" aynı soruyu ve seçenekleri gösterir (toPromptCard).
   const questionOverrides = extraction.questions;
+  // Kullanıcının kendi sözleri üreticiye gider; depoya yazılmaz (store.ts, PERSIST_USER_MESSAGES).
+  const userMessages = userMessagesFrom(input.conversation, input.goal);
 
   const session: PromptSession = {
     id: deps.newId(),
@@ -181,6 +207,7 @@ export async function startPromptSession(
     guideId: guide.id,
     guideVersion: guide.version,
     goal: input.goal.slice(0, 1000),
+    ...(userMessages.length ? { userMessages } : {}),
     locale: input.locale,
     slots: plan.slots,
     questionAsked: plan.questions.length > 0,
