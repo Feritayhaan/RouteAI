@@ -64,7 +64,19 @@ export interface Extraction {
   isBroadGoal: boolean;
   /** Girişe göre üretilmiş sorular (slotId -> soru). Boş olabilir. */
   questions: Record<string, DynamicQuestion>;
+  /**
+   * Teşhis (eval:prompts): modelin her slot için iddiası, alıntısı ve alıntının
+   * doğrulanıp doğrulanmadığı. Kullanıcı metni içerir: depoya ve loga yazılmaz.
+   */
+  evidence: Record<string, EvidenceCheck>;
   tokens: number;
+}
+
+export interface EvidenceCheck {
+  claimed: 'user' | 'inferred';
+  claimedConfidence: number;
+  quote: string | null;
+  verified: boolean;
 }
 
 const rawQuestionSchema = z.object({
@@ -232,13 +244,16 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
   const userTurns = conversation.filter((m) => m.role === 'user').map((m) => m.content);
   const userText = userTurns.length ? userTurns.join('\n') : goal;
   const slots: Record<string, ExtractedSlot> = {};
+  const evidence: Record<string, EvidenceCheck> = {};
   for (const s of parsed.slots) {
     if (!known.has(s.id) || s.id in slots) continue;
     const value = s.value?.trim() ? s.value.trim().slice(0, 200) : null;
     let confidence = Math.max(0, Math.min(1, s.confidence));
     let source = s.source;
+    const verified = verifyEvidence(s.evidence, userText, productName);
+    evidence[s.id] = { claimed: s.source, claimedConfidence: confidence, quote: s.evidence?.trim() || null, verified };
     // "Kullanıcı söyledi" ya da güçlü ima: kullanıcının sözünden alıntıyla kanıtlanmalı.
-    if (value && (source === 'user' || confidence >= MIN_CONFIDENCE) && !verifyEvidence(s.evidence, userText, productName)) {
+    if (value && (source === 'user' || confidence >= MIN_CONFIDENCE) && !verified) {
       source = 'inferred';
       confidence = Math.min(confidence, UNVERIFIED_CONFIDENCE_CAP);
     }
@@ -252,6 +267,7 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
     goalSummary: parsed.goalSummary.slice(0, 300),
     isBroadGoal: parsed.isBroadGoal,
     questions: sanitizeQuestions(parsed.questions, guide),
+    evidence,
     tokens,
   };
 }

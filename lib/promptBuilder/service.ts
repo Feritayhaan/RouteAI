@@ -10,7 +10,7 @@ import type { PromptCard, PromptQuestionCard } from '../agent/cards';
 import type { Guide } from './guideSchema';
 import type { JsonLLM } from './llm';
 import type { PromptSessionStore } from './store';
-import { extractSlots } from './extract';
+import { extractSlots, type Extraction } from './extract';
 import { resolveGuideId } from './fallback';
 import { applyAnswers, displayValue, filledBy, planSlots, SLOT_VALUE_MAX } from './plan';
 import { generatePrompt } from './generate';
@@ -31,8 +31,17 @@ export interface PromptDeps {
 
 export type PromptError = 'unknown_product' | 'no_guide' | 'expired' | 'refine_limit' | 'unknown_refinement' | 'invalid' | 'no_pending_question';
 export type PromptResult =
-  | { card: PromptCard | PromptQuestionCard; tokens: number; session: PromptSession }
+  | { card: PromptCard | PromptQuestionCard; tokens: number; session: PromptSession; diagnostics?: PromptDiagnostics }
   | { error: PromptError; tokens: number };
+
+/**
+ * Sadece startPromptSession: soru kartı kararının gerekçesi (eval:prompts).
+ * Kullanıcı alıntısı içerir; HTTP yanıtına, depoya ve loga girmez (http.ts sadece kartı döner).
+ */
+export interface PromptDiagnostics {
+  isBroadGoal: boolean;
+  evidence: Extraction['evidence'];
+}
 
 /** Üreticiye giden kullanıcı mesajları: en fazla bu kadar mesaj ve toplam karakter (en yeniler korunur). */
 export const USER_MESSAGES_MAX = 6;
@@ -195,6 +204,7 @@ export async function startPromptSession(
     if (guide.slots.some((s) => s.id === id) && value.trim()) extraction.slots[id] = { value: value.trim().slice(0, 200), source: 'user', confidence: 1 };
   }
   const plan = planSlots(guide, extraction.slots, { questionAsked: false, isBroadGoal: extraction.isBroadGoal });
+  const diagnostics: PromptDiagnostics = { isBroadGoal: extraction.isBroadGoal, evidence: extraction.evidence };
   // Soru kartı atlansa da girişe göre üretilmiş sorular saklanır: PromptCard'daki
   // "Varsayımlar (Değiştir)" aynı soruyu ve seçenekleri gösterir (toPromptCard).
   const questionOverrides = extraction.questions;
@@ -219,13 +229,13 @@ export async function startPromptSession(
 
   if (plan.questions.length > 0) {
     await deps.store.set(session);
-    return { card: toQuestionCard(session, guide, product), tokens: extraction.tokens, session };
+    return { card: toQuestionCard(session, guide, product), tokens: extraction.tokens, session, diagnostics };
   }
 
   const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] }, generic);
   session.versions.push(version);
   await deps.store.set(session);
-  return { card: toPromptCard(session, guide, product, generic), tokens: extraction.tokens + tokens, session };
+  return { card: toPromptCard(session, guide, product, generic), tokens: extraction.tokens + tokens, session, diagnostics };
 }
 
 export async function answerPromptQuestions(

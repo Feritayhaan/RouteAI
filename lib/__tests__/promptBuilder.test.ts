@@ -189,6 +189,8 @@ describe('çıkarım: kanıt (alıntı) denetimi', () => {
     assert.strictEqual(x.slots.length.source, 'inferred');
     assert.deepStrictEqual(x.slots.tone, { value: 'formal', source: 'inferred', confidence: 0.8 }, 'kanıtı doğru alıntı: korunur');
     assert.strictEqual(x.slots.visuals.confidence, 0.45, 'akıllı varsayım dokunulmaz');
+    assert.deepStrictEqual(x.evidence.audience, { claimed: 'user', claimedConfidence: 0.9, quote: 'investors', verified: false }, 'teşhis: iddia, alıntı, doğrulama');
+    assert.strictEqual(x.evidence.tone.verified, true);
     const plan = planSlots(gamma, x.slots, { questionAsked: false });
     assert.ok(plan.questions.length > 0, 'uydurma ayrıntı soru kartını artık atlatmaz');
   });
@@ -464,6 +466,17 @@ describe('prompt oturumu', () => {
     assert.deepStrictEqual(toStored({ ...stored!, userMessages: ['x'] }, true).userMessages, ['x'], 'anahtar açılınca saklanır');
   });
 
+  it('teşhis (alıntılar) sonuçta var ama depoya yazılmaz', async () => {
+    const { llm } = fakeLLM({ extracted: full });
+    const store = memoryPromptStore();
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation, locale: 'en' }, deps(llm, store));
+    if ('error' in r) return assert.fail(r.error);
+    assert.strictEqual(r.diagnostics?.evidence.subject.quote, 'logo for my bakery');
+    assert.strictEqual(r.diagnostics?.evidence.subject.verified, true);
+    const stored = await store.get(r.card.promptSessionId);
+    assert.ok(!JSON.stringify(stored).includes('logo for my bakery'), 'alıntı KV oturumunda yok');
+  });
+
   it('userMessagesFrom: sadece kullanıcı mesajları, sınırlar, amaçla aynı tek mesaj boş', () => {
     assert.deepStrictEqual(userMessagesFrom([{ role: 'user', content: 'logo yap' }], 'logo yap'), [], '/api/prompt/start: goal zaten o metin');
     const many = Array.from({ length: 10 }, (_, i) => ({ role: 'user' as const, content: `m${i}` }));
@@ -499,6 +512,7 @@ describe('prompt oturumu', () => {
     const out = await tool({ productId: 'midjourney-v7', goal: 'logo', slots: { style: 'illustration', aspect: '1:1' } }, 'en', conversation);
     assert.ok(!('error' in out));
     if ('error' in out) return;
+    assert.ok(!('diagnostics' in out) && !JSON.stringify(out).includes('"evidence"'), 'teşhis (kullanıcı alıntısı) ajana dönmez');
     assert.strictEqual(out.card.type, 'prompt');
     assert.strictEqual(out.tokens, 30);
   });

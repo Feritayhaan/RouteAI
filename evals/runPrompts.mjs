@@ -16,7 +16,9 @@
 //  - ortalama gecikme ve token; adım başına süre (start / answer / refine) ve
 //    canlı zaman aşımını (PROMPT_TIMEOUT_MS) aşan adım (overTimeout)
 //  - okumak için: iki varyantın metni, düşen kuralların mesajları, slotların
-//    kaynağı (user / inferred / default) ve sorulan sorular satıra yazılır
+//    kaynağı (user / inferred / default), sorulan sorular ve soru kartı kararının
+//    gerekçesi (isBroadGoal; slot başına modelin iddiası, alıntısı, doğrulandı mı)
+//    satıra yazılır
 // Sonuç: evals/results/<YYYY-MM-DD>-prompts.json
 
 // env.mjs İLK import (ortam hazırlığı; bkz. o dosya)
@@ -80,6 +82,8 @@ for (const sc of scenarios) {
     tokens += first.tokens;
     if ('error' in first) throw new Error(first.error);
     row.slots = Object.fromEntries(Object.entries(first.session.slots).map(([id, st]) => [id, { value: st.value, source: st.source }]));
+    // Soru kartı kararının gerekçesi: modelin iddiası, alıntısı, doğrulandı mı (extract.ts verifyEvidence).
+    if (first.diagnostics) row.extraction = first.diagnostics;
     row.questionShown = first.card.type === 'prompt_question';
     row.questionCorrect = row.questionShown === sc.expectQuestion;
     let card = first.card;
