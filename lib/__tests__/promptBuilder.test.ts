@@ -14,6 +14,7 @@ import { MAX_REFINEMENTS } from '../promptBuilder/types';
 import { loadCatalog } from '../catalog/index';
 import { makeBuildPromptTool } from '../promptBuilder/agentTool';
 import { fallbackGuideId, resolveGuideId } from '../promptBuilder/fallback';
+import { guideSection } from '../promptBuilder/generate';
 import { buildChatRequest, isReasoningModel, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
 import { PROMPT_TIMEOUT_MS, promptTimeoutMs, REASONING_PROMPT_TIMEOUT_MS } from '../promptBuilder/deps';
 import { promptAnswerSchema, promptRefineSchema } from '../validations/prompt';
@@ -434,6 +435,26 @@ describe('prompt oturumu', () => {
     const long = userMessagesFrom([{ role: 'user', content: 'eski' }, { role: 'user', content: 'x'.repeat(USER_MESSAGES_CHARS + 50) }]);
     assert.deepStrictEqual(long.map((m) => m.length), [USER_MESSAGES_CHARS], 'toplam karakter sınırı, son mesaj kırpılır');
     assert.deepStrictEqual(userMessagesFrom([{ role: 'user', content: '  ' }, { role: 'assistant', content: 'a' }]), []);
+  });
+
+  it('rehberin boş "KAYNAK GEREKLİ" bölümleri modele gitmez; RouteAI kuralları ve kaynaksız uyarısı gider', async () => {
+    assert.strictEqual(guideSection('KAYNAK GEREKLİ — erişilemedi.\n\nRouteAI kuralları:\n\n- Bir'), 'RouteAI kuralları:\n\n- Bir');
+    assert.strictEqual(guideSection('KAYNAK GEREKLİ — erişilemedi.'), '');
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(llm));
+    const system = calls.find((c) => c.name === 'prompt_generation')!.system;
+    assert.doesNotMatch(system, /KAYNAK GEREKLİ/);
+    assert.doesNotMatch(system, /## Syntax|## Examples/, 'boş bölüm başlığıyla atlanır');
+    assert.match(system, /## Template\n/);
+    assert.match(system, /## Do \/ Don't\nRouteAI kuralları/);
+    assert.match(system, /no verified Midjourney documentation yet/);
+  });
+
+  it('Midjourney oran kuralı sözdiziminden bağımsız: "16:9" de "--ar 16:9" da geçer', () => {
+    const v = midjourney().validators.filter((x) => x.id === 'aspect-ratio');
+    assert.deepStrictEqual(checkPrompt('a fox in a cozy library, watercolor, 16:9', v), []);
+    assert.deepStrictEqual(checkPrompt('a fox in a cozy library, watercolor --ar 16:9', v), []);
+    assert.strictEqual(checkPrompt('a fox in a cozy library, watercolor', v).length, 1);
   });
 
   it('ajan aracı build_prompt: kart + token, ajanın bildiği slotlar kullanıcı bilgisi sayılır', async () => {

@@ -116,6 +116,30 @@ export interface GenerateInput {
 const LLM_MODALITIES = new Set(['text', 'code', 'slides']);
 const MEDIA_MODALITIES = new Set(['image', 'video', 'audio', 'music']);
 
+/** "KAYNAK GEREKLİ" paragrafı bilgi taşımaz: modele gitmez. Bölümün geri kalanı (ör. RouteAI kuralları) gider. */
+export function guideSection(text: string): string {
+  return text
+    .split(/\n\s*\n/)
+    .filter((p) => !/^KAYNAK GEREKLİ/.test(p.trim()))
+    .join('\n\n')
+    .trim();
+}
+
+/** Rehber gövdesi: boş kalan bölüm başlığıyla birlikte atlanır. Rehber doldurulunca kendiliğinden gider. */
+function guideBody(guide: Guide): string {
+  const sections: [string, string][] = [
+    ['Syntax', guide.body.syntax],
+    ['Template', guide.body.template],
+    ["Do / Don't", guide.body.dosDonts],
+    ['Examples', guide.body.examples],
+  ];
+  return sections
+    .map(([title, text]) => [title, guideSection(text)])
+    .filter(([, text]) => text)
+    .map(([title, text]) => `## ${title}\n${text}\n`)
+    .join('');
+}
+
 function systemPrompt(guide: Guide, productName: string, locale: 'en' | 'tr', generic = false): string {
   const userLang = locale === 'tr' ? 'Turkish' : 'English';
   const promptLang = guide.promptLanguage === 'en' ? 'English' : userLang;
@@ -147,7 +171,7 @@ Rules, most important first:
 3. Tool-native form: ${toolForm}
 4. A refinementInstruction overrides the previous version, the slots and the template wherever they conflict. Apply it fully, even if it changes the direction.
 5. Slots only fill in what the user did not say. A null slot is yours to choose, and every choice you make goes into "assumptions". If a slot does not fit this request, leave it out of the prompt instead of forcing it in.
-6. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically. Where a guide section says "KAYNAK GEREKLİ" (source needed), use plain, widely compatible wording and do not rely on undocumented tool syntax.
+6. Use the guide's template, do/don't list and checklist to shape the prompt, adapting them to the request rather than filling in the template mechanically.${guide.sources.length === 0 ? ` This guide has no verified ${productName} documentation yet: use plain, widely compatible wording and do not rely on undocumented tool syntax.` : ''}
 7. ${productName} never sees this conversation: the prompt must be self-contained. Write it ready to paste: no preamble ("Sure", "Here is"), no references to the chat, no unfilled template brackets, no vague filler ("etc.", "something nice").${visual ? ' Do not address the tool ("Please create an image of..."); start directly with the subject or shot and describe subject, setting, composition/camera, light and style.' : ''} negativePrompt and settings must not contradict the prompt${noNegative ? '; this kind of tool has no negative prompt field, so negativePrompt is null and exclusions go into the prompt' : ''}.
 - Return exactly two variants: "safe" = closest to what the user said; "creative" = same goal, a bolder interpretation. They must differ meaningfully.
 - Do not refuse or dilute ordinary requests. The user's own brand, product, business or name can be used freely. Do not impersonate real people or produce deceptive content (fake endorsements, forged documents); for copyrighted characters or logos, describe an original look with a similar feel instead.
@@ -159,15 +183,7 @@ Rules, most important first:
 - settings: tool settings you recommend (key/value); empty if none.
 
 Guide "${guide.id}" v${guide.version}
-## Syntax
-${guide.body.syntax}
-## Template
-${guide.body.template}
-## Do / Don't
-${guide.body.dosDonts}
-## Examples
-${guide.body.examples}
-## Checklist
+${guideBody(guide)}## Checklist
 ${guide.checklist.map((c) => `- ${c}`).join('\n')}
 ## Validators (the prompt must pass)
 ${guide.validators.map((v) => `- ${v.type} ${v.value}: ${v.message}`).join('\n') || '- none'}`;
