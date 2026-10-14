@@ -150,6 +150,8 @@ const META_START = /^\W*(?:sure\b|certainly\b|of course\b|here(?:'s| is| are)\b|
 const CONVERSATION_REF = /\b(?:as (?:we )?discussed|as (?:i )?mentioned (?:above|earlier|before)|see above|from (?:our|the) (?:conversation|chat))\b|yukarıda(?:ki)? (?:konuştuğumuz|belirttiğim|söylediğim)|daha önce (?:konuştuğumuz|belirttiğim|söylediğim)|önceki mesaj/i;
 const VAGUE = /(?<![\/\p{L}])(?:etc\.(?=\s|$|\))|and so on|something (?:nice|cool|good|interesting)|whatever you (?:like|want|think)|bir şeyler|güzel bir şey(?:ler)?|falan(?: filan)?|vesaire|vb\.(?=\s|$|\)))/iu;
 const RATIO = /(?<!\d)(\d{1,2}):(\d{1,2})(?!\d)/g;
+/** Hedef araç RouteAI'ı tanımaz (2026-10-14 eval: Replit promptu "RouteAI, ..." diye başlamıştı). */
+const ROUTEAI = /(?<![\p{L}])RouteAI(?![\p{L}])/iu;
 
 /** Metin/kod/sunum araçları: talimat alan LLM'ler (meta-sınır ve etiket kontrolleri). */
 const LLM_TOOLS = new Set(['text', 'code', 'slides']);
@@ -187,6 +189,12 @@ export function hasInstruction(prompt: string): boolean {
   );
 }
 
+/**
+ * Değişikliklerin kısa özeti meşru bir teslimattır, isteği küçültmek değil
+ * (2026-10-14 eval: Cursor promptundaki "a brief summary of the changes" yanlış alarm vermişti).
+ */
+const CHANGE_SUMMARY = /(?<![\p{L}])(?:a |one )?(?:short|brief) summary of (?:the |your |all |each )?(?:changes|edits|modifications|fix(?:es)?|commits?)(?![\p{L}])|(?<![\p{L}])(?:değişiklik|düzeltme)\p{L}* (?:kısa (?:bir )?)?özet\p{L}*/giu;
+
 const DOWNGRADE = /(?<![\p{L}])(?:(?:a |one )?(?:short|brief|single) (?:paragraph|overview|summary|introduction)|general (?:information|overview)|basic overview|beginner[- ]level (?:introduction|overview|explanation)|kısa bir (?:paragraf|özet|bilgi|giriş)|genel (?:bir )?bilgi|hakkında (?:kısa )?bilgi ver\p{L}*|başlangıç seviyesinde (?:bir )?(?:giriş|bilgi|açıklama|özet))(?![\p{L}])/iu;
 
 /** Rehber şablonundaki yer tutucular ("[konu]", "[stil/araç]"): promptta boş kalmamalı. */
@@ -221,6 +229,9 @@ export function sufficiencyIssues(variant: CheckedVariant, ctx: SufficiencyConte
     }
   }
   if (CONVERSATION_REF.test(prompt)) add('selfContainment', 'Do not refer to the conversation ("as discussed", "above"); state every detail inside the prompt.');
+  if (ROUTEAI.test(prompt) && !ROUTEAI.test(ctx.productName ?? '')) {
+    add('selfContainment', `Do not mention RouteAI: ${ctx.productName || 'the tool'} has never heard of it. Address ${ctx.productName || 'the tool'} (or no one) and state the task directly.`);
+  }
 
   // 2. Araç sentaks uyumu
   if (META_START.test(prompt)) add('toolReadiness', 'Return only the prompt text: no assistant preamble such as "Sure" or "Here is".');
@@ -244,7 +255,7 @@ export function sufficiencyIssues(variant: CheckedVariant, ctx: SufficiencyConte
       add('actionability', `This reads like an answer about the topic, not a prompt: you are the prompt architect, not the executor. Write instructions that tell ${ctx.productName || 'the tool'} what to do and what to deliver.`);
     }
     const intent = classifyIntent(ctx.goal);
-    if (intent && intent !== 'learn' && DOWNGRADE.test(prompt) && !DOWNGRADE.test(ctx.goal)) {
+    if (intent && intent !== 'learn' && DOWNGRADE.test(prompt.replace(CHANGE_SUMMARY, ' ')) && !DOWNGRADE.test(ctx.goal)) {
       add('actionability', `The user wants to ${intent} something; do not shrink it to a short overview or general information. Ask for the concrete deliverable (a roadmap, a draft, a structured plan, a fix or a decision framework).`);
     }
   }

@@ -189,7 +189,7 @@ export async function startPromptSession(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
-  const extraction = await extractSlots({ conversation: input.conversation, goal: input.goal, guide, locale: input.locale, llm: deps.llm, signal: deps.signal });
+  const extraction = await extractSlots({ conversation: input.conversation, goal: input.goal, guide, locale: input.locale, llm: deps.llm, signal: deps.signal, productName: product.name });
   // Ajanın zaten bildiği slotlar (build_prompt argümanı) kullanıcı bilgisi sayılır.
   for (const [id, value] of Object.entries(input.slots ?? {})) {
     if (guide.slots.some((s) => s.id === id) && value.trim()) extraction.slots[id] = { value: value.trim().slice(0, 200), source: 'user', confidence: 1 };

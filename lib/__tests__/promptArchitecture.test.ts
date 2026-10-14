@@ -85,6 +85,24 @@ describe('meta-sınır ve niyet küçültme', () => {
     const asked = sufficiencyIssues(v(shallow), { guide: chat, goal: 'Uygulama fikrim için kısa bir paragraf yazmak istiyorum' });
     assert.ok(!asked.some((i) => /do not shrink it/.test(i.message)), 'kullanıcı kısa paragrafı kendisi istediyse küçültme değil');
   });
+
+  it('değişikliklerin kısa özeti küçültme değil (2026-10-14 eval, cursor-full yanlış alarmı)', () => {
+    const cursor = guide('cursor-task');
+    const ok = 'You are a lead architect. Fix the bug in src/auth/login.ts where expired tokens are accepted; do not alter the public API. Run the entire test suite, then provide a brief summary of the changes made.';
+    assert.ok(!sufficiencyIssues(v(ok), { guide: cursor, goal: 'fix expired token bug' }).some((i) => /do not shrink it/.test(i.message)));
+    const tr = 'Sen kıdemli bir mühendissin. Hatayı düzelt, testleri çalıştır ve değişikliklerin kısa bir özetini ver.';
+    assert.ok(!sufficiencyIssues(v(tr), { guide: cursor, goal: 'Giriş hatasını düzelt' }).some((i) => /do not shrink it/.test(i.message)));
+    const shallow = 'You are a senior engineer. Give a brief overview of token authentication and explain the basic concepts.';
+    assert.ok(sufficiencyIssues(v(shallow), { guide: cursor, goal: 'fix expired token bug' }).some((i) => /do not shrink it/.test(i.message)), 'konu özeti hâlâ yakalanır');
+  });
+
+  it('prompt RouteAI\'a hitap etmez (2026-10-14 eval, replit-generic)', () => {
+    const cursor = guide('cursor-task');
+    const bad = 'RouteAI, bir kuaför randevu sitesi geliştirmek için kıdemli mühendis olarak çalış. Hizmet listesi, fiyatlar ve online randevu formu olsun; formun çalıştığını test et.';
+    assert.ok(sufficiencyIssues(v(bad), { guide: cursor, goal: 'kuaför sitesi', productName: 'Replit Agent' }).some((i) => i.criterion === 'selfContainment' && /Do not mention RouteAI/.test(i.message)));
+    const good = bad.replace('RouteAI,', 'Sen');
+    assert.ok(!sufficiencyIssues(v(good), { guide: cursor, goal: 'kuaför sitesi', productName: 'Replit Agent' }).some((i) => /RouteAI/.test(i.message)));
+  });
 });
 
 describe('howToUse ve varsayım dili', () => {
@@ -129,7 +147,12 @@ function scriptedLLM(extraction: { slots: Slot[]; isBroadGoal: boolean; question
   let n = 0;
   const llm = async (req: JsonRequest) => {
     calls.push(req);
-    if (req.name === 'slot_extraction') return { data: { ...extraction, goalSummary: 's', questions: extraction.questions ?? [] }, tokens: 10 };
+    if (req.name === 'slot_extraction') {
+      // Kanıt: kullanıcının ilk mesajı (verifyEvidence geçer).
+      const quote = /(?:^|\n)user: ([^\n]*)/.exec(JSON.parse(req.user).conversation)?.[1] ?? null;
+      const slots = extraction.slots.map((x) => ({ evidence: quote, ...x }));
+      return { data: { ...extraction, slots, goalSummary: 's', questions: extraction.questions ?? [] }, tokens: 10 };
+    }
     const g = generations[Math.min(n++, generations.length - 1)];
     return {
       data: {
@@ -196,6 +219,9 @@ describe('uçtan uca: navigasyon eşiği, derinlik, yerelleştirme, onarım', ()
     const gen = calls[1];
     assert.strictEqual(JSON.parse(gen.user).intentHint, 'build');
     assert.match(gen.system, /you are the prompt architect, NEVER the executor/);
+    assert.match(gen.system, /given to ChatGPT in the second person/);
+    assert.match(gen.system, /the role never belongs to the user/);
+    assert.match(gen.system, /never mentions RouteAI/);
     assert.match(gen.system, /build \(make, create, produce.*never write a prompt that asks for general information/);
     assert.match(gen.system, /Never write a chain of mechanical labels/);
     assert.match(gen.system, /howToUse: exactly 3 short steps about using THIS prompt in ChatGPT, never general advice/);

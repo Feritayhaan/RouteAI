@@ -5,7 +5,7 @@ import { YamlError, parseYamlSubset, parseScalar, splitFrontmatter, splitSection
 import { guideRuleErrors, type Guide } from '../promptBuilder/guideSchema';
 import { loadGuides } from '../promptBuilder/guides';
 import { applyAnswers, hasEnoughDetail, planSlots } from '../promptBuilder/plan';
-import { sanitizeQuestions } from '../promptBuilder/extract';
+import { extractSlots, sanitizeQuestions, UNVERIFIED_CONFIDENCE_CAP, verifyEvidence } from '../promptBuilder/extract';
 import { checkPrompt, validateWithRepair } from '../promptBuilder/validate';
 import { answerPromptQuestions, refinePromptSession, startPromptSession, userMessagesFrom, USER_MESSAGES_CHARS, USER_MESSAGES_MAX, type PromptDeps } from '../promptBuilder/service';
 import { memoryPromptStore, PERSIST_USER_MESSAGES, toStored } from '../promptBuilder/store';
@@ -112,7 +112,7 @@ const midjourney = () => loadGuides().find((g) => g.id === 'midjourney')!;
 
 type RawQuestion = { slotId: string; question: string; options: { label: string; value: string }[] };
 
-type FakeSlot = string | null | { value: string | null; source: 'user' | 'inferred'; confidence: number };
+type FakeSlot = string | null | { value: string | null; source: 'user' | 'inferred'; confidence: number; evidence?: string | null };
 /** Akıllı varsayım: kullanıcı söylemedi, LLM amaca göre seçti (güven < MIN_CONFIDENCE). */
 const guess = (value: string) => ({ value, source: 'inferred' as const, confidence: 0.45 });
 
@@ -126,8 +126,10 @@ function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: 
     calls.push(req);
     const input = JSON.parse(req.user);
     if (req.name === 'slot_extraction') {
+      // Kanıt: kullanıcının ilk mesajı (verifyEvidence geçer); uydurma kanıt testi ayrı.
+      const quote = /(?:^|\n)user: ([^\n]*)/.exec(input.conversation)?.[1] ?? null;
       const slots = Object.entries(opts.extracted ?? {}).map(([id, v]) =>
-        v !== null && typeof v === 'object' ? { id, ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0 }
+        v !== null && typeof v === 'object' ? { id, evidence: quote, ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0, evidence: quote }
       );
       return { data: { slots, goalSummary: 'summary', isBroadGoal: opts.isBroadGoal ?? false, ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
     }
@@ -157,6 +159,40 @@ function deps(llm: PromptDeps['llm'], store = memoryPromptStore()): PromptDeps {
 }
 
 const full = { subject: 'a bakery logo', style: 'illustration', aspect: '1:1', mood: null, detail: null };
+
+describe('çıkarım: kanıt (alıntı) denetimi', () => {
+  it('verifyEvidence: kullanıcının sözünde geçen alıntı; Türkçe ek, büyük harf ve noktalama serbest', () => {
+    const text = 'Cuma akşamı caz gecesi posteri, üzerinde "Friday Jazz" yazsın, 9:16';
+    for (const e of ['caz gecesi posteri', 'poster', 'friday jazz', 'CUMA AKŞAMI', '9:16', 'Friday Jazz"']) assert.ok(verifyEvidence(e, text), e);
+    for (const e of [null, '', 'x', 'investors', '8-10 slides', 'oster']) assert.ok(!verifyEvidence(e, text), String(e));
+    assert.ok(!verifyEvidence('Midjourney', 'Midjourney ile bir görsel yapmak istiyorum', 'Midjourney'), 'sadece ürün adı kanıt değil');
+    assert.ok(!verifyEvidence('AI', 'Suno AI ile şarkı', 'Suno AI'));
+    assert.ok(verifyEvidence('bir görsel', 'Midjourney ile bir görsel yapmak istiyorum', 'Midjourney'));
+  });
+
+  it('kanıtsız "user" ya da yüksek güvenli değer akıllı varsayıma iner (2026-10-14 eval: "Make me a presentation.")', async () => {
+    const llm = async () => ({
+      data: {
+        slots: [
+          { id: 'audience', value: 'investors', source: 'user', confidence: 0.9, label: null, evidence: 'investors' },
+          { id: 'length', value: '8-10 slides', source: 'user', confidence: 0.95, label: null, evidence: null },
+          { id: 'tone', value: 'formal', source: 'inferred', confidence: 0.8, label: null, evidence: 'presentation' },
+          { id: 'visuals', value: 'data charts', source: 'inferred', confidence: 0.45, label: null, evidence: null },
+        ],
+        goalSummary: 's', isBroadGoal: false, questions: [],
+      },
+      tokens: 1,
+    });
+    const gamma = loadGuides().find((g) => g.id === 'gamma')!;
+    const x = await extractSlots({ conversation: [{ role: 'user', content: 'Make me a presentation.' }, { role: 'assistant', content: 'For investors? 8-10 slides?' }], goal: 'investor presentation', guide: gamma, locale: 'en', llm, productName: 'Gamma AI' });
+    assert.deepStrictEqual(x.slots.audience, { value: 'investors', source: 'inferred', confidence: UNVERIFIED_CONFIDENCE_CAP }, 'goal ve asistan mesajı kanıt değil');
+    assert.strictEqual(x.slots.length.source, 'inferred');
+    assert.deepStrictEqual(x.slots.tone, { value: 'formal', source: 'inferred', confidence: 0.8 }, 'kanıtı doğru alıntı: korunur');
+    assert.strictEqual(x.slots.visuals.confidence, 0.45, 'akıllı varsayım dokunulmaz');
+    const plan = planSlots(gamma, x.slots, { questionAsked: false });
+    assert.ok(plan.questions.length > 0, 'uydurma ayrıntı soru kartını artık atlatmaz');
+  });
+});
 
 describe('plan (LLM yok)', () => {
   const g = midjourney();
