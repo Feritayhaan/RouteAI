@@ -1,0 +1,794 @@
+{
+  "date": "2026-10-14",
+  "generatedAt": "2026-10-14T21:14:31.119Z",
+  "openaiKey": true,
+  "only": [
+    "mj-full",
+    "mj-missing",
+    "el-full",
+    "el-missing",
+    "cursor-full",
+    "gamma-full"
+  ],
+  "repeat": 1,
+  "summary": {
+    "total": 6,
+    "evaluated": 6,
+    "skipped": 0,
+    "errors": 0,
+    "questionCorrect": {
+      "hits": 6,
+      "n": 6
+    },
+    "validatorsPass": {
+      "hits": 5,
+      "n": 6
+    },
+    "variantsDiffer": {
+      "hits": 6,
+      "n": 6
+    },
+    "languageOk": {
+      "hits": 6,
+      "n": 6
+    },
+    "refineReflected": {
+      "hits": 4,
+      "n": 4
+    },
+    "overTimeout": {
+      "hits": 0,
+      "n": 6
+    },
+    "cardOk": {
+      "hits": 5,
+      "n": 6
+    },
+    "avgSufficiency": 98,
+    "avgLatencyMs": 12336,
+    "avgTokens": 8823
+  },
+  "rows": [
+    {
+      "id": "mj-full",
+      "guideId": "midjourney",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 6612,
+          "tokens": 4221
+        },
+        {
+          "step": "refine",
+          "ms": 2377,
+          "tokens": 2707
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a character",
+          "source": "user"
+        },
+        "style": {
+          "value": "illustration",
+          "source": "user"
+        },
+        "aspect": {
+          "value": "1:1",
+          "source": "inferred"
+        },
+        "mood": {
+          "value": "soft pastel",
+          "source": "user"
+        },
+        "detail": {
+          "value": "highly detailed",
+          "source": "default"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": false,
+        "evidence": {
+          "subject": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "a fox reading a book",
+            "verified": true
+          },
+          "style": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "square illustration",
+            "verified": true
+          },
+          "aspect": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.8,
+            "quote": "square illustration",
+            "verified": true
+          },
+          "mood": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "warm and soft pastel mood",
+            "verified": true
+          },
+          "detail": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": null,
+            "verified": false
+          }
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.47,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "a fox reading a book in a cozy library, warm and soft pastel mood, illustration, highly detailed, soft lighting, inviting atmosphere --ar 1:1",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "a whimsical fox immersed in a book surrounded by towering shelves in a cozy library, soft pastel colors, illustration style, highly detailed, warm ambient light creating a serene mood --ar 1:1",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "paste it into Midjourney and it is ready as is",
+        "check for the cozy atmosphere and soft pastel colors",
+        "send a follow-up to adjust the lighting or detail level."
+      ],
+      "refinedPrompt": "a fox reading a book in a cozy library, warm and soft pastel mood, illustration, highly detailed, soft lighting, inviting atmosphere --ar 9:16",
+      "refineReflected": true,
+      "tokens": 6928,
+      "latencyMs": 9023,
+      "overTimeout": false
+    },
+    {
+      "id": "mj-missing",
+      "guideId": "midjourney",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 3791,
+          "tokens": 1630
+        },
+        {
+          "step": "answer",
+          "ms": 2350,
+          "tokens": 2652
+        }
+      ],
+      "slots": {
+        "subject": {
+          "value": "a person",
+          "source": "default"
+        },
+        "style": {
+          "value": "photorealistic photo",
+          "source": "default"
+        },
+        "aspect": {
+          "value": "16:9",
+          "source": "default"
+        },
+        "mood": {
+          "value": "bright and cheerful",
+          "source": "default"
+        },
+        "detail": {
+          "value": "highly detailed",
+          "source": "default"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": true,
+        "evidence": {
+          "subject": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "Midjourney ile bir görsel yapmak istiyorum.",
+            "verified": true
+          },
+          "style": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "Midjourney ile bir görsel yapmak istiyorum.",
+            "verified": true
+          },
+          "aspect": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "Midjourney ile bir görsel yapmak istiyorum.",
+            "verified": true
+          },
+          "mood": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": null,
+            "verified": false
+          },
+          "detail": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": null,
+            "verified": false
+          }
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 3,
+      "askedSlots": [
+        "subject",
+        "style",
+        "aspect"
+      ],
+      "validatorsPass": true,
+      "similarity": 0.42,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": false,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "a person, outdoor park setting, photorealistic photo, close-up shot, bright and cheerful lighting, vibrant colors, highly detailed --ar 16:9",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "a person enjoying a sunny day in a vibrant outdoor park, photorealistic photo, dynamic angle capturing movement, bright and cheerful atmosphere, rich colors and intricate details, --ar 16:9",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "paste it into Midjourney and it is ready as is",
+        "check the first output for clarity and detail",
+        "send a follow-up message to adjust colors or composition if needed."
+      ],
+      "tokens": 4282,
+      "latencyMs": 6142,
+      "overTimeout": false
+    },
+    {
+      "id": "el-full",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 8854,
+          "tokens": 7648
+        },
+        {
+          "step": "refine",
+          "ms": 3411,
+          "tokens": 3116
+        }
+      ],
+      "slots": {
+        "language": {
+          "value": "Türkçe",
+          "source": "user"
+        },
+        "tone": {
+          "value": "sakin",
+          "source": "user"
+        },
+        "voice": {
+          "value": "kadın sesi",
+          "source": "user"
+        },
+        "pace": {
+          "value": "normal",
+          "source": "default"
+        },
+        "use": {
+          "value": "e-learning",
+          "source": "user"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": false,
+        "evidence": {
+          "language": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "Türkçe e-öğrenme videom için",
+            "verified": true
+          },
+          "tone": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "sakin, net bir kadın sesi lazım",
+            "verified": true
+          },
+          "voice": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "bir kadın sesi lazım",
+            "verified": true
+          },
+          "pace": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "null",
+            "verified": false
+          },
+          "use": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "e-öğrenme videom için",
+            "verified": true
+          }
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.29,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Türkçe e-öğrenme videom için sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "female"
+            },
+            {
+              "key": "speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Bu derste bütçe yapmayı öğreneceğiz. Hadi başlayalım!",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "female"
+            },
+            {
+              "key": "speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bu metni ElevenLabs'a yapıştırın ve metin alanına yazın.",
+        "Kadın sesi ve normal hız ayarlarını kontrol edin.",
+        "Sonuçları iyileştirmek için 'Metni biraz daha akıcı hale getir.' mesajını gönderin."
+      ],
+      "refinedPrompt": "Türkçe e-öğrenme videom için yavaş, sakin, net bir kadın sesiyle: 'Bu derste bütçe yapmayı öğreneceğiz.'",
+      "refineReflected": true,
+      "tokens": 10764,
+      "latencyMs": 12265,
+      "overTimeout": false
+    },
+    {
+      "id": "el-missing",
+      "guideId": "elevenlabs-voiceover",
+      "expectQuestion": true,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 3890,
+          "tokens": 1636
+        },
+        {
+          "step": "answer",
+          "ms": 2899,
+          "tokens": 3011
+        }
+      ],
+      "slots": {
+        "language": {
+          "value": "another language",
+          "source": "default"
+        },
+        "tone": {
+          "value": "another language",
+          "source": "default"
+        },
+        "voice": {
+          "value": "neutral voice",
+          "source": "default"
+        },
+        "pace": {
+          "value": "normal",
+          "source": "default"
+        },
+        "use": {
+          "value": "ad",
+          "source": "default"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": true,
+        "evidence": {
+          "language": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "tone": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "voice": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "pace": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.5,
+            "quote": "I want a voiceover.",
+            "verified": true
+          },
+          "use": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "I want a voiceover.",
+            "verified": true
+          }
+        }
+      },
+      "questionShown": true,
+      "questionCorrect": true,
+      "questions": 2,
+      "askedSlots": [
+        "language",
+        "tone"
+      ],
+      "validatorsPass": true,
+      "similarity": 0.55,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "This is a voiceover for an ad in another language, delivered in a calm tone using a neutral voice at a normal pace.",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "neutral voice"
+            },
+            {
+              "key": "speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Imagine a captivating voiceover for an ad in another language, infused with a calm tone, using a neutral voice that flows at a normal pace, drawing in the audience effortlessly.",
+          "negativePrompt": null,
+          "settings": [
+            {
+              "key": "voice",
+              "value": "neutral voice"
+            },
+            {
+              "key": "speed",
+              "value": "1.0"
+            }
+          ],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into ElevenLabs as is.",
+        "Check that the voice is set to neutral voice and the speed is set to 1.0.",
+        "You can ask ElevenLabs to adjust the tone or pace for better results."
+      ],
+      "tokens": 4647,
+      "latencyMs": 6789,
+      "overTimeout": false
+    },
+    {
+      "id": "gamma-full",
+      "guideId": "gamma",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 15187,
+          "tokens": 8212
+        },
+        {
+          "step": "refine",
+          "ms": 6899,
+          "tokens": 3711
+        }
+      ],
+      "slots": {
+        "audience": {
+          "value": "investors",
+          "source": "user"
+        },
+        "length": {
+          "value": "8-10 slides",
+          "source": "user"
+        },
+        "tone": {
+          "value": "formal",
+          "source": "user"
+        },
+        "visuals": {
+          "value": "data charts",
+          "source": "inferred"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": false,
+        "evidence": {
+          "audience": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "Yatırımcılar için 8-10 slaytlık",
+            "verified": true
+          },
+          "length": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "8-10 slaytlık",
+            "verified": true
+          },
+          "tone": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "resmî tonda",
+            "verified": true
+          },
+          "visuals": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.7,
+            "quote": "grafikli bir pitch deck",
+            "verified": true
+          }
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": true,
+      "similarity": 0.55,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 100,
+      "cardOk": true,
+      "sufficiencyFailed": [],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "Sen kıdemli bir sunum tasarımcısısın. Ben yatırımcılar için 8-10 slaytlık, resmî tonda, grafikli bir pitch deck oluşturmak istiyorum. Sunumda yemek planlama uygulamasının özelliklerini, pazar analizini, hedef kitleyi ve finansal projeksiyonları içermelisin. Her slaytın başlığını ve amacını belirtmelisin. Sunumda veri grafiklerine yer vermelisin. Slayt akışı şu şekilde olmalıdır: 1. Giriş - Uygulamanın tanıtımı; 2. Pazar Analizi - Pazar büyüklüğü ve trendler; 3. Hedef Kitle - Kullanıcı profilleri; 4. Ürün Özellikleri - Uygulamanın sunduğu özellikler; 5. Rekabet Analizi - Rakipler ve farklılıklar; 6. İş Modeli - Gelir kaynakları; 7. Finansal Projeksiyonlar - Beklenen gelir ve giderler; 8. Sonuç - Yatırım fırsatları ve çağrı.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "Sen kıdemli bir sunum tasarımcısısın. Ben yatırımcılar için 8-10 slaytlık, resmî tonda, grafikli bir pitch deck oluşturmak istiyorum. Sunumda yemek planlama uygulamasının yenilikçi yönlerini, pazar fırsatlarını, rekabet avantajlarını ve finansal projeksiyonları etkileyici bir şekilde sunmalısın. Her slaytın başlığını, amacını ve görsel içerik önerilerini eklemelisin. Grafiklerle desteklenmiş veriler kullanarak sunumun etkisini artırmalısın. Slayt akışı şu şekilde olmalıdır: 1. Giriş - Uygulamanın tanıtımı; 2. Yenilikçi Özellikler - Uygulamanın öne çıkan özellikleri; 3. Pazar Fırsatları - Hedef pazar ve büyüme potansiyeli; 4. Rekabet Avantajları - Rakiplerden nasıl ayrıldığımız; 5. İş Modeli - Gelir yapısı; 6. Finansal Projeksiyonlar - Beklenen gelir ve giderler; 7. Yatırım İhtiyacı - Ne kadar yatırım gerekiyor; 8. Sonuç - Yatırım fırsatları ve çağrı.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        }
+      ],
+      "howToUse": [
+        "Bunu Gamma AI'ye yapıştır ve [yemek planlama uygulaması] için gerekli bilgileri doldur.",
+        "Sonuçta sunumun yapısını ve içeriğini kontrol et.",
+        "Geliştirmek için Gamma AI'ye sunumun belirli bölümleri hakkında daha fazla ayrıntı iste."
+      ],
+      "refinedPrompt": "Sen kıdemli bir sunum tasarımcısısın. Ben yatırımcılar için 5 slaytlık, resmî tonda, grafikli bir pitch deck oluşturmak istiyorum. Sunumda yemek planlama uygulamasının özelliklerini, pazar analizini, hedef kitleyi ve finansal projeksiyonları içermelisin. Her slaytın başlığını ve amacını belirtmelisin. Sunumda veri grafiklerine yer vermelisin. Slayt akışı şu şekilde olmalıdır: 1. Giriş - Uygulamanın tanıtımı; 2. Pazar Analizi - Pazar büyüklüğü ve trendler; 3. Hedef Kitle - Kullanıcı profilleri; 4. Ürün Özellikleri - Uygulamanın sunduğu özellikler; 5. Rekabet Analizi - Rakipler ve farklılıklar.",
+      "refineReflected": true,
+      "tokens": 11923,
+      "latencyMs": 22088,
+      "overTimeout": false
+    },
+    {
+      "id": "cursor-full",
+      "guideId": "cursor-task",
+      "expectQuestion": false,
+      "steps": [
+        {
+          "step": "start",
+          "ms": 10672,
+          "tokens": 7942
+        },
+        {
+          "step": "refine",
+          "ms": 7037,
+          "tokens": 6449
+        }
+      ],
+      "slots": {
+        "goal": {
+          "value": "fix expired token bug",
+          "source": "user"
+        },
+        "scope": {
+          "value": "a single file",
+          "source": "inferred"
+        },
+        "constraints": {
+          "value": "do not change the public API",
+          "source": "user"
+        },
+        "verification": {
+          "value": "run the test suite",
+          "source": "user"
+        },
+        "context": {
+          "value": "relevant file paths",
+          "source": "default"
+        }
+      },
+      "extraction": {
+        "isBroadGoal": false,
+        "evidence": {
+          "goal": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "fix the bug in src/auth/login.ts",
+            "verified": true
+          },
+          "scope": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.7,
+            "quote": "fix the bug in src/auth/login.ts",
+            "verified": true
+          },
+          "constraints": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "Don't change the public API",
+            "verified": true
+          },
+          "verification": {
+            "claimed": "user",
+            "claimedConfidence": 0.9,
+            "quote": "run the test suite",
+            "verified": true
+          },
+          "context": {
+            "claimed": "inferred",
+            "claimedConfidence": 0.4,
+            "quote": "the bug in src/auth/login.ts",
+            "verified": true
+          }
+        }
+      },
+      "questionShown": false,
+      "questionCorrect": true,
+      "validatorsPass": false,
+      "similarity": 0.46,
+      "variantsDiffer": true,
+      "languageOk": true,
+      "sufficiencyScore": 88,
+      "cardOk": true,
+      "sufficiencyFailed": [
+        "actionability"
+      ],
+      "variants": [
+        {
+          "id": "safe",
+          "prompt": "You are a senior software engineer. I want to fix the bug in my TypeScript project located in src/auth/login.ts where expired tokens are accepted. Ensure that the public API remains unchanged. Please provide a root-cause analysis of the issue, followed by a step-by-step guide to implement the fix. After making the changes, run the test suite to verify that everything works correctly. The public API must not change, and the test suite should be run to validate the fix.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "passed",
+            "errors": []
+          },
+          "issues": []
+        },
+        {
+          "id": "creative",
+          "prompt": "You are a senior software engineer. I want to resolve the issue in my TypeScript project in src/auth/login.ts where expired tokens are incorrectly accepted. It's crucial that the public API remains intact. Start with identifying the root cause of this bug, then outline a detailed plan to fix it, including any necessary code changes. Ensure that the public API does not change, and run the test suite afterward to confirm that the solution is effective and does not introduce new issues.",
+          "negativePrompt": null,
+          "settings": [],
+          "validation": {
+            "status": "unchecked",
+            "errors": [
+              "State the constraints: what must not change and what must hold."
+            ]
+          },
+          "issues": [
+            "actionability: State the constraints: what must not change and what must hold."
+          ]
+        }
+      ],
+      "howToUse": [
+        "Paste the prompt into Cursor and ensure the file path is correct.",
+        "Check the output for a clear step-by-step guide to fixing the bug.",
+        "Follow up with a request for additional tests if needed."
+      ],
+      "refinedPrompt": "You are a senior software engineer. I want to fix the bug in my TypeScript project located in src/auth/login.ts where expired tokens are accepted. Ensure that there are no new dependencies introduced. Please provide a root-cause analysis of the issue, followed by a step-by-step guide to implement the fix. After making the changes, run the test suite to verify that everything works correctly. The public API must not change, and the test suite should be run to validate the fix.",
+      "refineReflected": true,
+      "tokens": 14391,
+      "latencyMs": 17710,
+      "overTimeout": false
+    }
+  ]
+}
