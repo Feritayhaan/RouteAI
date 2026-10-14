@@ -53,7 +53,8 @@ const NO_NEGATIVE_FIELD = new Set(['text', 'code', 'slides', 'audio', 'music']);
 /** Doğrudan sahne tarifi bekleyen modaliteler (sohbet dolgusu yasak). */
 const VISUAL = new Set(['image', 'video']);
 /** Uygulanabilir bir prompt için en az kelime (modaliteye göre RouteAI eşiği). */
-const MIN_WORDS: Record<string, number> = { image: 6, video: 8, music: 4, audio: 6, slides: 12, text: 12, code: 15 };
+/** Ses aracında prompt okunacak metnin kendisi; kısa olabilir (quotedScript ile aynı alt sınır). */
+const MIN_WORDS: Record<string, number> = { image: 6, video: 8, music: 4, audio: 3, slides: 12, text: 12, code: 15 };
 
 /** Karşılaştırma için: küçük harf (Türkçe I/İ dahil), aksan yok. */
 export function fold(s: string): string {
@@ -82,6 +83,21 @@ export interface GoalEntities {
  * Amaçtaki kritik varlıklar. Boş satırdan sonrası RouteAI'ın eklediği bağlamdır
  * (iş akışı adımı: "Bu adım: ..."), sadece ilk paragraf kullanıcının sözüdür.
  */
+/**
+ * Seslendirilecek metin: kullanıcının tırnak içinde verdiği en uzun metin (en az 3 kelime).
+ * Tek tırnak da sayılır ('Bu derste…'), ama sadece boşluk, iki nokta ya da satır başından
+ * sonra açılıp noktalama ya da satır sonuyla kapanırsa: Türkçe kesme işareti ("Lumina'yı") tırnak değildir.
+ */
+export function quotedScript(texts: string[]): string | null {
+  const found: string[] = [];
+  for (const t of texts) {
+    found.push(...quotedTexts(t));
+    for (const m of t.matchAll(/(?<=^|[\s:(])'([^'\n]{3,500})'(?=$|[\s.,;:!?)])/gu)) found.push(m[1].trim());
+  }
+  const scripts = found.filter((q) => wordCount(q) >= 3).sort((a, b) => b.length - a.length);
+  return scripts[0] ?? null;
+}
+
 /** Tırnak içindeki metinler ("…", “…”, «…»). */
 function quotedTexts(text: string): string[] {
   return [...text.matchAll(/"([^"\n]{1,120})"|“([^”\n]{1,120})”|«([^»\n]{1,120})»/g)]

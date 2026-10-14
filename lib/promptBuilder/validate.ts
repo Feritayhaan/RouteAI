@@ -5,7 +5,7 @@
 
 import type { GuideValidator } from './guideSchema';
 import { generatePrompt, type GenerateInput, type GenerateOutput } from './generate';
-import { allIssues, howToUseIssues, validatorFails, type SufficiencyContext } from './sufficiency';
+import { allIssues, fold, howToUseIssues, quotedScript, validatorFails, type SufficiencyContext } from './sufficiency';
 import type { Variant } from './types';
 
 export function checkPrompt(prompt: string, validators: GuideValidator[]): string[] {
@@ -33,12 +33,31 @@ function check(output: GenerateOutput, ctx: SufficiencyContext): Record<string, 
   return failing;
 }
 
+/**
+ * Ses aracı (metni sesli okur), ilk üretim: kullanıcı okunacak metni tırnakla verdiyse ve
+ * varyant kuralı geçmeyip o metni içeriyorsa prompt doğrudan o metindir. LLM onarımı yok:
+ * 2026-10-14 eval'de model "… kadın sesiyle: 'Bu derste…'" yazıp onarımda da aynısını
+ * tekrar etti (15 bin token, sonuç yok). Kodla kesin yapılabilen işi modele bırakmıyoruz.
+ */
+export function useQuotedScript(output: GenerateOutput, input: GenerateInput, ctx: SufficiencyContext): GenerateOutput {
+  if (input.guide.modality !== 'audio' || input.previous || input.instruction) return output;
+  const script = quotedScript([...(input.session.userMessages ?? []), input.session.goal]);
+  if (!script) return output;
+  const key = fold(script).replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  const variants = output.variants.map((v) => {
+    const failsGuide = ctx.guide.validators.some((x) => validatorFails(v.prompt, x));
+    const contains = fold(v.prompt).replace(/[^\p{L}\p{N}]+/gu, ' ').includes(key);
+    return failsGuide && contains ? { ...v, prompt: script } : v;
+  });
+  return { ...output, variants };
+}
+
 export async function validateWithRepair(
   output: GenerateOutput,
   input: GenerateInput
 ): Promise<{ variants: Variant[]; output: GenerateOutput; tokens: number; repaired: boolean }> {
   const ctx = sufficiencyContext(input);
-  let current = output;
+  let current = useQuotedScript(output, input, ctx);
   let tokens = 0;
   let failing = check(current, ctx);
   let repaired = false;

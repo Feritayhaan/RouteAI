@@ -227,7 +227,7 @@ RouteAI kuralları (hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.
 
 ## Örnekler
 
-Kaynaktaki örnekler (Ferit'in notları):
+Kaynaktaki örnekler (Ferit'in notları). Sadece biçim örneğidir; içerikleri prompta kopyalanmaz.
 
 - Duraklama noktalamayla: `Bu… şey, işe yarayabilir. Dur — bu ses ne?`
-- Sakin anlatım: `settings` içinde `Speed: 0.9`; metin: `Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.`
+- Sakin anlatım: `settings` içinde `Speed: 0.9`; metin, kullanıcının verdiği metnin kendisi (kullanıcı metin verdiyse ona cümle eklenmez).
