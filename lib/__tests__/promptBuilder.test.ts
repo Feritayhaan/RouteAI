@@ -14,8 +14,8 @@ import { MAX_REFINEMENTS } from '../promptBuilder/types';
 import { loadCatalog } from '../catalog/index';
 import { makeBuildPromptTool } from '../promptBuilder/agentTool';
 import { fallbackGuideId, resolveGuideId } from '../promptBuilder/fallback';
-import { guideSection } from '../promptBuilder/generate';
-import { buildChatRequest, isReasoningModel, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
+import { guideSection, maxPromptChars } from '../promptBuilder/generate';
+import { buildChatRequest, CHARS_PER_TOKEN, isReasoningModel, maxTokensFor, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
 import { PROMPT_TIMEOUT_MS, promptTimeoutMs, REASONING_PROMPT_TIMEOUT_MS } from '../promptBuilder/deps';
 import { promptAnswerSchema, promptRefineSchema } from '../validations/prompt';
 
@@ -600,6 +600,26 @@ describe('prompt istek sınırları', () => {
     assert.ok(!promptRefineSchema.safeParse({ promptSessionId: id, slotId: 'mood', value: 'x'.repeat(301) }).success);
     assert.ok(promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(300) } }).success);
     assert.ok(!promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(301) } }).success);
+  });
+});
+
+describe('üretim çıktı tavanı (maxTokensFor)', () => {
+  it('rehberin izin verdiği iki tam boy varyant tavana sığar (cursor-full yarım JSON hatası)', () => {
+    assert.strictEqual(maxTokensFor('image'), 1000);
+    assert.strictEqual(maxTokensFor('code'), 1800);
+    for (const g of loadGuides()) {
+      const chars = maxPromptChars(g);
+      assert.ok(chars, `${g.id}: maxLength yok`);
+      const cap = maxTokensFor(g.modality, chars);
+      assert.ok(cap * CHARS_PER_TOKEN >= 2 * chars!, `${g.id}: ${cap} token, 2 x ${chars} karakter sığmıyor`);
+      assert.ok(cap >= maxTokensFor(g.modality), `${g.id}: taban altına inmez`);
+    }
+  });
+
+  it('üretim çağrısı rehberin sınırına göre tavanı kullanır', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation: [{ role: 'user', content: 'logo for my bakery' }], locale: 'en' }, deps(llm));
+    assert.strictEqual(calls.find((c) => c.name === 'prompt_generation')!.maxTokens, maxTokensFor('image', 1500));
   });
 });
 

@@ -116,6 +116,12 @@ export interface GenerateInput {
 const LLM_MODALITIES = new Set(['text', 'code', 'slides']);
 const MEDIA_MODALITIES = new Set(['image', 'video', 'audio', 'music']);
 
+/** Rehberin prompt başına karakter sınırı (maxLength validator'ı); yoksa undefined. */
+export function maxPromptChars(guide: Guide): number | undefined {
+  const v = guide.validators.find((x) => x.type === 'maxLength');
+  return v ? Number(v.value) : undefined;
+}
+
 /** "KAYNAK GEREKLİ" paragrafı bilgi taşımaz: modele gitmez. Bölümün geri kalanı (ör. RouteAI kuralları) gider. */
 export function guideSection(text: string): string {
   return text
@@ -221,7 +227,7 @@ export async function generatePrompt(input: GenerateInput): Promise<{ output: Ge
     system: systemPrompt(guide, productName, session.locale, input.genericGuide),
     user,
     schema: JSON_SCHEMA,
-    maxTokens: maxTokensFor(guide.modality),
+    maxTokens: maxTokensFor(guide.modality, maxPromptChars(guide)),
     signal,
   });
   const parsed = outputSchema.parse(data);
