@@ -7,8 +7,8 @@ import { loadGuides } from '../promptBuilder/guides';
 import { applyAnswers, hasEnoughDetail, planSlots } from '../promptBuilder/plan';
 import { sanitizeQuestions } from '../promptBuilder/extract';
 import { checkPrompt, validateWithRepair } from '../promptBuilder/validate';
-import { answerPromptQuestions, refinePromptSession, startPromptSession, type PromptDeps } from '../promptBuilder/service';
-import { memoryPromptStore } from '../promptBuilder/store';
+import { answerPromptQuestions, refinePromptSession, startPromptSession, userMessagesFrom, USER_MESSAGES_CHARS, USER_MESSAGES_MAX, type PromptDeps } from '../promptBuilder/service';
+import { memoryPromptStore, PERSIST_USER_MESSAGES, toStored } from '../promptBuilder/store';
 import type { JsonRequest } from '../promptBuilder/llm';
 import { MAX_REFINEMENTS } from '../promptBuilder/types';
 import { loadCatalog } from '../catalog/index';
@@ -406,6 +406,34 @@ describe('prompt oturumu', () => {
     assert.match(system, /refinementInstruction overrides the previous version, the slots and the template/);
     assert.match(system, /own brand, product, business or name can be used freely/);
     assert.doesNotMatch(system, /deceptively imitate real people or brands/);
+  });
+
+  it('kullanıcının kendi mesajları üreticiye gider (goal sadece özet); depoya yazılmaz', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    const store = memoryPromptStore();
+    const chat = [
+      { role: 'user' as const, content: 'I need a square illustration of a fox reading a book in a cozy library.' },
+      { role: 'assistant' as const, content: 'Midjourney is the strongest option.' },
+      { role: 'user' as const, content: 'Ok, write the prompt for Midjourney.' },
+    ];
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'fox reading a book illustration', conversation: chat, locale: 'en' }, deps(llm, store));
+    if ('error' in r) return assert.fail(r.error);
+    const gen = calls.find((c) => c.name === 'prompt_generation')!;
+    assert.deepStrictEqual(JSON.parse(gen.user).userMessages, [chat[0].content, chat[2].content], 'asistan mesajı yok, eskiden yeniye');
+    assert.match(gen.system, /"userMessages" \(when given\) are the user's own words/);
+    assert.strictEqual(PERSIST_USER_MESSAGES, false);
+    const stored = await store.get(r.card.promptSessionId);
+    assert.ok(stored && !('userMessages' in stored), 'ham mesajlar KV oturumuna yazılmaz');
+    assert.deepStrictEqual(toStored({ ...stored!, userMessages: ['x'] }, true).userMessages, ['x'], 'anahtar açılınca saklanır');
+  });
+
+  it('userMessagesFrom: sadece kullanıcı mesajları, sınırlar, amaçla aynı tek mesaj boş', () => {
+    assert.deepStrictEqual(userMessagesFrom([{ role: 'user', content: 'logo yap' }], 'logo yap'), [], '/api/prompt/start: goal zaten o metin');
+    const many = Array.from({ length: 10 }, (_, i) => ({ role: 'user' as const, content: `m${i}` }));
+    assert.deepStrictEqual(userMessagesFrom(many), many.slice(-USER_MESSAGES_MAX).map((m) => m.content), 'en yeniler korunur');
+    const long = userMessagesFrom([{ role: 'user', content: 'eski' }, { role: 'user', content: 'x'.repeat(USER_MESSAGES_CHARS + 50) }]);
+    assert.deepStrictEqual(long.map((m) => m.length), [USER_MESSAGES_CHARS], 'toplam karakter sınırı, son mesaj kırpılır');
+    assert.deepStrictEqual(userMessagesFrom([{ role: 'user', content: '  ' }, { role: 'assistant', content: 'a' }]), []);
   });
 
   it('ajan aracı build_prompt: kart + token, ajanın bildiği slotlar kullanıcı bilgisi sayılır', async () => {

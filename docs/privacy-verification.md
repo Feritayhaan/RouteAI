@@ -18,7 +18,7 @@ Arama metninin loglanmadığı: `app/api/recommend/route.ts`, `lib/intent/*`, `l
 
 | Yer | Ne saklanıyor | Süre | Kullanıcı metni? |
 | --- | --- | --- | --- |
-| Prompt oturumu `ps:<id>` (`lib/promptBuilder/store.ts`; ana sayfadaki prompt oluşturucu, `/api/prompt/start`) | Amaç (goal), slot değerleri, serbest iyileştirme talimatı, üretilen promptlar | 24 saat | **Evet, 24 saat** (gizlilik sayfasında yazılı) |
+| Prompt oturumu `ps:<id>` (`lib/promptBuilder/store.ts`; ana sayfadaki prompt oluşturucu, `/api/prompt/start`) | Amaç (goal), slot değerleri, serbest iyileştirme talimatı, üretilen promptlar. Kullanıcının ham mesajları üreticiye gider ama **saklanmaz** (`PERSIST_USER_MESSAGES = false`, `lib/promptBuilder/store.ts`; açılırsa gizlilik metni de güncellenmeli) | 24 saat | **Evet, 24 saat** (gizlilik sayfasında yazılı) |
 | `/api/outcome` (`lib/signals/store.ts`; ana sayfadaki "İşini gördü mü?" kartı, `components/OutcomePrompt.tsx`) | Cevap (evet/kısmen/hayır), etiketler, ürün, görev, rehber sürümü; anahtar: oturum hash'i | ~400 gün | Hayır (serbest metin şemada yok) |
 | `/api/feedback`, v2 biçimi (ana sayfa, v3 kartındaki beğendim/beğenmedim) | Oy, ürün, görev, oturum hash'i | ~400 gün | Hayır |
 | `/api/feedback`, navigasyon biçimi (`fb:*`) | **Sorgu metni**, araç adı, oy | Süresiz | **Evet** — yalnızca eski kayıtlar ve RECOMMENDER=v1 açıksa (sayfada yazılı) |

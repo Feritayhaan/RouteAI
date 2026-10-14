@@ -20,6 +20,7 @@ export function sufficiencyContext(input: GenerateInput): SufficiencyContext {
     productName: input.productName,
     checkGoalEntities: !input.previous && !input.instruction,
     locale: input.session.locale,
+    userMessages: input.session.userMessages,
   };
 }
 

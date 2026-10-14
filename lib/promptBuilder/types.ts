@@ -64,6 +64,12 @@ export interface PromptSession {
   guideId: string;
   guideVersion: number;
   goal: string;
+  /**
+   * Kullanıcının kendi mesajları (ham, eskiden yeniye). Üretici ayrıntıları
+   * buradan alır; `goal` ajanın kısa özetidir. Varsayılan olarak KV'ye
+   * YAZILMAZ (store.ts, PERSIST_USER_MESSAGES): sadece o istekte kullanılır.
+   */
+  userMessages?: string[];
   locale: 'en' | 'tr';
   slots: Record<string, SlotState>;
   /** Oturum başına en fazla 1 soru kartı. */
