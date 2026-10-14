@@ -1,8 +1,9 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
-# Not: `aspect-ratio` doğrulayıcısı P7 promptundaki örnekten; resmi dokümanla doğrulanmalı.
+# Not: `aspect-ratio` doğrulayıcısı sözdiziminden bağımsız: sadece promptta bir oran (16:9) arar.
+# `--ar` / `--aspect` resmi dokümanla (Aspect Ratio sayfası) doğrulanınca zorunlu yapılabilir.
 id: "midjourney"
-version: 3
+version: 4
 appliesTo: ["midjourney-v7"]
 modality: "image"
 promptLanguage: "en"
@@ -173,8 +174,8 @@ checklist: ["Concrete main subject", "Setting stated", "Style or medium stated",
 validators:
 - id: "aspect-ratio"
   type: "regex"
-  value: "--ar \\d+:\\d+"
-  message: "Add an aspect ratio parameter, e.g. --ar 16:9."
+  value: "(?<!\\d)\\d{1,2}:\\d{1,2}(?!\\d)"
+  message: "State the aspect ratio in the prompt, e.g. 16:9."
 - id: "length"
   type: "maxLength"
   value: 1500

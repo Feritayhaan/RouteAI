@@ -1825,7 +1825,7 @@
   },
   {
     "id": "midjourney",
-    "version": 3,
+    "version": 4,
     "appliesTo": [
       "midjourney-v7"
     ],
@@ -2103,8 +2103,8 @@
       {
         "id": "aspect-ratio",
         "type": "regex",
-        "value": "--ar \\d+:\\d+",
-        "message": "Add an aspect ratio parameter, e.g. --ar 16:9."
+        "value": "(?<!\\d)\\d{1,2}:\\d{1,2}(?!\\d)",
+        "message": "State the aspect ratio in the prompt, e.g. 16:9."
       },
       {
         "id": "length",

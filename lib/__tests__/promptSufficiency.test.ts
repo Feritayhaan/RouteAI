@@ -278,7 +278,7 @@ describe('prompt oturumu ile uçtan uca', () => {
     const llm = async (req: JsonRequest) => {
       calls.push(req);
       if (req.name === 'slot_extraction') {
-        return { data: { slots: [{ id: 'text', value: 'Friday Jazz', source: 'user', confidence: 1 }, { id: 'style', value: 'typographic poster', source: 'user', confidence: 1 }], goalSummary: 's', questions: [] }, tokens: 10 };
+        return { data: { slots: [{ id: 'text', value: 'Friday Jazz', source: 'user', confidence: 1, evidence: 'Friday Jazz' }, { id: 'style', value: 'typographic poster', source: 'user', confidence: 1, evidence: 'poster' }], goalSummary: 's', questions: [] }, tokens: 10 };
       }
       const isRepair = 'fixTheseValidatorErrors' in JSON.parse(req.user);
       const p = isRepair ? repaired : first;

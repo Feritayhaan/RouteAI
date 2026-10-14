@@ -13,7 +13,12 @@
 //    tutarlılığı; lib/promptBuilder/sufficiency.ts). Düşen kriterler satırda.
 //  - kart: howToUse promptun araçta kullanımını anlatıyor, varsayımlar kullanıcı
 //    dilinde (sufficiency.cardIssues)
-//  - ortalama gecikme ve token
+//  - ortalama gecikme ve token; adım başına süre (start / answer / refine) ve
+//    canlı zaman aşımını (PROMPT_TIMEOUT_MS) aşan adım (overTimeout)
+//  - okumak için: iki varyantın metni, düşen kuralların mesajları, slotların
+//    kaynağı (user / inferred / default), sorulan sorular ve soru kartı kararının
+//    gerekçesi (isBroadGoal; slot başına modelin iddiası, alıntısı, doğrulandı mı)
+//    satıra yazılır
 // Sonuç: evals/results/<YYYY-MM-DD>-prompts.json
 
 // env.mjs İLK import (ortam hazırlığı; bkz. o dosya)
@@ -24,6 +29,7 @@ import path from 'node:path';
 const { startPromptSession, answerPromptQuestions, refinePromptSession, userMessagesFrom } = await import('../lib/promptBuilder/service.ts');
 const { memoryPromptStore, newPromptSessionId } = await import('../lib/promptBuilder/store.ts');
 const { openAIJsonLLM } = await import('../lib/promptBuilder/llm.ts');
+const { PROMPT_TIMEOUT_MS } = await import('../lib/promptBuilder/deps.ts');
 const { loadGuides } = await import('../lib/promptBuilder/guides.ts');
 const { loadCatalog } = await import('../lib/catalog/index.ts');
 const { cardIssues, sufficiencyScore } = await import('../lib/promptBuilder/sufficiency.ts');
@@ -64,15 +70,27 @@ for (const sc of scenarios) {
   try {
     const d = deps();
     let tokens = 0;
-    const first = await quietly(() => startPromptSession({ productId: sc.productId, goal: sc.goal, conversation: sc.conversation, locale: sc.locale }, d));
+    row.steps = [];
+    /** Her istek ayrı ölçülür: canlıda zaman aşımı istek başınadır. */
+    const step = async (name, fn) => {
+      const t0 = performance.now();
+      const res = await quietly(fn);
+      row.steps.push({ step: name, ms: Math.round(performance.now() - t0), tokens: res.tokens ?? 0 });
+      return res;
+    };
+    const first = await step('start', () => startPromptSession({ productId: sc.productId, goal: sc.goal, conversation: sc.conversation, locale: sc.locale }, d));
     tokens += first.tokens;
     if ('error' in first) throw new Error(first.error);
+    row.slots = Object.fromEntries(Object.entries(first.session.slots).map(([id, st]) => [id, { value: st.value, source: st.source }]));
+    // Soru kartı kararının gerekçesi: modelin iddiası, alıntısı, doğrulandı mı (extract.ts verifyEvidence).
+    if (first.diagnostics) row.extraction = first.diagnostics;
     row.questionShown = first.card.type === 'prompt_question';
     row.questionCorrect = row.questionShown === sc.expectQuestion;
     let card = first.card;
     if (card.type === 'prompt_question') {
       row.questions = card.questions.length;
-      const answered = await quietly(() => answerPromptQuestions({ promptSessionId: card.promptSessionId, answers: Object.fromEntries(card.questions.map((q) => [q.slotId, 'auto'])) }, d));
+      row.askedSlots = card.questions.map((q) => q.slotId);
+      const answered = await step('answer', () => answerPromptQuestions({ promptSessionId: card.promptSessionId, answers: Object.fromEntries(card.questions.map((q) => [q.slotId, 'auto'])) }, d));
       tokens += answered.tokens;
       if ('error' in answered) throw new Error(answered.error);
       card = answered.card;
@@ -87,15 +105,26 @@ for (const sc of scenarios) {
     row.sufficiencyScore = Math.round(scores.reduce((a, x) => a + x.score, 0) / scores.length);
     row.cardOk = cardIssues({ howToUse: card.howToUse, assumptions: card.assumptions }, { guide, goal: sc.goal, productName, locale: sc.locale }).length === 0;
     row.sufficiencyFailed = [...new Set(scores.flatMap((x) => Object.entries(x.criteria).filter(([, ok]) => !ok).map(([c]) => c)))];
+    row.variants = card.variants.map((v, i) => ({
+      id: v.id,
+      prompt: v.prompt,
+      negativePrompt: v.negativePrompt,
+      settings: v.settings,
+      validation: v.validation,
+      issues: scores[i].issues.map((x) => `${x.criterion}: ${x.message}`),
+    }));
+    row.howToUse = card.howToUse;
     if (sc.refinementId) {
-      const refined = await quietly(() => refinePromptSession({ promptSessionId: card.promptSessionId, refinementId: sc.refinementId }, d));
+      const refined = await step('refine', () => refinePromptSession({ promptSessionId: card.promptSessionId, refinementId: sc.refinementId }, d));
       tokens += refined.tokens;
       if ('error' in refined) throw new Error(refined.error);
       const text = `${refined.card.variants[0].prompt} ${refined.card.variants[0].settings.map((s) => s.value).join(' ')}`;
+      row.refinedPrompt = refined.card.variants[0].prompt;
       row.refineReflected = new RegExp(sc.expectAfterRefine, 'i').test(text);
     }
     row.tokens = tokens;
     row.latencyMs = Math.round(performance.now() - started);
+    row.overTimeout = row.steps.some((x) => x.ms > PROMPT_TIMEOUT_MS);
   } catch (error) {
     row.error = String(error?.message ?? error);
   }
@@ -105,7 +134,8 @@ for (const sc of scenarios) {
   }
   rows.push(row);
   const mark = (v) => (v === undefined ? '–' : v ? '✓' : '✗');
-  out(`${sc.id.padEnd(16)} soru ${mark(row.questionCorrect)}  doğrulayıcı ${mark(row.validatorsPass)}  farklı ${mark(row.variantsDiffer)}  dil ${mark(row.languageOk)}  iyileştirme ${mark(row.refineReflected)}  yeterlilik ${row.sufficiencyScore ?? '–'}${row.sufficiencyFailed?.length ? ` (${row.sufficiencyFailed.join(', ')})` : ''}  ${row.skipped ?? row.error ?? `${row.latencyMs} ms, ${row.tokens} token`}`);
+  const stepsText = (r) => (r.steps ?? []).map((x) => `${x.step} ${(x.ms / 1000).toFixed(1)} sn`).join(' / ');
+  out(`${sc.id.padEnd(16)} soru ${mark(row.questionCorrect)}  doğrulayıcı ${mark(row.validatorsPass)}  farklı ${mark(row.variantsDiffer)}  dil ${mark(row.languageOk)}  iyileştirme ${mark(row.refineReflected)}  yeterlilik ${row.sufficiencyScore ?? '–'}${row.sufficiencyFailed?.length ? ` (${row.sufficiencyFailed.join(', ')})` : ''}  ${row.skipped ?? row.error ?? `${stepsText(row)}, ${row.tokens} token${row.overTimeout ? ` ⚠ canlı sınır ${PROMPT_TIMEOUT_MS / 1000} sn aşıldı` : ''}`}`);
 }
 
 const done = rows.filter((r) => !r.skipped && !r.error);
@@ -124,6 +154,7 @@ const summary = {
   variantsDiffer: rate('variantsDiffer'),
   languageOk: rate('languageOk'),
   refineReflected: rate('refineReflected'),
+  overTimeout: rate('overTimeout'),
   cardOk: rate('cardOk'),
   avgSufficiency: avg('sufficiencyScore'),
   avgLatencyMs: avg('latencyMs'),
@@ -131,7 +162,7 @@ const summary = {
 };
 const fmt = ({ hits, n }) => (n ? `${hits}/${n}` : 'n/a');
 out('');
-out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | yeterlilik ort. ${summary.avgSufficiency ?? 'n/a'}/100 | kart (howToUse/varsayım) ${fmt(summary.cardOk)} | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
+out(`ÖZET: değerlendirilen ${summary.evaluated}/${summary.total} (skipped ${summary.skipped}, hata ${summary.errors}) | soru kartı doğru ${fmt(summary.questionCorrect)} | doğrulayıcı ${fmt(summary.validatorsPass)} | varyant farklı ${fmt(summary.variantsDiffer)} | dil ${fmt(summary.languageOk)} | iyileştirme yansıdı ${fmt(summary.refineReflected)} | yeterlilik ort. ${summary.avgSufficiency ?? 'n/a'}/100 | kart (howToUse/varsayım) ${fmt(summary.cardOk)} | canlı sınırı aşan ${fmt(summary.overTimeout)} | ort. ${summary.avgLatencyMs ?? 'n/a'} ms, ${summary.avgTokens ?? 'n/a'} token`);
 
 const date = new Date().toISOString().slice(0, 10);
 const file = path.join(ROOT, 'evals/results', `${date}-prompts.json`);

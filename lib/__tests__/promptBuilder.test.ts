@@ -5,7 +5,7 @@ import { YamlError, parseYamlSubset, parseScalar, splitFrontmatter, splitSection
 import { guideRuleErrors, type Guide } from '../promptBuilder/guideSchema';
 import { loadGuides } from '../promptBuilder/guides';
 import { applyAnswers, hasEnoughDetail, planSlots } from '../promptBuilder/plan';
-import { sanitizeQuestions } from '../promptBuilder/extract';
+import { extractSlots, sanitizeQuestions, UNVERIFIED_CONFIDENCE_CAP, verifyEvidence } from '../promptBuilder/extract';
 import { checkPrompt, validateWithRepair } from '../promptBuilder/validate';
 import { answerPromptQuestions, refinePromptSession, startPromptSession, userMessagesFrom, USER_MESSAGES_CHARS, USER_MESSAGES_MAX, type PromptDeps } from '../promptBuilder/service';
 import { memoryPromptStore, PERSIST_USER_MESSAGES, toStored } from '../promptBuilder/store';
@@ -14,7 +14,8 @@ import { MAX_REFINEMENTS } from '../promptBuilder/types';
 import { loadCatalog } from '../catalog/index';
 import { makeBuildPromptTool } from '../promptBuilder/agentTool';
 import { fallbackGuideId, resolveGuideId } from '../promptBuilder/fallback';
-import { buildChatRequest, isReasoningModel, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
+import { guideSection, maxPromptChars } from '../promptBuilder/generate';
+import { buildChatRequest, CHARS_PER_TOKEN, isReasoningModel, maxTokensFor, promptReasoningEffort, REASONING_ALLOWANCE } from '../promptBuilder/llm';
 import { PROMPT_TIMEOUT_MS, promptTimeoutMs, REASONING_PROMPT_TIMEOUT_MS } from '../promptBuilder/deps';
 import { promptAnswerSchema, promptRefineSchema } from '../validations/prompt';
 
@@ -111,7 +112,7 @@ const midjourney = () => loadGuides().find((g) => g.id === 'midjourney')!;
 
 type RawQuestion = { slotId: string; question: string; options: { label: string; value: string }[] };
 
-type FakeSlot = string | null | { value: string | null; source: 'user' | 'inferred'; confidence: number };
+type FakeSlot = string | null | { value: string | null; source: 'user' | 'inferred'; confidence: number; evidence?: string | null };
 /** Akıllı varsayım: kullanıcı söylemedi, LLM amaca göre seçti (güven < MIN_CONFIDENCE). */
 const guess = (value: string) => ({ value, source: 'inferred' as const, confidence: 0.45 });
 
@@ -125,8 +126,10 @@ function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: 
     calls.push(req);
     const input = JSON.parse(req.user);
     if (req.name === 'slot_extraction') {
+      // Kanıt: kullanıcının ilk mesajı (verifyEvidence geçer); uydurma kanıt testi ayrı.
+      const quote = /(?:^|\n)user: ([^\n]*)/.exec(input.conversation)?.[1] ?? null;
       const slots = Object.entries(opts.extracted ?? {}).map(([id, v]) =>
-        v !== null && typeof v === 'object' ? { id, ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0 }
+        v !== null && typeof v === 'object' ? { id, evidence: quote, ...v } : { id, value: v, source: 'user', confidence: v ? 0.9 : 0, evidence: quote }
       );
       return { data: { slots, goalSummary: 'summary', isBroadGoal: opts.isBroadGoal ?? false, ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
     }
@@ -156,6 +159,42 @@ function deps(llm: PromptDeps['llm'], store = memoryPromptStore()): PromptDeps {
 }
 
 const full = { subject: 'a bakery logo', style: 'illustration', aspect: '1:1', mood: null, detail: null };
+
+describe('çıkarım: kanıt (alıntı) denetimi', () => {
+  it('verifyEvidence: kullanıcının sözünde geçen alıntı; Türkçe ek, büyük harf ve noktalama serbest', () => {
+    const text = 'Cuma akşamı caz gecesi posteri, üzerinde "Friday Jazz" yazsın, 9:16';
+    for (const e of ['caz gecesi posteri', 'poster', 'friday jazz', 'CUMA AKŞAMI', '9:16', 'Friday Jazz"']) assert.ok(verifyEvidence(e, text), e);
+    for (const e of [null, '', 'x', 'investors', '8-10 slides', 'oster']) assert.ok(!verifyEvidence(e, text), String(e));
+    assert.ok(!verifyEvidence('Midjourney', 'Midjourney ile bir görsel yapmak istiyorum', 'Midjourney'), 'sadece ürün adı kanıt değil');
+    assert.ok(!verifyEvidence('AI', 'Suno AI ile şarkı', 'Suno AI'));
+    assert.ok(verifyEvidence('bir görsel', 'Midjourney ile bir görsel yapmak istiyorum', 'Midjourney'));
+  });
+
+  it('kanıtsız "user" ya da yüksek güvenli değer akıllı varsayıma iner (2026-10-14 eval: "Make me a presentation.")', async () => {
+    const llm = async () => ({
+      data: {
+        slots: [
+          { id: 'audience', value: 'investors', source: 'user', confidence: 0.9, label: null, evidence: 'investors' },
+          { id: 'length', value: '8-10 slides', source: 'user', confidence: 0.95, label: null, evidence: null },
+          { id: 'tone', value: 'formal', source: 'inferred', confidence: 0.8, label: null, evidence: 'presentation' },
+          { id: 'visuals', value: 'data charts', source: 'inferred', confidence: 0.45, label: null, evidence: null },
+        ],
+        goalSummary: 's', isBroadGoal: false, questions: [],
+      },
+      tokens: 1,
+    });
+    const gamma = loadGuides().find((g) => g.id === 'gamma')!;
+    const x = await extractSlots({ conversation: [{ role: 'user', content: 'Make me a presentation.' }, { role: 'assistant', content: 'For investors? 8-10 slides?' }], goal: 'investor presentation', guide: gamma, locale: 'en', llm, productName: 'Gamma AI' });
+    assert.deepStrictEqual(x.slots.audience, { value: 'investors', source: 'inferred', confidence: UNVERIFIED_CONFIDENCE_CAP }, 'goal ve asistan mesajı kanıt değil');
+    assert.strictEqual(x.slots.length.source, 'inferred');
+    assert.deepStrictEqual(x.slots.tone, { value: 'formal', source: 'inferred', confidence: 0.8 }, 'kanıtı doğru alıntı: korunur');
+    assert.strictEqual(x.slots.visuals.confidence, 0.45, 'akıllı varsayım dokunulmaz');
+    assert.deepStrictEqual(x.evidence.audience, { claimed: 'user', claimedConfidence: 0.9, quote: 'investors', verified: false }, 'teşhis: iddia, alıntı, doğrulama');
+    assert.strictEqual(x.evidence.tone.verified, true);
+    const plan = planSlots(gamma, x.slots, { questionAsked: false });
+    assert.ok(plan.questions.length > 0, 'uydurma ayrıntı soru kartını artık atlatmaz');
+  });
+});
 
 describe('plan (LLM yok)', () => {
   const g = midjourney();
@@ -427,6 +466,17 @@ describe('prompt oturumu', () => {
     assert.deepStrictEqual(toStored({ ...stored!, userMessages: ['x'] }, true).userMessages, ['x'], 'anahtar açılınca saklanır');
   });
 
+  it('teşhis (alıntılar) sonuçta var ama depoya yazılmaz', async () => {
+    const { llm } = fakeLLM({ extracted: full });
+    const store = memoryPromptStore();
+    const r = await startPromptSession({ productId: 'midjourney-v7', goal: 'bakery logo', conversation, locale: 'en' }, deps(llm, store));
+    if ('error' in r) return assert.fail(r.error);
+    assert.strictEqual(r.diagnostics?.evidence.subject.quote, 'logo for my bakery');
+    assert.strictEqual(r.diagnostics?.evidence.subject.verified, true);
+    const stored = await store.get(r.card.promptSessionId);
+    assert.ok(!JSON.stringify(stored).includes('logo for my bakery'), 'alıntı KV oturumunda yok');
+  });
+
   it('userMessagesFrom: sadece kullanıcı mesajları, sınırlar, amaçla aynı tek mesaj boş', () => {
     assert.deepStrictEqual(userMessagesFrom([{ role: 'user', content: 'logo yap' }], 'logo yap'), [], '/api/prompt/start: goal zaten o metin');
     const many = Array.from({ length: 10 }, (_, i) => ({ role: 'user' as const, content: `m${i}` }));
@@ -436,12 +486,33 @@ describe('prompt oturumu', () => {
     assert.deepStrictEqual(userMessagesFrom([{ role: 'user', content: '  ' }, { role: 'assistant', content: 'a' }]), []);
   });
 
+  it('rehberin boş "KAYNAK GEREKLİ" bölümleri modele gitmez; RouteAI kuralları ve kaynaksız uyarısı gider', async () => {
+    assert.strictEqual(guideSection('KAYNAK GEREKLİ — erişilemedi.\n\nRouteAI kuralları:\n\n- Bir'), 'RouteAI kuralları:\n\n- Bir');
+    assert.strictEqual(guideSection('KAYNAK GEREKLİ — erişilemedi.'), '');
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(llm));
+    const system = calls.find((c) => c.name === 'prompt_generation')!.system;
+    assert.doesNotMatch(system, /KAYNAK GEREKLİ/);
+    assert.doesNotMatch(system, /## Syntax|## Examples/, 'boş bölüm başlığıyla atlanır');
+    assert.match(system, /## Template\n/);
+    assert.match(system, /## Do \/ Don't\nRouteAI kuralları/);
+    assert.match(system, /no verified Midjourney documentation yet/);
+  });
+
+  it('Midjourney oran kuralı sözdiziminden bağımsız: "16:9" de "--ar 16:9" da geçer', () => {
+    const v = midjourney().validators.filter((x) => x.id === 'aspect-ratio');
+    assert.deepStrictEqual(checkPrompt('a fox in a cozy library, watercolor, 16:9', v), []);
+    assert.deepStrictEqual(checkPrompt('a fox in a cozy library, watercolor --ar 16:9', v), []);
+    assert.strictEqual(checkPrompt('a fox in a cozy library, watercolor', v).length, 1);
+  });
+
   it('ajan aracı build_prompt: kart + token, ajanın bildiği slotlar kullanıcı bilgisi sayılır', async () => {
     const { llm } = fakeLLM({ extracted: { subject: 'x' } });
     const tool = makeBuildPromptTool(() => deps(llm));
     const out = await tool({ productId: 'midjourney-v7', goal: 'logo', slots: { style: 'illustration', aspect: '1:1' } }, 'en', conversation);
     assert.ok(!('error' in out));
     if ('error' in out) return;
+    assert.ok(!('diagnostics' in out) && !JSON.stringify(out).includes('"evidence"'), 'teşhis (kullanıcı alıntısı) ajana dönmez');
     assert.strictEqual(out.card.type, 'prompt');
     assert.strictEqual(out.tokens, 30);
   });
@@ -579,6 +650,26 @@ describe('prompt istek sınırları', () => {
     assert.ok(!promptRefineSchema.safeParse({ promptSessionId: id, slotId: 'mood', value: 'x'.repeat(301) }).success);
     assert.ok(promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(300) } }).success);
     assert.ok(!promptAnswerSchema.safeParse({ promptSessionId: id, answers: { mood: 'x'.repeat(301) } }).success);
+  });
+});
+
+describe('üretim çıktı tavanı (maxTokensFor)', () => {
+  it('rehberin izin verdiği iki tam boy varyant tavana sığar (cursor-full yarım JSON hatası)', () => {
+    assert.strictEqual(maxTokensFor('image'), 1000);
+    assert.strictEqual(maxTokensFor('code'), 1800);
+    for (const g of loadGuides()) {
+      const chars = maxPromptChars(g);
+      assert.ok(chars, `${g.id}: maxLength yok`);
+      const cap = maxTokensFor(g.modality, chars);
+      assert.ok(cap * CHARS_PER_TOKEN >= 2 * chars!, `${g.id}: ${cap} token, 2 x ${chars} karakter sığmıyor`);
+      assert.ok(cap >= maxTokensFor(g.modality), `${g.id}: taban altına inmez`);
+    }
+  });
+
+  it('üretim çağrısı rehberin sınırına göre tavanı kullanır', async () => {
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation: [{ role: 'user', content: 'logo for my bakery' }], locale: 'en' }, deps(llm));
+    assert.strictEqual(calls.find((c) => c.name === 'prompt_generation')!.maxTokens, maxTokensFor('image', 1500));
   });
 });
 

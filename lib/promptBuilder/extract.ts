@@ -12,11 +12,21 @@
 // altına çekilir; plan.ts önce navigasyon soru kartını gösterir.
 // Her slot değerinin kullanıcı dilinde kısa etiketi (label) "Şunları varsaydım"
 // listesinde gösterilir (prompt dili İngilizce olsa bile).
+//
+// Kanıt (evidence): model "kullanıcı söyledi" ya da güçlü ima dediği her değer
+// için kullanıcının mesajından kelimesi kelimesine alıntı verir; kod alıntının
+// kullanıcı mesajlarında gerçekten geçtiğini denetler (verifyEvidence). Geçmezse
+// (uydurma, ajanın özeti `goal`dan alıntı, sadece ürün adı) değer kalır ama
+// akıllı varsayım sayılır: source 'inferred', güven UNVERIFIED_CONFIDENCE_CAP.
+// İlk gerçek eval'de (2026-10-14) "Make me a presentation." için
+// "investors" ve "8-10 slides" source 'user' gelmişti; soru kartı çıkmıyordu.
 
 import { z } from 'zod';
 import type { Guide } from './guideSchema';
 import type { JsonLLM } from './llm';
 import type { DynamicQuestion } from './types';
+import { MIN_CONFIDENCE } from './plan';
+import { fold } from './sufficiency';
 
 export interface ExtractedSlot {
   value: string | null;
@@ -28,6 +38,24 @@ export interface ExtractedSlot {
 
 /** Geniş hedefte 'high' slot güveninin üst sınırı (MIN_CONFIDENCE 0.65'in altı). */
 export const BROAD_GOAL_CONFIDENCE_CAP = 0.6;
+/** Kanıtı doğrulanamayan değerin güven üst sınırı (akıllı varsayım aralığı, MIN_CONFIDENCE altı). */
+export const UNVERIFIED_CONFIDENCE_CAP = 0.55;
+
+/** Karşılaştırma biçimi: küçük harf, aksansız, noktalama yerine tek boşluk. */
+const normalize = (s: string) => fold(s).replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+
+/**
+ * Alıntı kullanıcının mesajlarında (asistan mesajları ve goal değil) geçiyor mu?
+ * Kelime başından eşleşir, son kelimenin eki serbest (Türkçe: "poster" ~ "posteri").
+ * Sadece ürün adından ya da 2 karakterden kısa alıntı kanıt sayılmaz.
+ */
+export function verifyEvidence(evidence: string | null | undefined, userText: string, productName = ''): boolean {
+  const e = normalize(evidence ?? '');
+  if (e.length < 2) return false;
+  const product = normalize(productName);
+  if (product && (e === product || product.split(' ').includes(e))) return false;
+  return ` ${normalize(userText)}`.includes(` ${e}`);
+}
 
 export interface Extraction {
   slots: Record<string, ExtractedSlot>;
@@ -36,7 +64,19 @@ export interface Extraction {
   isBroadGoal: boolean;
   /** Girişe göre üretilmiş sorular (slotId -> soru). Boş olabilir. */
   questions: Record<string, DynamicQuestion>;
+  /**
+   * Teşhis (eval:prompts): modelin her slot için iddiası, alıntısı ve alıntının
+   * doğrulanıp doğrulanmadığı. Kullanıcı metni içerir: depoya ve loga yazılmaz.
+   */
+  evidence: Record<string, EvidenceCheck>;
   tokens: number;
+}
+
+export interface EvidenceCheck {
+  claimed: 'user' | 'inferred';
+  claimedConfidence: number;
+  quote: string | null;
+  verified: boolean;
 }
 
 const rawQuestionSchema = z.object({
@@ -52,6 +92,7 @@ const outputSchema = z.object({
     source: z.enum(['user', 'inferred']),
     confidence: z.number(),
     label: z.string().nullable().optional(),
+    evidence: z.string().nullable().optional(),
   })),
   goalSummary: z.string(),
   isBroadGoal: z.boolean().default(false),
@@ -96,13 +137,15 @@ export function sanitizeQuestions(raw: z.infer<typeof rawQuestionSchema>[], guid
 }
 
 export async function extractSlots(
-  { conversation, goal, guide, locale, llm, signal }: {
+  { conversation, goal, guide, locale, llm, signal, productName = '' }: {
     conversation: { role: 'user' | 'assistant'; content: string }[];
     goal: string;
     guide: Guide;
     locale: 'en' | 'tr';
     llm: JsonLLM;
     signal?: AbortSignal;
+    /** Kanıt denetimi: sadece ürün adı kanıt sayılmaz. */
+    productName?: string;
   }
 ): Promise<Extraction> {
   const userLanguage = locale === 'tr' ? 'Turkish' : 'English';
@@ -120,6 +163,7 @@ export async function extractSlots(
 - Return null ONLY if the goal and conversation are empty or meaningless.
 - Prefer one of the slot's option values when it fits; otherwise a short free-text value (max 12 words).
 - label: the same choice as a short phrase (max 6 words) in ${userLanguage} for the user to read; null when value is null.
+- evidence: for source "user" and for "strongly implied" values, copy the exact words from the user's messages in the conversation (max 12 words, unchanged) that state or imply the value. null for a smart assumption. "goal" is RouteAI's short summary, not the user's words: never quote it. A tool or product name alone is not evidence. If you cannot quote the user, the value is a smart assumption (confidence 0.35-0.55).
 - An assumed value is a choice (style, format, tone, length, structure), never a fact: do not invent names, numbers, prices, dates, quotes or statistics the user did not give.
 - goalSummary: one sentence in ${userLanguage} describing what the user wants to create.
 Return every slot id exactly once.
@@ -158,8 +202,9 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
               source: { type: 'string', enum: ['user', 'inferred'] },
               confidence: { type: 'number' },
               label: { type: ['string', 'null'] },
+              evidence: { type: ['string', 'null'] },
             },
-            required: ['id', 'value', 'source', 'confidence', 'label'],
+            required: ['id', 'value', 'source', 'confidence', 'label', 'evidence'],
             additionalProperties: false,
           },
         },
@@ -195,21 +240,34 @@ questions: for EVERY slot with impact "high" whose confidence is below 0.65 (inc
   const parsed = outputSchema.parse(data);
   const known = new Set(slotIds);
   const high = new Set(guide.slots.filter((s) => s.impact === 'high').map((s) => s.id));
+  // Kanıt kullanıcının sözünde aranır; konuşmada kullanıcı mesajı yoksa elimizdeki tek söz amaçtır.
+  const userTurns = conversation.filter((m) => m.role === 'user').map((m) => m.content);
+  const userText = userTurns.length ? userTurns.join('\n') : goal;
   const slots: Record<string, ExtractedSlot> = {};
+  const evidence: Record<string, EvidenceCheck> = {};
   for (const s of parsed.slots) {
     if (!known.has(s.id) || s.id in slots) continue;
     const value = s.value?.trim() ? s.value.trim().slice(0, 200) : null;
     let confidence = Math.max(0, Math.min(1, s.confidence));
+    let source = s.source;
+    const verified = verifyEvidence(s.evidence, userText, productName);
+    evidence[s.id] = { claimed: s.source, claimedConfidence: confidence, quote: s.evidence?.trim() || null, verified };
+    // "Kullanıcı söyledi" ya da güçlü ima: kullanıcının sözünden alıntıyla kanıtlanmalı.
+    if (value && (source === 'user' || confidence >= MIN_CONFIDENCE) && !verified) {
+      source = 'inferred';
+      confidence = Math.min(confidence, UNVERIFIED_CONFIDENCE_CAP);
+    }
     // Geniş hedefte çıkarılan 'high' slot yüksek güvenli sayılmaz (kullanıcının açıkça söylediği hariç).
-    if (parsed.isBroadGoal && high.has(s.id) && s.source !== 'user') confidence = Math.min(confidence, BROAD_GOAL_CONFIDENCE_CAP);
+    if (parsed.isBroadGoal && high.has(s.id) && source !== 'user') confidence = Math.min(confidence, BROAD_GOAL_CONFIDENCE_CAP);
     const label = value && s.label?.trim() ? s.label.trim().slice(0, 80) : null;
-    slots[s.id] = { value, source: s.source, confidence, ...(label ? { label } : {}) };
+    slots[s.id] = { value, source, confidence, ...(label ? { label } : {}) };
   }
   return {
     slots,
     goalSummary: parsed.goalSummary.slice(0, 300),
     isBroadGoal: parsed.isBroadGoal,
     questions: sanitizeQuestions(parsed.questions, guide),
+    evidence,
     tokens,
   };
 }

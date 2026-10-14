@@ -23,15 +23,24 @@ export function promptModel(): string {
   return process.env.OPENAI_PROMPT_MODEL?.trim() || agentModel();
 }
 
+/** Karakter/token tahmini: düşük tutulur (Türkçe ve kod İngilizceden daha çok token), tavan aşağı yuvarlanmasın. */
+export const CHARS_PER_TOKEN = 3;
+/** İki varyantın dışındaki çıktı (JSON iskeleti, varsayımlar, howToUse, öneriler) için pay. */
+export const OUTPUT_OVERHEAD_TOKENS = 700;
+
 /**
  * Üretim çağrısının üst sınırı (iki varyant + varsayımlar + JSON). Sınıra
- * takılan yanıt yarım JSON olur ve prompt hiç çıkmaz; bu yüzden karmaşık
- * istekler (uygulama, uzun metin) için bol tutulur. Görsel/video/ses/müzik
- * 1000, metin/kod/sunum 1800. Düşünen modelde buna REASONING_ALLOWANCE
- * eklenir. Zaman aşımı: deps.ts promptTimeoutMs.
+ * takılan yanıt yarım JSON olur ve prompt hiç çıkmaz. Taban: görsel/video/
+ * ses/müzik 1000, metin/kod/sunum 1800. Rehberin maxLength'i (prompt başına
+ * karakter) verilirse tavan iki tam boy varyantı sığdıracak kadar yükseltilir:
+ * kural promptun 6000 karakter olmasına izin verip çıktıyı 1800 token'da
+ * kesmesin. Düşünen modelde buna REASONING_ALLOWANCE eklenir. Zaman aşımı:
+ * deps.ts promptTimeoutMs.
  */
-export function maxTokensFor(modality: Modality): number {
-  return ['image', 'video', 'audio', 'music', '3d'].includes(modality) ? 1000 : 1800;
+export function maxTokensFor(modality: Modality, maxPromptChars?: number): number {
+  const base = ['image', 'video', 'audio', 'music', '3d'].includes(modality) ? 1000 : 1800;
+  if (!maxPromptChars || maxPromptChars <= 0) return base;
+  return Math.max(base, Math.ceil((2 * maxPromptChars) / CHARS_PER_TOKEN) + OUTPUT_OVERHEAD_TOKENS);
 }
 
 /**
@@ -78,7 +87,9 @@ export function openAIJsonLLM(model: string = promptModel()): JsonLLM {
     const res = await getOpenAIClient().chat.completions.create({ ...buildChatRequest(model, req), stream: false }, { signal });
     const choice = res.choices[0];
     const content = choice?.message?.content;
-    if (!content) throw new Error(choice?.finish_reason === 'length' ? 'token sınırı (düşünme dahil) doldu' : 'boş yanıt');
+    // Sınıra takılan yanıt boş değilse de yarım JSON'dur: ayrıştırmaya çalışmadan açık hata.
+    if (choice?.finish_reason === 'length') throw new Error('token sınırı (düşünme dahil) doldu: yanıt yarım kaldı');
+    if (!content) throw new Error('boş yanıt');
     return { data: JSON.parse(content), tokens: res.usage?.total_tokens ?? 0 };
   };
 }
