@@ -6,7 +6,9 @@
 //  - kullanıcının açıkça söylediği (source 'user', güven >= USER_DETAIL_CONFIDENCE)
 //    en az MIN_USER_DETAILS anlamlı ayrıntı, ya da
 //  - tüm 'high' slotların güvenle (>= MIN_CONFIDENCE) çıkarılmış olması.
-// Kart çıkarsa aday: impact 'high' ve değeri yok ya da güveni < MIN_CONFIDENCE;
+// İkisinde de ayrıntılar farklı alıntı sayısıyla ölçülür (distinctDetails).
+// Kart çıkarsa aday: impact 'high' ve kullanıcının açıkça söylemediği (değeri yok,
+// güveni < MIN_CONFIDENCE ya da sadece ima: source 'inferred');
 // rehber sırasıyla en fazla 3 tanesi TEK kartta. Oturum başına en fazla 1 soru kartı.
 //
 // LLM'in ürettiği değer statik default ile ezilmez. Güveni düşük değerler
@@ -37,18 +39,24 @@ export interface Plan {
   questions: GuideSlot[];
 }
 
+/**
+ * Farklı ayrıntı sayısı: aynı alıntıya dayanan slotlar tek ayrıntıdır (model tek
+ * cümleyi her slota kanıt diye verebilir: 2026-10-14 eval, "Make me a presentation.").
+ * Alıntısı olmayan (ajanın verdiği) slot kendi başına sayılır.
+ */
+export function distinctDetails(entries: [string, ExtractedSlot][]): number {
+  return new Set(entries.map(([id, e]) => e.evidence ?? `slot:${id}`)).size;
+}
+
 /** Soru kartını atlayıp doğrudan üretmeye yetecek kadar ayrıntı var mı? */
 export function hasEnoughDetail(guide: Guide, extracted: Record<string, ExtractedSlot>, isBroadGoal = false): boolean {
   if (isBroadGoal) return false;
-  const userDetails = Object.values(extracted).filter(
-    (e) => e.value !== null && e.source === 'user' && e.confidence >= USER_DETAIL_CONFIDENCE
-  ).length;
-  const allHighKnown = guide.slots
-    .filter((s) => s.impact === 'high')
-    .every((s) => {
-      const e = extracted[s.id];
-      return !!e && e.value !== null && e.confidence >= MIN_CONFIDENCE;
-    });
+  const userDetails = distinctDetails(
+    Object.entries(extracted).filter(([, e]) => e.value !== null && e.source === 'user' && e.confidence >= USER_DETAIL_CONFIDENCE)
+  );
+  const high = guide.slots.filter((s) => s.impact === 'high').map((s) => [s.id, extracted[s.id]] as [string, ExtractedSlot | undefined]);
+  const known = high.filter((x): x is [string, ExtractedSlot] => !!x[1] && x[1].value !== null && x[1].confidence >= MIN_CONFIDENCE);
+  const allHighKnown = known.length === high.length && distinctDetails(known) >= Math.min(MIN_USER_DETAILS, high.length);
   return userDetails >= MIN_USER_DETAILS || allHighKnown;
 }
 
@@ -63,8 +71,9 @@ export function planSlots(
     : guide.slots
         .filter((s) => s.impact === 'high')
         .filter((s) => {
+          // Kullanıcının açıkça (alıntıyla) söylediği sorulmaz; ayrıntı yetmediyse güçlü ima da sorulur.
           const e = extracted[s.id];
-          return !e || e.value === null || e.confidence < MIN_CONFIDENCE;
+          return !e || e.value === null || e.confidence < MIN_CONFIDENCE || e.source !== 'user';
         })
         .slice(0, MAX_QUESTIONS_PER_CARD);
 

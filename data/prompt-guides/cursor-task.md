@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "cursor-task"
-version: 3
+version: 4
 appliesTo: ["cursor"]
 modality: "code"
 promptLanguage: "user"
@@ -172,8 +172,8 @@ validators:
   message: "State how to verify the change (tests, typecheck, a manual check)."
 - id: "constraints"
   type: "regex"
-  value: "(constraint|rule|do not|don't|must|keep|kural|kısıt|değiştirme|olmalı|zorunlu|koru)"
-  flags: "i"
+  value: "(constraint|rule|do not|don't|must|keep|never|avoid|kural|kısıt|değiştirme|olmalı|zorunlu|koru|asla|\\p{L}+(?:malı|meli)\\p{L}*)"
+  flags: "iu"
   criterion: "actionability"
   message: "State the constraints: what must not change and what must hold."
 ---

@@ -148,9 +148,9 @@ function scriptedLLM(extraction: { slots: Slot[]; isBroadGoal: boolean; question
   const llm = async (req: JsonRequest) => {
     calls.push(req);
     if (req.name === 'slot_extraction') {
-      // Kanıt: kullanıcının ilk mesajı (verifyEvidence geçer).
-      const quote = /(?:^|\n)user: ([^\n]*)/.exec(JSON.parse(req.user).conversation)?.[1] ?? null;
-      const slots = extraction.slots.map((x) => ({ evidence: quote, ...x }));
+      // Kanıt: slot başına kullanıcının ilk mesajından farklı bir kelime (ayrı ayrıntı sayılır).
+      const words = (/(?:^|\n)user: ([^\n]*)/.exec(JSON.parse(req.user).conversation)?.[1] ?? '').split(/\s+/).filter((w) => w.length >= 2);
+      const slots = extraction.slots.map((x, i) => ({ evidence: words.length ? words[i % words.length] : null, ...x }));
       return { data: { ...extraction, slots, goalSummary: 's', questions: extraction.questions ?? [] }, tokens: 10 };
     }
     const g = generations[Math.min(n++, generations.length - 1)];
@@ -219,8 +219,9 @@ describe('uçtan uca: navigasyon eşiği, derinlik, yerelleştirme, onarım', ()
     const gen = calls[1];
     assert.strictEqual(JSON.parse(gen.user).intentHint, 'build');
     assert.match(gen.system, /you are the prompt architect, NEVER the executor/);
-    assert.match(gen.system, /given to ChatGPT in the second person/);
-    assert.match(gen.system, /the role never belongs to the user/);
+    assert.match(gen.system, /the role belongs to ChatGPT, in the second person/);
+    assert.match(gen.system, /the goal and situation belong to the user, in the first person/);
+    assert.match(gen.system, /never give the user's goal to ChatGPT/, '2026-10-14 eval: "... geliştirmek istiyorsun"');
     assert.match(gen.system, /never mentions RouteAI/);
     assert.match(gen.system, /build \(make, create, produce.*never write a prompt that asks for general information/);
     assert.match(gen.system, /Never write a chain of mechanical labels/);

@@ -88,8 +88,9 @@ export function openAIJsonLLM(model: string = promptModel()): JsonLLM {
     const choice = res.choices[0];
     const content = choice?.message?.content;
     // Sınıra takılan yanıt boş değilse de yarım JSON'dur: ayrıştırmaya çalışmadan açık hata.
-    if (choice?.finish_reason === 'length') throw new Error('token sınırı (düşünme dahil) doldu: yanıt yarım kaldı');
-    if (!content) throw new Error('boş yanıt');
+    // Hata çağrının adını ve tavanını taşır (slot_extraction mı prompt_generation mı?).
+    if (choice?.finish_reason === 'length') throw new Error(`${req.name}: token sınırı (${req.maxTokens}, düşünme dahil) doldu: yanıt yarım kaldı`);
+    if (!content) throw new Error(`${req.name}: boş yanıt`);
     return { data: JSON.parse(content), tokens: res.usage?.total_tokens ?? 0 };
   };
 }
