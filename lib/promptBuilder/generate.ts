@@ -158,8 +158,10 @@ function systemPrompt(guide: Guide, productName: string, locale: 'en' | 'tr', ge
   const noNegative = ['text', 'code', 'slides', 'audio', 'music'].includes(guide.modality);
   const toolForm = LLM_MODALITIES.has(guide.modality)
     ? `${productName} is a text/code/document AI. Write a natural, professional system/task prompt in flowing sections: (1) the expert role and the goal: the role belongs to ${productName}, in the second person ("You are a senior…" / "Sen kıdemli bir…sın."); the goal and situation belong to the user, in the first person ("I want to build…" / "Ben … geliştirmek istiyorum."). Never give the role to the user ("As a senior architect, I want to build…") and never give the user's goal to ${productName} ("You want to build…" / "… geliştirmek istiyorsun"), (2) the project/task context and constraints, (3) the expected output structure or working steps, (4) [square-bracket placeholders] for facts only the user can fill in. Never write a chain of mechanical labels like "Role: X. Context: Y. Task: Z. Format: W."`
-    : MEDIA_MODALITIES.has(guide.modality)
-      ? `${productName} generates ${guide.modality}. No conversational sentences: describe the subject, scene, composition, light, camera, or the sound/music structure directly, in the tool's own style.`
+    : guide.modality === 'audio'
+      ? `${productName} reads "prompt" aloud word for word. "prompt" is only the text to be spoken: no labels ("Script:", "Voice settings:"), no stage directions or delivery notes. Carry the tone with the wording; put voice, speed and model into "settings".`
+      : MEDIA_MODALITIES.has(guide.modality)
+        ? `${productName} generates ${guide.modality}. No conversational sentences: describe the subject, scene, composition, light, camera, or the music structure directly, in the tool's own style.`
       : `Write the prompt in the form ${productName} expects.`;
   return `You are RouteAI's prompt architect for ${productName}. RouteAI's prompt guide below is your starting point.${guideNote}
 

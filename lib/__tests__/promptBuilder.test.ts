@@ -149,7 +149,7 @@ function fakeLLM(opts: { extracted?: Record<string, FakeSlot>; failRegexTimes?: 
           { id: 'safe', prompt: `${values.subject}, ${values.style}, ${values.mood}${extra}${ar}`, negativePrompt: null, settings: [] },
           { id: 'creative', prompt: `bold take on ${values.subject}, ${values.style}${extra}${ar}`, negativePrompt: null, settings: [] },
         ],
-        assumptions: [{ slotId: 'mood', value: values.mood, why: 'chosen' }],
+        assumptions: [{ slotId: 'mood', value: values.mood ?? 'auto', why: 'chosen' }],
         suggestedRefinements: [{ label: 'Try teal', slotId: 'mood', value: 'teal', instruction: null }],
         howToUse: [...HOW_TO_USE, 'fazladan adım'],
       },
@@ -541,14 +541,22 @@ describe('prompt oturumu', () => {
   it('rehberin boş "KAYNAK GEREKLİ" bölümleri modele gitmez; RouteAI kuralları ve kaynaksız uyarısı gider', async () => {
     assert.strictEqual(guideSection('KAYNAK GEREKLİ — erişilemedi.\n\nRouteAI kuralları:\n\n- Bir'), 'RouteAI kuralları:\n\n- Bir');
     assert.strictEqual(guideSection('KAYNAK GEREKLİ — erişilemedi.'), '');
-    const { llm, calls } = fakeLLM({ extracted: full });
-    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(llm));
-    const system = calls.find((c) => c.name === 'prompt_generation')!.system;
+    // Kaynaksız rehber (ideogram): boş bölümler atlanır, kaynaksız uyarısı gider
+    const unsourced = fakeLLM({ extracted: { text: 'Friday Jazz', style: 'typographic poster', subject: 'a saxophone' } });
+    await startPromptSession({ productId: 'ideogram-20', goal: 'poster', conversation: [{ role: 'user', content: 'jazz poster "Friday Jazz" saxophone' }], locale: 'en' }, deps(unsourced.llm));
+    const system = unsourced.calls.find((c) => c.name === 'prompt_generation')!.system;
     assert.doesNotMatch(system, /KAYNAK GEREKLİ/);
     assert.doesNotMatch(system, /## Syntax|## Examples/, 'boş bölüm başlığıyla atlanır');
     assert.match(system, /## Template\n/);
     assert.match(system, /## Do \/ Don't\nRouteAI kuralları/);
-    assert.match(system, /no verified Midjourney documentation yet/);
+    assert.match(system, /no verified Ideogram documentation yet/);
+    // Kaynaklı rehber (midjourney v5): sözdizimi ve örnekler gider, kaynaksız uyarısı gitmez
+    const { llm, calls } = fakeLLM({ extracted: full });
+    await startPromptSession({ productId: 'midjourney-v7', goal: 'logo', conversation, locale: 'en' }, deps(llm));
+    const mjSystem = calls.find((c) => c.name === 'prompt_generation')!.system;
+    assert.match(mjSystem, /## Syntax\nKaynak: \[Aspect Ratio\]/);
+    assert.match(mjSystem, /## Examples\n[\s\S]*--ar 2:3/);
+    assert.doesNotMatch(mjSystem, /no verified Midjourney documentation/);
   });
 
   it('Cursor kısıt kuralı Türkçe zorunluluk ekini tanır (2026-10-14 eval, replit-generic yanlış alarmı)', () => {
@@ -557,11 +565,31 @@ describe('prompt oturumu', () => {
     assert.strictEqual(checkPrompt('Bir kuaför sitesi yap ve sayfaları oluştur.', v).length, 1, 'kısıt yoksa yine uyarır');
   });
 
-  it('Midjourney oran kuralı sözdiziminden bağımsız: "16:9" de "--ar 16:9" da geçer', () => {
-    const v = midjourney().validators.filter((x) => x.id === 'aspect-ratio');
-    assert.deepStrictEqual(checkPrompt('a fox in a cozy library, watercolor, 16:9', v), []);
+  it('Midjourney v5 (kaynak: Aspect Ratio sayfası): oran sonda --ar/--aspect, tam sayı; düz metin oran geçmez', () => {
+    const v = midjourney().validators;
     assert.deepStrictEqual(checkPrompt('a fox in a cozy library, watercolor --ar 16:9', v), []);
-    assert.strictEqual(checkPrompt('a fox in a cozy library, watercolor', v).length, 1);
+    assert.deepStrictEqual(checkPrompt('portrait of an astronaut, studio light --aspect 2:3', v), []);
+    assert.strictEqual(checkPrompt('a fox in a cozy library, watercolor, square format 1:1', v).length, 1, '2026-10-14 eval: düz metin oran');
+    assert.ok(checkPrompt('a fox --ar 1.5:1', v).some((m) => /whole numbers/.test(m)));
+    assert.ok(checkPrompt('a fox --ar 1:1 --aspect 9:16', v).some((m) => /single aspect ratio/.test(m)));
+  });
+
+  it('ElevenLabs v4 (kaynak: TTS best practices): prompt sesli okunan metin; etiket ve break tag yok', () => {
+    const v = loadGuides().find((g) => g.id === 'elevenlabs-voiceover')!.validators;
+    assert.deepStrictEqual(checkPrompt('Bu derste bütçe yapmayı öğreneceğiz. Önce gelirini yaz… sonra giderlerini.', v), []);
+    assert.deepStrictEqual(checkPrompt('Dur — bu ses ne? Saat on dörtte buluşalım.', v), [], 'cümle içi iki nokta yok, tire serbest');
+    for (const bad of ["Ses ayarları: kadın sesi, sakin. Metin: 'Bu derste bütçe yapmayı öğreneceğiz.'", 'Voice settings: neutral voice. Script: I want a voiceover.', 'Merhaba. Ton: sakin.', 'Dur bir düşüneyim. <break time="1.5s" /> Tamam.']) {
+      assert.strictEqual(checkPrompt(bad, v).length, 1, bad);
+    }
+  });
+
+  it('ses aracı için üretici kuralı: prompt sesli okunur, ayarlar settings\'e', async () => {
+    const { llm, calls } = fakeLLM({ extracted: { language: 'Turkish', tone: 'calm', voice: 'female voice' } });
+    await startPromptSession({ productId: 'elevenlabs', goal: 'ders seslendirmesi', conversation: [{ role: 'user', content: 'Türkçe sakin kadın sesiyle ders seslendirmesi' }], locale: 'tr' }, deps(llm));
+    const system = calls.find((c) => c.name === 'prompt_generation')!.system;
+    assert.match(system, /reads "prompt" aloud word for word/);
+    assert.match(system, /put voice, speed and model into "settings"/);
+    assert.doesNotMatch(system, /describe the subject, scene/);
   });
 
   it('ajan aracı build_prompt: kart + token, ajanın bildiği slotlar kullanıcı bilgisi sayılır', async () => {
