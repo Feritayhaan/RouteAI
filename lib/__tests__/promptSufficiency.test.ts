@@ -69,7 +69,11 @@ const FIXTURES: Fixture[] = [
   {
     guideId: 'suno', locale: 'tr',
     goal: 'Kızım Elif için doğum günü şarkısı, neşeli pop',
-    good: v("Stil: neşeli pop, parlak synth ve el çırpmaları, kadın vokal, orta tempo. Sözler: Elif'in doğum günü için sevgi dolu, eğlenceli sözler; nakaratta adı tekrar edilsin."),
+    // v4 rehber: prompt Styles alanı; sözler Lyrics ayarında, etiketsiz, bölümler boş satırla (2026-10-16 Suno arayüzü)
+    good: v('upbeat pop, bright synths and handclaps, female vocals, mid tempo, joyful birthday song', null, [
+      { key: 'Lyrics', value: 'Bugün senin günün Elif\nMumları üfle, dilek tut\n\nElif, Elif, mutlu yıllar\nŞarkımız seninle dolsun' },
+      { key: 'Vocal Gender', value: 'Female' },
+    ]),
     bad: v('Neşeli bir doğum günü şarkısı, bir şeyler', 'rap'),
     fails: ['selfContainment', 'toolReadiness', 'actionability', 'consistency'],
   },
