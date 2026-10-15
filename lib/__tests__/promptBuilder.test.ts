@@ -634,6 +634,48 @@ describe('prompt oturumu', () => {
     assert.doesNotMatch(regexOnly.message, /Found:/, 'eşleşmesi gereken kuralda alıntı yok');
   });
 
+  it('Suno v4 (kaynak: Create ekranı): prompt Styles alanı, tek satır; sözler ve etiketler promptta yok', () => {
+    const v = loadGuides().find((g) => g.id === 'suno')!.validators;
+    assert.deepStrictEqual(checkPrompt('upbeat allegro pop, bright synths, female vocals, crescendo into powerful chorus', v), []);
+    assert.deepStrictEqual(checkPrompt('instrumental lo-fi hip-hop, mellow piano, vinyl crackle', v), []);
+    // 2026-10-14 eval'deki birleşik çıktı
+    assert.ok(checkPrompt('Style: pop, upbeat, female vocals, fast tempo. Lyrics: \nVerse 1: Sun is shining, hearts are racing', v).some((m) => /Styles field/.test(m)));
+    assert.ok(checkPrompt('pop, upbeat, female vocals\nSun is shining, hearts are racing', v).some((m) => /Styles field/.test(m)), 'çok satır = söz');
+  });
+
+  it('müzik aracı için üretici kuralı: iki alan (Styles + Lyrics ayarı) sadece Suno\'nun kendi rehberinde', async () => {
+    const suno = fakeLLM({ extracted: { genre: 'pop', mood: 'upbeat', vocals: 'female vocals' } });
+    await startPromptSession({ productId: 'suno-ai', goal: 'yaz şarkısı', conversation: [{ role: 'user', content: 'kadın vokalli neşeli pop yaz şarkısı' }], locale: 'tr' }, deps(suno.llm));
+    const system = suno.calls.find((c) => c.name === 'prompt_generation')!.system;
+    assert.match(system, /"prompt" is the Styles field: one line of short, comma-separated English descriptors/);
+    assert.match(system, /the key "Lyrics"/);
+    assert.match(system, /For an instrumental track there is no "Lyrics" setting/);
+    // Udio: Suno rehberi genel rehber olarak gelir; Suno'nun arayüzü Udio'ya iddia edilmez
+    const udio = fakeLLM({ extracted: { genre: 'pop', mood: 'upbeat', vocals: 'female vocals' } });
+    await startPromptSession({ productId: 'udio', goal: 'yaz şarkısı', conversation: [{ role: 'user', content: 'kadın vokalli neşeli pop yaz şarkısı' }], locale: 'tr' }, { ...deps(udio.llm), tasksById: loadCatalog().tasksById });
+    const udioSystem = udio.calls.find((c) => c.name === 'prompt_generation')?.system ?? '';
+    assert.ok(udioSystem, 'udio genel rehberle üretir');
+    assert.doesNotMatch(udioSystem, /has two separate fields/);
+  });
+
+  it('hazır buton çok değerli slotta değeri ekler, tek değerlide değiştirir (2026-10-14 eval, cursor-full)', async () => {
+    const { llm } = fakeLLM({ extracted: { goal: 'fix the expired token bug', scope: 'a single file', constraints: 'do not change the public API' } });
+    const d = deps(llm);
+    const r = await startPromptSession({ productId: 'cursor', goal: 'fix bug', conversation: [{ role: 'user', content: 'fix expired token bug in src/auth/login.ts, do not change the public API' }], locale: 'en' }, d);
+    if ('error' in r || r.card.type !== 'prompt') return assert.fail('kart yok');
+    const id = r.card.promptSessionId;
+    const once = await refinePromptSession({ promptSessionId: id, refinementId: 'no-deps' }, d);
+    if ('error' in once) return assert.fail(once.error);
+    assert.strictEqual(once.session.slots.constraints.value, 'do not change the public API; no new dependencies');
+    const twice = await refinePromptSession({ promptSessionId: id, refinementId: 'no-deps' }, d);
+    if ('error' in twice) return assert.fail(twice.error);
+    assert.strictEqual(twice.session.slots.constraints.value, 'do not change the public API; no new dependencies', 'aynı değer iki kez eklenmez');
+    // Varsayım değişikliği (kullanıcı değeri kendisi yazar) değiştirir
+    const edited = await refinePromptSession({ promptSessionId: id, slotId: 'constraints', value: 'keep the tests green' }, d);
+    if ('error' in edited) return assert.fail(edited.error);
+    assert.strictEqual(edited.session.slots.constraints.value, 'keep the tests green');
+  });
+
   it('ses aracı için üretici kuralı: prompt sesli okunur, ayarlar settings\'e', async () => {
     const { llm, calls } = fakeLLM({ extracted: { language: 'Turkish', tone: 'calm', voice: 'female voice' } });
     await startPromptSession({ productId: 'elevenlabs', goal: 'ders seslendirmesi', conversation: [{ role: 'user', content: 'Türkçe sakin kadın sesiyle ders seslendirmesi' }], locale: 'tr' }, deps(llm));

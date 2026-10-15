@@ -13,6 +13,11 @@ export const guideSlotSchema = z.object({
   options: z.array(z.object({ id: idSchema, label: localeTextSchema, value: z.string().min(1) })).min(2),
   /** Seçenek id'si ya da 'infer' (üretici konuşmadan/amaçtan çıkarır). */
   default: z.string().min(1),
+  /**
+   * Birden çok değer birlikte geçerli (ör. kısıtlar): hazır iyileştirme butonu yeni değeri
+   * mevcut değerin yanına ekler, yerine koymaz. Yoksa (oran, ton) değiştirir.
+   */
+  multi: z.boolean().optional(),
 });
 
 export const guideRefinementSchema = z

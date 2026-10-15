@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "cursor-task"
-version: 5
+version: 6
 appliesTo: ["cursor"]
 modality: "code"
 promptLanguage: "user"
@@ -80,6 +80,7 @@ slots:
       tr: "Yeni bağımlılık yok"
     value: "no new dependencies"
   default: "infer"
+  multi: true
 - id: "verification"
   impact: "medium"
   question:

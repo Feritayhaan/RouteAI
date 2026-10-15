@@ -287,6 +287,18 @@ export async function refinePromptSession(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
+  /**
+   * Hazır buton: çok değerli slotta (guide slot multi) yeni değer mevcut değerin yanına eklenir
+   * (2026-10-14 eval, cursor-full: "Yeni bağımlılık yok" "public API değişmesin"i siliyordu).
+   * Değer zaten varsa tekrar eklenmez. Varsayım değişikliği (kullanıcı değeri kendisi yazar) değiştirir.
+   */
+  const combined = (slotId: string, value: string): string => {
+    const slot = guide.slots.find((s) => s.id === slotId);
+    const current = session.slots[slotId]?.value?.trim();
+    if (!slot?.multi || !current) return value;
+    if (current.toLowerCase().includes(value.trim().toLowerCase())) return current;
+    return `${current}; ${value.trim()}`;
+  };
   let meta: RefineMeta;
   const changed: Record<string, string> = {};
   const setSlot = (slotId: string, value: string): SlotState | null => {
@@ -304,7 +316,7 @@ export async function refinePromptSession(
     const suggested = suggestedIdx ? session.versions.at(-1)!.suggestedRefinements[Number(suggestedIdx) - 1] : undefined;
     if (guideRef) {
       for (const [slotId, value] of Object.entries(guideRef.patch ?? {})) {
-        const state = setSlot(slotId, value);
+        const state = setSlot(slotId, combined(slotId, value));
         if (state?.value) {
           session.slots[slotId] = state;
           changed[slotId] = state.value;
@@ -313,7 +325,7 @@ export async function refinePromptSession(
       meta = { refinementIds: [guideRef.id], ...(guideRef.instruction ? { instruction: guideRef.instruction } : {}), changedSlots: changed };
     } else if (suggested) {
       if (suggested.slotId && suggested.value) {
-        const state = setSlot(suggested.slotId, suggested.value);
+        const state = setSlot(suggested.slotId, combined(suggested.slotId, suggested.value));
         if (state?.value) {
           session.slots[suggested.slotId] = state;
           changed[suggested.slotId] = state.value;
