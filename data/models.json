@@ -1,215 +1,5 @@
 [
   {
-    "id": "alpaca-13b",
-    "name": "alpaca-13b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 932.7568880740898,
-        "ciLow": 921.5012930322828,
-        "ciHigh": 944.0124831158969,
-        "votes": 5745,
-        "rank": 409,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-experimental-chat-10-09",
-    "name": "amazon-nova-experimental-chat-10-09",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1363.8979818020835,
-        "ciLow": 1353.0305560655797,
-        "ciHigh": 1374.7654075385872,
-        "votes": 2781,
-        "rank": 193,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-experimental-chat-10-20",
-    "name": "amazon-nova-experimental-chat-10-20",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1393.735934271784,
-        "ciLow": 1387.6788307471572,
-        "ciHigh": 1399.7930377964103,
-        "votes": 11632,
-        "rank": 162,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-experimental-chat-11-10",
-    "name": "amazon-nova-experimental-chat-11-10",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1415.095703748811,
-        "ciLow": 1410.8877969377236,
-        "ciHigh": 1419.3036105598985,
-        "votes": 26050,
-        "rank": 131,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-experimental-chat-12-10",
-    "name": "amazon-nova-experimental-chat-12-10",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.4768387828908,
-        "ciLow": 1410.0623230142048,
-        "ciHigh": 1428.8913545515768,
-        "votes": 3735,
-        "rank": 117,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-experimental-chat-26-01-10",
-    "name": "amazon-nova-experimental-chat-26-01-10",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1395.77340182351,
-        "ciLow": 1386.1711946121495,
-        "ciHigh": 1405.3756090348709,
-        "votes": 3539,
-        "rank": 159,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-experimental-chat-26-02-10",
-    "name": "amazon-nova-experimental-chat-26-02-10",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1448.4433438971998,
-        "ciLow": 1438.8247343718722,
-        "ciHigh": 1458.0619534225277,
-        "votes": 3525,
-        "rank": 53,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-lite-v1-0",
-    "name": "amazon-nova-lite-v1.0",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1228.4350082285805,
-        "ciLow": 1223.2833404073174,
-        "ciHigh": 1233.5866760498438,
-        "votes": 19372,
-        "rank": 302,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-micro-v1-0",
-    "name": "amazon-nova-micro-v1.0",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1208.3710015681963,
-        "ciLow": 1203.2162444299886,
-        "ciHigh": 1213.5257587064038,
-        "votes": 19364,
-        "rank": 314,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "amazon-nova-pro-v1-0",
-    "name": "amazon-nova-pro-v1.0",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1258.647981822157,
-        "ciLow": 1254.099197887041,
-        "ciHigh": 1263.196765757273,
-        "votes": 24745,
-        "rank": 290,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "api-gpt-4o-search",
     "name": "api-gpt-4o-search",
     "creator": "openai",
@@ -226,48 +16,6 @@
         "ciHigh": 1017.7890378143692,
         "votes": 3399,
         "rank": 42,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "athene-70b-0725",
-    "name": "athene-70b-0725",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1265.0914813101874,
-        "ciLow": 1259.453734111353,
-        "ciHigh": 1270.7292285090218,
-        "votes": 19621,
-        "rank": 284,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "athene-v2-chat",
-    "name": "athene-v2-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1291.4108491804377,
-        "ciLow": 1286.8716969118552,
-        "ciHigh": 1295.9500014490204,
-        "votes": 24739,
-        "rank": 253,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -304,132 +52,6 @@
     ]
   },
   {
-    "id": "c4ai-aya-expanse-32b",
-    "name": "c4ai-aya-expanse-32b",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1223.9600030990941,
-        "ciLow": 1219.1030998915774,
-        "ciHigh": 1228.8169063066111,
-        "votes": 27124,
-        "rank": 308,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "c4ai-aya-expanse-8b",
-    "name": "c4ai-aya-expanse-8b",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1185.0619038803954,
-        "ciLow": 1178.1446304273002,
-        "ciHigh": 1191.9791773334907,
-        "votes": 9818,
-        "rank": 328,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "chatglm-6b",
-    "name": "chatglm-6b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 918.4107246338633,
-        "ciLow": 906.1907531084707,
-        "ciHigh": 930.6306961592559,
-        "votes": 4914,
-        "rank": 410,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "chatglm2-6b",
-    "name": "chatglm2-6b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 938.5739782349226,
-        "ciLow": 925.137176451565,
-        "ciHigh": 952.0107800182802,
-        "votes": 2658,
-        "rank": 408,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "chatglm3-6b",
-    "name": "chatglm3-6b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 971.985134072072,
-        "ciLow": 960.43207862598,
-        "ciHigh": 983.538189518164,
-        "votes": 4658,
-        "rank": 404,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "chatgpt-4o-latest-20250326",
-    "name": "chatgpt-4o-latest-20250326",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1428.4060400937053,
-        "ciLow": 1425.6196045690162,
-        "ciHigh": 1431.1924756183944,
-        "votes": 81916,
-        "rank": 97,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "chatgpt-image-latest-high-fidelity-20251216",
     "name": "chatgpt-image-latest-high-fidelity (20251216)",
     "creator": "openai",
@@ -447,174 +69,6 @@
         "votes": 629464,
         "rank": 13,
         "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-5-haiku-20241022",
-    "name": "claude-3-5-haiku-20241022",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1255.3642290508317,
-        "ciLow": 1252.1374937810463,
-        "ciHigh": 1258.590964320617,
-        "votes": 69061,
-        "rank": 292,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-5-sonnet-20240620",
-    "name": "claude-3-5-sonnet-20240620",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1280.8711682146513,
-        "ciLow": 1277.4543611068698,
-        "ciHigh": 1284.287975322433,
-        "votes": 82419,
-        "rank": 270,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-5-sonnet-20241022",
-    "name": "claude-3-5-sonnet-20241022",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1297.8070284791122,
-        "ciLow": 1294.6230113341746,
-        "ciHigh": 1300.9910456240498,
-        "votes": 87772,
-        "rank": 250,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-7-sonnet-20250219",
-    "name": "claude-3-7-sonnet-20250219",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1299.283800742443,
-        "ciLow": 1295.2995414022375,
-        "ciHigh": 1303.2680600826486,
-        "votes": 42571,
-        "rank": 248,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-7-sonnet-20250219-thinking-32k",
-    "name": "claude-3-7-sonnet-20250219-thinking-32k",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1314.2428603217497,
-        "ciLow": 1310.0011502413793,
-        "ciHigh": 1318.48457040212,
-        "votes": 38159,
-        "rank": 239,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-haiku-20240307",
-    "name": "claude-3-haiku-20240307",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1194.631604474513,
-        "ciLow": 1190.8974570966968,
-        "ciHigh": 1198.3657518523291,
-        "votes": 117701,
-        "rank": 320,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-opus-20240229",
-    "name": "claude-3-opus-20240229",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1261.9567630189247,
-        "ciLow": 1258.919220349157,
-        "ciHigh": 1264.9943056886925,
-        "votes": 194909,
-        "rank": 288,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-3-sonnet-20240229",
-    "name": "claude-3-sonnet-20240229",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1217.9889704334669,
-        "ciLow": 1214.036198656593,
-        "ciHigh": 1221.9417422103409,
-        "votes": 109284,
-        "rank": 310,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -683,16 +137,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1509.938542834051,
-        "ciLow": 1503.8412363686539,
-        "ciHigh": 1516.0358492994483,
-        "votes": 14121,
-        "rank": 3,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1742.652412524194,
         "ciLow": 1733.505053792237,
@@ -721,16 +165,6 @@
         "ciLow": 1222.6300106967105,
         "ciHigh": 1235.6494926104895,
         "votes": 73596,
-        "rank": 10,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1490.9689250439467,
-        "ciLow": 1486.6628700177907,
-        "ciHigh": 1495.2749800701026,
-        "votes": 41439,
         "rank": 10,
         "fetchedAt": "2026-10-14"
       },
@@ -765,16 +199,6 @@
         "votes": 34677,
         "rank": 37,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1396.45491820763,
-        "ciLow": 1394.0552363344327,
-        "ciHigh": 1398.8546000808276,
-        "votes": 148312,
-        "rank": 158,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -821,43 +245,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1418.5247776398523,
-        "ciLow": 1415.5484238963527,
-        "ciHigh": 1421.501131383352,
-        "votes": 77263,
-        "rank": 122,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1389.9370897727906,
         "ciLow": 1379.2204261094091,
         "ciHigh": 1400.653753436172,
         "votes": 6928,
         "rank": 96,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-opus-4-1-20250805-thinking-16k",
-    "name": "claude-opus-4-1-20250805-thinking-16k",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.2497383876623,
-        "ciLow": 1415.791057676814,
-        "ciHigh": 1422.7084190985106,
-        "votes": 49548,
-        "rank": 119,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -884,48 +277,6 @@
     ]
   },
   {
-    "id": "claude-opus-4-20250514",
-    "name": "claude-opus-4-20250514",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1365.7629085981328,
-        "ciLow": 1361.4328972827564,
-        "ciHigh": 1370.0929199135091,
-        "votes": 43047,
-        "rank": 190,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-opus-4-20250514-thinking-16k",
-    "name": "claude-opus-4-20250514-thinking-16k",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1377.0346210079806,
-        "ciLow": 1372.599948656187,
-        "ciHigh": 1381.4692933597742,
-        "votes": 35909,
-        "rank": 176,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "claude-opus-4-5-20251101",
     "name": "claude-opus-4-5-20251101",
     "creator": "anthropic",
@@ -944,16 +295,6 @@
         "votes": 7981,
         "rank": 21,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1450.9107206763244,
-        "ciLow": 1447.8048620409072,
-        "ciHigh": 1454.0165793117415,
-        "votes": 72942,
-        "rank": 50,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -977,16 +318,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1448.2091815607196,
-        "ciLow": 1444.3820618374075,
-        "ciHigh": 1452.0363012840319,
-        "votes": 37532,
-        "rank": 54,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -1042,16 +373,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1497.9943103780033,
-        "ciLow": 1494.7447422431078,
-        "ciHigh": 1501.2438785128986,
-        "votes": 85445,
-        "rank": 9,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1537.2575409877645,
         "ciLow": 1531.912296652893,
@@ -1081,16 +402,6 @@
         "votes": 27929,
         "rank": 3,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1501.768934747146,
-        "ciLow": 1498.4373254781447,
-        "ciHigh": 1505.100544016147,
-        "votes": 80827,
-        "rank": 7,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -1158,16 +469,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1482.8960769460396,
-        "ciLow": 1479.1463721404934,
-        "ciHigh": 1486.6457817515854,
-        "votes": 66213,
-        "rank": 16,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1555.462532657206,
         "ciLow": 1549.8474088708697,
@@ -1197,16 +498,6 @@
         "votes": 21957,
         "rank": 7,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1489.715536138092,
-        "ciLow": 1485.9740800281259,
-        "ciHigh": 1493.4569922480582,
-        "votes": 65125,
-        "rank": 13,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -1253,16 +544,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1453.8028896085343,
-        "ciLow": 1449.9592934568109,
-        "ciHigh": 1457.6464857602577,
-        "votes": 65181,
-        "rank": 47,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1536.1770697481782,
         "ciLow": 1530.475304402596,
@@ -1295,16 +576,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1461.0496284059907,
-        "ciLow": 1457.1796149122242,
-        "ciHigh": 1464.9196418997572,
-        "votes": 64112,
-        "rank": 40,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1555.9904798756354,
         "ciLow": 1550.2222468341258,
@@ -1332,27 +603,6 @@
         "ciHigh": 1132.8360739303926,
         "votes": 31506,
         "rank": 40,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-opus-5-5-high",
-    "name": "claude-opus-5.5-high",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1515.5352642973353,
-        "ciLow": 1508.0127594448836,
-        "ciHigh": 1523.057769149787,
-        "votes": 7687,
-        "rank": 2,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -1432,16 +682,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1502.4660916810756,
-        "ciLow": 1498.790253012018,
-        "ciHigh": 1506.141930350133,
-        "votes": 65663,
-        "rank": 6,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1657.8371867591425,
         "ciLow": 1652.3046459626446,
@@ -1464,64 +704,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1507.2313200147319,
-        "ciLow": 1502.4136138311806,
-        "ciHigh": 1512.0490261982832,
-        "votes": 31907,
-        "rank": 4,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1689.9672356182698,
         "ciLow": 1683.687456328542,
         "ciHigh": 1696.2470149079975,
         "votes": 17934,
         "rank": 7,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-sonnet-4-20250514",
-    "name": "claude-sonnet-4-20250514",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1339.2387147829886,
-        "ciLow": 1334.8129976841055,
-        "ciHigh": 1343.664431881872,
-        "votes": 39172,
-        "rank": 214,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "claude-sonnet-4-20250514-thinking-32k",
-    "name": "claude-sonnet-4-20250514-thinking-32k",
-    "creator": "anthropic",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1350.8297330932148,
-        "ciLow": 1346.3327402859386,
-        "ciHigh": 1355.3267259004908,
-        "votes": 34140,
-        "rank": 205,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -1548,16 +736,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1438.456924957921,
-        "ciLow": 1435.605790059622,
-        "ciHigh": 1441.30805985622,
-        "votes": 82727,
-        "rank": 78,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1384.7176675973703,
         "ciLow": 1377.4616483564282,
@@ -1578,16 +756,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1434.5675607349092,
-        "ciLow": 1431.8064543827231,
-        "ciHigh": 1437.3286670870953,
-        "votes": 83948,
-        "rank": 89,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -1640,16 +808,6 @@
         "votes": 57813,
         "rank": 11,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1457.81005311174,
-        "ciLow": 1454.3137943597246,
-        "ciHigh": 1461.3063118637556,
-        "votes": 70940,
-        "rank": 41,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -1717,16 +875,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1470.6328959582916,
-        "ciLow": 1462.6680555885953,
-        "ciHigh": 1478.5977363279876,
-        "votes": 6254,
-        "rank": 30,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1773.6614538733893,
         "ciLow": 1759.8113348533113,
@@ -1759,16 +907,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1442.3873296839977,
-        "ciLow": 1438.263872669659,
-        "ciHigh": 1446.5107866983365,
-        "votes": 48998,
-        "rank": 71,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1539.918730362966,
         "ciLow": 1533.8572424401846,
@@ -1796,153 +934,6 @@
         "ciHigh": 1197.1015385974597,
         "votes": 72978,
         "rank": 23,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "codellama-34b-instruct",
-    "name": "codellama-34b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1065.4320969377875,
-        "ciLow": 1056.6709979999878,
-        "ciHigh": 1074.1931958755874,
-        "votes": 7366,
-        "rank": 383,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "codellama-70b-instruct",
-    "name": "codellama-70b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1057.190309213932,
-        "ciLow": 1039.20917657627,
-        "ciHigh": 1075.171441851594,
-        "votes": 1143,
-        "rank": 386,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "command-a-03-2025",
-    "name": "command-a-03-2025",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1330.9349521350025,
-        "ciLow": 1327.4867845130518,
-        "ciHigh": 1334.3831197569532,
-        "votes": 55762,
-        "rank": 224,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "command-r",
-    "name": "command-r",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1163.0845618250814,
-        "ciLow": 1158.3547939532643,
-        "ciHigh": 1167.8143296968983,
-        "votes": 54036,
-        "rank": 337,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "command-r-08-2024",
-    "name": "command-r-08-2024",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1187.3099955156372,
-        "ciLow": 1180.7907346102513,
-        "ciHigh": 1193.829256421023,
-        "votes": 10140,
-        "rank": 324,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "command-r-plus",
-    "name": "command-r-plus",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1203.7814376614629,
-        "ciLow": 1199.497776535696,
-        "ciHigh": 1208.0650987872298,
-        "votes": 77554,
-        "rank": 317,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "command-r-plus-08-2024",
-    "name": "command-r-plus-08-2024",
-    "creator": "cohere",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1228.8495907683396,
-        "ciLow": 1222.308632149329,
-        "ciHigh": 1235.3905493873501,
-        "votes": 9866,
-        "rank": 301,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -2011,279 +1002,6 @@
     ]
   },
   {
-    "id": "dbrx-instruct-preview",
-    "name": "dbrx-instruct-preview",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1118.8183859706978,
-        "ciLow": 1112.7696618501184,
-        "ciHigh": 1124.867110091277,
-        "votes": 32191,
-        "rank": 356,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-coder-v2",
-    "name": "deepseek-coder-v2",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1191.141146408694,
-        "ciLow": 1184.8052824071247,
-        "ciHigh": 1197.4770104102633,
-        "votes": 15147,
-        "rank": 322,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-llm-67b-chat",
-    "name": "deepseek-llm-67b-chat",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1104.9787712822351,
-        "ciLow": 1093.4478964203909,
-        "ciHigh": 1116.5096461440792,
-        "votes": 4932,
-        "rank": 364,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-r1",
-    "name": "deepseek-r1",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1372.6255475107168,
-        "ciLow": 1367.779322471521,
-        "ciHigh": 1377.4717725499127,
-        "votes": 18524,
-        "rank": 180,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-r1-0528",
-    "name": "deepseek-r1-0528",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1427.6797093067373,
-        "ciLow": 1422.0259042749497,
-        "ciHigh": 1433.3335143385248,
-        "votes": 18168,
-        "rank": 101,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v2-5",
-    "name": "deepseek-v2.5",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1271.2035176404388,
-        "ciLow": 1266.5250754706904,
-        "ciHigh": 1275.8819598101873,
-        "votes": 24572,
-        "rank": 280,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v2-5-1210",
-    "name": "deepseek-v2.5-1210",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1293.8803061532653,
-        "ciLow": 1285.6585505207595,
-        "ciHigh": 1302.1020617857712,
-        "votes": 6795,
-        "rank": 251,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3",
-    "name": "deepseek-v3",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1332.4418454441109,
-        "ciLow": 1327.7088562300862,
-        "ciHigh": 1337.1748346581353,
-        "votes": 21770,
-        "rank": 223,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3-0324",
-    "name": "deepseek-v3-0324",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1374.5493593942126,
-        "ciLow": 1370.696639390968,
-        "ciHigh": 1378.402079397457,
-        "votes": 44978,
-        "rank": 178,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3-1",
-    "name": "deepseek-v3.1",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.7068006295583,
-        "ciLow": 1413.6640297007823,
-        "ciHigh": 1425.7495715583345,
-        "votes": 14611,
-        "rank": 116,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3-1-terminus",
-    "name": "deepseek-v3.1-terminus",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1417.346045856604,
-        "ciLow": 1407.6218086736533,
-        "ciHigh": 1427.0702830395544,
-        "votes": 3609,
-        "rank": 124,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3-1-terminus-thinking",
-    "name": "deepseek-v3.1-terminus-thinking",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.273227077962,
-        "ciLow": 1409.1717023148974,
-        "ciHigh": 1429.3747518410264,
-        "votes": 3373,
-        "rank": 118,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3-1-thinking",
-    "name": "deepseek-v3.1-thinking",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1416.6689831067474,
-        "ciLow": 1410.045150142918,
-        "ciHigh": 1423.292816070577,
-        "votes": 11460,
-        "rank": 128,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "deepseek-v3-2",
     "name": "deepseek-v3.2",
     "creator": "deepseek",
@@ -2293,16 +1011,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1424.4785207304044,
-        "ciLow": 1421.012801189958,
-        "ciHigh": 1427.9442402708505,
-        "votes": 48134,
-        "rank": 105,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -2327,43 +1035,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1422.0834111622169,
-        "ciLow": 1415.749230863174,
-        "ciHigh": 1428.4175914612597,
-        "votes": 12005,
-        "rank": 111,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1271.6107298986346,
         "ciLow": 1258.120540962151,
         "ciHigh": 1285.1009188351184,
         "votes": 3972,
         "rank": 125,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v3-2-exp-thinking",
-    "name": "deepseek-v3.2-exp-thinking",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1424.7942788654022,
-        "ciLow": 1418.247839132456,
-        "ciHigh": 1431.3407185983485,
-        "votes": 9001,
-        "rank": 104,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -2378,16 +1055,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.9101601862335,
-        "ciLow": 1416.3569498029494,
-        "ciHigh": 1423.4633705695178,
-        "votes": 42077,
-        "rank": 115,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -2412,43 +1079,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1462.5436351834105,
-        "ciLow": 1456.2511196538883,
-        "ciHigh": 1468.8361507129327,
-        "votes": 12000,
-        "rank": 39,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1618.5134057265923,
         "ciLow": 1607.5788478735915,
         "ciHigh": 1629.447963579593,
         "votes": 3544,
         "rank": 24,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "deepseek-v4-flash",
-    "name": "deepseek-v4-flash",
-    "creator": "deepseek",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1432.192311767214,
-        "ciLow": 1428.1741542081506,
-        "ciHigh": 1436.2104693262772,
-        "votes": 52016,
-        "rank": 92,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -2486,16 +1122,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1424.3169462145793,
-        "ciLow": 1420.2282364285584,
-        "ciHigh": 1428.4056560006002,
-        "votes": 51814,
-        "rank": 106,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1430.6320866639408,
         "ciLow": 1423.6895971298616,
@@ -2516,16 +1142,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1451.225210370205,
-        "ciLow": 1447.3433183740476,
-        "ciHigh": 1455.1071023663624,
-        "votes": 57614,
-        "rank": 49,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -2550,16 +1166,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1445.3906900271186,
-        "ciLow": 1438.8217484715842,
-        "ciHigh": 1451.9596315826532,
-        "votes": 9808,
-        "rank": 61,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1582.1704498218623,
         "ciLow": 1572.7175898979008,
@@ -2580,16 +1186,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1444.85258091783,
-        "ciLow": 1440.907599311875,
-        "ciHigh": 1448.7975625237852,
-        "votes": 54929,
-        "rank": 63,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -2661,69 +1257,6 @@
         "ciHigh": 1031.173340572548,
         "votes": 6368,
         "rank": 41,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "dola-seed-2-0-pro",
-    "name": "dola-seed-2.0-pro",
-    "creator": "bytedance",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1448.1126932691027,
-        "ciLow": 1444.7776876650903,
-        "ciHigh": 1451.447698873115,
-        "votes": 79156,
-        "rank": 55,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "dolly-v2-12b",
-    "name": "dolly-v2-12b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 851.0737445379484,
-        "ciLow": 837.8349466544807,
-        "ciHigh": 864.3125424214163,
-        "votes": 3412,
-        "rank": 414,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "dolphin-2-2-1-mistral-7b",
-    "name": "dolphin-2.2.1-mistral-7b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1080.9217068631726,
-        "ciLow": 1065.6362161965449,
-        "ciHigh": 1096.2071975298004,
-        "votes": 1679,
-        "rank": 376,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -2811,69 +1344,6 @@
     ]
   },
   {
-    "id": "ernie-5-0-0110",
-    "name": "ernie-5.0-0110",
-    "creator": "baidu",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1444.6485436306625,
-        "ciLow": 1440.7887374024422,
-        "ciHigh": 1448.5083498588829,
-        "votes": 36511,
-        "rank": 64,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "ernie-5-0-preview-1022",
-    "name": "ernie-5.0-preview-1022",
-    "creator": "baidu",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1429.8360711270604,
-        "ciLow": 1421.0795237494228,
-        "ciHigh": 1438.5926185046983,
-        "votes": 4754,
-        "rank": 95,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "ernie-5-0-preview-1203",
-    "name": "ernie-5.0-preview-1203",
-    "creator": "baidu",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1442.4585658752978,
-        "ciLow": 1435.996267408894,
-        "ciHigh": 1448.9208643417019,
-        "votes": 9810,
-        "rank": 69,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "ernie-5-1",
     "name": "ernie-5.1",
     "creator": "baidu",
@@ -2891,58 +1361,6 @@
         "ciHigh": 1236.1866896750573,
         "votes": 4024,
         "rank": 11,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1467.878588729861,
-        "ciLow": 1463.371321090937,
-        "ciHigh": 1472.385856368785,
-        "votes": 39489,
-        "rank": 34,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "falcon-180b-chat",
-    "name": "falcon-180b-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1054.301464612389,
-        "ciLow": 1037.3020813773935,
-        "ciHigh": 1071.3008478473846,
-        "votes": 1295,
-        "rank": 389,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "fastchat-t5-3b",
-    "name": "fastchat-t5-3b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 894.3452209825932,
-        "ciLow": 882.1422488366402,
-        "ciHigh": 906.5481931285462,
-        "votes": 4203,
-        "rank": 412,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -3311,153 +1729,6 @@
     ]
   },
   {
-    "id": "gemini-1-5-flash-001",
-    "name": "gemini-1.5-flash-001",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1239.2520886548207,
-        "ciLow": 1234.7887152183182,
-        "ciHigh": 1243.7154620913232,
-        "votes": 62833,
-        "rank": 296,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-1-5-flash-002",
-    "name": "gemini-1.5-flash-002",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1286.604713343773,
-        "ciLow": 1282.405318112065,
-        "ciHigh": 1290.804108575481,
-        "votes": 34902,
-        "rank": 261,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-1-5-flash-8b-001",
-    "name": "gemini-1.5-flash-8b-001",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1225.8080550448726,
-        "ciLow": 1221.5302414154744,
-        "ciHigh": 1230.0858686742706,
-        "votes": 35558,
-        "rank": 306,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-1-5-pro-001",
-    "name": "gemini-1.5-pro-001",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1273.4447672145106,
-        "ciLow": 1269.4794661349904,
-        "ciHigh": 1277.410068294031,
-        "votes": 79138,
-        "rank": 277,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-1-5-pro-002",
-    "name": "gemini-1.5-pro-002",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1319.0821320674258,
-        "ciLow": 1315.7060579837153,
-        "ciHigh": 1322.4582061511364,
-        "votes": 55606,
-        "rank": 236,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-2-0-flash-001",
-    "name": "gemini-2.0-flash-001",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1353.9138928058608,
-        "ciLow": 1350.1681598280481,
-        "ciHigh": 1357.6596257836732,
-        "votes": 43446,
-        "rank": 202,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-2-0-flash-lite-preview-02-05",
-    "name": "gemini-2.0-flash-lite-preview-02-05",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1329.5167009114582,
-        "ciLow": 1325.2217078519147,
-        "ciHigh": 1333.811693971002,
-        "votes": 24955,
-        "rank": 226,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "gemini-2-0-flash-preview-image-generation",
     "name": "gemini-2.0-flash-preview-image-generation",
     "creator": "google",
@@ -3485,27 +1756,6 @@
         "votes": 257227,
         "rank": 77,
         "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "gemini-2-5-flash",
-    "name": "gemini-2.5-flash",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1416.9561776514367,
-        "ciLow": 1414.5529775178886,
-        "ciHigh": 1419.3593777849849,
-        "votes": 125545,
-        "rank": 127,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -3541,69 +1791,6 @@
     ]
   },
   {
-    "id": "gemini-2-5-flash-lite-preview-06-17-thinking",
-    "name": "gemini-2.5-flash-lite-preview-06-17-thinking",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1369.1534405731043,
-        "ciLow": 1364.671325896071,
-        "ciHigh": 1373.6355552501375,
-        "votes": 32386,
-        "rank": 185,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-2-5-flash-lite-preview-09-2025-no-thinking",
-    "name": "gemini-2.5-flash-lite-preview-09-2025-no-thinking",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1379.1891735076088,
-        "ciLow": 1375.794618985532,
-        "ciHigh": 1382.5837280296855,
-        "votes": 47446,
-        "rank": 173,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-2-5-flash-preview-09-2025",
-    "name": "gemini-2.5-flash-preview-09-2025",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1406.4723371120465,
-        "ciLow": 1402.4535744703458,
-        "ciHigh": 1410.4910997537474,
-        "votes": 32996,
-        "rank": 144,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "gemini-2-5-pro",
     "name": "gemini-2.5-pro",
     "creator": "google",
@@ -3622,16 +1809,6 @@
         "votes": 25110,
         "rank": 36,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1457.7353766202837,
-        "ciLow": 1455.3008916035847,
-        "ciHigh": 1460.169861636983,
-        "votes": 125384,
-        "rank": 42,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -3740,16 +1917,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1415.804487887343,
-        "ciLow": 1412.1908691601234,
-        "ciHigh": 1419.4181066145622,
-        "votes": 64246,
-        "rank": 130,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1256.3244889784767,
         "ciLow": 1249.5079941284578,
@@ -3803,16 +1970,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1480.320882531884,
-        "ciLow": 1477.3668941554652,
-        "ciHigh": 1483.274870908303,
-        "votes": 126781,
-        "rank": 19,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1446.7021583816515,
         "ciLow": 1441.6525609122084,
@@ -3845,16 +2002,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1481.8698292826211,
-        "ciLow": 1478.0006211570887,
-        "ciHigh": 1485.7390374081535,
-        "votes": 48486,
-        "rank": 18,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1499.4257204597016,
         "ciLow": 1492.161481303203,
@@ -3875,16 +2022,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1434.7259531208945,
-        "ciLow": 1430.2650054693895,
-        "ciHigh": 1439.1869007723997,
-        "votes": 35845,
-        "rank": 88,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -3916,16 +2053,6 @@
         "votes": 6500,
         "rank": 20,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1477.5811129052192,
-        "ciLow": 1473.4599230285924,
-        "ciHigh": 1481.7023027818461,
-        "votes": 47286,
-        "rank": 23,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -3961,16 +2088,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1479.4997906774677,
-        "ciLow": 1475.1015909358778,
-        "ciHigh": 1483.8979904190578,
-        "votes": 36107,
-        "rank": 20,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1538.0441316875786,
         "ciLow": 1530.5474105048472,
@@ -3993,16 +2110,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1487.046321058366,
-        "ciLow": 1482.1412569137183,
-        "ciHigh": 1491.9513852030136,
-        "votes": 26328,
-        "rank": 14,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1589.905706279442,
         "ciLow": 1582.9388388953862,
@@ -4023,16 +2130,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1498.6667186280513,
-        "ciLow": 1494.0165164754271,
-        "ciHigh": 1503.3169207806754,
-        "votes": 35670,
-        "rank": 8,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -4064,16 +2161,6 @@
         "votes": 7158,
         "rank": 40,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1465.7967537257568,
-        "ciLow": 1461.4819214205133,
-        "ciHigh": 1470.1115860310001,
-        "votes": 31343,
-        "rank": 36,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -4120,16 +2207,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1442.4281079388888,
-        "ciLow": 1439.4154309898502,
-        "ciHigh": 1445.4407848879275,
-        "votes": 91083,
-        "rank": 70,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1384.5619205107644,
         "ciLow": 1379.3625185958808,
@@ -4159,16 +2236,6 @@
         "votes": 10769,
         "rank": 33,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1479.389985763442,
-        "ciLow": 1475.6277763924152,
-        "ciHigh": 1483.1521951344685,
-        "votes": 42088,
-        "rank": 21,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -4277,43 +2344,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1533.2387792498728,
-        "ciLow": 1524.438168655859,
-        "ciHigh": 1542.0393898438865,
-        "votes": 4903,
-        "rank": 1,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1677.9638585304917,
         "ciLow": 1662.5979581879628,
         "ciHigh": 1693.3297588730206,
         "votes": 1772,
         "rank": 9,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-advanced-0514",
-    "name": "gemini-advanced-0514",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1278.5089604606428,
-        "ciLow": 1273.4177213608227,
-        "ciHigh": 1283.600199560463,
-        "votes": 50148,
-        "rank": 273,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -4422,279 +2458,6 @@
     ]
   },
   {
-    "id": "gemini-pro",
-    "name": "gemini-pro",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1130.4881423810705,
-        "ciLow": 1119.063326454547,
-        "ciHigh": 1141.9129583075937,
-        "votes": 6390,
-        "rank": 349,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemini-pro-dev-api",
-    "name": "gemini-pro-dev-api",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1148.7983252026777,
-        "ciLow": 1141.6045423538294,
-        "ciHigh": 1155.9921080515262,
-        "votes": 18354,
-        "rank": 343,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-1-1-2b-it",
-    "name": "gemma-1.1-2b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1022.1717299208374,
-        "ciLow": 1014.5057753223739,
-        "ciHigh": 1029.8376845193009,
-        "votes": 10854,
-        "rank": 400,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-1-1-7b-it",
-    "name": "gemma-1.1-7b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1093.9218540234956,
-        "ciLow": 1087.9227070264908,
-        "ciHigh": 1099.9210010205004,
-        "votes": 23893,
-        "rank": 370,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-2-27b-it",
-    "name": "gemma-2-27b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1231.328928678428,
-        "ciLow": 1227.9594020155089,
-        "ciHigh": 1234.6984553413472,
-        "votes": 75754,
-        "rank": 299,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-2-2b-it",
-    "name": "gemma-2-2b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1155.7253444559185,
-        "ciLow": 1151.680574713202,
-        "ciHigh": 1159.7701141986352,
-        "votes": 46616,
-        "rank": 341,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-2-9b-it",
-    "name": "gemma-2-9b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1207.343290402311,
-        "ciLow": 1203.5429540359987,
-        "ciHigh": 1211.143626768623,
-        "votes": 54611,
-        "rank": 315,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-2-9b-it-simpo",
-    "name": "gemma-2-9b-it-simpo",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1227.0151321582957,
-        "ciLow": 1220.1750976382275,
-        "ciHigh": 1233.8551666783642,
-        "votes": 10072,
-        "rank": 304,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-2b-it",
-    "name": "gemma-2b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1002.0946674335321,
-        "ciLow": 990.6232527608809,
-        "ciHigh": 1013.5660821061833,
-        "votes": 4780,
-        "rank": 401,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-3-12b-it",
-    "name": "gemma-3-12b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1334.167309821259,
-        "ciLow": 1324.7936482059574,
-        "ciHigh": 1343.540971436561,
-        "votes": 3829,
-        "rank": 220,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-3-27b-it",
-    "name": "gemma-3-27b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1357.7285269696554,
-        "ciLow": 1354.0714588787278,
-        "ciHigh": 1361.385595060583,
-        "votes": 46671,
-        "rank": 198,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-3-4b-it",
-    "name": "gemma-3-4b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1290.7498566529225,
-        "ciLow": 1281.523046785661,
-        "ciHigh": 1299.9766665201842,
-        "votes": 4171,
-        "rank": 254,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-3n-e4b-it",
-    "name": "gemma-3n-e4b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1305.635687884344,
-        "ciLow": 1300.476815914646,
-        "ciHigh": 1310.7945598540416,
-        "votes": 22135,
-        "rank": 243,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "gemma-4-26b-a4b",
     "name": "gemma-4-26b-a4b",
     "creator": "google",
@@ -4704,16 +2467,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1433.9112392856814,
-        "ciLow": 1426.4965917917852,
-        "ciHigh": 1441.3258867795773,
-        "votes": 6097,
-        "rank": 90,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -4748,127 +2501,12 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1442.8450435742507,
-        "ciLow": 1435.4485425888226,
-        "ciHigh": 1450.2415445596785,
-        "votes": 6145,
-        "rank": 67,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1366.0785651423403,
         "ciLow": 1359.7883636248748,
         "ciHigh": 1372.368766659806,
         "votes": 14260,
         "rank": 104,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gemma-7b-it",
-    "name": "gemma-7b-it",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1056.1030176372365,
-        "ciLow": 1046.5796001980955,
-        "ciHigh": 1065.6264350763772,
-        "votes": 8925,
-        "rank": 387,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-0520",
-    "name": "glm-4-0520",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1225.8597655784095,
-        "ciLow": 1218.9382500150264,
-        "ciHigh": 1232.7812811417928,
-        "votes": 9788,
-        "rank": 305,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-5",
-    "name": "glm-4.5",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1429.9654798692598,
-        "ciLow": 1425.0695253153733,
-        "ciHigh": 1434.8614344231462,
-        "votes": 23789,
-        "rank": 94,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-5-air",
-    "name": "glm-4.5-air",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1383.678047098408,
-        "ciLow": 1379.4539353845842,
-        "ciHigh": 1387.9021588122318,
-        "votes": 30658,
-        "rank": 170,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-5v",
-    "name": "glm-4.5v",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1332.5990190607215,
-        "ciLow": 1324.1831617845455,
-        "ciHigh": 1341.0148763368977,
-        "votes": 4821,
-        "rank": 222,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -4885,43 +2523,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1439.917455020337,
-        "ciLow": 1436.032025016036,
-        "ciHigh": 1443.8028850246378,
-        "votes": 35832,
-        "rank": 76,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1340.8280620870596,
         "ciLow": 1330.0414866315787,
         "ciHigh": 1351.6146375425405,
         "votes": 6782,
         "rank": 114,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-6v",
-    "name": "glm-4.6v",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1376.3237670317028,
-        "ciLow": 1365.1915225561959,
-        "ciHigh": 1387.4560115072097,
-        "votes": 2836,
-        "rank": 177,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -4938,85 +2545,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1435.4945463145166,
-        "ciLow": 1429.4756572310785,
-        "ciHigh": 1441.5134353979545,
-        "votes": 12254,
-        "rank": 87,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1435.0381834139898,
         "ciLow": 1423.0058686462248,
         "ciHigh": 1447.0704981817548,
         "votes": 4007,
         "rank": 80,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-7-flash",
-    "name": "glm-4.7-flash",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1350.6152097389468,
-        "ciLow": 1344.9395879257572,
-        "ciHigh": 1356.2908315521365,
-        "votes": 12019,
-        "rank": 206,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-plus",
-    "name": "glm-4-plus",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1289.6058828075875,
-        "ciLow": 1284.708416995938,
-        "ciHigh": 1294.503348619237,
-        "votes": 26126,
-        "rank": 256,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "glm-4-plus-0111",
-    "name": "glm-4-plus-0111",
-    "creator": "zai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1330.773174363815,
-        "ciLow": 1322.386982625497,
-        "ciHigh": 1339.159366102133,
-        "votes": 5760,
-        "rank": 225,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -5031,16 +2565,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1446.0962222306835,
-        "ciLow": 1441.8779815970852,
-        "ciHigh": 1450.3144628642817,
-        "votes": 29279,
-        "rank": 60,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -5065,16 +2589,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1462.575845579283,
-        "ciLow": 1458.9901337511753,
-        "ciHigh": 1466.1615574073905,
-        "votes": 62175,
-        "rank": 38,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1508.3945879043822,
         "ciLow": 1501.6235467670608,
@@ -5095,16 +2609,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1469.9974103715363,
-        "ciLow": 1465.8280800836976,
-        "ciHigh": 1474.1667406593747,
-        "votes": 49127,
-        "rank": 32,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -5129,16 +2633,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1470.961080559105,
-        "ciLow": 1466.0639521297765,
-        "ciHigh": 1475.8582089884337,
-        "votes": 31379,
-        "rank": 29,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1606.0511899791893,
         "ciLow": 1599.3195360993557,
@@ -5159,16 +2653,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1471.3878691263853,
-        "ciLow": 1466.1522696141183,
-        "ciHigh": 1476.6234686386526,
-        "votes": 21797,
-        "rank": 27,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -5200,16 +2684,6 @@
         "votes": 6995,
         "rank": 39,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1437.5324887352288,
-        "ciLow": 1431.1298979020592,
-        "ciHigh": 1443.9350795683984,
-        "votes": 10475,
-        "rank": 81,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -5245,300 +2719,6 @@
     ]
   },
   {
-    "id": "gpt-3-5-turbo-0125",
-    "name": "gpt-3.5-turbo-0125",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1124.8702890240095,
-        "ciLow": 1120.2052844601556,
-        "ciHigh": 1129.5352935878632,
-        "votes": 66207,
-        "rank": 353,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-3-5-turbo-1106",
-    "name": "gpt-3.5-turbo-1106",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1094.0701088814226,
-        "ciLow": 1085.3525952176565,
-        "ciHigh": 1102.7876225451885,
-        "votes": 16619,
-        "rank": 369,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-0125-preview",
-    "name": "gpt-4-0125-preview",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1262.1554325795696,
-        "ciLow": 1258.0781887785042,
-        "ciHigh": 1266.232676380635,
-        "votes": 93439,
-        "rank": 287,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-0314",
-    "name": "gpt-4-0314",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1205.959201173458,
-        "ciLow": 1201.2278830777532,
-        "ciHigh": 1210.690519269163,
-        "votes": 54173,
-        "rank": 316,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-0613",
-    "name": "gpt-4-0613",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1185.9567208020624,
-        "ciLow": 1181.9284495836093,
-        "ciHigh": 1189.9849920205152,
-        "votes": 88723,
-        "rank": 327,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-1-2025-04-14",
-    "name": "gpt-4.1-2025-04-14",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1382.8202559930553,
-        "ciLow": 1379.1282542482788,
-        "ciHigh": 1386.5122577378318,
-        "votes": 50309,
-        "rank": 171,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-1-mini-2025-04-14",
-    "name": "gpt-4.1-mini-2025-04-14",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1340.4416521329658,
-        "ciLow": 1336.1383378660923,
-        "ciHigh": 1344.7449663998393,
-        "votes": 38710,
-        "rank": 210,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-1-nano-2025-04-14",
-    "name": "gpt-4.1-nano-2025-04-14",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1284.74351986616,
-        "ciLow": 1277.1020976601549,
-        "ciHigh": 1292.3849420721654,
-        "votes": 6103,
-        "rank": 263,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-1106-preview",
-    "name": "gpt-4-1106-preview",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1263.3890827403707,
-        "ciLow": 1259.5286439714102,
-        "ciHigh": 1267.2495215093309,
-        "votes": 100105,
-        "rank": 285,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-5-preview-2025-02-27",
-    "name": "gpt-4.5-preview-2025-02-27",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1417.3142030995239,
-        "ciLow": 1411.6303348694764,
-        "ciHigh": 1422.9980713295713,
-        "votes": 14547,
-        "rank": 125,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4-turbo-2024-04-09",
-    "name": "gpt-4-turbo-2024-04-09",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1271.6428635419518,
-        "ciLow": 1267.7492522253663,
-        "ciHigh": 1275.5364748585373,
-        "votes": 98114,
-        "rank": 278,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4o-2024-05-13",
-    "name": "gpt-4o-2024-05-13",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1300.3878895899172,
-        "ciLow": 1296.954717586118,
-        "ciHigh": 1303.8210615937164,
-        "votes": 112881,
-        "rank": 246,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4o-2024-08-06",
-    "name": "gpt-4o-2024-08-06",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1282.493541086043,
-        "ciLow": 1278.3033023945088,
-        "ciHigh": 1286.6837797775772,
-        "votes": 45499,
-        "rank": 266,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-4o-mini-2024-07-18",
-    "name": "gpt-4o-mini-2024-07-18",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1286.3257885336116,
-        "ciLow": 1282.8056039881667,
-        "ciHigh": 1289.8459730790562,
-        "votes": 68705,
-        "rank": 262,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "gpt-5-1",
     "name": "gpt-5.1",
     "creator": "openai",
@@ -5557,16 +2737,6 @@
         "votes": 8244,
         "rank": 42,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1422.2098390970816,
-        "ciLow": 1418.6556156459255,
-        "ciHigh": 1425.7640625482377,
-        "votes": 44449,
-        "rank": 110,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -5618,27 +2788,6 @@
         "ciHigh": 1265.406990564661,
         "votes": 1154,
         "rank": 131,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-1-high",
-    "name": "gpt-5.1-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1442.720508883212,
-        "ciLow": 1439.0474996286919,
-        "ciHigh": 1446.393518137732,
-        "votes": 41669,
-        "rank": 68,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -5707,43 +2856,12 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1412.1885901593323,
-        "ciLow": 1409.0403219375457,
-        "ciHigh": 1415.3368583811189,
-        "votes": 83873,
-        "rank": 135,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1416.509231918663,
         "ciLow": 1393.9353103009564,
         "ciHigh": 1439.0831535363698,
         "votes": 1082,
         "rank": 84,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-2-chat-latest-20260210",
-    "name": "gpt-5.2-chat-latest-20260210",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1438.4300753867947,
-        "ciLow": 1434.4341734131835,
-        "ciHigh": 1442.4259773604058,
-        "votes": 36004,
-        "rank": 79,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -5787,16 +2905,6 @@
         "votes": 7108,
         "rank": 41,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1416.2429561202355,
-        "ciLow": 1412.7253733679981,
-        "ciHigh": 1419.7605388724728,
-        "votes": 49661,
-        "rank": 129,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -5838,27 +2946,6 @@
         "ciHigh": 1176.9839962474462,
         "votes": 79796,
         "rank": 27,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-3-chat-latest",
-    "name": "gpt-5.3-chat-latest",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1388.9989032241872,
-        "ciLow": 1384.7962522925275,
-        "ciHigh": 1393.201554155847,
-        "votes": 34361,
-        "rank": 166,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -5906,43 +2993,12 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1452.1689056952805,
-        "ciLow": 1448.5089184739456,
-        "ciHigh": 1455.8288929166151,
-        "votes": 67880,
-        "rank": 48,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1401.7662087027077,
         "ciLow": 1391.311547873274,
         "ciHigh": 1412.2208695321415,
         "votes": 3990,
         "rank": 89,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-4-high",
-    "name": "gpt-5.4-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1468.9212265141653,
-        "ciLow": 1465.1848440948334,
-        "ciHigh": 1472.6576089334972,
-        "votes": 64787,
-        "rank": 33,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -6001,43 +3057,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1411.5838535560126,
-        "ciLow": 1407.8645841628324,
-        "ciHigh": 1415.3031229491926,
-        "votes": 63461,
-        "rank": 137,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1397.5681840162945,
         "ciLow": 1391.0463099632354,
         "ciHigh": 1404.0900580693535,
         "votes": 11978,
         "rank": 93,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-4-nano-high",
-    "name": "gpt-5.4-nano-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1372.1124640914586,
-        "ciLow": 1368.3560619771733,
-        "ciHigh": 1375.868866205744,
-        "votes": 62426,
-        "rank": 181,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -6081,16 +3106,6 @@
         "votes": 21279,
         "rank": 8,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1466.8475505989209,
-        "ciLow": 1463.1902304147172,
-        "ciHigh": 1470.5048707831245,
-        "votes": 70990,
-        "rank": 35,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -6133,16 +3148,6 @@
         "votes": 20944,
         "rank": 9,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1471.3533823125942,
-        "ciLow": 1467.6621127074093,
-        "ciHigh": 1475.0446519177792,
-        "votes": 69414,
-        "rank": 28,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -6185,16 +3190,6 @@
         "votes": 8497,
         "rank": 43,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.1541673292472,
-        "ciLow": 1414.2289037354724,
-        "ciHigh": 1424.079430923022,
-        "votes": 27175,
-        "rank": 120,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -6258,16 +3253,6 @@
         "votes": 5766,
         "rank": 23,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1430.5846273751652,
-        "ciLow": 1426.3046285346627,
-        "ciHigh": 1434.8646262156676,
-        "votes": 41103,
-        "rank": 93,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -6321,16 +3306,6 @@
         "votes": 60437,
         "rank": 1,
         "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1457.232647272315,
-        "ciLow": 1452.8879967399457,
-        "ciHigh": 1461.5772978046843,
-        "votes": 39832,
-        "rank": 43,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -6373,16 +3348,6 @@
         "votes": 5787,
         "rank": 13,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1446.8431694005033,
-        "ciLow": 1442.5973977202555,
-        "ciHigh": 1451.088941080751,
-        "votes": 42358,
-        "rank": 59,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -6408,48 +3373,6 @@
     ]
   },
   {
-    "id": "gpt-5-chat",
-    "name": "gpt-5-chat",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1403.1494453995165,
-        "ciLow": 1398.8879696882402,
-        "ciHigh": 1407.4109211107927,
-        "votes": 31201,
-        "rank": 148,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-high",
-    "name": "gpt-5-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1406.2110019048646,
-        "ciLow": 1401.79139010906,
-        "ciHigh": 1410.630613700669,
-        "votes": 31720,
-        "rank": 145,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "gpt-5-medium",
     "name": "gpt-5-medium",
     "creator": "openai",
@@ -6466,48 +3389,6 @@
         "ciHigh": 1432.7851913127279,
         "votes": 3092,
         "rank": 83,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-mini-high",
-    "name": "gpt-5-mini-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1373.2440381700048,
-        "ciLow": 1368.6891038448284,
-        "ciHigh": 1377.7989724951813,
-        "votes": 26812,
-        "rank": 179,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-5-nano-high",
-    "name": "gpt-5-nano-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1319.9618506327538,
-        "ciLow": 1313.1156257041746,
-        "ciHigh": 1326.8080755613332,
-        "votes": 8132,
-        "rank": 231,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -6556,16 +3437,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1447.497688946659,
-        "ciLow": 1439.1771299740458,
-        "ciHigh": 1455.8182479192724,
-        "votes": 5762,
-        "rank": 57,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1760.0883372906792,
         "ciLow": 1746.1704984788782,
@@ -6609,16 +3480,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1442.0608371461649,
-        "ciLow": 1435.6798160764279,
-        "ciHigh": 1448.441858215902,
-        "votes": 11674,
-        "rank": 72,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1780.244235647691,
         "ciLow": 1769.7030195104712,
@@ -6652,16 +3513,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1391.5052397594811,
-        "ciLow": 1386.8333205646295,
-        "ciHigh": 1396.177158954333,
-        "votes": 43294,
-        "rank": 165,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1581.7308518473817,
         "ciLow": 1575.4821555400558,
@@ -6691,16 +3542,6 @@
         "ciHigh": 1181.9871198722349,
         "votes": 11313,
         "rank": 26,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1397.3383223209435,
-        "ciLow": 1390.9364368795566,
-        "ciHigh": 1403.7402077623303,
-        "votes": 11903,
-        "rank": 155,
         "fetchedAt": "2026-10-14"
       },
       {
@@ -6902,153 +3743,6 @@
     ]
   },
   {
-    "id": "gpt-oss-120b",
-    "name": "gpt-oss-120b",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1365.4443560753302,
-        "ciLow": 1361.0978514586538,
-        "ciHigh": 1369.7908606920066,
-        "votes": 30214,
-        "rank": 191,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt-oss-20b",
-    "name": "gpt-oss-20b",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1287.4070415727417,
-        "ciLow": 1281.0187482078695,
-        "ciHigh": 1293.7953349376137,
-        "votes": 10421,
-        "rank": 259,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "gpt4all-13b-snoozy",
-    "name": "gpt4all-13b-snoozy",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 956.127751220381,
-        "ciLow": 941.1247575755481,
-        "ciHigh": 971.130744865214,
-        "votes": 1743,
-        "rank": 405,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-3-0-2b-instruct",
-    "name": "granite-3.0-2b-instruct",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1079.7982099121955,
-        "ciLow": 1071.5959407633734,
-        "ciHigh": 1088.0004790610178,
-        "votes": 6837,
-        "rank": 378,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-3-0-8b-instruct",
-    "name": "granite-3.0-8b-instruct",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1096.3948520615015,
-        "ciLow": 1087.8608666378068,
-        "ciHigh": 1104.928837485196,
-        "votes": 6638,
-        "rank": 368,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-3-1-2b-instruct",
-    "name": "granite-3.1-2b-instruct",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1127.3595265295871,
-        "ciLow": 1116.3214812143308,
-        "ciHigh": 1138.3975718448435,
-        "votes": 3188,
-        "rank": 352,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-3-1-8b-instruct",
-    "name": "granite-3.1-8b-instruct",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1149.477631908354,
-        "ciLow": 1138.5539357930056,
-        "ciHigh": 1160.4013280237023,
-        "votes": 3090,
-        "rank": 342,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "granite-4-1-8b",
     "name": "granite-4.1-8b",
     "creator": "ibm",
@@ -7060,232 +3754,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1290.2313546035296,
-        "ciLow": 1280.3080659026762,
-        "ciHigh": 1300.1546433043832,
-        "votes": 4186,
-        "rank": 255,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1191.3756251482782,
         "ciLow": 1172.950474260238,
         "ciHigh": 1209.8007760363184,
         "votes": 1786,
         "rank": 138,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-4-2-30b",
-    "name": "granite-4.2-30b",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1361.1806709813684,
-        "ciLow": 1350.7546995130945,
-        "ciHigh": 1371.606642449642,
-        "votes": 3405,
-        "rank": 196,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-4-2-3b",
-    "name": "granite-4.2-3b",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1292.6264397059253,
-        "ciLow": 1281.1234862347294,
-        "ciHigh": 1304.129393177121,
-        "votes": 3250,
-        "rank": 252,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "granite-4-2-8b",
-    "name": "granite-4.2-8b",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1319.5793403100072,
-        "ciLow": 1308.5140852087336,
-        "ciHigh": 1330.6445954112808,
-        "votes": 3255,
-        "rank": 233,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-2-2024-08-13",
-    "name": "grok-2-2024-08-13",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1304.5275432165347,
-        "ciLow": 1300.8699840423692,
-        "ciHigh": 1308.1851023907004,
-        "votes": 63498,
-        "rank": 244,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-2-mini-2024-08-13",
-    "name": "grok-2-mini-2024-08-13",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1280.644946363659,
-        "ciLow": 1276.942741126961,
-        "ciHigh": 1284.3471516003572,
-        "votes": 52567,
-        "rank": 271,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-3-mini-beta",
-    "name": "grok-3-mini-beta",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1364.1686074338502,
-        "ciLow": 1359.0705118337169,
-        "ciHigh": 1369.2667030339833,
-        "votes": 20934,
-        "rank": 192,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-3-mini-high",
-    "name": "grok-3-mini-high",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1369.5986788414614,
-        "ciLow": 1364.1600992210215,
-        "ciHigh": 1375.037258461901,
-        "votes": 15590,
-        "rank": 184,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-3-preview-02-24",
-    "name": "grok-3-preview-02-24",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1425.4328426555887,
-        "ciLow": 1421.1251153720107,
-        "ciHigh": 1429.7405699391668,
-        "votes": 32501,
-        "rank": 103,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-4-0709",
-    "name": "grok-4-0709",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1411.3701230209347,
-        "ciLow": 1407.4468499210775,
-        "ciHigh": 1415.2933961207918,
-        "votes": 39694,
-        "rank": 138,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-4-1",
-    "name": "grok-4.1",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1436.0318715649728,
-        "ciLow": 1432.9027520395234,
-        "ciHigh": 1439.1609910904222,
-        "votes": 68683,
-        "rank": 86,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -7300,16 +3774,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1408.0733795203796,
-        "ciLow": 1404.8899040161384,
-        "ciHigh": 1411.256855024621,
-        "votes": 57558,
-        "rank": 142,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -7355,16 +3819,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1436.3728115779547,
-        "ciLow": 1433.2307791109565,
-        "ciHigh": 1439.5148440449532,
-        "votes": 66523,
-        "rank": 84,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1214.294591046423,
         "ciLow": 1189.4261401268516,
@@ -7397,16 +3851,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1450.8171476427083,
-        "ciLow": 1447.1593669115396,
-        "ciHigh": 1454.4749283738768,
-        "votes": 66463,
-        "rank": 51,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1375.263254855654,
         "ciLow": 1369.1914630286067,
@@ -7436,16 +3880,6 @@
         "votes": 57049,
         "rank": 24,
         "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1444.6186791182422,
-        "ciLow": 1440.0866669438428,
-        "ciHigh": 1449.1506912926418,
-        "votes": 27917,
-        "rank": 65,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -7467,16 +3901,6 @@
         "ciHigh": 1210.2364927943734,
         "votes": 126238,
         "rank": 18,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1450.3872054246115,
-        "ciLow": 1446.7078463265375,
-        "ciHigh": 1454.0665645226852,
-        "votes": 64959,
-        "rank": 52,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -7500,16 +3924,6 @@
         "ciHigh": 1170.538486660534,
         "votes": 128393,
         "rank": 30,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1396.750750655088,
-        "ciLow": 1393.1400758594666,
-        "ciHigh": 1400.3614254507097,
-        "votes": 71387,
-        "rank": 157,
         "fetchedAt": "2026-10-14"
       },
       {
@@ -7557,16 +3971,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1447.9954491500655,
-        "ciLow": 1443.6603116456392,
-        "ciHigh": 1452.330586654492,
-        "votes": 39899,
-        "rank": 56,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1552.9312021719509,
         "ciLow": 1546.2517450671153,
@@ -7599,16 +4003,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1428.2320188362726,
-        "ciLow": 1423.3268461415912,
-        "ciHigh": 1433.137191530954,
-        "votes": 28124,
-        "rank": 98,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1617.4015018305167,
         "ciLow": 1609.8828467017477,
@@ -7631,43 +4025,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1400.5739222994423,
-        "ciLow": 1394.0273295073362,
-        "ciHigh": 1407.1205150915482,
-        "votes": 10768,
-        "rank": 152,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1640.148880352992,
         "ciLow": 1630.0197598703191,
         "ciHigh": 1650.2780008356644,
         "votes": 4633,
         "rank": 16,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "grok-4-fast-chat",
-    "name": "grok-4-fast-chat",
-    "creator": "xai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1406.8517369261156,
-        "ciLow": 1399.0988210254475,
-        "ciHigh": 1414.6046528267839,
-        "votes": 6339,
-        "rank": 143,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -7682,16 +4045,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1399.5740085564444,
-        "ciLow": 1394.529616980838,
-        "ciHigh": 1404.6184001320507,
-        "votes": 18272,
-        "rank": 154,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -8018,27 +4371,6 @@
     ]
   },
   {
-    "id": "guanaco-33b",
-    "name": "guanaco-33b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1053.3264325429327,
-        "ciLow": 1041.332333570389,
-        "ciHigh": 1065.3205315154762,
-        "votes": 2921,
-        "rank": 391,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "hailuo-02-fast",
     "name": "hailuo-02-fast",
     "creator": "minimax",
@@ -8247,16 +4579,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1401.518648592262,
-        "ciLow": 1394.1332668438718,
-        "ciHigh": 1408.9040303406523,
-        "votes": 6880,
-        "rank": 150,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1356.811701965243,
         "ciLow": 1339.47533147109,
@@ -8310,174 +4632,6 @@
     ]
   },
   {
-    "id": "hunyuan-large-2025-02-10",
-    "name": "hunyuan-large-2025-02-10",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1287.8983588327367,
-        "ciLow": 1278.1675145062852,
-        "ciHigh": 1297.6292031591881,
-        "votes": 3738,
-        "rank": 258,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-large-vision",
-    "name": "hunyuan-large-vision",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1262.8259518670318,
-        "ciLow": 1253.5807024875458,
-        "ciHigh": 1272.0712012465178,
-        "votes": 5283,
-        "rank": 286,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-standard-2025-02-10",
-    "name": "hunyuan-standard-2025-02-10",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1273.9435818147902,
-        "ciLow": 1264.3007244274997,
-        "ciHigh": 1283.5864392020808,
-        "votes": 3904,
-        "rank": 276,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-standard-256k",
-    "name": "hunyuan-standard-256k",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1201.8799544290457,
-        "ciLow": 1190.320794532477,
-        "ciHigh": 1213.4391143256146,
-        "votes": 2728,
-        "rank": 319,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-t1-20250711",
-    "name": "hunyuan-t1-20250711",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1400.4497991925903,
-        "ciLow": 1391.8049815955644,
-        "ciHigh": 1409.094616789616,
-        "votes": 4595,
-        "rank": 153,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-turbo-0110",
-    "name": "hunyuan-turbo-0110",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1311.3730352182972,
-        "ciLow": 1299.9415444839842,
-        "ciHigh": 1322.8045259526102,
-        "votes": 2290,
-        "rank": 240,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-turbos-20250226",
-    "name": "hunyuan-turbos-20250226",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1319.6829243472016,
-        "ciLow": 1307.9817964772576,
-        "ciHigh": 1331.3840522171458,
-        "votes": 2220,
-        "rank": 232,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "hunyuan-turbos-20250416",
-    "name": "hunyuan-turbos-20250416",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1377.2138475839997,
-        "ciLow": 1370.7649400199195,
-        "ciHigh": 1383.66275514808,
-        "votes": 10625,
-        "rank": 175,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "hunyuan-video-1-5",
     "name": "hunyuan-video-1.5",
     "creator": "tencent",
@@ -8509,27 +4663,6 @@
     ]
   },
   {
-    "id": "hunyuan-vision-1-5-thinking",
-    "name": "hunyuan-vision-1.5-thinking",
-    "creator": "tencent",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1405.6504510865468,
-        "ciLow": 1393.257667203374,
-        "ciHigh": 1418.0432349697196,
-        "votes": 2170,
-        "rank": 146,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "hy3",
     "name": "hy3",
     "creator": "tencent",
@@ -8539,16 +4672,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1437.4298654716458,
-        "ciLow": 1431.2461393505714,
-        "ciHigh": 1443.6135915927202,
-        "votes": 11952,
-        "rank": 82,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -8578,27 +4701,6 @@
         "ciHigh": 1641.260772751925,
         "votes": 4808,
         "rank": 19,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "ibm-granite-h-small",
-    "name": "ibm-granite-h-small",
-    "creator": "ibm",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1241.3454561139129,
-        "ciLow": 1232.913830672655,
-        "ciHigh": 1249.777081555171,
-        "votes": 5634,
-        "rank": 295,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -8762,16 +4864,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1441.2247591050302,
-        "ciLow": 1436.8984975966896,
-        "ciHigh": 1445.5510206133708,
-        "votes": 39763,
-        "rank": 73,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1412.6249887565002,
         "ciLow": 1406.3970838438722,
@@ -8794,106 +4886,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1412.1535869643822,
-        "ciLow": 1407.4740628395007,
-        "ciHigh": 1416.8331110892636,
-        "votes": 31473,
-        "rank": 136,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1408.4393841764618,
         "ciLow": 1399.346420258716,
         "ciHigh": 1417.5323480942072,
         "votes": 5368,
         "rank": 86,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "intellect-3",
-    "name": "intellect-3",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1355.775142790847,
-        "ciLow": 1347.581685873442,
-        "ciHigh": 1363.968599708252,
-        "votes": 5437,
-        "rank": 200,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "internlm2-5-20b-chat",
-    "name": "internlm2_5-20b-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1158.3960613604734,
-        "ciLow": 1151.3453287127236,
-        "ciHigh": 1165.4467940082232,
-        "votes": 9901,
-        "rank": 340,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "jamba-1-5-large",
-    "name": "jamba-1.5-large",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1236.975132665011,
-        "ciLow": 1229.6941545555612,
-        "ciHigh": 1244.2561107744605,
-        "votes": 8662,
-        "rank": 297,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "jamba-1-5-mini",
-    "name": "jamba-1.5-mini",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1186.6267187179737,
-        "ciLow": 1179.4657292103266,
-        "ciHigh": 1193.787708225621,
-        "votes": 8858,
-        "rank": 325,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -8962,48 +4960,6 @@
     ]
   },
   {
-    "id": "kimi-k2-0711-preview",
-    "name": "kimi-k2-0711-preview",
-    "creator": "moonshot",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1370.768197842884,
-        "ciLow": 1365.8987063208795,
-        "ciHigh": 1375.6376893648887,
-        "votes": 27150,
-        "rank": 182,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "kimi-k2-0905-preview",
-    "name": "kimi-k2-0905-preview",
-    "creator": "moonshot",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1380.1019747130588,
-        "ciLow": 1373.6132778627284,
-        "ciHigh": 1386.5906715633894,
-        "votes": 11589,
-        "rank": 172,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "kimi-k2-5-instant",
     "name": "kimi-k2.5-instant",
     "creator": "moonshot",
@@ -9013,16 +4969,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1420.1861627424146,
-        "ciLow": 1413.7239572289982,
-        "ciHigh": 1426.6483682558307,
-        "votes": 8375,
-        "rank": 113,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -9057,16 +5003,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1445.0167194470755,
-        "ciLow": 1441.7579642603532,
-        "ciHigh": 1448.2754746337976,
-        "votes": 74777,
-        "rank": 62,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1436.4710168555996,
         "ciLow": 1431.2722433424442,
@@ -9096,16 +5032,6 @@
         "votes": 11291,
         "rank": 27,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1455.3689329621154,
-        "ciLow": 1450.9583155528435,
-        "ciHigh": 1459.7795503713871,
-        "votes": 40030,
-        "rank": 44,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -9152,16 +5078,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1414.4599162594036,
-        "ciLow": 1411.3919798856546,
-        "ciHigh": 1417.5278526331524,
-        "votes": 63384,
-        "rank": 133,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1321.7663660582298,
         "ciLow": 1314.3319443585528,
@@ -9182,16 +5098,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1475.5711600333398,
-        "ciLow": 1470.9695143043946,
-        "ciHigh": 1480.172805762285,
-        "votes": 32036,
-        "rank": 24,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -9413,27 +5319,6 @@
     ]
   },
   {
-    "id": "koala-13b",
-    "name": "koala-13b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 989.5556006451436,
-        "ciLow": 979.869394749001,
-        "ciHigh": 999.2418065412862,
-        "votes": 6965,
-        "rank": 403,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "krea-2-large",
     "name": "krea-2-large",
     "creator": "krea",
@@ -9539,531 +5424,6 @@
     ]
   },
   {
-    "id": "ling-flash-2-0",
-    "name": "ling-flash-2.0",
-    "creator": "ant-group",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1361.306945404882,
-        "ciLow": 1354.1001457914178,
-        "ciHigh": 1368.513745018346,
-        "votes": 6950,
-        "rank": 195,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-13b",
-    "name": "llama-13b",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 833.4562976947218,
-        "ciLow": 817.9111321746966,
-        "ciHigh": 849.001463214747,
-        "votes": 2391,
-        "rank": 415,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-2-13b-chat",
-    "name": "llama-2-13b-chat",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1084.4060058431678,
-        "ciLow": 1077.752178013435,
-        "ciHigh": 1091.0598336729004,
-        "votes": 19174,
-        "rank": 373,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-2-70b-chat",
-    "name": "llama-2-70b-chat",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1115.1773463100815,
-        "ciLow": 1109.72934552951,
-        "ciHigh": 1120.625347090653,
-        "votes": 38492,
-        "rank": 357,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-2-7b-chat",
-    "name": "llama-2-7b-chat",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1053.3465635813825,
-        "ciLow": 1046.3831279427604,
-        "ciHigh": 1060.3099992200046,
-        "votes": 14148,
-        "rank": 390,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-405b-instruct-bf16",
-    "name": "llama-3.1-405b-instruct-bf16",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1283.6328433942062,
-        "ciLow": 1279.9385130238088,
-        "ciHigh": 1287.3271737646037,
-        "votes": 41375,
-        "rank": 264,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-405b-instruct-fp8",
-    "name": "llama-3.1-405b-instruct-fp8",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1281.754577419107,
-        "ciLow": 1278.1840160257836,
-        "ciHigh": 1285.3251388124302,
-        "votes": 59656,
-        "rank": 269,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-70b-instruct",
-    "name": "llama-3.1-70b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1260.8601915655233,
-        "ciLow": 1257.1481834811311,
-        "ciHigh": 1264.5721996499153,
-        "votes": 55240,
-        "rank": 289,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-8b-instruct",
-    "name": "llama-3.1-8b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1186.5297778418299,
-        "ciLow": 1182.430471229804,
-        "ciHigh": 1190.629084453856,
-        "votes": 49605,
-        "rank": 326,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-nemotron-51b-instruct",
-    "name": "llama-3.1-nemotron-51b-instruct",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1227.943350069189,
-        "ciLow": 1218.0109033577608,
-        "ciHigh": 1237.875796780617,
-        "votes": 3749,
-        "rank": 303,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-nemotron-70b-instruct",
-    "name": "llama-3.1-nemotron-70b-instruct",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1282.6063516988193,
-        "ciLow": 1274.9030802522811,
-        "ciHigh": 1290.3096231453574,
-        "votes": 7140,
-        "rank": 265,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-nemotron-ultra-253b-v1",
-    "name": "llama-3.1-nemotron-ultra-253b-v1",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1319.4825023982896,
-        "ciLow": 1307.9641652131997,
-        "ciHigh": 1331.0008395833793,
-        "votes": 2549,
-        "rank": 234,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-tulu-3-70b",
-    "name": "llama-3.1-tulu-3-70b",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1255.6765020706002,
-        "ciLow": 1245.2232492660223,
-        "ciHigh": 1266.1297548751784,
-        "votes": 2846,
-        "rank": 291,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-1-tulu-3-8b",
-    "name": "llama-3.1-tulu-3-8b",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1193.2589899643813,
-        "ciLow": 1182.7630632334578,
-        "ciHigh": 1203.754916695305,
-        "votes": 2896,
-        "rank": 321,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-2-1b-instruct",
-    "name": "llama-3.2-1b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1054.5846082458056,
-        "ciLow": 1046.8885073780655,
-        "ciHigh": 1062.2807091135455,
-        "votes": 8045,
-        "rank": 388,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-2-3b-instruct",
-    "name": "llama-3.2-3b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1109.4842201089139,
-        "ciLow": 1101.9328280521363,
-        "ciHigh": 1117.0356121656914,
-        "votes": 7936,
-        "rank": 360,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-3-70b-instruct",
-    "name": "llama-3.3-70b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1274.2401792102366,
-        "ciLow": 1270.7591307712603,
-        "ciHigh": 1277.721227649213,
-        "votes": 54498,
-        "rank": 275,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-3-nemotron-49b-super-v1",
-    "name": "llama-3.3-nemotron-49b-super-v1",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1308.3248861321886,
-        "ciLow": 1296.2775613887918,
-        "ciHigh": 1320.3722108755853,
-        "votes": 2218,
-        "rank": 242,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-70b-instruct",
-    "name": "llama-3-70b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1220.7475035570635,
-        "ciLow": 1217.169356498025,
-        "ciHigh": 1224.325650616102,
-        "votes": 156876,
-        "rank": 309,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-3-8b-instruct",
-    "name": "llama-3-8b-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1165.553842360426,
-        "ciLow": 1161.8386524368027,
-        "ciHigh": 1169.2690322840492,
-        "votes": 104642,
-        "rank": 334,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-4-maverick-17b-128e-instruct",
-    "name": "llama-4-maverick-17b-128e-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1287.115982459103,
-        "ciLow": 1282.8623460409392,
-        "ciHigh": 1291.3696188772667,
-        "votes": 39450,
-        "rank": 260,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama-4-scout-17b-16e-instruct",
-    "name": "llama-4-scout-17b-16e-instruct",
-    "creator": "meta",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1279.1565355852906,
-        "ciLow": 1274.4459316617895,
-        "ciHigh": 1283.8671395087918,
-        "votes": 29830,
-        "rank": 272,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "llama2-70b-steerlm-chat",
-    "name": "llama2-70b-steerlm-chat",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1098.0396606701418,
-        "ciLow": 1085.591309713367,
-        "ciHigh": 1110.4880116269167,
-        "votes": 3585,
-        "rank": 366,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "longcat-flash-chat",
-    "name": "longcat-flash-chat",
-    "creator": "meituan",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1422.7756223437177,
-        "ciLow": 1416.3921065311183,
-        "ciHigh": 1429.159138156317,
-        "votes": 11172,
-        "rank": 109,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "longcat-flash-chat-2602-exp",
-    "name": "longcat-flash-chat-2602-exp",
-    "creator": "meituan",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1426.5700435189299,
-        "ciLow": 1422.0911033680711,
-        "ciHigh": 1431.0489836697886,
-        "votes": 29296,
-        "rank": 102,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "ltx-2-19b",
     "name": "ltx-2-19b",
     "creator": "unknown",
@@ -10112,27 +5472,6 @@
         "votes": 287341,
         "rank": 75,
         "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "magistral-medium-2506",
-    "name": "magistral-medium-2506",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1254.6471655710081,
-        "ciLow": 1248.2068594787677,
-        "ciHigh": 1261.0874716632488,
-        "votes": 11507,
-        "rank": 293,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -10241,27 +5580,6 @@
     ]
   },
   {
-    "id": "mercury",
-    "name": "mercury",
-    "creator": "inception-ai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1282.315826786067,
-        "ciLow": 1268.620378951057,
-        "ciHigh": 1296.011274621077,
-        "votes": 1962,
-        "rank": 267,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "mercury-2",
     "name": "mercury-2",
     "creator": "inception-ai",
@@ -10271,16 +5589,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1354.9724992440424,
-        "ciLow": 1344.624921732574,
-        "ciHigh": 1365.3200767555109,
-        "votes": 3199,
-        "rank": 201,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10305,16 +5613,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1427.7575683476189,
-        "ciLow": 1423.542614790026,
-        "ciHigh": 1431.972521905212,
-        "votes": 47388,
-        "rank": 100,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1438.1786125279186,
         "ciLow": 1432.1666592428026,
@@ -10335,16 +5633,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1465.0696051129742,
-        "ciLow": 1461.525674755982,
-        "ciHigh": 1468.613535469966,
-        "votes": 74943,
-        "rank": 37,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10369,16 +5657,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1455.2341482759373,
-        "ciLow": 1448.633608458767,
-        "ciHigh": 1461.8346880931074,
-        "votes": 10151,
-        "rank": 45,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1635.1146468101183,
         "ciLow": 1625.2071296244737,
@@ -10399,16 +5677,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1490.2786371004238,
-        "ciLow": 1480.9460453142653,
-        "ciHigh": 1499.6112288865822,
-        "votes": 4071,
-        "rank": 11,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10433,16 +5701,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1411.0254344101154,
-        "ciLow": 1407.5923362740273,
-        "ciHigh": 1414.4585325462035,
-        "votes": 48111,
-        "rank": 139,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1330.243175845132,
         "ciLow": 1320.5086772926809,
@@ -10465,43 +5723,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1394.8097696555194,
-        "ciLow": 1388.6895201098703,
-        "ciHigh": 1400.9300192011683,
-        "votes": 11147,
-        "rank": 160,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1292.4061619280233,
         "ciLow": 1275.9575324430646,
         "ciHigh": 1308.8547914129822,
         "votes": 1686,
         "rank": 123,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mimo-v2-omni",
-    "name": "mimo-v2-omni",
-    "creator": "xiaomi",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1423.1038846122233,
-        "ciLow": 1417.576751477544,
-        "ciHigh": 1428.631017746903,
-        "votes": 20632,
-        "rank": 108,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -10516,16 +5743,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1436.053610431943,
-        "ciLow": 1431.4027007406205,
-        "ciHigh": 1440.7045201232656,
-        "votes": 25453,
-        "rank": 85,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10580,27 +5797,6 @@
     ]
   },
   {
-    "id": "minimax-m1",
-    "name": "minimax-m1",
-    "creator": "minimax",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1342.597102619174,
-        "ciLow": 1338.3290584688868,
-        "ciHigh": 1346.865146769461,
-        "votes": 34295,
-        "rank": 209,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "minimax-m2",
     "name": "minimax-m2",
     "creator": "minimax",
@@ -10610,16 +5806,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1340.0191389917948,
-        "ciLow": 1332.3370591080404,
-        "ciHigh": 1347.701218875549,
-        "votes": 6858,
-        "rank": 213,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10644,16 +5830,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1391.9747029013047,
-        "ciLow": 1386.9015820846164,
-        "ciHigh": 1397.047823717993,
-        "votes": 17242,
-        "rank": 164,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1383.8470496707776,
         "ciLow": 1374.3136858510204,
@@ -10676,16 +5852,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1359.1762324623908,
-        "ciLow": 1355.3079320197132,
-        "ciHigh": 1363.0445329050685,
-        "votes": 42837,
-        "rank": 197,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1385.8073099567891,
         "ciLow": 1377.4819017193158,
@@ -10706,16 +5872,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1404.4831091633962,
-        "ciLow": 1401.1465107642045,
-        "ciHigh": 1407.8197075625878,
-        "votes": 84200,
-        "rank": 147,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10750,148 +5906,12 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1433.433724918486,
-        "ciLow": 1429.6057367434807,
-        "ciHigh": 1437.2617130934912,
-        "votes": 63129,
-        "rank": 91,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1482.0585860744097,
         "ciLow": 1476.467896199143,
         "ciHigh": 1487.6492759496762,
         "votes": 19093,
         "rank": 62,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "ministral-8b-2410",
-    "name": "ministral-8b-2410",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1190.8697065924691,
-        "ciLow": 1181.8968313990993,
-        "ciHigh": 1199.842581785839,
-        "votes": 4781,
-        "rank": 323,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-7b-instruct",
-    "name": "mistral-7b-instruct",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1023.4552842712858,
-        "ciLow": 1014.2941967801687,
-        "ciHigh": 1032.6163717624029,
-        "votes": 8977,
-        "rank": 399,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-7b-instruct-v0-2",
-    "name": "mistral-7b-instruct-v0.2",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1089.5139626444386,
-        "ciLow": 1082.976294878906,
-        "ciHigh": 1096.051630409971,
-        "votes": 19402,
-        "rank": 372,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-large-2402",
-    "name": "mistral-large-2402",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1176.4274362342971,
-        "ciLow": 1171.744272224493,
-        "ciHigh": 1181.1106002441015,
-        "votes": 62436,
-        "rank": 329,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-large-2407",
-    "name": "mistral-large-2407",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1266.0969002807142,
-        "ciLow": 1262.1918304711548,
-        "ciHigh": 1270.0019700902735,
-        "votes": 45459,
-        "rank": 282,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-large-2411",
-    "name": "mistral-large-2411",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1265.260420816418,
-        "ciLow": 1260.8252210775229,
-        "ciHigh": 1269.695620555313,
-        "votes": 28073,
-        "rank": 283,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -10906,16 +5926,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1428.1008153662176,
-        "ciLow": 1425.2698527068694,
-        "ciHigh": 1430.9317780255658,
-        "votes": 83498,
-        "rank": 99,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -10940,85 +5950,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1429.737845356948,
-        "ciLow": 1422.1716518067956,
-        "ciHigh": 1437.3040389071004,
-        "votes": 6607,
-        "rank": 96,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1542.3112524659052,
         "ciLow": 1528.5144091255484,
         "ciHigh": 1556.1080958062623,
         "votes": 2194,
         "rank": 42,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-medium",
-    "name": "mistral-medium",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1165.0885487576318,
-        "ciLow": 1159.6684193890528,
-        "ciHigh": 1170.5086781262107,
-        "votes": 34550,
-        "rank": 335,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-medium-2505",
-    "name": "mistral-medium-2505",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1370.1296531227915,
-        "ciLow": 1365.4445796472767,
-        "ciHigh": 1374.8147265983062,
-        "votes": 32783,
-        "rank": 183,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-medium-2508",
-    "name": "mistral-medium-2508",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1424.2315735464672,
-        "ciLow": 1421.6682928735443,
-        "ciHigh": 1426.7948542193901,
-        "votes": 95341,
-        "rank": 107,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -11035,127 +5972,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1421.0577769386848,
-        "ciLow": 1414.6829238952607,
-        "ciHigh": 1427.432629982109,
-        "votes": 11793,
-        "rank": 112,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1263.3829384837534,
         "ciLow": 1248.5987684608117,
         "ciHigh": 1278.167108506695,
         "votes": 2320,
         "rank": 126,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-small-24b-instruct-2501",
-    "name": "mistral-small-24b-instruct-2501",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1233.5044487718137,
-        "ciLow": 1227.6285196423971,
-        "ciHigh": 1239.38037790123,
-        "votes": 14681,
-        "rank": 298,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-small-2506",
-    "name": "mistral-small-2506",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1337.9808388112267,
-        "ciLow": 1332.7925475958114,
-        "ciHigh": 1343.169130026642,
-        "votes": 17464,
-        "rank": 217,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mistral-small-3-1-24b-instruct-2503",
-    "name": "mistral-small-3.1-24b-instruct-2503",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1277.1000092628622,
-        "ciLow": 1272.5735127361813,
-        "ciHigh": 1281.6265057895432,
-        "votes": 32732,
-        "rank": 274,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mixtral-8x22b-instruct-v0-1",
-    "name": "mixtral-8x22b-instruct-v0.1",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1161.9368755524354,
-        "ciLow": 1157.4201650281232,
-        "ciHigh": 1166.4535860767476,
-        "votes": 51416,
-        "rank": 338,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mixtral-8x7b-instruct-v0-1",
-    "name": "mixtral-8x7b-instruct-v0.1",
-    "creator": "mistral",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1131.5081304023806,
-        "ciLow": 1127.2821799561516,
-        "ciHigh": 1135.7340808486097,
-        "votes": 73503,
-        "rank": 348,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -11182,69 +6004,6 @@
     ]
   },
   {
-    "id": "molmo-2-8b",
-    "name": "molmo-2-8b",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1288.0034252863593,
-        "ciLow": 1267.2578583475663,
-        "ciHigh": 1308.7489922251525,
-        "votes": 823,
-        "rank": 257,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mpt-30b-chat",
-    "name": "mpt-30b-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1068.557231342595,
-        "ciLow": 1056.4609627981074,
-        "ciHigh": 1080.6534998870825,
-        "votes": 2572,
-        "rank": 382,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "mpt-7b-chat",
-    "name": "mpt-7b-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 955.165418116427,
-        "ciLow": 943.4501814064813,
-        "ciHigh": 966.8806548263724,
-        "votes": 3924,
-        "rank": 406,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "muse-glimmer",
     "name": "muse-glimmer",
     "creator": "meta",
@@ -11254,16 +6013,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1388.81544176429,
-        "ciLow": 1379.1564741196084,
-        "ciHigh": 1398.4744094089715,
-        "votes": 3889,
-        "rank": 167,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -11325,16 +6074,6 @@
         "votes": 1084,
         "rank": 29,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1474.1091041438688,
-        "ciLow": 1468.4006361647816,
-        "ciHigh": 1479.8175721229559,
-        "votes": 14163,
-        "rank": 26,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -11360,16 +6099,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1478.1334516170798,
-        "ciLow": 1473.8915045753713,
-        "ciHigh": 1482.375398658788,
-        "votes": 41938,
-        "rank": 22,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1542.214153716248,
         "ciLow": 1534.5982963985807,
@@ -11390,16 +6119,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1484.912345381187,
-        "ciLow": 1477.5392480732967,
-        "ciHigh": 1492.2854426890774,
-        "votes": 7611,
-        "rank": 15,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -11431,16 +6150,6 @@
         "votes": 1006,
         "rank": 15,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1489.7473577369244,
-        "ciLow": 1484.1049103395078,
-        "ciHigh": 1495.3898051343413,
-        "votes": 16731,
-        "rank": 12,
-        "fetchedAt": "2026-10-14"
       },
       {
         "source": "lmarena",
@@ -11508,316 +6217,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1503.8711863062053,
-        "ciLow": 1490.6870337604707,
-        "ciHigh": 1517.0553388519397,
-        "votes": 1944,
-        "rank": 5,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1650.947320232814,
         "ciLow": 1632.6842084950395,
         "ciHigh": 1669.2104319705886,
         "votes": 1228,
         "rank": 15,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nemotron-4-340b-instruct",
-    "name": "nemotron-4-340b-instruct",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1224.7649719214428,
-        "ciLow": 1219.4904278865777,
-        "ciHigh": 1230.0395159563082,
-        "votes": 19659,
-        "rank": 307,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nous-hermes-2-mixtral-8x7b-dpo",
-    "name": "nous-hermes-2-mixtral-8x7b-dpo",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1111.9883338998147,
-        "ciLow": 1100.207858579777,
-        "ciHigh": 1123.7688092198525,
-        "votes": 3777,
-        "rank": 358,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nova-2-lite",
-    "name": "nova-2-lite",
-    "creator": "amazon",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1361.8288043867494,
-        "ciLow": 1355.8210371707892,
-        "ciHigh": 1367.8365716027095,
-        "votes": 12414,
-        "rank": 194,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nvidia-llama-3-3-nemotron-super-49b-v1-5",
-    "name": "nvidia-llama-3.3-nemotron-super-49b-v1.5",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1338.0276263806566,
-        "ciLow": 1328.04398321479,
-        "ciHigh": 1348.0112695465232,
-        "votes": 3328,
-        "rank": 216,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nvidia-nemotron-3-5-lightning-30b-a3b-nvfp4",
-    "name": "nvidia-nemotron-3.5-lightning-30b-a3b-nvfp4",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1328.7903347482886,
-        "ciLow": 1323.1985871477511,
-        "ciHigh": 1334.3820823488259,
-        "votes": 19080,
-        "rank": 228,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nvidia-nemotron-3-nano-30b-a3b-bf16",
-    "name": "nvidia-nemotron-3-nano-30b-a3b-bf16",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1347.8306423140302,
-        "ciLow": 1342.4453538650969,
-        "ciHigh": 1353.2159307629636,
-        "votes": 15774,
-        "rank": 208,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nvidia-nemotron-3-super-120b-a12b",
-    "name": "nvidia-nemotron-3-super-120b-a12b",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1377.5815579354582,
-        "ciLow": 1370.5269655834327,
-        "ciHigh": 1384.636150287484,
-        "votes": 7880,
-        "rank": 174,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "nvidia-nemotron-3-ultra-550b-a55b-nvfp4",
-    "name": "nvidia-nemotron-3-ultra-550b-a55b-nvfp4",
-    "creator": "nvidia",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1444.288328208659,
-        "ciLow": 1437.436919563557,
-        "ciHigh": 1451.1397368537612,
-        "votes": 11566,
-        "rank": 66,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o1-2024-12-17",
-    "name": "o1-2024-12-17",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1365.7637894357595,
-        "ciLow": 1361.2907259358599,
-        "ciHigh": 1370.2368529356593,
-        "votes": 27807,
-        "rank": 189,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o1-mini",
-    "name": "o1-mini",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1317.0257730604042,
-        "ciLow": 1313.3915992879647,
-        "ciHigh": 1320.6599468328436,
-        "votes": 51981,
-        "rank": 237,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o1-preview",
-    "name": "o1-preview",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1352.7252236351815,
-        "ciLow": 1347.6979192842343,
-        "ciHigh": 1357.7525279861288,
-        "votes": 31122,
-        "rank": 204,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o3-2025-04-16",
-    "name": "o3-2025-04-16",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1409.854890296842,
-        "ciLow": 1406.2487702005612,
-        "ciHigh": 1413.4610103931232,
-        "votes": 58909,
-        "rank": 140,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o3-mini",
-    "name": "o3-mini",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1319.3598429033145,
-        "ciLow": 1315.8127390445754,
-        "ciHigh": 1322.9069467620536,
-        "votes": 56751,
-        "rank": 235,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o3-mini-high",
-    "name": "o3-mini-high",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1336.5236164483551,
-        "ciLow": 1331.2774030850092,
-        "ciHigh": 1341.7698298117011,
-        "votes": 18589,
-        "rank": 218,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -11839,216 +6244,6 @@
         "ciHigh": 1150.443270657756,
         "votes": 20770,
         "rank": 34,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "o4-mini-2025-04-16",
-    "name": "o4-mini-2025-04-16",
-    "creator": "openai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1353.1809573382568,
-        "ciLow": 1349.226925073884,
-        "ciHigh": 1357.1349896026297,
-        "votes": 44856,
-        "rank": 203,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "oasst-pythia-12b",
-    "name": "oasst-pythia-12b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 916.0126484503323,
-        "ciLow": 905.3333964850467,
-        "ciHigh": 926.691900415618,
-        "votes": 6310,
-        "rank": 411,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "olmo-2-0325-32b-instruct",
-    "name": "olmo-2-0325-32b-instruct",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1217.882890057416,
-        "ciLow": 1207.1068240187706,
-        "ciHigh": 1228.6589560960615,
-        "votes": 3334,
-        "rank": 311,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "olmo-3-1-32b-instruct",
-    "name": "olmo-3.1-32b-instruct",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1311.0934269843654,
-        "ciLow": 1305.0042907334198,
-        "ciHigh": 1317.1825632353111,
-        "votes": 11822,
-        "rank": 241,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "olmo-3-1-32b-think",
-    "name": "olmo-3.1-32b-think",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1271.5710008834876,
-        "ciLow": 1264.3272811926654,
-        "ciHigh": 1278.8147205743096,
-        "votes": 8304,
-        "rank": 279,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "olmo-3-32b-think",
-    "name": "olmo-3-32b-think",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1299.4825258885735,
-        "ciLow": 1291.2408018689287,
-        "ciHigh": 1307.7242499082183,
-        "votes": 5829,
-        "rank": 247,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "olmo-7b-instruct",
-    "name": "olmo-7b-instruct",
-    "creator": "allenai",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1031.7587456296899,
-        "ciLow": 1020.7276236184086,
-        "ciHigh": 1042.789867640971,
-        "votes": 6328,
-        "rank": 396,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "openchat-3-5",
-    "name": "openchat-3.5",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1096.9812920159313,
-        "ciLow": 1087.3618078571453,
-        "ciHigh": 1106.6007761747173,
-        "votes": 7968,
-        "rank": 367,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "openchat-3-5-0106",
-    "name": "openchat-3.5-0106",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1106.5578742268792,
-        "ciLow": 1098.6621166083364,
-        "ciHigh": 1114.4536318454223,
-        "votes": 12637,
-        "rank": 362,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "openhermes-2-5-mistral-7b",
-    "name": "openhermes-2.5-mistral-7b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1092.4482329117056,
-        "ciLow": 1082.1361873572368,
-        "ciHigh": 1102.7602784661747,
-        "votes": 5006,
-        "rank": 371,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -12123,153 +6318,6 @@
         "votes": 7079,
         "rank": 30,
         "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "palm-2",
-    "name": "palm-2",
-    "creator": "google",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1027.1852218742326,
-        "ciLow": 1017.983717491036,
-        "ciHigh": 1036.3867262574295,
-        "votes": 8554,
-        "rank": 398,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "phi-3-medium-4k-instruct",
-    "name": "phi-3-medium-4k-instruct",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1137.5000668780842,
-        "ciLow": 1132.380590197678,
-        "ciHigh": 1142.6195435584905,
-        "votes": 25055,
-        "rank": 345,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "phi-3-mini-128k-instruct",
-    "name": "phi-3-mini-128k-instruct",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1050.337518317733,
-        "ciLow": 1043.1200289682906,
-        "ciHigh": 1057.5550076671752,
-        "votes": 20685,
-        "rank": 393,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "phi-3-mini-4k-instruct",
-    "name": "phi-3-mini-4k-instruct",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1073.255100121398,
-        "ciLow": 1066.9590764575548,
-        "ciHigh": 1079.5511237852413,
-        "votes": 20118,
-        "rank": 380,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "phi-3-mini-4k-instruct-june-2024",
-    "name": "phi-3-mini-4k-instruct-june-2024",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1079.9042681022859,
-        "ciLow": 1073.5608949323616,
-        "ciHigh": 1086.24764127221,
-        "votes": 12297,
-        "rank": 377,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "phi-3-small-8k-instruct",
-    "name": "phi-3-small-8k-instruct",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1109.7728482938617,
-        "ciLow": 1103.9290308769812,
-        "ciHigh": 1115.6166657107422,
-        "votes": 17766,
-        "rank": 359,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "phi-4",
-    "name": "phi-4",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1216.6309900031924,
-        "ciLow": 1212.0497333569288,
-        "ciHigh": 1221.212246649456,
-        "votes": 24126,
-        "rank": 313,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -12394,27 +6442,6 @@
         "ciHigh": 1144.8193981740803,
         "votes": 29439,
         "rank": 37,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen-14b-chat",
-    "name": "qwen-14b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1050.9753105820005,
-        "ciLow": 1040.1134900587324,
-        "ciHigh": 1061.8371311052686,
-        "votes": 4964,
-        "rank": 392,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -12608,426 +6635,6 @@
     ]
   },
   {
-    "id": "qwen-max-0919",
-    "name": "qwen-max-0919",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1281.8332902141938,
-        "ciLow": 1276.1621892510748,
-        "ciHigh": 1287.504391177313,
-        "votes": 16478,
-        "rank": 268,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen-plus-0125",
-    "name": "qwen-plus-0125",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1326.3541166630228,
-        "ciLow": 1318.0720965527248,
-        "ciHigh": 1334.6361367733207,
-        "votes": 5819,
-        "rank": 229,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen1-5-110b-chat",
-    "name": "qwen1.5-110b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1174.5213459207782,
-        "ciLow": 1169.0098249814555,
-        "ciHigh": 1180.032866860101,
-        "votes": 26195,
-        "rank": 330,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen1-5-14b-chat",
-    "name": "qwen1.5-14b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1127.6434730884027,
-        "ciLow": 1120.6083994497503,
-        "ciHigh": 1134.6785467270552,
-        "votes": 17839,
-        "rank": 351,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen1-5-32b-chat",
-    "name": "qwen1.5-32b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1137.1525926318573,
-        "ciLow": 1131.0822981168965,
-        "ciHigh": 1143.2228871468183,
-        "votes": 21741,
-        "rank": 346,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen1-5-4b-chat",
-    "name": "qwen1.5-4b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 997.1821117433474,
-        "ciLow": 987.9677399548398,
-        "ciHigh": 1006.3964835318548,
-        "votes": 7597,
-        "rank": 402,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen1-5-72b-chat",
-    "name": "qwen1.5-72b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1166.1026051353444,
-        "ciLow": 1160.9199515439734,
-        "ciHigh": 1171.2852587267155,
-        "votes": 39302,
-        "rank": 333,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen1-5-7b-chat",
-    "name": "qwen1.5-7b-chat",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1083.4087711750362,
-        "ciLow": 1073.7172216267186,
-        "ciHigh": 1093.1003207233541,
-        "votes": 4737,
-        "rank": 374,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen2-5-72b-instruct",
-    "name": "qwen2.5-72b-instruct",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1268.970369023003,
-        "ciLow": 1264.9098033967973,
-        "ciHigh": 1273.0309346492086,
-        "votes": 39406,
-        "rank": 281,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen2-5-coder-32b-instruct",
-    "name": "qwen2.5-coder-32b-instruct",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1229.9964356779014,
-        "ciLow": 1221.9517454506856,
-        "ciHigh": 1238.0411259051175,
-        "votes": 5432,
-        "rank": 300,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen2-5-max",
-    "name": "qwen2.5-max",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1366.6190520780497,
-        "ciLow": 1362.5328374934934,
-        "ciHigh": 1370.7052666626062,
-        "votes": 32487,
-        "rank": 187,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen2-5-plus-1127",
-    "name": "qwen2.5-plus-1127",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1299.0967882824923,
-        "ciLow": 1292.7698004838037,
-        "ciHigh": 1305.423776081181,
-        "votes": 10187,
-        "rank": 249,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen2-72b-instruct",
-    "name": "qwen2-72b-instruct",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1203.223120614649,
-        "ciLow": 1198.3216130582123,
-        "ciHigh": 1208.1246281710858,
-        "votes": 37325,
-        "rank": 318,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-235b-a22b",
-    "name": "qwen3-235b-a22b",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1366.1875399814119,
-        "ciLow": 1361.490980946278,
-        "ciHigh": 1370.8840990165456,
-        "votes": 25952,
-        "rank": 188,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-235b-a22b-instruct-2507",
-    "name": "qwen3-235b-a22b-instruct-2507",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1419.1148089155915,
-        "ciLow": 1416.580366219227,
-        "ciHigh": 1421.649251611956,
-        "votes": 98165,
-        "rank": 121,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-235b-a22b-no-thinking",
-    "name": "qwen3-235b-a22b-no-thinking",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1393.5117595663776,
-        "ciLow": 1389.0110091882702,
-        "ciHigh": 1398.012509944485,
-        "votes": 37489,
-        "rank": 163,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-235b-a22b-thinking-2507",
-    "name": "qwen3-235b-a22b-thinking-2507",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1414.9885397068956,
-        "ciLow": 1408.4559915522043,
-        "ciHigh": 1421.521087861587,
-        "votes": 8821,
-        "rank": 132,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-30b-a3b",
-    "name": "qwen3-30b-a3b",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1316.843454835493,
-        "ciLow": 1312.1271850347455,
-        "ciHigh": 1321.5597246362408,
-        "votes": 26154,
-        "rank": 238,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-30b-a3b-instruct-2507",
-    "name": "qwen3-30b-a3b-instruct-2507",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1383.7030450609996,
-        "ciLow": 1378.8249638326402,
-        "ciHigh": 1388.5811262893592,
-        "votes": 23316,
-        "rank": 169,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-32b",
-    "name": "qwen3-32b",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1340.0396277538864,
-        "ciLow": 1330.729949423716,
-        "ciHigh": 1349.3493060840567,
-        "votes": 3926,
-        "rank": 212,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "qwen3-5-122b-a10b",
     "name": "qwen3.5-122b-a10b",
     "creator": "alibaba",
@@ -13037,16 +6644,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1417.4474043346017,
-        "ciLow": 1413.1873889380377,
-        "ciHigh": 1421.7074197311656,
-        "votes": 29742,
-        "rank": 123,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -13071,16 +6668,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1408.952589851608,
-        "ciLow": 1404.6820772743965,
-        "ciHigh": 1413.2231024288196,
-        "votes": 28685,
-        "rank": 141,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1357.9067070221736,
         "ciLow": 1349.878420224685,
@@ -13101,16 +6688,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1394.5157292614745,
-        "ciLow": 1390.3116385779203,
-        "ciHigh": 1398.7198199450283,
-        "votes": 30480,
-        "rank": 161,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -13135,16 +6712,6 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1437.9375386279219,
-        "ciLow": 1434.8625304126283,
-        "ciHigh": 1441.0125468432152,
-        "votes": 92885,
-        "rank": 80,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1400.0987628691391,
         "ciLow": 1394.9774145378167,
@@ -13167,43 +6734,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1397.192168223231,
-        "ciLow": 1393.5437369850367,
-        "ciHigh": 1400.840599461425,
-        "votes": 61822,
-        "rank": 156,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1243.4678792850084,
         "ciLow": 1223.8470669995795,
         "ciHigh": 1263.088691570437,
         "votes": 1329,
         "rank": 130,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-5-max-preview",
-    "name": "qwen3.5-max-preview",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1470.211209882127,
-        "ciLow": 1465.356722720665,
-        "ciHigh": 1475.065697043589,
-        "votes": 22612,
-        "rank": 31,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -13218,16 +6754,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1446.8825282331734,
-        "ciLow": 1438.7238246261604,
-        "ciHigh": 1455.0412318401864,
-        "votes": 5431,
-        "rank": 58,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -13250,16 +6776,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1436.4418033818138,
-        "ciLow": 1432.330777673935,
-        "ciHigh": 1440.5528290896923,
-        "votes": 48185,
-        "rank": 83,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -13294,27 +6810,6 @@
     ]
   },
   {
-    "id": "qwen3-7-max-preview",
-    "name": "qwen3.7-max-preview",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1475.259455505762,
-        "ciLow": 1465.5953057107686,
-        "ciHigh": 1484.9236053007553,
-        "votes": 3936,
-        "rank": 25,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "qwen3-7-plus",
     "name": "qwen3.7-plus",
     "creator": "alibaba",
@@ -13332,16 +6827,6 @@
         "votes": 4591,
         "rank": 30,
         "fetchedAt": "2026-10-12"
-      },
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1454.6139872496522,
-        "ciLow": 1450.2932312235253,
-        "ciHigh": 1458.934743275779,
-        "votes": 42058,
-        "rank": 46,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -13355,16 +6840,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1440.5644081336754,
-        "ciLow": 1435.4491957728978,
-        "ciHigh": 1445.679620494453,
-        "votes": 22539,
-        "rank": 74,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -13421,16 +6896,6 @@
       },
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1482.4505708516404,
-        "ciLow": 1477.4564718647957,
-        "ciHigh": 1487.4446698384852,
-        "votes": 26991,
-        "rank": 17,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1671.9940885465758,
         "ciLow": 1659.9553314704124,
@@ -13474,190 +6939,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1356.5881716104639,
-        "ciLow": 1351.5981852433745,
-        "ciHigh": 1361.5781579775535,
-        "votes": 25191,
-        "rank": 199,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1274.5761343121992,
         "ciLow": 1266.807333230618,
         "ciHigh": 1282.3449353937804,
         "votes": 12712,
         "rank": 124,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-max-2025-09-23",
-    "name": "qwen3-max-2025-09-23",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1412.8249675348347,
-        "ciLow": 1406.3735257293572,
-        "ciHigh": 1419.2764093403123,
-        "votes": 9025,
-        "rank": 134,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-max-preview",
-    "name": "qwen3-max-preview",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1438.8490671799577,
-        "ciLow": 1434.343379873668,
-        "ciHigh": 1443.3547544862474,
-        "votes": 27372,
-        "rank": 77,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-next-80b-a3b-instruct",
-    "name": "qwen3-next-80b-a3b-instruct",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1416.9576088043827,
-        "ciLow": 1412.225236533422,
-        "ciHigh": 1421.6899810753437,
-        "votes": 22769,
-        "rank": 126,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-next-80b-a3b-thinking",
-    "name": "qwen3-next-80b-a3b-thinking",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1368.1483748155388,
-        "ciLow": 1362.3090721793465,
-        "ciHigh": 1373.987677451731,
-        "votes": 13481,
-        "rank": 186,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-vl-235b-a22b-instruct",
-    "name": "qwen3-vl-235b-a22b-instruct",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1420.1540361965099,
-        "ciLow": 1413.652440165136,
-        "ciHigh": 1426.6556322278836,
-        "votes": 11312,
-        "rank": 114,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwen3-vl-235b-a22b-thinking",
-    "name": "qwen3-vl-235b-a22b-thinking",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1400.6352797583663,
-        "ciLow": 1393.8118261975417,
-        "ciHigh": 1407.4587333191912,
-        "votes": 7858,
-        "rank": 151,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwq-32b",
-    "name": "qwq-32b",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1328.9972577247306,
-        "ciLow": 1324.5641978895633,
-        "ciHigh": 1333.430317559898,
-        "votes": 25176,
-        "rank": 227,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "qwq-32b-preview",
-    "name": "qwq-32b-preview",
-    "creator": "alibaba",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1161.7452189323897,
-        "ciLow": 1150.4142008222245,
-        "ciHigh": 1173.0762370425548,
-        "votes": 3231,
-        "rank": 339,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -13830,90 +7117,6 @@
     ]
   },
   {
-    "id": "reka-core-20240904",
-    "name": "reka-core-20240904",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1248.331903258133,
-        "ciLow": 1241.2279132725114,
-        "ciHigh": 1255.4358932437547,
-        "votes": 7312,
-        "rank": 294,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "reka-flash-20240904",
-    "name": "reka-flash-20240904",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1217.8710882723515,
-        "ciLow": 1210.9436190692538,
-        "ciHigh": 1224.7985574754491,
-        "votes": 7536,
-        "rank": 312,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "reka-flash-21b-20240226",
-    "name": "reka-flash-21b-20240226",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1164.9386567663003,
-        "ciLow": 1159.0482000204995,
-        "ciHigh": 1170.829113512101,
-        "votes": 24806,
-        "rank": 336,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "reka-flash-21b-20240226-online",
-    "name": "reka-flash-21b-20240226-online",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1170.3830703793064,
-        "ciLow": 1163.0784189006724,
-        "ciHigh": 1177.6877218579405,
-        "votes": 15450,
-        "rank": 332,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "reve-2-0",
     "name": "reve-2.0",
     "creator": "reve",
@@ -14081,27 +7284,6 @@
     ]
   },
   {
-    "id": "ring-flash-2-0",
-    "name": "ring-flash-2.0",
-    "creator": "ant-group",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1334.0651999875408,
-        "ciLow": 1326.857051958525,
-        "ciHigh": 1341.2733480165566,
-        "votes": 6989,
-        "rank": 221,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "runway-gen-4-5",
     "name": "runway-gen-4.5",
     "creator": "runway",
@@ -14181,27 +7363,6 @@
         "ciHigh": 1065.7370529616358,
         "votes": 6801,
         "rank": 47,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "rwkv-4-raven-14b",
-    "name": "RWKV-4-Raven-14B",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 948.332289699345,
-        "ciLow": 937.0955517231512,
-        "ciHigh": 959.5690276755386,
-        "votes": 4845,
-        "rank": 407,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -14549,69 +7710,6 @@
     ]
   },
   {
-    "id": "smollm2-1-7b-instruct",
-    "name": "smollm2-1.7b-instruct",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1041.9725115284207,
-        "ciLow": 1027.9004124263242,
-        "ciHigh": 1056.0446106305171,
-        "votes": 2199,
-        "rank": 394,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "snowflake-arctic-instruct",
-    "name": "snowflake-arctic-instruct",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1100.9246660134327,
-        "ciLow": 1095.0457608782228,
-        "ciHigh": 1106.8035711486425,
-        "votes": 32832,
-        "rank": 365,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "solar-10-7b-instruct-v1-0",
-    "name": "solar-10.7b-instruct-v1.0",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1083.036122367517,
-        "ciLow": 1069.9906199752545,
-        "ciHigh": 1096.0816247597795,
-        "votes": 4155,
-        "rank": 375,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "solar-pro4",
     "name": "solar-pro4",
     "creator": "upstage",
@@ -14621,16 +7719,6 @@
       "text"
     ],
     "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1387.3542285867265,
-        "ciLow": 1382.0133052213328,
-        "ciHigh": 1392.6951519521203,
-        "votes": 20436,
-        "rank": 168,
-        "fetchedAt": "2026-10-14"
-      },
       {
         "source": "lmarena",
         "key": "webdev",
@@ -14728,174 +7816,6 @@
     ]
   },
   {
-    "id": "stablelm-tuned-alpha-7b",
-    "name": "stablelm-tuned-alpha-7b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 866.5194188478777,
-        "ciLow": 853.965444758948,
-        "ciHigh": 879.0733929368071,
-        "votes": 3287,
-        "rank": 413,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "starling-lm-7b-alpha",
-    "name": "starling-lm-7b-alpha",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1107.6103218564883,
-        "ciLow": 1099.7031828257088,
-        "ciHigh": 1115.5174608872678,
-        "votes": 10224,
-        "rank": 361,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "starling-lm-7b-beta",
-    "name": "starling-lm-7b-beta",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1131.9930896634996,
-        "ciLow": 1124.7112225898823,
-        "ciHigh": 1139.2749567371168,
-        "votes": 16056,
-        "rank": 347,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "step-1o-turbo-202506",
-    "name": "step-1o-turbo-202506",
-    "creator": "stepfun",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1335.6455270985095,
-        "ciLow": 1328.7908525681987,
-        "ciHigh": 1342.5002016288202,
-        "votes": 8902,
-        "rank": 219,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "step-2-16k-exp-202412",
-    "name": "step-2-16k-exp-202412",
-    "creator": "stepfun",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1320.8541809488177,
-        "ciLow": 1312.3138193302696,
-        "ciHigh": 1329.3945425673655,
-        "votes": 4833,
-        "rank": 230,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "step-3",
-    "name": "step-3",
-    "creator": "stepfun",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1350.195897256283,
-        "ciLow": 1342.7552540026422,
-        "ciHigh": 1357.6365405099234,
-        "votes": 6292,
-        "rank": 207,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "step-3-5-flash",
-    "name": "step-3.5-flash",
-    "creator": "stepfun",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1402.7494219551538,
-        "ciLow": 1399.2367875681127,
-        "ciHigh": 1406.2620563421951,
-        "votes": 60348,
-        "rank": 149,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "step-5-preview",
-    "name": "Step 5 Preview",
-    "creator": "stepfun",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1440.0148240073909,
-        "ciLow": 1432.232418950666,
-        "ciHigh": 1447.797229064116,
-        "votes": 6432,
-        "rank": 75,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "step-5-preview-high",
     "name": "step-5-preview-high",
     "creator": "stepfun",
@@ -14938,48 +7858,6 @@
     ]
   },
   {
-    "id": "stripedhyena-nous-7b",
-    "name": "stripedhyena-nous-7b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1038.3875988819848,
-        "ciLow": 1027.448282727555,
-        "ciHigh": 1049.3269150364147,
-        "votes": 5182,
-        "rank": 395,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "trinity-large-preview",
-    "name": "trinity-large-preview",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1338.7702313279226,
-        "ciLow": 1334.5325715771985,
-        "ciHigh": 1343.0078910786467,
-        "votes": 31291,
-        "rank": 215,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "trinity-large-thinking",
     "name": "trinity-large-thinking",
     "creator": "unknown",
@@ -14991,43 +7869,12 @@
     "scores": [
       {
         "source": "lmarena",
-        "key": "text",
-        "value": 1340.0597509111851,
-        "ciLow": 1335.4266946006821,
-        "ciHigh": 1344.692807221688,
-        "votes": 30342,
-        "rank": 211,
-        "fetchedAt": "2026-10-14"
-      },
-      {
-        "source": "lmarena",
         "key": "webdev",
         "value": 1237.5851591161722,
         "ciLow": 1217.5760880590667,
         "ciHigh": 1257.5942301732778,
         "votes": 1361,
         "rank": 133,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "tulu-2-dpo-70b",
-    "name": "tulu-2-dpo-70b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1120.9845458881812,
-        "ciLow": 1111.299432153895,
-        "ciHigh": 1130.6696596224674,
-        "votes": 6535,
-        "rank": 354,
         "fetchedAt": "2026-10-14"
       }
     ]
@@ -15370,69 +8217,6 @@
         "votes": 25258,
         "rank": 16,
         "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "vicuna-13b",
-    "name": "vicuna-13b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1057.6060411490248,
-        "ciLow": 1051.023659798137,
-        "ciHigh": 1064.1884224999126,
-        "votes": 19367,
-        "rank": 385,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "vicuna-33b",
-    "name": "vicuna-33b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1105.2092706427031,
-        "ciLow": 1099.0996857401647,
-        "ciHigh": 1111.3188555452418,
-        "votes": 22479,
-        "rank": 363,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "vicuna-7b",
-    "name": "vicuna-7b",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1030.8942278520688,
-        "ciLow": 1021.8224390825139,
-        "ciHigh": 1039.9660166216236,
-        "votes": 6923,
-        "rank": 397,
-        "fetchedAt": "2026-10-14"
       }
     ]
   },
@@ -15844,111 +8628,6 @@
     ]
   },
   {
-    "id": "wizardlm-13b",
-    "name": "wizardlm-13b",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1076.486314544814,
-        "ciLow": 1067.2654685677517,
-        "ciHigh": 1085.7071605218764,
-        "votes": 7044,
-        "rank": 379,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "wizardlm-70b",
-    "name": "wizardlm-70b",
-    "creator": "microsoft",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1119.4701720602345,
-        "ciLow": 1110.1422377732458,
-        "ciHigh": 1128.7981063472232,
-        "votes": 8214,
-        "rank": 355,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "yi-1-5-34b-chat",
-    "name": "yi-1.5-34b-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1172.9089742306721,
-        "ciLow": 1167.9100876292466,
-        "ciHigh": 1177.9078608320974,
-        "votes": 24146,
-        "rank": 331,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "yi-34b-chat",
-    "name": "yi-34b-chat",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1128.4200758419781,
-        "ciLow": 1121.652294252404,
-        "ciHigh": 1135.1878574315522,
-        "votes": 15483,
-        "rank": 350,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "yi-lightning",
-    "name": "yi-lightning",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1301.4843743248161,
-        "ciLow": 1296.5886101369952,
-        "ciHigh": 1306.3801385126371,
-        "votes": 27332,
-        "rank": 245,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
     "id": "z-image-turbo",
     "name": "z-image-turbo",
     "creator": "alibaba",
@@ -15966,69 +8645,6 @@
         "votes": 24808,
         "rank": 59,
         "fetchedAt": "2026-10-12"
-      }
-    ]
-  },
-  {
-    "id": "zephyr-7b-alpha",
-    "name": "zephyr-7b-alpha",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1058.3173858580133,
-        "ciLow": 1042.660679849769,
-        "ciHigh": 1073.9740918662576,
-        "votes": 1785,
-        "rank": 384,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "zephyr-7b-beta",
-    "name": "zephyr-7b-beta",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1069.370174365977,
-        "ciLow": 1060.6751630988128,
-        "ciHigh": 1078.065185633141,
-        "votes": 11118,
-        "rank": 381,
-        "fetchedAt": "2026-10-14"
-      }
-    ]
-  },
-  {
-    "id": "zephyr-orpo-141b-a35b-v0-1",
-    "name": "zephyr-orpo-141b-A35b-v0.1",
-    "creator": "unknown",
-    "aliases": [],
-    "modalities": [
-      "text"
-    ],
-    "scores": [
-      {
-        "source": "lmarena",
-        "key": "text",
-        "value": 1143.6425696601254,
-        "ciLow": 1132.9277014157217,
-        "ciHigh": 1154.3574379045292,
-        "votes": 4652,
-        "rank": 344,
-        "fetchedAt": "2026-10-14"
       }
     ]
   }
