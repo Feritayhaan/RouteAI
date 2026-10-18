@@ -16,9 +16,9 @@ export default async function PrivacyPage({ searchParams }: Props) {
   const t = PRIVACY[locale]
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim()
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-6 px-4 py-10">
-      <Link href="/" className="text-sm underline underline-offset-2">{t.back}</Link>
-      <h1 className="text-3xl font-black">{t.title}</h1>
+    <main className="mx-auto w-full max-w-2xl space-y-6 px-4 py-10 mobile:py-6 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+      <Link href="/" className="inline-flex min-h-11 items-center text-sm underline underline-offset-2">{t.back}</Link>
+      <h1 className="text-3xl mobile:text-2xl font-black break-words">{t.title}</h1>
       <p>{t.intro}</p>
       {t.sections.map((s) => (
         <section key={s.title} className="space-y-2">

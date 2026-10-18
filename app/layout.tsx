@@ -1,10 +1,13 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "next-themes"
 import { getDictionary } from "@/lib/i18n"
 import { currentLocale } from "@/lib/i18n/server"
+import { currentDevice } from "@/lib/device/server"
+import { serverSplit } from "@/lib/device/classify"
+import { DeviceProvider } from "@/components/device/DeviceProvider"
 import "./globals.css"
 
 const geist = Geist({
@@ -18,6 +21,13 @@ const geistMono = Geist_Mono({
   display: "swap",
 })
 
+
+// viewportFit: iPhone çentiği / alt çubuk için env(safe-area-inset-*) çalışsın.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+}
 
 // Dil: proxy.ts -> x-routeai-locale başlığı (?lang -> Accept-Language -> en).
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,8 +48,10 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const locale = await currentLocale()
+  // Cihaz: proxy.ts -> x-routeai-device (sunucu tahmini); DeviceProvider tarayıcıda düzeltir.
+  const device = await currentDevice()
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} data-device={device} data-split={String(serverSplit(device))} suppressHydrationWarning>
       <body className={`${geist.variable} ${geistMono.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
@@ -47,7 +59,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <DeviceProvider initial={device}>{children}</DeviceProvider>
         </ThemeProvider>
         <Analytics />
       </body>

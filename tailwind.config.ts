@@ -1,6 +1,16 @@
 import type { Config } from "tailwindcss"
 import { fontFamily } from "tailwindcss/defaultTheme"
 import animatePlugin from "tailwindcss-animate"
+import plugin from "tailwindcss/plugin"
+
+// Cihaz varyantları: <html data-device> (proxy.ts tahmini, DeviceProvider düzeltir).
+// `mobile:hidden`, `desktop:grid` gibi; `touch:` ana işaretçi dokunmatikse.
+const devicePlugin = plugin(({ addVariant }) => {
+  for (const device of ["mobile", "tablet", "desktop"]) {
+    addVariant(device, `[data-device="${device}"] &`)
+  }
+  addVariant("touch", "@media (pointer: coarse)")
+})
 
 const config: Config = {
   darkMode: ["class"],
@@ -79,7 +89,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [animatePlugin],
+  plugins: [animatePlugin, devicePlugin],
 }
 
 export default config

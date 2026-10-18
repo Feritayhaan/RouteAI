@@ -151,7 +151,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
             <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
           </div>
         ) : (
-          <pre className="max-h-80 overflow-auto whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 font-mono text-sm leading-relaxed">{current.prompt}</pre>
+          <pre className="max-h-80 mobile:max-h-[50dvh] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 font-mono text-sm leading-relaxed">{current.prompt}</pre>
         )}
         {current.negativePrompt && (
           <p className="text-xs"><span className="font-semibold">{dict.prompt.negative}:</span> <span className="font-mono">{current.negativePrompt}</span></p>
@@ -159,7 +159,8 @@ export default function PromptCard({ card: initial }: { card: Card }) {
         {current.validation.status === "unchecked" && (
           <p className="text-xs text-amber-700 dark:text-amber-300">{format(dict.prompt.unchecked, { errors: current.validation.errors.join(" ") })}</p>
         )}
-        <div className="flex flex-wrap gap-2">
+        {/* Mobilde kart ekrandayken Kopyala / Araca Git altta sabit (kart geçilince kendiliğinden gider) */}
+        <div className="flex flex-wrap gap-2 mobile:sticky mobile:bottom-0 mobile:z-10 mobile:-mx-4 mobile:border-t mobile:border-border/60 mobile:bg-card/95 mobile:px-4 mobile:pt-2 mobile:pb-[max(0.5rem,env(safe-area-inset-bottom))] mobile:backdrop-blur">
           <CopyPromptButton
             text={current.prompt}
             onCopied={() => {
