@@ -39,6 +39,8 @@ export function stepPromptInput(step: WorkflowStep, goal: string, dict: Dictiona
     productId,
     cacheKey: `${step.order}|${productId}`,
     goal: `${goal}\n\n${format(dict.workflow.stepGoal, { step: step.name, description: step.description })}`,
+    /** Adımın görevi: prompt, araca özel rehber yoksa bu göreve özel rehberle yazılır (kart içi ve yan panel aynı değeri kullanır). */
+    taskId: step.primary.taskId ?? step.taskId,
   }
 }
 
@@ -166,6 +168,7 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
                 <PromptPanel
                   target={{ productId, toolName: step.primary.toolName }}
                   goal={input.goal}
+                  taskId={input.taskId}
                   locale={prompt.locale}
                   cached={prompt.cache.get(input.cacheKey)}
                   onResult={(card) => prompt.cache.set(input.cacheKey, card)}

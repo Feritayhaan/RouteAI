@@ -23,9 +23,11 @@ const box = "rounded-2xl border border-border/50 bg-card p-4 md:p-6 shadow-lg"
 type Card = PromptCardData | PromptQuestionData
 type State = { status: "loading" } | { status: "error" } | { status: "done"; card: Card }
 
-export default function PromptPanel({ target, goal, locale = "tr", cached, onResult, choices = [], onChoose }: {
+export default function PromptPanel({ target, goal, taskId, locale = "tr", cached, onResult, choices = [], onChoose }: {
   target: PromptTarget
   goal: string
+  /** Kullanıcının işi (data/tasks.json): araca özel rehber yoksa bu işe uygun şablon seçilir. */
+  taskId?: string
   locale?: Locale
   cached?: Card
   onResult?: (card: Card) => void
@@ -54,7 +56,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
   useEffect(() => {
     if (!productId || (initialCard && attempt === 0)) return
     let cancelled = false
-    startPrompt(productId, goal, locale).then((result) => {
+    startPrompt(productId, goal, locale, taskId).then((result) => {
       if (cancelled) return
       if ("error" in result) {
         setState({ status: "error" })
@@ -66,7 +68,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
     return () => {
       cancelled = true
     }
-  }, [productId, goal, locale, attempt, initialCard])
+  }, [productId, goal, taskId, locale, attempt, initialCard])
 
   const retry = () => {
     setState({ status: "loading" })

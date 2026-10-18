@@ -33,6 +33,12 @@ function recommendedTools(response: ApiResponse | null): string[] {
   return response.main ? [response.main.toolName] : []
 }
 
+/** Prompt için kullanıcının işi: tek öneride bulunan görev (araca özel rehber yoksa görev şablonu seçilir). İş akışında adımın görevi kullanılır. */
+function recommendedTaskId(response: ApiResponse | null): string | undefined {
+  if (!response || response.type === "workflow" || response.type === "clarify" || response.type === "no_evidence") return undefined
+  return response.taskId
+}
+
 /** Prompt kutusundaki "Başka araç için" düğmeleri: tek önerideki ana, alternatif ve doğrulanmamış araçlar (prompt yazılabilenler). */
 function promptChoices(response: ApiResponse | null): string[] {
   if (!response || response.type === "workflow" || response.type === "clarify" || response.type === "no_evidence" || !response.main) return []
@@ -194,7 +200,7 @@ export default function HomeClient() {
     ? resolvePromptTarget(promptTool, recommendedTools(response))
     : null
   const promptKey = promptTarget && submitted
-    ? `${"productId" in promptTarget ? promptTarget.productId : promptTarget.missing}|${submitted.query}|${submitted.n}`
+    ? `${"productId" in promptTarget ? promptTarget.productId : promptTarget.missing}|${recommendedTaskId(response) ?? ""}|${submitted.query}|${submitted.n}`
     : ""
 
   // Tek öneride prompt açıkken geniş ekranda (lg) öneri solda, prompt sağda.
@@ -367,6 +373,7 @@ export default function HomeClient() {
                     key={promptKey}
                     target={promptTarget}
                     goal={submitted.query}
+                    taskId={recommendedTaskId(response)}
                     cached={promptCache.get(promptKey)}
                     onResult={(card) => promptCache.set(promptKey, card)}
                     choices={promptChoices(response)}

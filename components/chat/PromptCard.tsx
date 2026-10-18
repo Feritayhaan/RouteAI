@@ -1,14 +1,15 @@
 "use client"
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react"
-import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, Sparkles } from "lucide-react"
+import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, Loader2, MessageCircle, Send } from "lucide-react"
 import type { PromptCard as Card } from "@/lib/agent/cards"
 import { format } from "@/lib/i18n"
 import { trackEvent } from "@/lib/analytics/client"
-import { refinePrompt, type RefineRequest } from "@/lib/chat/promptApi"
+import { chatPrompt, refinePrompt, type RefineRequest } from "@/lib/chat/promptApi"
 import { useChatContext } from "./ChatContext"
 
 type VariantId = "safe" | "creative"
+type ChatMessage = { id: number; role: "user" | "bot" | "error"; text: string; versionN?: number }
 
 export function CopyPromptButton({ text, onCopied }: { text: string; onCopied?: () => void }) {
   const { dict } = useChatContext()
@@ -38,9 +39,11 @@ export function CopyPromptButton({ text, onCopied }: { text: string; onCopied?: 
 const chip = "min-h-11 rounded-xl border border-border bg-card px-3 text-sm hover:bg-muted disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
 /**
- * Prompt kartı: varyant sekmeleri, varsayımlar (tıklayınca seçenekler),
- * iyileştirme butonları, serbest talimat, sürüm geçmişi. Her iyileştirme
- * yeni sürüm üretir; hata olursa son geçerli sürüm kalır.
+ * Prompt kartı: varyant sekmeleri, varsayımlar (tıklayınca seçenekler), sürüm
+ * geçmişi ve altta sohbet. Düzenleme hazır düğmelerle değil yazarak yapılır:
+ * "sonuna uyarı ekle", "2. maddeyi sil", "geri al". Her düzenleme, o an
+ * gösterilen sürümün üstüne yeni sürüm üretir; "geri al" eski sürümü gösterir.
+ * Hata olursa son geçerli sürüm kalır.
  */
 export default function PromptCard({ card: initial }: { card: Card }) {
   const { dict, onPromptCopied } = useChatContext()
@@ -48,13 +51,17 @@ export default function PromptCard({ card: initial }: { card: Card }) {
   const [index, setIndex] = useState(0)
   const [variant, setVariant] = useState<VariantId>("safe")
   const [openAssumption, setOpenAssumption] = useState<string | null>(null)
-  const [instruction, setInstruction] = useState("")
+  const [draft, setDraft] = useState("")
+  const [thread, setThread] = useState<ChatMessage[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const tabIds = { safe: useId(), creative: useId() }
   const panelId = useId()
   const inputId = useId()
+  const chatTitleId = useId()
   const tracked = useRef(new Set<number>())
+  const logRef = useRef<HTMLUListElement>(null)
+  const messageId = useRef(0)
 
   const card = versions[index]
   const current = card.variants.find((v) => v.id === variant) ?? card.variants[0]
@@ -65,6 +72,24 @@ export default function PromptCard({ card: initial }: { card: Card }) {
     trackEvent("prompt_generated", { guideId: card.guideId, guideVersion: card.guideVersion })
   }, [card])
 
+  const say = (role: ChatMessage["role"], text: string, versionN?: number) =>
+    setThread((prev) => [...prev, { id: ++messageId.current, role, text, ...(versionN ? { versionN } : {}) }])
+
+  const errorText = (code: string) => (code === "expired" ? dict.prompt.expired : code === "refine_limit" ? dict.prompt.limit : dict.prompt.error)
+
+  /** Sunucudan gelen sürümü göster: listede varsa ona geç (geri al), yoksa sona ekle. */
+  const showCard = (next: Card) => {
+    const at = versions.findIndex((v) => v.versionN === next.versionN)
+    if (at >= 0) {
+      setIndex(at)
+    } else {
+      setVersions([...versions, next])
+      setIndex(versions.length)
+    }
+    setOpenAssumption(null)
+  }
+
+  // Varsayım değiştirme (kartın ortasındaki "Değiştir"): yeni sürüm üretir.
   const refine = async (action: RefineRequest, refinementId: string) => {
     if (loading) return
     setLoading(true)
@@ -73,14 +98,40 @@ export default function PromptCard({ card: initial }: { card: Card }) {
     const result = await refinePrompt(card.promptSessionId, action)
     setLoading(false)
     if ("error" in result) {
-      setError(result.error === "expired" ? dict.prompt.expired : result.error === "refine_limit" ? dict.prompt.limit : dict.prompt.error)
+      setError(errorText(result.error))
       return
     }
-    setVersions((prev) => [...prev, result.card])
-    setIndex(versions.length)
-    setOpenAssumption(null)
-    setInstruction("")
+    showCard(result.card)
+    say("bot", dict.prompt.chatAssumptionDone, result.card.versionN)
   }
+
+  // Sohbet: kullanıcının yazdığı mesaj. Sunucu düzenler, eski sürüme döner ya da cevap verir.
+  const send = async () => {
+    const text = draft.trim()
+    if (loading || text.length < 2) return
+    setDraft("")
+    setError(null)
+    say("user", text)
+    setLoading(true)
+    const result = await chatPrompt(card.promptSessionId, text, card.versionN)
+    setLoading(false)
+    if ("error" in result) {
+      say("error", errorText(result.error))
+      setDraft(text)
+      return
+    }
+    if (result.action !== "reply") {
+      // Sadece gerçek düzenleme "iyileştirme" sayılır; geri al sayılmaz.
+      if (result.action === "edit") trackEvent("prompt_refined", { guideId: card.guideId, guideVersion: card.guideVersion, refinementId: "chat" })
+      showCard(result.card)
+    }
+    say("bot", result.reply, result.action === "reply" ? undefined : result.card.versionN)
+  }
+
+  useEffect(() => {
+    const el = logRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [thread, loading])
 
   const onTabKey = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
@@ -91,7 +142,10 @@ export default function PromptCard({ card: initial }: { card: Card }) {
     }
   }
 
-  const outOfRefinements = card.refinementsLeft === 0
+  // Kalan hak, gösterilen (belki eski) sürüme göre değil en yeni cevaba göre sayılır; hak azalır, artmaz.
+  const refinementsLeft = Math.min(...versions.map((v) => v.refinementsLeft))
+  const outOfRefinements = refinementsLeft === 0
+  // Varsayım değiştirmek yeni sürüm üretir (hak harcar); sohbet kutusu hak bitse de açık kalır ("geri al" ücretsiz).
   const busy = loading || outOfRefinements
 
   return (
@@ -143,16 +197,7 @@ export default function PromptCard({ card: initial }: { card: Card }) {
       )}
 
       <div id={panelId} role="tabpanel" aria-labelledby={tabIds[current.id]} className="space-y-2">
-        {loading ? (
-          <div className="space-y-2" role="status">
-            <span className="sr-only">{dict.prompt.loading}</span>
-            <div className="h-4 w-full animate-pulse rounded bg-muted" />
-            <div className="h-4 w-11/12 animate-pulse rounded bg-muted" />
-            <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
-          </div>
-        ) : (
-          <pre className="max-h-80 mobile:max-h-[50dvh] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 font-mono text-sm leading-relaxed">{current.prompt}</pre>
-        )}
+        <pre className={`max-h-80 mobile:max-h-[50dvh] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 font-mono text-sm leading-relaxed transition-opacity ${loading ? "opacity-50" : ""}`}>{current.prompt}</pre>
         {current.negativePrompt && (
           <p className="text-xs"><span className="font-semibold">{dict.prompt.negative}:</span> <span className="font-mono">{current.negativePrompt}</span></p>
         )}
@@ -235,40 +280,68 @@ export default function PromptCard({ card: initial }: { card: Card }) {
         </div>
       )}
 
-      <div className="space-y-2 border-t border-border/60 pt-3">
-        <p className="flex items-center gap-1 text-xs font-bold uppercase text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" aria-hidden /> {dict.prompt.refine}
-          <span className="ml-auto font-normal normal-case">{format(dict.prompt.refinementsLeft, { n: card.refinementsLeft })}</span>
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {card.refinements.map((r) => (
-            <button key={r.id} type="button" className={`${chip} ${r.kind === "suggested" ? "border-primary/40" : ""}`} disabled={busy} onClick={() => refine({ refinementId: r.id }, r.kind === "suggested" ? "suggested" : r.id)}>
-              {r.label}
-            </button>
-          ))}
+      <section aria-labelledby={chatTitleId} className="space-y-3 border-t border-border/60 pt-3">
+        <div className="flex items-center gap-1 text-xs font-bold uppercase text-muted-foreground">
+          <MessageCircle className="h-3.5 w-3.5" aria-hidden />
+          <h4 id={chatTitleId}>{dict.prompt.refine}</h4>
+          <span className="ml-auto font-normal normal-case">{format(dict.prompt.refinementsLeft, { n: refinementsLeft })}</span>
         </div>
+        {outOfRefinements && <p className="text-xs text-amber-700 dark:text-amber-300">{dict.prompt.limit}</p>}
+        {thread.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{dict.prompt.chatHint}</p>
+        ) : (
+          <ul ref={logRef} role="log" aria-live="polite" aria-label={dict.prompt.chatLog} className="max-h-60 space-y-2 overflow-y-auto pr-1">
+            {thread.map((m) => (
+              <li key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[85%] break-words rounded-2xl px-3 py-2 text-sm ${
+                    m.role === "user"
+                      ? "rounded-br-md bg-primary text-primary-foreground"
+                      : m.role === "error"
+                        ? "rounded-bl-md border border-destructive/40 bg-destructive/10 text-destructive"
+                        : "rounded-bl-md bg-muted"
+                  }`}
+                  role={m.role === "error" ? "alert" : undefined}
+                >
+                  {m.text}
+                  {m.versionN ? <span className="ml-2 text-[11px] opacity-70">{format(dict.prompt.chatVersionTag, { n: m.versionN })}</span> : null}
+                </div>
+              </li>
+            ))}
+            {loading && (
+              <li className="flex justify-start" role="status">
+                <div className="flex items-center gap-2 rounded-2xl rounded-bl-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  {dict.prompt.loading}
+                </div>
+              </li>
+            )}
+          </ul>
+        )}
         <form
           className="flex gap-2"
           onSubmit={(e) => {
             e.preventDefault()
-            if (instruction.trim().length >= 2) void refine({ instruction: instruction.trim() }, "free_text")
+            void send()
           }}
         >
           <label htmlFor={inputId} className="sr-only">{dict.prompt.freeText}</label>
           <input
             id={inputId}
-            value={instruction}
-            onChange={(e) => setInstruction(e.target.value)}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
             placeholder={dict.prompt.freeTextPlaceholder}
             maxLength={1000}
-            disabled={busy}
+            disabled={loading}
+            autoComplete="off"
             className="min-h-11 min-w-0 flex-1 rounded-xl border border-border bg-background px-3 text-sm disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
-          <button type="submit" disabled={busy || instruction.trim().length < 2} className="min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <button type="submit" disabled={loading || draft.trim().length < 2} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <Send className="h-4 w-4" aria-hidden />
             {dict.prompt.apply}
           </button>
         </form>
-      </div>
+      </section>
     </div>
   )
 }

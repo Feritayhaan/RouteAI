@@ -1,8 +1,14 @@
 // Prompt rehberi şeması (data/prompt-guides/*.md frontmatter + gövde bölümleri).
 // Derlenmiş hali data/prompt-guides.json (edge'de fs yok).
+//
+// Üç tür rehber var (hangisi olduğu alanlardan çıkar, ayrı bir alan yok):
+//  - ARAÇA ÖZEL:  appliesTo tek ürün, tasks boş   (ör. midjourney)
+//  - ORTAK (aile): appliesTo birden çok ürün        (ör. chat-general)
+//  - GÖREV:       tasks dolu, appliesTo boş          (ör. task-image-generate)
+// Hangisinin kullanılacağı lib/promptBuilder/fallback.ts'te: araca özel > görev > ortak > tür.
 
 import { z } from 'zod';
-import { idSchema, localeTextSchema, MODALITIES } from '../catalog/schema';
+import { idSchema, localeTextSchema, MODALITIES, taskIdSchema } from '../catalog/schema';
 
 export const GUIDE_SECTIONS = { syntax: 'Sözdizimi', template: 'Şablon', dosDonts: 'Yap / Yapma', examples: 'Örnekler' } as const;
 
@@ -34,7 +40,13 @@ export const guideValidatorSchema = z.object({
 export const guideSchema = z.object({
   id: idSchema,
   version: z.number().int().positive(),
-  appliesTo: z.array(idSchema).min(1),
+  /** Ürünler: tek ürün = o araca özel rehber; birden çok ürün = ortak iskelet. Görev rehberinde boş. */
+  appliesTo: z.array(idSchema),
+  /**
+   * Görev rehberi: bu görevde (data/tasks.json) araca özel rehberi olmayan HER araç için kullanılır.
+   * Araç bilgisi içermez; görevin kendisi için ayrıntılı bir iskelettir.
+   */
+  tasks: z.array(taskIdSchema).default([]),
   modality: z.enum(MODALITIES),
   promptLanguage: z.enum(['en', 'user']),
   sources: z.array(z.string().url()),
@@ -62,6 +74,9 @@ export const guidesFileSchema = z.array(guideSchema);
 /** Şemanın ötesindeki kurallar; hata listesi döner (boş = geçerli). */
 export function guideRuleErrors(guide: Guide): string[] {
   const errors: string[] = [];
+  if (guide.appliesTo.length === 0 && guide.tasks.length === 0) errors.push('appliesTo (ürün) ya da tasks (görev) dolu olmalı');
+  if (guide.appliesTo.length > 0 && guide.tasks.length > 0) errors.push('görev rehberinde appliesTo boş olmalı (ikisi karışmaz)');
+  if (new Set(guide.tasks).size !== guide.tasks.length) errors.push('tekrar eden görev');
   const slotIds = new Set(guide.slots.map((s) => s.id));
   if (slotIds.size !== guide.slots.length) errors.push('tekrar eden slot id');
   if (guide.slots.filter((s) => s.impact === 'high').length < 2) errors.push("en az 2 'high' slot olmalı");
