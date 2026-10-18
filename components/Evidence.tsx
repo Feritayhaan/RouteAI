@@ -151,6 +151,25 @@ export function EditorPickBadge({ dict }: { dict: Dictionary }) {
   )
 }
 
+/** Kanıtı olmayan araç: güven rozeti yerine "Doğrulanmadı" (puan ya da güven iddiası yok). */
+export function UnverifiedBadge({ dict }: { dict: Dictionary }) {
+  return (
+    <span className="inline-flex min-h-8 items-center gap-1 rounded-full border border-slate-500/30 bg-slate-500/15 px-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+      <ShieldQuestion className="h-3.5 w-3.5" aria-hidden />
+      {dict.v3.unverified}
+    </span>
+  )
+}
+
+/** Kanıtsız aracın "Neden" yerine geçen dürüst notu: gerekçe ya da sayı uydurulmaz. */
+export function UnverifiedNote({ dict }: { dict: Dictionary }) {
+  return (
+    <p role="note" className="mt-3 rounded-lg border border-border/60 bg-muted/40 p-3 text-xs md:text-sm text-muted-foreground">
+      {dict.v3.unverifiedHint}
+    </p>
+  )
+}
+
 /** Editör seçiminin "Neden" kutusu: tarafsız gerekçe + henüz veri olmadığı + tarih. */
 export function EditorReasonsBox({ tool, dict, locale = "tr" }: { tool: RecommendationTool; dict: Dictionary; locale?: string }) {
   const [before, after] = (tool.dataDate ? dict.rec.data : dict.rec.dataNoDate).split("{sources}")

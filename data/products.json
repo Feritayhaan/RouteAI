@@ -26,8 +26,8 @@
       "paidOnly": true,
       "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "promptGuide": "midjourney",
@@ -65,10 +65,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 6,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "image-natural",
@@ -101,10 +101,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 6,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "image-natural",
@@ -137,14 +137,14 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 0.035,
+      "startingPrice": null,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "unknown",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "image-natural",
-    "status": "active",
+    "status": "retired",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
   },
@@ -177,8 +177,8 @@
       "paidOnly": false,
       "startingPrice": 9.99,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -212,8 +212,8 @@
       "paidOnly": false,
       "startingPrice": 0,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -244,10 +244,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 7.99,
+      "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "image-natural",
@@ -284,8 +284,8 @@
       "paidOnly": false,
       "startingPrice": 12,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -318,10 +318,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 7,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "ideogram",
@@ -352,10 +352,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": 5,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -383,7 +383,8 @@
       "research.document-qa",
       "data.spreadsheet-analysis",
       "code.debug",
-      "docs.create"
+      "docs.create",
+      "education.tutor"
     ],
     "models": [],
     "modelRule": {
@@ -409,10 +410,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 6,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "chat-general",
@@ -461,8 +462,8 @@
       "paidOnly": false,
       "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "promptGuide": "chat-general",
@@ -474,7 +475,7 @@
     "id": "gemini-25-pro",
     "name": "Gemini",
     "url": "https://gemini.google.com",
-    "pricingUrl": "https://gemini.google/subscriptions/",
+    "pricingUrl": "https://gemini.google/us/subscriptions/",
     "description": {
       "en": "Google's general-purpose AI assistant; works with text, images and files and connects to Google services.",
       "tr": "Google'ın genel amaçlı yapay zekâ asistanı; metin, görsel ve dosyalarla çalışır, Google hizmetlerine bağlanır."
@@ -489,7 +490,8 @@
       "research.web",
       "research.document-qa",
       "data.spreadsheet-analysis",
-      "code.debug"
+      "code.debug",
+      "education.tutor"
     ],
     "models": [],
     "modelRule": {
@@ -513,10 +515,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 19.99,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "chat-general",
@@ -543,10 +545,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": 39,
+      "startingPrice": 69,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -571,10 +573,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 29,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -602,8 +604,8 @@
       "paidOnly": false,
       "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -630,10 +632,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 8,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "promptGuide": "cursor-task",
@@ -667,14 +669,14 @@
       "modality": "text"
     },
     "pricing": {
-      "model": "freemium",
+      "model": "paid",
       "free": false,
-      "freemium": true,
-      "paidOnly": false,
+      "freemium": false,
+      "paidOnly": true,
       "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -708,10 +710,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 5,
+      "startingPrice": 6,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "elevenlabs-voiceover",
@@ -743,10 +745,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 23,
+      "startingPrice": null,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "unknown",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -778,14 +780,14 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": null,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "unknown",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "text-to-video",
-    "status": "active",
+    "status": "retired",
     "reviewStatus": "reviewed",
     "addedAt": "2025-11-28"
   },
@@ -814,10 +816,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 19.99,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "text-to-video",
@@ -851,10 +853,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 20,
+      "startingPrice": 17,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -879,10 +881,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": 75,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -909,8 +911,8 @@
       "paidOnly": true,
       "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -937,8 +939,8 @@
       "paidOnly": false,
       "startingPrice": 14,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-11-28"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -965,10 +967,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": 12,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "promptGuide": "gamma",
@@ -994,10 +996,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 12,
+      "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -1021,13 +1023,13 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": null,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "unknown",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
-    "status": "active",
+    "status": "retired",
     "reviewStatus": "reviewed",
     "addedAt": "2025-12-31"
   },
@@ -1049,10 +1051,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 10,
+      "startingPrice": 8,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "suno",
@@ -1080,8 +1082,8 @@
       "paidOnly": false,
       "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -1116,14 +1118,15 @@
       "paidOnly": false,
       "startingPrice": 12,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "runway",
     "status": "active",
     "reviewStatus": "reviewed",
-    "addedAt": "2025-12-31"
+    "addedAt": "2025-12-31",
+    "pricingUrl": "https://runway.com/pricing"
   },
   {
     "id": "pika-labs",
@@ -1151,10 +1154,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": 8,
+      "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "stale",
-      "priceCheckedAt": "2025-12-31"
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -1300,7 +1303,7 @@
     "id": "grok-41",
     "name": "Grok",
     "url": "https://grok.com",
-    "pricingUrl": "https://grok.com/plans",
+    "pricingUrl": "https://x.ai/pricing",
     "description": {
       "en": "xAI's chat assistant, connected to X (Twitter), with web search.",
       "tr": "xAI'ın sohbet asistanı; X (Twitter) ile bağlantılı, web araması yapabilir."
@@ -1329,10 +1332,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 8,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -1411,10 +1414,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -1470,7 +1473,7 @@
       "startingPrice": null,
       "currency": "USD",
       "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -1632,10 +1635,10 @@
       "startingPrice": null,
       "currency": "USD",
       "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
-    "status": "active",
+    "status": "retired",
     "reviewStatus": "unreviewed",
     "addedAt": "2025-10-21"
   },
@@ -1653,14 +1656,14 @@
     ],
     "models": [],
     "pricing": {
-      "model": "paid",
+      "model": "freemium",
       "free": false,
-      "freemium": false,
-      "paidOnly": true,
-      "startingPrice": null,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 29,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -1766,10 +1769,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 24,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -1875,15 +1878,16 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 39,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
     "reviewStatus": "unreviewed",
-    "addedAt": "2025-10-15"
+    "addedAt": "2025-10-15",
+    "pricingUrl": "https://www.adcreative.ai/pricing"
   },
   {
     "id": "claude-sonnet-45",
@@ -1931,10 +1935,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -1960,10 +1964,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -2017,10 +2021,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -2045,10 +2049,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 19,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2128,10 +2132,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2183,10 +2187,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 49,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2204,7 +2208,8 @@
     },
     "tasks": [
       "text.write-longform",
-      "text.marketing-copy"
+      "text.marketing-copy",
+      "marketing.seo"
     ],
     "models": [],
     "pricing": {
@@ -2212,10 +2217,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2231,17 +2236,19 @@
       "en": "AI features for project and task management inside ClickUp.",
       "tr": "ClickUp içinde proje ve görev yönetimi için yapay zekâ özellikleri."
     },
-    "tasks": [],
+    "tasks": [
+      "project.management"
+    ],
     "models": [],
     "pricing": {
       "model": "paid",
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2267,10 +2274,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 30,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2341,7 +2348,8 @@
       "tr": "Özgeçmiş hazırlama ve iş ilanına göre uyarlama aracı."
     },
     "tasks": [
-      "docs.create"
+      "docs.create",
+      "career.resume"
     ],
     "models": [],
     "pricing": {
@@ -2349,10 +2357,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 29,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -2384,10 +2392,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 9,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2447,10 +2455,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 9.99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -2488,7 +2496,7 @@
     "id": "gemini-3-pro-image",
     "name": "Gemini (görsel)",
     "url": "https://gemini.google.com",
-    "pricingUrl": "https://gemini.google/subscriptions/",
+    "pricingUrl": "https://gemini.google/us/subscriptions/",
     "description": {
       "en": "Google's image generation and editing inside Gemini, including text within images.",
       "tr": "Gemini içinde Google'ın görsel üretme ve düzenleme aracı; görselin içine yazı da yerleştirebilir."
@@ -2512,10 +2520,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 4.99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "promptGuide": "image-natural",
@@ -2626,10 +2634,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-15"
     },
     "access": [],
     "status": "active",
@@ -2725,10 +2733,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 14.99,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -2793,7 +2801,7 @@
     "id": "grok-imagine-v09-xai",
     "name": "Grok Imagine (xAI)",
     "url": "https://grok.com",
-    "pricingUrl": "https://grok.com/plans",
+    "pricingUrl": "https://x.ai/pricing",
     "description": {
       "en": "xAI's tool for short videos with sound from text or images.",
       "tr": "xAI'ın metinden ya da görselden sesli kısa video üreten aracı."
@@ -2815,10 +2823,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 8,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-14"
     },
     "access": [],
     "status": "active",
@@ -2959,5 +2967,1487 @@
     "status": "retired",
     "reviewStatus": "unreviewed",
     "addedAt": "2025-11-01"
+  },
+  {
+    "id": "unity-ai",
+    "name": "Unity AI",
+    "url": "https://unity.com/features/ai",
+    "pricingUrl": "https://unity.com/features/ai",
+    "description": {
+      "en": "Agentic assistant inside the Unity Editor that understands your scene and drives Editor actions, plus a CLI, MCP server and plugins for coding agents. In beta.",
+      "tr": "Unity Editor içinde sahneni anlayıp editör işlemlerini yapan yapay zekâ asistanı; ayrıca CLI, MCP sunucusu ve kodlama ajanları için eklentiler. Beta aşamasında."
+    },
+    "tasks": [
+      "game.dev"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 10,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://unity.com/features/ai",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Personal sürümde asistanın ücretsiz denemesi var; CLI, MCP sunucusu ve eklenti ücretsiz"
+    }
+  },
+  {
+    "id": "rosebud-ai",
+    "name": "Rosebud AI",
+    "url": "https://rosebud.ai",
+    "pricingUrl": "https://rosebud.ai/pricing",
+    "description": {
+      "en": "Creates playable games from text prompts; no coding required.",
+      "tr": "Metin istemlerinden oynanabilir oyun üretir; kod yazmak gerekmez."
+    },
+    "tasks": [
+      "game.dev"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 15,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://rosebud.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free plan: haftada 8000 kredi, kredi kartı yok"
+    }
+  },
+  {
+    "id": "bezi",
+    "name": "Bezi",
+    "url": "https://www.bezi.com",
+    "pricingUrl": "https://www.bezi.com/pricing",
+    "description": {
+      "en": "AI assistant for Unity development.",
+      "tr": "Unity geliştirme için yapay zekâ asistanı."
+    },
+    "tasks": [
+      "game.dev"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 20,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.bezi.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: 100 kredi, 1 çalışma alanı, en çok 2 sayfa; modellere sınırlı erişim"
+    }
+  },
+  {
+    "id": "gdevelop",
+    "name": "GDevelop",
+    "url": "https://gdevelop.io",
+    "pricingUrl": "https://gdevelop.io/pricing",
+    "description": {
+      "en": "Game creation tool with AI built in; your first game is free.",
+      "tr": "Yapay zekâsı içine yerleşik oyun yapma aracı; ilk oyununu ücretsiz yapabilirsin."
+    },
+    "tasks": [
+      "game.dev"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 6.49,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://gdevelop.io/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "İlk oyun %100 ücretsiz; Silver planda haftada 200 AI kredisi"
+    }
+  },
+  {
+    "id": "scenario",
+    "name": "Scenario",
+    "url": "https://www.scenario.com",
+    "pricingUrl": "https://www.scenario.com/pricing",
+    "description": {
+      "en": "AI engine for creative production and game assets: images, textures and 3D models.",
+      "tr": "Oyun varlıkları ve yaratıcı üretim için yapay zekâ motoru: görsel, doku ve 3D model."
+    },
+    "tasks": [
+      "game.asset-art"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 15,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.scenario.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Her gün 50 ücretsiz kredi, kredi kartı yok"
+    }
+  },
+  {
+    "id": "ludo-ai",
+    "name": "Ludo.ai",
+    "url": "https://ludo.ai",
+    "pricingUrl": "https://ludo.ai/pricing",
+    "description": {
+      "en": "Generates production-ready game assets (sprites, icons, UI, textures, music, 3D, video) plus animations and concept art.",
+      "tr": "Oyuna hazır varlık üretir: sprite, ikon, arayüz, doku, müzik, 3D ve video; animasyon ve konsept çizimi de yapar."
+    },
+    "tasks": [
+      "game.asset-art"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://ludo.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "30 ücretsiz üretim kredisiyle başlanır"
+    }
+  },
+  {
+    "id": "pixellab",
+    "name": "PixelLab",
+    "url": "https://www.pixellab.ai",
+    "pricingUrl": "https://www.pixellab.ai/pricing",
+    "description": {
+      "en": "Pixel art asset generator for games: sprite animations, directional views, maps and tilesets, UI.",
+      "tr": "Oyunlar için piksel sanat varlık üretici: sprite animasyonu, yönlü görünümler, harita ve karo setleri, arayüz."
+    },
+    "tasks": [
+      "game.asset-art"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.pixellab.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz deneme (\"Try for free\", kredi kartı yok); sürekli ücretsiz plan olup olmadığı sayfada yok"
+    }
+  },
+  {
+    "id": "meshy",
+    "name": "Meshy",
+    "url": "https://www.meshy.ai",
+    "pricingUrl": "https://www.meshy.ai/pricing",
+    "description": {
+      "en": "Generative AI toolbox that creates 3D assets from text or images.",
+      "tr": "Metinden ya da görselden 3D varlık üreten üretken yapay zekâ araç seti."
+    },
+    "tasks": [
+      "3d.generate"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 20,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.meshy.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: ayda 100 kredi, kredi kartı yok"
+    }
+  },
+  {
+    "id": "tripo",
+    "name": "Tripo",
+    "url": "https://www.tripo3d.ai",
+    "pricingUrl": "https://www.tripo3d.ai/pricing",
+    "description": {
+      "en": "Online AI 3D model generator that turns text prompts or images into 3D models.",
+      "tr": "Metin istemini ya da görseli saniyeler içinde 3D modele çeviren çevrimiçi yapay zekâ aracı."
+    },
+    "tasks": [
+      "3d.generate"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.tripo3d.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: ayda 200 kredi (yaklaşık 13 model)"
+    }
+  },
+  {
+    "id": "hyper3d-rodin",
+    "name": "Hyper3D Rodin",
+    "url": "https://hyper3d.ai",
+    "pricingUrl": "https://hyper3d.ai",
+    "description": {
+      "en": "Generates high-quality 3D assets that are nearly production-ready for supported workflows.",
+      "tr": "Desteklenen iş akışları için üretime yakın kalitede 3D varlık üretir."
+    },
+    "tasks": [
+      "3d.generate"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://hyper3d.ai",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Abonelik gerekmeden ücretsiz kredilerle denenebilir"
+    }
+  },
+  {
+    "id": "v0",
+    "name": "v0",
+    "url": "https://v0.app",
+    "pricingUrl": "https://v0.app/pricing",
+    "description": {
+      "en": "AI assistant to design, iterate and scale full-stack web applications.",
+      "tr": "Tam yığın web uygulamalarını tasarlayıp geliştirmeye yarayan yapay zekâ asistanı."
+    },
+    "tasks": [
+      "design.ui-prototype"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://v0.app/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: günde 7 mesaj"
+    }
+  },
+  {
+    "id": "uizard",
+    "name": "Uizard",
+    "url": "https://uizard.io",
+    "pricingUrl": "https://uizard.io/pricing/",
+    "description": {
+      "en": "Tool to visualize product ideas fast with AI.",
+      "tr": "Ürün fikirlerini yapay zekâyla hızla görselleştirme aracı."
+    },
+    "tasks": [
+      "design.ui-prototype"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://uizard.io/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: ayda 3 AI üretimi, 2 proje"
+    }
+  },
+  {
+    "id": "figma-make",
+    "name": "Figma Make",
+    "url": "https://www.figma.com/make/",
+    "pricingUrl": "https://www.figma.com/pricing/",
+    "description": {
+      "en": "Prototype, polish and ship your ideas from within Figma.",
+      "tr": "Fikirleri Figma içinde prototiple, cilala ve yayına al."
+    },
+    "tasks": [
+      "design.ui-prototype"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.figma.com/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Starter planda ayda 500 AI kredisi (günlük 150 kredi sınırı)"
+    }
+  },
+  {
+    "id": "apollo-io",
+    "name": "Apollo.io",
+    "url": "https://www.apollo.io",
+    "pricingUrl": "https://www.apollo.io/pricing",
+    "description": {
+      "en": "AI sales platform with a contact and company database, verified emails and phones, and outreach sequences.",
+      "tr": "Yapay zekâ destekli satış platformu: kişi ve şirket veritabanı, doğrulanmış e-posta ve telefon, erişim (outreach) dizileri."
+    },
+    "tasks": [
+      "sales.prospecting"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.apollo.io/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Starter plan süresiz ücretsiz"
+    }
+  },
+  {
+    "id": "clay",
+    "name": "Clay",
+    "url": "https://www.clay.com",
+    "pricingUrl": "https://www.clay.com/pricing",
+    "description": {
+      "en": "Infrastructure to get any data, run agentic workflows and launch GTM plays: data enrichment, AI research on companies and people, sequenced outreach.",
+      "tr": "Veri toplayan, ajan iş akışları çalıştıran ve satış (GTM) kampanyaları başlatan altyapı: veri zenginleştirme, yapay zekâ ile şirket/kişi araştırma, sıralı e-posta."
+    },
+    "tasks": [
+      "sales.prospecting"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.clay.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: ayda 500 eylem"
+    }
+  },
+  {
+    "id": "instantly",
+    "name": "Instantly",
+    "url": "https://instantly.ai",
+    "pricingUrl": "https://instantly.ai/pricing",
+    "description": {
+      "en": "Cold email outreach, lead database and CRM.",
+      "tr": "Soğuk e-posta ile satış erişimi, potansiyel müşteri veritabanı ve CRM."
+    },
+    "tasks": [
+      "sales.prospecting"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://instantly.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "\"Start free\" ve \"No credit card required\" yazıyor; ücretsiz planın ne olduğu belli değil"
+    }
+  },
+  {
+    "id": "intercom-fin",
+    "name": "Intercom Fin",
+    "url": "https://www.intercom.com",
+    "pricingUrl": "https://www.intercom.com/pricing",
+    "description": {
+      "en": "AI agent trained specifically for customer service (Fin), running inside the Intercom support platform.",
+      "tr": "Müşteri hizmetleri için özel eğitilmiş yapay zekâ ajanı (Fin); Intercom destek platformunun içinde çalışır."
+    },
+    "tasks": [
+      "support.chatbot"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.intercom.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz plan yok; ücretsiz deneme var"
+    }
+  },
+  {
+    "id": "tidio",
+    "name": "Tidio",
+    "url": "https://www.tidio.com",
+    "pricingUrl": "https://www.tidio.com/pricing/",
+    "description": {
+      "en": "AI customer service chatbot software.",
+      "tr": "Yapay zekâlı müşteri hizmetleri sohbet botu yazılımı."
+    },
+    "tasks": [
+      "support.chatbot"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.tidio.com/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free plan; Lyro AI için ilk 50 konuşma ömür boyu ücretsiz"
+    }
+  },
+  {
+    "id": "chatbase",
+    "name": "Chatbase",
+    "url": "https://www.chatbase.co",
+    "pricingUrl": "https://www.chatbase.co/pricing",
+    "description": {
+      "en": "AI customer support agent platform.",
+      "tr": "Yapay zekâ müşteri destek ajanı platformu."
+    },
+    "tasks": [
+      "support.chatbot"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.chatbase.co/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "7 günlük deneme; ücretsiz plan görünmüyor"
+    }
+  },
+  {
+    "id": "quickbooks",
+    "name": "QuickBooks",
+    "url": "https://quickbooks.intuit.com",
+    "pricingUrl": "https://quickbooks.intuit.com/pricing/",
+    "description": {
+      "en": "Online accounting software with AI features (Intuit Intelligence) such as expense categorization and AI chat.",
+      "tr": "Gider sınıflandırma ve yapay zekâ sohbeti gibi özellikleri (Intuit Intelligence) olan çevrimiçi muhasebe yazılımı."
+    },
+    "tasks": [
+      "finance.bookkeeping"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://quickbooks.intuit.com/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "\"Organize your finances for free\" ($0/ay, kredi kartı yok) ve 30 günlük deneme"
+    }
+  },
+  {
+    "id": "xero",
+    "name": "Xero",
+    "url": "https://www.xero.com",
+    "pricingUrl": "https://www.xero.com/us/pricing-plans/",
+    "description": {
+      "en": "Online accounting software with JAX, an AI finance partner.",
+      "tr": "Yapay zekâ finans ortağı JAX’i olan çevrimiçi muhasebe yazılımı."
+    },
+    "tasks": [
+      "finance.bookkeeping"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 27,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.xero.com/us/pricing-plans/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz plan yok; yeni müşteriye ilk aylar indirim kodu"
+    }
+  },
+  {
+    "id": "zoho-books",
+    "name": "Zoho Books",
+    "url": "https://www.zoho.com/us/books/",
+    "pricingUrl": "https://www.zoho.com/us/books/pricing/",
+    "description": {
+      "en": "Cloud accounting software for invoicing, inventory and expenses, with Zia AI built in.",
+      "tr": "Fatura, stok ve gider yönetimi sunan, Zia yapay zekâsı içinde olan bulut muhasebe yazılımı."
+    },
+    "tasks": [
+      "finance.bookkeeping"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.zoho.com/us/books/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free plan: 1 kullanıcı + 1 muhasebeci, yılda 1000 fatura; yıllık gelir 50.000 USD eşiğini aşmamalı"
+    }
+  },
+  {
+    "id": "surfer-seo",
+    "name": "Surfer",
+    "url": "https://surferseo.com",
+    "pricingUrl": "https://surferseo.com/pricing/",
+    "description": {
+      "en": "Helps you create content that ranks on Google and gets cited by AI search engines.",
+      "tr": "Google’da üst sıralara çıkan ve yapay zekâ arama motorlarında alıntılanan içerik üretmeye yardım eder."
+    },
+    "tasks": [
+      "marketing.seo"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://surferseo.com/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz plan yok (\"Start for Free\" düğmesi var, deneme koşulu yazmıyor)"
+    }
+  },
+  {
+    "id": "frase",
+    "name": "Frase",
+    "url": "https://www.frase.io",
+    "pricingUrl": "https://www.frase.io/pricing",
+    "description": {
+      "en": "The content operating system for AI search.",
+      "tr": "Yapay zekâ araması için içerik işletim sistemi."
+    },
+    "tasks": [
+      "marketing.seo"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 49,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.frase.io/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "7 günlük ücretsiz deneme, kredi kartı yok"
+    }
+  },
+  {
+    "id": "asana",
+    "name": "Asana",
+    "url": "https://asana.com",
+    "pricingUrl": "https://asana.com/pricing",
+    "description": {
+      "en": "Work management platform with AI Teammates and AI Studio.",
+      "tr": "AI Teammates ve AI Studio özellikli iş yönetimi platformu."
+    },
+    "tasks": [
+      "project.management"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 13.49,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://asana.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Personal: süresiz ücretsiz, 2 kullanıcı, sınırsız görev/proje; AI hakkı listelenmemiş"
+    }
+  },
+  {
+    "id": "monday-com",
+    "name": "monday.com",
+    "url": "https://monday.com",
+    "pricingUrl": "https://monday.com/pricing",
+    "description": {
+      "en": "Work management platform with AI credits and agents.",
+      "tr": "Yapay zekâ kredileri ve ajanları olan iş yönetimi platformu."
+    },
+    "tasks": [
+      "project.management"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://monday.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: en çok 2 koltuk, 3 pano, 3 doküman; AI özellikleri Basic’ten itibaren"
+    }
+  },
+  {
+    "id": "khanmigo",
+    "name": "Khanmigo",
+    "url": "https://www.khanmigo.ai",
+    "pricingUrl": "https://www.khanmigo.ai",
+    "description": {
+      "en": "AI-powered personal tutor and teaching assistant from the nonprofit Khan Academy.",
+      "tr": "Kâr amacı gütmeyen Khan Academy’den yapay zekâ destekli kişisel öğretmen ve öğretmen asistanı."
+    },
+    "tasks": [
+      "education.tutor"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.khanmigo.ai",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Öğrenciler aylık ya da yıllık ödeme yapar; öğretmen araçlarında \"Sign up for free\" düğmeleri var (süresi yazmıyor)"
+    }
+  },
+  {
+    "id": "photomath",
+    "name": "Photomath",
+    "url": "https://photomath.com",
+    "pricingUrl": "https://photomath.com",
+    "description": {
+      "en": "Math camera solver app with step-by-step explanations.",
+      "tr": "Adım adım açıklama veren matematik kamera çözücü uygulaması."
+    },
+    "tasks": [
+      "education.tutor"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 9.99,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://photomath.com",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Basic: ücretsiz adım adım açıklama; görsel yardımlar ve ek ipuçları ücretli"
+    }
+  },
+  {
+    "id": "duolingo",
+    "name": "Duolingo",
+    "url": "https://www.duolingo.com",
+    "pricingUrl": "https://www.duolingo.com",
+    "description": {
+      "en": "Language-learning app; the Max tier adds AI conversation practice (Video Call, Roleplay).",
+      "tr": "Dil öğrenme uygulaması; Max katmanında yapay zekâ ile Video Call ve Roleplay konuşma alıştırmaları var."
+    },
+    "tasks": [
+      "education.language-learning"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.duolingo.com",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ana sayfa: \"100% free\""
+    }
+  },
+  {
+    "id": "speak",
+    "name": "Speak",
+    "url": "https://www.speak.com",
+    "pricingUrl": "https://www.speak.com/",
+    "description": {
+      "en": "AI language app for real conversational practice without a live tutor.",
+      "tr": "Canlı öğretmen olmadan gerçek konuşma pratiği yaptıran yapay zekâ dil uygulaması."
+    },
+    "tasks": [
+      "education.language-learning"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.speak.com/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "7 günlük ücretsiz deneme"
+    }
+  },
+  {
+    "id": "praktika",
+    "name": "Praktika",
+    "url": "https://praktika.ai",
+    "pricingUrl": "https://praktika.ai",
+    "description": {
+      "en": "App that teaches a new language with AI tutors.",
+      "tr": "Yapay zekâ öğretmenlerle yeni bir dil öğreten uygulama."
+    },
+    "tasks": [
+      "education.language-learning"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://praktika.ai",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "\"Try it for free!\""
+    }
+  },
+  {
+    "id": "perplexity-comet",
+    "name": "Perplexity Comet",
+    "url": "https://www.perplexity.ai/comet",
+    "pricingUrl": "https://www.perplexity.ai/hub/pricing",
+    "description": {
+      "en": "Perplexity’s AI browser that acts as a personal assistant. Windows and Mac.",
+      "tr": "Perplexity’nin kişisel asistan gibi çalışan yapay zekâ tarayıcısı. Windows ve Mac."
+    },
+    "tasks": [
+      "agent.browser"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.perplexity.ai/hub/pricing",
+      "checkedAt": "2026-10-18"
+    }
+  },
+  {
+    "id": "dia-browser",
+    "name": "Dia",
+    "url": "https://www.diabrowser.com",
+    "pricingUrl": "https://www.diabrowser.com",
+    "description": {
+      "en": "Browser with an AI assistant and chat with tabs, built for work. macOS and Windows.",
+      "tr": "İş için tasarlanmış, yapay zekâ asistanı ve sekmelerle sohbet özelliği olan tarayıcı. macOS ve Windows."
+    },
+    "tasks": [
+      "agent.browser"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.diabrowser.com",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "\"Download Dia for free\"; \"Dia for Work\" SSO ve yönetici araçları ekliyor"
+    }
+  },
+  {
+    "id": "opera-neon",
+    "name": "Opera Neon",
+    "url": "https://www.operaneon.com",
+    "pricingUrl": "https://www.operaneon.com",
+    "description": {
+      "en": "Agentic browser that understands your intent and takes actions; agentic features need a subscription.",
+      "tr": "Niyetini anlayıp senin yerine işlem yapan ajan tarayıcı; ajan özellikleri abonelikle açılır."
+    },
+    "tasks": [
+      "agent.browser"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 19.9,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.operaneon.com",
+      "checkedAt": "2026-10-18"
+    }
+  },
+  {
+    "id": "superhuman",
+    "name": "Superhuman",
+    "url": "https://superhuman.com",
+    "pricingUrl": "https://superhuman.com/pricing",
+    "description": {
+      "en": "AI productivity suite (Go, Mail, Docs) with an AI assistant and Auto Drafts.",
+      "tr": "Yapay zekâ asistanı ve otomatik taslaklar sunan yapay zekâ verimlilik paketi (Go, Mail, Docs)."
+    },
+    "tasks": [
+      "productivity.inbox"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://superhuman.com/pricing",
+      "checkedAt": "2026-10-18"
+    }
+  },
+  {
+    "id": "shortwave",
+    "name": "Shortwave",
+    "url": "https://shortwave.com",
+    "pricingUrl": "https://shortwave.com/pricing/",
+    "description": {
+      "en": "Email app built around AI.",
+      "tr": "Yapay zekâ özellikleri öne çıkan e-posta uygulaması."
+    },
+    "tasks": [
+      "productivity.inbox"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 30,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://shortwave.com/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "14 günlük ücretsiz deneme"
+    }
+  },
+  {
+    "id": "fyxer",
+    "name": "Fyxer",
+    "url": "https://www.fyxer.com",
+    "pricingUrl": "https://www.fyxer.com/pricing",
+    "description": {
+      "en": "Email assistant that organizes your inbox, drafts replies in your tone and takes meeting notes. Works with Google and Microsoft accounts.",
+      "tr": "Gelen kutunu düzenleyen, senin tonunda yanıt taslağı yazan ve toplantı notu alan e-posta asistanı. Google ve Microsoft hesaplarıyla çalışır."
+    },
+    "tasks": [
+      "productivity.inbox"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 49,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.fyxer.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free plan: ayda 400 kredi; 14 günlük deneme sonrası Free plana düşülür"
+    }
+  },
+  {
+    "id": "reclaim",
+    "name": "Reclaim",
+    "url": "https://reclaim.ai",
+    "pricingUrl": "https://reclaim.ai/pricing",
+    "description": {
+      "en": "AI agents that schedule work, meetings and life automatically.",
+      "tr": "Çalışma, toplantı ve günlük işleri otomatik zamanlayan yapay zekâ ajanları."
+    },
+    "tasks": [
+      "productivity.planning"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://reclaim.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Lite plan süresiz ücretsiz"
+    }
+  },
+  {
+    "id": "motion",
+    "name": "Motion",
+    "url": "https://www.usemotion.com",
+    "pricingUrl": "https://www.usemotion.com/pricing",
+    "description": {
+      "en": "Productivity platform that uses AI to prioritize tasks and automatically schedule your day and meetings.",
+      "tr": "Yapay zekâ ile görevleri önceliklendiren, günü ve toplantıları otomatik planlayan verimlilik platformu."
+    },
+    "tasks": [
+      "productivity.planning"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.usemotion.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz plan yok; ücretsiz deneme var (süre yazmıyor)"
+    }
+  },
+  {
+    "id": "akiflow",
+    "name": "Akiflow",
+    "url": "https://akiflow.com",
+    "pricingUrl": "https://akiflow.com/pricing",
+    "description": {
+      "en": "Planner that keeps tasks and meetings in one place; Aki is its AI executive assistant.",
+      "tr": "Görev ve toplantıları tek yerde toplayan planlama uygulaması; Aki adlı yapay zekâ yönetici asistanı var."
+    },
+    "tasks": [
+      "productivity.planning"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "paid",
+      "free": false,
+      "freemium": false,
+      "paidOnly": true,
+      "startingPrice": 34,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://akiflow.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz plan yok; 7 günlük ücretsiz deneme"
+    }
+  },
+  {
+    "id": "notion-ai",
+    "name": "Notion AI",
+    "url": "https://www.notion.com",
+    "pricingUrl": "https://www.notion.com/pricing",
+    "description": {
+      "en": "Chat, generate and edit docs, autofill databases and find answers across your Notion workspace.",
+      "tr": "Çalışma alanında sohbet etme, doküman yazıp düzenleme, veritabanlarını otomatik doldurma ve cevap bulma."
+    },
+    "tasks": [
+      "productivity.notes"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.notion.com/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free planda Notion AI yalnızca deneme olarak var"
+    }
+  },
+  {
+    "id": "mem",
+    "name": "Mem",
+    "url": "https://get.mem.ai",
+    "pricingUrl": "https://get.mem.ai/pricing",
+    "description": {
+      "en": "Note app (with Mem Agent) that ties together notes, meetings and ideas with the context to act.",
+      "tr": "Notları, toplantıları ve fikirleri bağlam içinde birleştiren, Mem Agent’lı not uygulaması."
+    },
+    "tasks": [
+      "productivity.notes"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 9,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://get.mem.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Ücretsiz plan var (\"A useful place to start building your memory with Mem Agent\")"
+    }
+  },
+  {
+    "id": "reflect",
+    "name": "Reflect",
+    "url": "https://reflect.app",
+    "pricingUrl": "https://reflect.app",
+    "description": {
+      "en": "Note-taking app with daily notes, backlinks and local Markdown files; optional AI finds answers in your notes, summarizes and improves writing.",
+      "tr": "Günlük notlar, geri bağlantılar ve yerel Markdown dosyaları olan not uygulaması; isteğe bağlı yapay zekâ notlarından cevap bulur, özetler ve yazıyı iyileştirir."
+    },
+    "tasks": [
+      "productivity.notes"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": null,
+      "currency": "USD",
+      "priceStatus": "unknown",
+      "priceCheckedAt": null
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://reflect.app",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Mac’te ücretsiz (\"No subscription required\"); iPhone ve iPad’de ücretli abonelik"
+    }
+  },
+  {
+    "id": "kickresume",
+    "name": "Kickresume",
+    "url": "https://www.kickresume.com",
+    "pricingUrl": "https://www.kickresume.com/en/pricing/",
+    "description": {
+      "en": "Online resume and cover letter builder with an AI resume builder and AI cover letter writer.",
+      "tr": "Yapay zekâ özgeçmiş oluşturucusu ve ön yazı yazarı olan çevrimiçi özgeçmiş ve ön yazı hazırlama aracı."
+    },
+    "tasks": [
+      "career.resume"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 24,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.kickresume.com/en/pricing/",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: 4 temel şablon, sınırsız indirme"
+    }
+  },
+  {
+    "id": "rezi",
+    "name": "Rezi",
+    "url": "https://www.rezi.ai",
+    "pricingUrl": "https://www.rezi.ai/pricing",
+    "description": {
+      "en": "Tool that builds, improves and tailors your resume with AI.",
+      "tr": "Özgeçmişini yapay zekâyla hazırlayan, geliştiren ve iş ilanına göre uyarlayan araç."
+    },
+    "tasks": [
+      "career.resume"
+    ],
+    "models": [],
+    "pricing": {
+      "model": "freemium",
+      "free": false,
+      "freemium": true,
+      "paidOnly": false,
+      "startingPrice": 29,
+      "currency": "USD",
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
+    },
+    "access": [],
+    "status": "active",
+    "reviewStatus": "unreviewed",
+    "addedAt": "2026-10-18",
+    "facts": {
+      "source": "https://www.rezi.ai/pricing",
+      "checkedAt": "2026-10-18",
+      "freeTierLimit": "Free: ödeme gerekmez; AI Resume Writer ve AI Resume Editor Free ve Pro listelerinde"
+    }
   }
 ]

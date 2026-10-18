@@ -13,11 +13,6 @@ export const guideSlotSchema = z.object({
   options: z.array(z.object({ id: idSchema, label: localeTextSchema, value: z.string().min(1) })).min(2),
   /** Seçenek id'si ya da 'infer' (üretici konuşmadan/amaçtan çıkarır). */
   default: z.string().min(1),
-  /**
-   * Birden çok değer birlikte geçerli (ör. kısıtlar): hazır iyileştirme butonu yeni değeri
-   * mevcut değerin yanına ekler, yerine koymaz. Yoksa (oran, ton) değiştirir.
-   */
-  multi: z.boolean().optional(),
 });
 
 export const guideRefinementSchema = z
@@ -29,17 +24,10 @@ export const guideRefinementSchema = z
   })
   .refine((r) => (r.patch ? 1 : 0) + (r.instruction ? 1 : 0) === 1, 'patch ya da instruction (sadece biri)');
 
-/**
- * regex: eşleşmeli; forbidRegex: eşleşmemeli; maxLength; mustInclude.
- * criterion: hangi yeterlilik kriterine sayılır (lib/promptBuilder/sufficiency.ts); yoksa toolReadiness.
- */
 export const guideValidatorSchema = z.object({
   id: idSchema,
-  type: z.enum(['regex', 'forbidRegex', 'maxLength', 'mustInclude']),
+  type: z.enum(['regex', 'maxLength', 'mustInclude']),
   value: z.union([z.string().min(1), z.number().int().positive()]),
-  /** Sadece regex/forbidRegex: JS regex bayrakları (i, m, s, u). */
-  flags: z.string().regex(/^[imsu]{0,4}$/).optional(),
-  criterion: z.enum(['selfContainment', 'toolReadiness', 'actionability', 'consistency']).optional(),
   message: z.string().min(3),
 });
 
@@ -92,15 +80,14 @@ export function guideRuleErrors(guide: Guide): string[] {
     }
   }
   for (const v of guide.validators) {
-    if (v.type === 'regex' || v.type === 'forbidRegex') {
+    if (v.type === 'regex') {
       try {
-        new RegExp(String(v.value), v.flags ?? '');
+        new RegExp(String(v.value));
       } catch {
         errors.push(`validator ${v.id}: regex derlenmiyor`);
       }
     }
     if (v.type === 'maxLength' && typeof v.value !== 'number') errors.push(`validator ${v.id}: maxLength sayı olmalı`);
-    if (v.flags && v.type !== 'regex' && v.type !== 'forbidRegex') errors.push(`validator ${v.id}: flags sadece regex için`);
   }
   return errors;
 }

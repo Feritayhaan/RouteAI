@@ -6,6 +6,7 @@ import { feedbackRequestSchema, type FeedbackRecord } from "@/lib/validations/fe
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
 import { saveVote } from "@/lib/signals/store";
+import { loadCatalog } from "@/lib/catalog/index";
 
 export const runtime = 'edge';
 export const preferredRegion = 'fra1';
@@ -66,7 +67,13 @@ export async function POST(req: NextRequest) {
       record = { query, toolName, vote, ts };
     } else {
       // v2 (sohbet): mesaj metni yok; oturum sadece hash olarak. Oturum + ürün +
-      // görev başına tek kayıt (son oy geçerli); RouteAI Skoru'na bu kayıt girer.
+      // görev başına tek kayıt (son oy geçerli); RouteAI Skoru'na bu kayıt girer
+      // ve gizli kullanıcı puanı (lib/points) bu oyla oynar. Katalogda olmayan
+      // (aktif ürün + o görevin ürünü) çift KV'ye hiç yazılmaz.
+      const product = loadCatalog().productsById.get(productId!);
+      if (!product || product.status !== 'active' || !product.tasks.includes(taskId!)) {
+        return NextResponse.json({ error: "Bilinmeyen araç ya da görev" }, { status: 400 });
+      }
       key = await saveVote({ sessionId: sessionId!, taskId: taskId!, productId: productId!, toolName, vote }, ts);
       await kv.lrem(RECENT_KEY, 0, key);
       await kv.lpush(RECENT_KEY, key);

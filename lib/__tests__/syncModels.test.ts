@@ -327,3 +327,234 @@ describe('ürün -> model önerisi', () => {
     assert.deepStrictEqual(suggestModels({ name: 'Flux.1 Pro' }, models), []);
   });
 });
+
+// 2026-10-16 gerçek koşusu: LMArena `text` yapılandırmasının bir sayfası 5 denemede de zaman
+// aşımına uğradı (offset=9000). Senkron `text`'i atladı ama LMArena'nın TÜM eski skorlarını
+// sildi: 621 modelden 294'ü kayboldu, `text` arenasında model kalmadı. Aşağıdaki testler
+// "alınamayan arenanın eski skorları korunur" kuralını sabitler.
+describe('model senkronu: alınamayan arenanın eski skorları korunur', () => {
+  const timeout = new Error('The operation was aborted due to timeout');
+  const oldScore = (key: string, value: number) => ({ source: 'lmarena', key, value, fetchedAt: '2026-10-01' });
+  const oldModel = (id: string, scores: ReturnType<typeof oldScore>[]) => ({ id, name: id, creator: 'lab', aliases: [], modalities: ['text'], scores });
+  const row = (key: string, rawName: string, value: number) => ({
+    source: 'lmarena', key, rawName, displayName: rawName, creator: 'lab', modality: 'text', releaseDate: null, pricing: null,
+    score: { source: 'lmarena', key, value, fetchedAt: today },
+  });
+
+  it('text sayfası zaman aşımına uğrarsa text atlanır, rapora yazılır; diğer arena tazelenir', async () => {
+    const { fetchJson } = fakeFetch({ ...hfRoutes, 'config=text&': timeout });
+    const report = newReport();
+    const lm = await fetchLmArena({ fetchJson, sleep, arenas, today }, report);
+    assert.ok(lm);
+    assert.deepStrictEqual(report.failedArenas as string[], ['lmarena:text']);
+    assert.ok(lm.every((r: { key: string }) => r.key === 'text_to_image'), 'yarım text satırı kullanılmaz');
+    assert.ok(report.errors.some((e: string) => e.includes('LMArena text offset=0') && e.includes('timeout')));
+  });
+
+  it('birleştirme: keepArenas ile text modelleri ve skorları kalır; eski davranışta (bayrak yok) silinirdi', () => {
+    const old = [
+      oldModel('text-only', [oldScore('text', 1400)]),
+      oldModel('both', [oldScore('text', 1300), oldScore('text_to_image', 1000)]),
+      oldModel('image-only-gone', [oldScore('text_to_image', 900)]),
+    ];
+    const fresh = [row('text_to_image', 'both', 1111)]; // text_to_image başarıyla geldi; 'image-only-gone' sıralamadan düşmüş
+    const base = { oldModels: old, fresh, succeededSources: new Set(['lmarena']), aliases: {}, linkedModelIds: new Set<string>(), today };
+
+    const legacy = mergeModels(base, newReport());
+    assert.deepStrictEqual(legacy.map((m: { id: string }) => m.id), ['both'], 'bayrak yoksa eski davranış: text-only kaybolur (düzeltilen hata)');
+
+    const report = newReport();
+    const kept = mergeModels({ ...base, keepArenas: new Set(['lmarena:text']) }, report);
+    assert.deepStrictEqual(kept.map((m: { id: string }) => m.id), ['both', 'text-only'], 'sıra: id\'ye göre');
+    assert.deepStrictEqual(report.disappeared, ['image-only-gone'], 'gerçekten sıralamadan düşen model yine silinir');
+    const textOnly = kept.find((m: { id: string }) => m.id === 'text-only');
+    assert.deepStrictEqual(textOnly?.scores, [{ source: 'lmarena', key: 'text', value: 1400, fetchedAt: '2026-10-01' }], 'eski tarih ve değer aynen kalır, tazeymiş gibi gösterilmez');
+    const both = kept.find((m: { id: string }) => m.id === 'both');
+    assert.deepStrictEqual(both?.scores.map((s: { key: string; value: number; fetchedAt: string }) => `${s.key}=${s.value}@${s.fetchedAt}`), [`text=1300@2026-10-01`, `text_to_image=1111@${today}`]);
+  });
+
+  it('başarılı arenanın eski skoru yine yenisiyle değişir (keepArenas yalnız alınamayanı korur)', () => {
+    const old = [oldModel('m', [oldScore('text', 1000), oldScore('text_to_image', 1000)])];
+    const out = mergeModels({ oldModels: old, fresh: [row('text', 'm', 1200)], succeededSources: new Set(['lmarena']), aliases: {}, linkedModelIds: new Set<string>(), today, keepArenas: new Set(['lmarena:text_to_image']) }, newReport());
+    assert.deepStrictEqual(out[0].scores.map((s: { key: string; value: number }) => `${s.key}=${s.value}`), ['text=1200', 'text_to_image=1000']);
+  });
+
+  it('LMArena arenası başarısızlığı her yoldan işaretlenir: split yok, satır yok, alan yok, genel kategori yok', async () => {
+    const onlyText = [{ source: 'lmarena', key: 'text', sourceField: 'text' }];
+    const cases: Record<string, Record<string, unknown>> = {
+      'split yok': { '/splits': { splits: [{ config: 'other', split: 'latest' }] } },
+      'satır yok': { '/splits': { splits: [{ config: 'text', split: 'latest' }] }, 'config=text&': { num_rows_total: 0, rows: [] } },
+      'alan yok': { '/splits': { splits: [{ config: 'text', split: 'latest' }] }, 'config=text&': { num_rows_total: 1, rows: [{ row: { x: 1 } }] } },
+      'genel kategori yok': { '/splits': { splits: [{ config: 'text', split: 'latest' }] }, 'config=text&': { num_rows_total: 1, rows: [{ row: { model_name: 'a', rating: 1, category: 'coding' } }] } },
+    };
+    for (const [name, routes] of Object.entries(cases)) {
+      const report = newReport();
+      const out = await fetchLmArena({ fetchJson: fakeFetch(routes).fetchJson, sleep, arenas: onlyText, today }, report);
+      assert.strictEqual(out, null, name);
+      assert.deepStrictEqual(report.failedArenas as string[], ['lmarena:text'], name);
+    }
+    const ok = newReport();
+    await fetchLmArena({ fetchJson: fakeFetch(hfRoutes).fetchJson, sleep, arenas, today }, ok);
+    assert.deepStrictEqual(ok.failedArenas as string[], [], 'başarıda işaret yok');
+  });
+
+  it('Artificial Analysis: uç nokta düşerse o uç noktanın arenaları işaretlenir', async () => {
+    const report = newReport();
+    const { fetchJson } = fakeFetch({ ...aaRoutes, '/data/media/text-to-image': new Error('HTTP 503') });
+    const rows = await fetchArtificialAnalysis({ fetchJson, sleep, aaKey: 'k', arenas, today }, report);
+    assert.ok(rows && rows.length > 0);
+    assert.deepStrictEqual(report.failedArenas as string[], ['artificialanalysis:text-to-image']);
+  });
+
+  it('markArenaFailed tekrar eklemez ve failedArenas alanı olmayan rapora da yazar', async () => {
+    const { markArenaFailed } = await import('../../scripts/sync/core.mjs');
+    const bare: { failedArenas?: string[] } = {};
+    markArenaFailed(bare, 'lmarena', 'text');
+    markArenaFailed(bare, 'lmarena', 'text');
+    assert.deepStrictEqual(bare.failedArenas, ['lmarena:text']);
+  });
+
+  it('karar kodu değişmez ama gerekçe ve rapor tazelenemeyen arenayı gösterir', () => {
+    const sources = [{ name: 'Artificial Analysis', needsKey: true, hasKey: false, gotData: false }, { name: 'LMArena', needsKey: false, gotData: true }];
+    const without = syncExitDecision({ sources, errors: [] });
+    const withFailed = syncExitDecision({ sources, errors: ['LMArena text offset=9000: timeout'], failedArenas: ['lmarena:text'] });
+    assert.strictEqual(withFailed.code, 0, 'tek arena düşmesi işi kırmızı yapmaz');
+    assert.ok(withFailed.reasons.some((r: string) => r.includes('Tazelenemeyen arena (1): lmarena:text') && r.includes('korundu')));
+    assert.ok(!without.reasons.some((r: string) => r.includes('Tazelenemeyen')));
+
+    const report = newReport();
+    (report.failedArenas as string[]).push('lmarena:text');
+    const text = renderReport(report, { models: [], dryRun: false, wrote: true, decision: withFailed });
+    assert.match(text, /## Tazelenemeyen arenalar \(eski skorlar korundu\)\n\n- lmarena:text: bu koşuda alınamadı/);
+    assert.ok(!renderReport(newReport(), { models: [], dryRun: false, wrote: true, decision: without }).includes('Tazelenemeyen arenalar'));
+  });
+
+  it('sync-models.mjs alınamayan arenaları birleştirmeye ve karara iletir', async () => {
+    const { readFileSync } = await import('node:fs');
+    const src = readFileSync(new URL('../../scripts/sync-models.mjs', import.meta.url), 'utf8');
+    assert.ok(src.includes('keepArenas: new Set(report.failedArenas)'));
+    assert.ok(src.includes('failedArenas: report.failedArenas'));
+  });
+});
+
+describe('model senkronu: LMArena alt kategori arenaları (2026-10-18)', () => {
+  const textOnly = [{ source: 'lmarena', key: 'text', sourceField: 'text' }];
+  const catArenas = [
+    { source: 'lmarena', key: 'text/creative_writing', sourceField: 'text', category: 'creative_writing' },
+    { source: 'lmarena', key: 'text/non_english', sourceField: 'text', category: 'non_english' },
+  ];
+  const split = { '/splits': { splits: [{ config: 'text', split: 'latest' }] } };
+  const pageOf = (rows: Record<string, unknown>[]) => ({ 'config=text&': { num_rows_total: rows.length, rows: rows.map((row) => ({ row })) } });
+  const overallRows = [
+    { model_name: 'gpt-5', organization: 'OpenAI', rating: 1450, rating_lower: 1445, rating_upper: 1455, vote_count: 9000, rank: 1, category: 'overall' },
+    { model_name: 'other-llm', organization: 'Lab B', rating: 1300, vote_count: 500, rank: 7, category: 'overall' },
+  ];
+  const catRows = [
+    { model_name: 'gpt-5', organization: 'OpenAI', rating: 1510, rating_lower: 1500, rating_upper: 1520, vote_count: 800, rank: 3, category: 'creative_writing' },
+    { model_name: 'other-llm', organization: 'Lab B', rating: 1290, vote_count: 90, rank: 9, category: 'creative_writing' },
+    { model_name: 'only-in-category', organization: 'Lab C', rating: 1400, category: 'creative_writing' },
+    { model_name: 'gpt-5', organization: 'OpenAI', rating: 1480, category: 'non_english' },
+  ];
+  type Row = { key: string; rawName: string; creator: string | null; score: Record<string, unknown> };
+  const byKey = (rows: Row[], key: string) => rows.filter((r) => r.key === key);
+
+  it('kategori satırları kendi anahtarıyla, yalnızca değer olarak çıkar; genel arenada olmayan model atlanır; ekstra istek yok', async () => {
+    const routes = { ...split, ...pageOf([...overallRows, ...catRows]) };
+    const withCats = fakeFetch(routes);
+    const report = newReport();
+    const lm = (await fetchLmArena({ fetchJson: withCats.fetchJson, sleep, arenas: textOnly, categoryArenas: catArenas, today }, report)) as Row[];
+    assert.ok(lm);
+    assert.deepStrictEqual(report.errors, []);
+    assert.deepStrictEqual(report.failedArenas as string[], []);
+
+    assert.deepStrictEqual(byKey(lm, 'text').map((r) => r.rawName), ['gpt-5', 'other-llm'], 'genel arena aynen çıkar');
+    assert.deepStrictEqual(byKey(lm, 'text')[0].score, { source: 'lmarena', key: 'text', value: 1450, fetchedAt: today, ciLow: 1445, ciHigh: 1455, votes: 9000, rank: 1 }, 'genel arena skoru değişmedi');
+
+    const cw = byKey(lm, 'text/creative_writing');
+    assert.deepStrictEqual(cw.map((r) => r.rawName), ['gpt-5', 'other-llm'], "'only-in-category' genel arenada yok: atlanır, yeni model doğmaz");
+    assert.deepStrictEqual(cw[0].score, { source: 'lmarena', key: 'text/creative_writing', value: 1510, fetchedAt: today }, 'ci/votes/rank YOK: currentModel rank\'e bakar, dosya küçük kalır');
+    assert.strictEqual(cw[0].creator, 'OpenAI');
+    assert.deepStrictEqual(byKey(lm, 'text/non_english').map((r) => r.score.value), [1480]);
+    assert.ok(report.fieldUse.some((l: string) => l.includes("LMArena text/creative_writing: kategori 'creative_writing' (2/3 satır; genel arenada olmayan 1 model atlandı)")));
+
+    const plain = fakeFetch(routes);
+    await fetchLmArena({ fetchJson: plain.fetchJson, sleep, arenas: textOnly, today }, newReport());
+    assert.deepStrictEqual(withCats.calls, plain.calls, 'alt kategoriler aynı sayfalardan ayıklanır: ek HTTP isteği yok');
+  });
+
+  it('kategorisiz çağrı (categoryArenas yok) eskisi gibi çalışır: yalnızca genel arena satırları', async () => {
+    const report = newReport();
+    const lm = (await fetchLmArena({ fetchJson: fakeFetch({ ...split, ...pageOf([...overallRows, ...catRows]) }).fetchJson, sleep, arenas: textOnly, today }, report)) as Row[];
+    assert.ok(lm.every((r) => r.key === 'text'));
+    assert.deepStrictEqual(report.failedArenas as string[], []);
+  });
+
+  it('kategoride hiç satır yoksa yalnızca o kategori "alınamadı" olur; genel arena ve diğer kategori etkilenmez', async () => {
+    const rows = [...overallRows, catRows[0], catRows[1]]; // non_english yok
+    const report = newReport();
+    const lm = (await fetchLmArena({ fetchJson: fakeFetch({ ...split, ...pageOf(rows) }).fetchJson, sleep, arenas: textOnly, categoryArenas: catArenas, today }, report)) as Row[];
+    assert.ok(lm);
+    assert.deepStrictEqual(report.failedArenas as string[], ['lmarena:text/non_english']);
+    assert.ok(report.errors.some((e: string) => e.includes('text/non_english') && e.includes('kullanılabilir satır yok')));
+    assert.strictEqual(byKey(lm, 'text').length, 2);
+    assert.strictEqual(byKey(lm, 'text/creative_writing').length, 2);
+    assert.strictEqual(byKey(lm, 'text/non_english').length, 0);
+  });
+
+  it('config alınamazsa (zaman aşımı) genel arena VE alt kategorileri birlikte "alınamadı" olur', async () => {
+    const report = newReport();
+    const out = await fetchLmArena({ fetchJson: fakeFetch({ ...split, 'config=text&': new Error('timeout') }).fetchJson, sleep, arenas: textOnly, categoryArenas: catArenas, today }, report);
+    assert.strictEqual(out, null);
+    assert.deepStrictEqual([...(report.failedArenas as string[])].sort(), ['lmarena:text', 'lmarena:text/creative_writing', 'lmarena:text/non_english']);
+  });
+
+  it('kategori sütunu hiç yoksa alt kategoriler alınamadı sayılır ve eski skorlar korunur; genel arena yine gelir', async () => {
+    const rows = [{ model_name: 'gpt-5', rating: 1450 }, { model_name: 'other-llm', rating: 1300 }];
+    const report = newReport();
+    const lm = (await fetchLmArena({ fetchJson: fakeFetch({ ...split, ...pageOf(rows) }).fetchJson, sleep, arenas: textOnly, categoryArenas: catArenas, today }, report)) as Row[];
+    assert.strictEqual(lm.length, 2);
+    assert.ok(lm.every((r) => r.key === 'text'));
+    assert.deepStrictEqual([...(report.failedArenas as string[])].sort(), ['lmarena:text/creative_writing', 'lmarena:text/non_english']);
+    assert.ok(report.errors.some((e: string) => e.includes('kategori sütunu yok')));
+  });
+
+  it('Artificial Analysis kategorileri yok sayar: yalnızca source "lmarena" olanlar işlenir', async () => {
+    const report = newReport();
+    const lm = (await fetchLmArena({ fetchJson: fakeFetch({ ...split, ...pageOf([...overallRows, ...catRows]) }).fetchJson, sleep, arenas: textOnly, categoryArenas: [{ source: 'artificialanalysis', key: 'text/x', sourceField: 'text', category: 'creative_writing' }], today }, report)) as Row[];
+    assert.ok(lm.every((r) => r.key === 'text'));
+  });
+
+  describe('birleştirme', () => {
+    const old = (scores: { key: string; value: number }[]) => [{ id: 'm', name: 'm', creator: 'lab', aliases: [], modalities: ['text'], scores: scores.map((s) => ({ source: 'lmarena', ...s, fetchedAt: '2026-10-01' })) }];
+    const fresh = (key: string, value: number) => ({
+      source: 'lmarena', key, rawName: 'm', displayName: 'm', creator: 'lab', modality: 'text', releaseDate: null, pricing: null,
+      score: { source: 'lmarena', key, value, fetchedAt: today },
+    });
+    const base = { aliases: {}, linkedModelIds: new Set<string>(), today, succeededSources: new Set(['lmarena']) };
+    const show = (models: { scores: { key: string; value: number; fetchedAt: string }[] }[]) => models[0].scores.map((s) => `${s.key}=${s.value}@${s.fetchedAt}`);
+
+    it('kategori skoru aynı modelin skorlarına anahtar sırasıyla eklenir; yeni değer eskisini değiştirir', () => {
+      const out = mergeModels({ ...base, oldModels: old([{ key: 'text', value: 1000 }, { key: 'text/creative_writing', value: 1000 }]), fresh: [fresh('text/creative_writing', 1250), fresh('text', 1200)] }, newReport());
+      assert.deepStrictEqual(show(out), [`text=1200@${today}`, `text/creative_writing=1250@${today}`]);
+    });
+
+    it('kategori alınamadıysa (keepArenas) eski kategori skoru eski tarihiyle kalır, genel skor tazelenir', () => {
+      const report = newReport();
+      const out = mergeModels({ ...base, oldModels: old([{ key: 'text', value: 1000 }, { key: 'text/creative_writing', value: 1000 }]), fresh: [fresh('text', 1200)], keepArenas: new Set(['lmarena:text/creative_writing']) }, report);
+      assert.deepStrictEqual(show(out), [`text=1200@${today}`, 'text/creative_writing=1000@2026-10-01']);
+    });
+
+    it('kategori alınamadı diye işaretlenmezse sessizce silinirdi — bu yüzden fetchLmArena her başarısızlığı işaretler', () => {
+      const out = mergeModels({ ...base, oldModels: old([{ key: 'text', value: 1000 }, { key: 'text/creative_writing', value: 1000 }]), fresh: [fresh('text', 1200)] }, newReport());
+      assert.deepStrictEqual(show(out), [`text=1200@${today}`]);
+    });
+  });
+
+  it('sync-models.mjs genel arenaları ve alt kategorileri ayrı geçirir', async () => {
+    const { readFileSync } = await import('node:fs');
+    const src = readFileSync(new URL('../../scripts/sync-models.mjs', import.meta.url), 'utf8');
+    assert.ok(src.includes('BENCHMARK_ARENAS.filter((a) => !a.category)'), 'genel arenalar: kategori olmayanlar');
+    assert.ok(src.includes('BENCHMARK_ARENAS.filter((a) => a.category)'), 'alt kategori arenaları');
+    assert.ok(/const io = \{[^}]*categoryArenas/.test(src), 'io.categoryArenas geçirilir');
+  });
+});

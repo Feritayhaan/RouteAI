@@ -9,9 +9,9 @@ describe('katalog (lib/catalog)', () => {
   const catalog = loadCatalog();
 
   it('JSON dosyaları şemaya uyuyor ve bir kez yükleniyor', () => {
-    assert.strictEqual(catalog.tasks.length, 40);
-    assert.strictEqual(catalog.products.length, 96);
-    assert.strictEqual(catalog.products.filter((p) => p.status === 'active').length, 56);
+    assert.strictEqual(catalog.tasks.length, 55);
+    assert.strictEqual(catalog.products.length, 141);
+    assert.strictEqual(catalog.products.filter((p) => p.status === 'active').length, 97);
     assert.strictEqual(loadCatalog(), catalog);
   });
 

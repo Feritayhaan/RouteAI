@@ -1,15 +1,11 @@
 ---
-# TASLAK — reviewedBy boş (rehberin tamamı incelenmedi).
-# Kaynak: Suno Create ekranı (Advanced, v6-mini), Ferit'in ekran görüntüleri (2026-10-16) ve
-# Help Center "Music Glossary for Suno" (Ferit yapıştırdı, 2026-10-15; adres kaydedilmedi).
-# v4: Styles ve Lyrics ayrı alanlar. prompt = Styles (İngilizce, virgüllü), sözler "Lyrics"
-# ayarında; v3 ikisini tek metinde birleştiriyordu ("Style: … Lyrics: Verse 1: …").
+# TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "suno"
-version: 4
+version: 1
 appliesTo: ["suno-ai"]
 modality: "music"
-promptLanguage: "en"
-sources: ["https://suno.com/create"]
+promptLanguage: "user"
+sources: []
 reviewedBy: ""
 reviewedAt: ""
 slots:
@@ -182,65 +178,26 @@ refinements:
     en: "Catchier chorus"
     tr: "Akılda kalan nakarat"
   instruction: "Make the chorus a short, repeatable hook."
-checklist: ["Genre", "Mood", "Vocal type or instrumental", "Tempo", "Theme or lyrics"]
+checklist: ["Genre", "Mood", "Vocal type", "Theme or lyrics"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 3000
   message: "RouteAI limit: keep the prompt under 3000 characters."
-- id: "vocals"
-  type: "regex"
-  value: "(vocal|vokal|instrumental|enstrümantal|singer|şarkıcı|voice|duet|düet|rap|choir|koro)"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "State the vocal type, or that the track is instrumental."
-- id: "genre"
-  type: "regex"
-  value: "(style|stil|genre|tür|pop|rock|hip-hop|electronic|elektronik|acoustic|akustik|jazz|caz|folk|türkü|r&b|metal|classical|klasik|lo-fi|house|techno|ambient|arabesk)"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "State the genre or musical style."
-- id: "styles-only"
-  type: "forbidRegex"
-  value: "(?:^|[\\n.;]\\s*)(?:lyrics|sözler|styles?|stil|verse|chorus|nakarat)\\s*\\d*\\s*:|\\n\\s*\\S"
-  flags: "iu"
-  criterion: "toolReadiness"
-  message: "\"prompt\" is the Styles field: one line of comma-separated descriptors, no labels and no lyrics. Put the lyrics into the \"Lyrics\" setting."
 ---
 
 ## Sözdizimi
 
-Kaynak: Suno Create ekranı (Advanced modu), Ferit'in gözlemi (2026-10-16); "Music Glossary for Suno" (Suno Help Center).
-
-- İki ayrı metin alanı var: **Styles** ve **Lyrics**.
-- Styles alanının örneği: `rock fusion, dangdut traditional, industrial noise, soaring vocals, minor melody`. Virgülle ayrılmış kısa tanımlar.
-- Lyrics alanı: "Start writing lyrics, or leave this empty for instrumental". Enstrümantal parçada boş bırakılır.
-- More Options: Vocal Gender (Male/Female), Duration (Custom/Auto), Max Mode, Weirdness, Style Influence.
-- Glossary önerileri: tempo terimini türle birleştir ("upbeat allegro pop"), dinamikle duyguyu yönlendir ("crescendo into powerful chorus"), çalgı dokusunu belirt ("sparse piano and vocals"), yapıyı tarif et ("verse-chorus-verse with extended bridge"), prodüksiyon efekti ekle ("reverb-heavy ambient soundscape"), türleri harmanla ("jazz-influenced hip-hop with soulful vocals").
-- Sözlerdeki bölüm etiketlerinin yazımı (ör. köşeli parantez) ve karakter sınırları KAYNAK GEREKLİ: bu rehberde kullanılmaz.
+KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
 
 ## Şablon
 
-RouteAI iskeleti. `prompt` Styles alanıdır: tek satırda, virgülle ayrılmış kısa İngilizce tanımlar. Sıra: tür, duygu ve tempo, öne çıkan çalgılar ve doku, vokal tipi, prodüksiyon. Sözler `settings` içinde `Lyrics` anahtarıyla, kullanıcının istediği dilde (belirtmediyse kendi dilinde) yazılır. Kullanıcı söz verdiyse aynen kullanılır. Bölümler boş satırla ayrılır, etiket yazılmaz. Enstrümantal parçada `Lyrics` ayarı olmaz. Vokal kadın ya da erkekse `settings` içine `Vocal Gender: Female` ya da `Male` yazılır.
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Stil: [tür], [duygu], [vokal], [tempo]. Sözler: [tema].
 
 ## Yap / Yapma
 
-Kaynağa dayanan kurallar (yukarıdaki gözlem ve Glossary):
-
-- Styles ve sözler ayrı: promptta "Style:", "Lyrics:" gibi etiket ya da söz satırı olmaz.
-- Styles virgülle ayrılmış kısa tanımlardır; tam cümle yazılmaz.
-- Enstrümantal parçada söz yazılmaz; Lyrics alanı boş bırakılır.
-- Somut müzik terimleri kullanılır: tempo terimi, dinamik, çalgı dokusu, prodüksiyon efekti.
-
-RouteAI kuralları (hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
-
-- Sözlerde bölüm etiketi yazılmaz ("Verse 1:", "Nakarat:"): şarkıda okunabilir; etiket sözdizimi doğrulanmadı.
-- Kullanıcının verdiği söz, ad ve tırnaklı metinler aynen korunur.
-- Bu araçta negatif prompt alanı yok: negativePrompt boş kalır.
+KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
 
 ## Örnekler
 
-Biçim örnekleri (içerikleri kopyalanmaz):
-
-- Styles (arayüz örneği): `rock fusion, dangdut traditional, industrial noise, soaring vocals, minor melody`
-- Styles (Glossary ipuçlarıyla): `upbeat allegro pop, bright synths and punchy drums, female vocals, crescendo into powerful chorus`
+KAYNAK GEREKLİ — Suno resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.

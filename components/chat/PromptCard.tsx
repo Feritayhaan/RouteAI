@@ -58,9 +58,6 @@ export default function PromptCard({ card: initial }: { card: Card }) {
 
   const card = versions[index]
   const current = card.variants.find((v) => v.id === variant) ?? card.variants[0]
-  // Çok satırlı ayar (ör. Suno'da Lyrics) aracın ayrı bir alanına yapıştırılır: kendi kutusu ve kopyalama düğmesiyle.
-  const inlineSettings = current.settings.filter((s) => !s.value.includes("\n"))
-  const blockSettings = current.settings.filter((s) => s.value.includes("\n"))
 
   useEffect(() => {
     if (tracked.current.has(card.versionN)) return
@@ -182,25 +179,16 @@ export default function PromptCard({ card: initial }: { card: Card }) {
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
       {current.settings.length > 0 && (
-        <div className="space-y-2">
+        <div>
           <p className="text-xs font-bold uppercase text-muted-foreground">{dict.prompt.settings}</p>
-          {blockSettings.map((s) => (
-            <div key={s.key} className="space-y-1">
-              <p className="text-sm text-muted-foreground">{s.key}</p>
-              <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-words rounded-xl bg-muted/60 p-3 font-mono text-sm leading-relaxed">{s.value}</pre>
-              <CopyPromptButton text={s.value} />
-            </div>
-          ))}
-          {inlineSettings.length > 0 && (
           <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
-            {inlineSettings.map((s) => (
+            {current.settings.map((s) => (
               <div key={s.key} className="contents">
                 <dt className="text-muted-foreground">{s.key}</dt>
                 <dd className="break-words font-mono">{s.value}</dd>
               </div>
             ))}
           </dl>
-          )}
         </div>
       )}
 

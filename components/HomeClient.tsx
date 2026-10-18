@@ -41,27 +41,27 @@ export default function HomeClient() {
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // Prompt oluşturucu seçimseldir (opt-in): filtrenin solundaki "Prompt da yaz"
-  // varsayılan kapalı; kapalıyken arama /api/prompt/start çağırmaz. Araç:
-  // varsayılan önerilen araç; kart ya da prompt kutusundaki düğmeyle başka bir araç.
+  // Prompt oluşturucu: filtrenin solunda aç/kapa. Araç: varsayılan önerilen
+  // araç; kart ya da prompt kutusundaki düğmeyle sonuçtaki başka bir araç.
   const [promptEnabled, setPromptEnabled] = useState(false)
-  /** Karttaki prompt çağrısı tıklandı: SADECE bu arama (submitted.n) için; anahtarı açmaz. */
-  const [promptRequested, setPromptRequested] = useState<number | null>(null)
   const [promptTool, setPromptTool] = useState(AUTO_TOOL)
   const [submitted, setSubmitted] = useState<{ query: string; n: number } | null>(null)
   // Aynı arama + araç için üretilmiş prompt: araç değiştirip geri dönünce yeniden üretilmez
   const [promptCache] = useState(() => new Map<string, PromptCardData | PromptQuestionData>())
 
-  /** taskId: v3 netleştirmesinde seçilen görev — aynı sorgu o görevle yeniden istenir. */
-  const getRecommendation = async (taskId?: string) => {
-    const prompt = taskId && submitted ? submitted.query : query.trim()
+  /**
+   * taskId: v3 netleştirmesinde seçilen görev — aynı sorgu o görevle yeniden istenir.
+   * correctedQuery: "… mi demek istedin?" yazım önerisi — arama kutusu da düzeltilmiş sorguyla güncellenir.
+   */
+  const getRecommendation = async (taskId?: string, correctedQuery?: string) => {
+    const prompt = correctedQuery?.trim() || (taskId && submitted ? submitted.query : query.trim())
     if (!prompt) return
+    if (correctedQuery) setQuery(correctedQuery)
 
     setIsLoading(true)
     setError(null)
     setResponse(null)
     setPromptTool(AUTO_TOOL) // yeni sonuç: prompt yine önerilen araç için
-    setPromptRequested(null) // tek seferlik istek yeni aramaya taşınmaz
     setSubmitted((prev) => ({ query: prompt, n: (prev?.n ?? 0) + 1 }))
 
     try {
@@ -180,27 +180,21 @@ export default function HomeClient() {
   // Check if response is a workflow
   const isWorkflow = response?.type === 'workflow'
 
-  // Prompt: "Bana Yol Göster" sonrası, anahtar açıksa ya da karttaki çağrı bu
-  // arama için tıklandıysa önerinin altında aynı ekranda, önerilen araç için.
-  // Kartta ya da kutuda başka bir araç seçilirse o araç için.
-  // İş akışında prompt adımın içinde açılır (WorkflowDisplay, adım başına çağrı).
+  // Prompt: "Bana Yol Göster" sonrası, açıksa önerinin altında aynı ekranda,
+  // önerilen araç için. Kartta ya da kutuda başka bir araç seçilirse o araç için.
+  // İş akışında prompt adımın içinde açılır (WorkflowDisplay, adım başına düğme).
   const stepPrompts = isWorkflow
-  const promptWanted = promptEnabled || (submitted !== null && promptRequested === submitted.n)
-  const promptTarget = promptWanted && submitted && !isLoading && !stepPrompts
+  const promptTarget = promptEnabled && submitted && !isLoading && !stepPrompts
     ? resolvePromptTarget(promptTool, recommendedTools(response))
     : null
   const promptKey = promptTarget && submitted
     ? `${"productId" in promptTarget ? promptTarget.productId : promptTarget.missing}|${submitted.query}|${submitted.n}`
     : ""
 
-  /**
-   * Kart ya da prompt kutusundaki düğme: prompt o araç için, sadece bu arama için
-   * yazılır ve kutuya kaydırılır. "Prompt da yaz" anahtarı değişmez: sonraki
-   * aramalar kullanıcı açmadıkça prompt üretmez (ek OpenAI maliyeti yok).
-   */
+  /** Kart ya da prompt kutusundaki düğme: prompt o araç için yazılır, kutuya kaydırılır. */
   const choosePromptTool = (toolName: string) => {
     setPromptTool(toolName)
-    if (submitted) setPromptRequested(submitted.n)
+    setPromptEnabled(true)
     setTimeout(() => document.getElementById("prompt-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50)
   }
 
@@ -327,7 +321,7 @@ export default function HomeClient() {
                 autoPrompt={promptEnabled && stepPrompts}
               />
             ) : response.type === "clarify" ? (
-              <ClarifyDisplay clarify={response} dict={dict} onSelect={(taskId) => getRecommendation(taskId)} disabled={isLoading} />
+              <ClarifyDisplay clarify={response} dict={dict} onSelect={(taskId) => getRecommendation(taskId)} onSuggest={(suggestion) => getRecommendation(undefined, suggestion)} disabled={isLoading} />
             ) : response.type === "no_evidence" ? (
               <NoEvidenceDisplay result={response} dict={dict} />
             ) : (
@@ -336,7 +330,7 @@ export default function HomeClient() {
                 recommendation={response}
                 query={submitted?.query ?? query}
                 onPrompt={choosePromptTool}
-                promptOpen={promptTarget !== null}
+                onSelectTask={(taskId) => getRecommendation(taskId)}
               />
             )
           )}

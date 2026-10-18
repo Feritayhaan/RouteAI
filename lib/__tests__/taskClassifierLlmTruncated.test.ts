@@ -26,7 +26,12 @@ describe('classifyTask: LLM yanıtı kesilirse (finish_reason length)', () => {
     try {
       const r = await classifyTask('tamamen belirsiz ve anlaşılmaz bir cümle yazıyorum burada', { allowLLM: true });
       assert.ok('clarify' in r, 'kesik yanıt görev gibi kullanılmamalı');
-      if ('clarify' in r) assert.strictEqual(r.clarify.length, 3);
+      if ('clarify' in r) {
+        // Hiçbir görev anahtar kelimesi tutmadı (puan 0): tasks.json'daki ilk üç görev yerine katalogla örtüşen en çok 4 görev.
+        assert.strictEqual(r.reason, 'no_match');
+        assert.ok(r.clarify.length <= 4, `en çok 4 seçenek: ${r.clarify.length}`);
+        assert.ok(!r.clarify.includes('image.logo'), 'kesik yanıttaki görev adayı kullanılmamalı');
+      }
       assert.ok((bodies[0]?.max_tokens ?? 0) >= 100, `max_tokens: ${bodies[0]?.max_tokens}`);
     } finally {
       globalThis.fetch = originalFetch;

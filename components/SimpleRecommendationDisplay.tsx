@@ -1,15 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AlertTriangle, ExternalLink, Rocket } from "lucide-react"
+import { AlertTriangle, ExternalLink, Rocket, Wand2 } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
 import { displayPriceLabel } from "@/lib/pricing"
 import { format, getDictionary } from "@/lib/i18n"
 import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
-import PromptCta from "./PromptCta"
-import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox } from "./Evidence"
+import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox, UnverifiedBadge, UnverifiedNote } from "./Evidence"
+import VoteButtons from "./VoteButtons"
 import { onToolOpen } from "./toolOpen"
 import { trackEvent } from "@/lib/analytics/client"
 import { getSessionId } from "@/lib/chat/session"
@@ -18,6 +18,7 @@ import { promptProductId } from "@/lib/promptBuilder/products"
 import type { CurrentModel } from "@/lib/catalog/currentModel"
 
 const dict = getDictionary("tr")
+const VOTE_LABELS = { recommend: dict.feedback.recommend, dontRecommend: dict.feedback.dontRecommend }
 
 /** "Güncel model: X · Artificial Analysis · 26 Eyl 2026" — kaynak adı görünür (lisans şartı). */
 function CurrentModelLine({ model }: { model: CurrentModel }) {
@@ -45,29 +46,42 @@ export default function SimpleRecommendationDisplay({
   recommendation,
   query,
   onPrompt,
-  promptOpen = false,
+  onSelectTask,
 }: {
   recommendation: SimpleRecommendation
   query: string
-  /** Seçimsel prompt çağrısı: ana araç için prompt kutusunu bu arama için açar (HomeClient). */
+  /** "Prompt yaz": ana araç için prompt kutusunu açar (HomeClient). */
   onPrompt?: (toolName: string) => void
-  /** Prompt kutusu zaten açık ("Prompt da yaz" ya da çağrı tıklandı): çağrı gizlenir. */
-  promptOpen?: boolean
+  /** Tahmini eşleşmede "başka bir iş mi demek istedin?" düğmesi: aynı sorgu seçilen işle yeniden aranır (HomeClient). */
+  onSelectTask?: (taskId: string) => void
 }) {
   const { main, taskId } = recommendation
   const editor = main.basis === "editor"
+  const unverifiedMain = main.basis === "unverified"
+  // Kullanıcı bir ürünün ADINI yazdıysa görevi biz seçtik, kullanıcının niyeti o görev değil:
+  // o göreve oy, "işini gördü mü?" kaydı ve görev olayı yazılmaz (sıralama verisi kirlenmesin).
+  const searched = recommendation.searched === true
+  // Tahmini eşleşmede de aynı: kullanıcının isteği bu iş değil (en yakın iş), o işe oy ya da olay yazılmaz.
+  const approximate = recommendation.approximate
+  const signalTaskId = searched || approximate ? undefined : taskId
   // v3: oturum kimliği ile oy (arama metni gönderilmez); v1'de klasik oy.
-  const [sessionId] = useState(() => (taskId && main.productId ? getSessionId() : null))
+  const [sessionId] = useState(() => (signalTaskId && main.productId ? getSessionId() : null))
 
   useEffect(() => {
-    if (taskId) trackEvent("recommendation_shown", { taskId })
-  }, [taskId])
+    if (signalTaskId) trackEvent("recommendation_shown", { taskId: signalTaskId })
+  }, [signalTaskId])
   const renderPricingBadges = () => {
     if (!main.pricing && !main.confidence) return null
     return (
       <div className="flex flex-wrap items-center gap-1.5">
         {main.pricing && <PricingBadges pricing={main.pricing} pricingUrl={main.pricingUrl} />}
-        {editor ? <EditorPickBadge dict={dict} /> : main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />}
+        {editor ? (
+          <EditorPickBadge dict={dict} />
+        ) : unverifiedMain ? (
+          <UnverifiedBadge dict={dict} />
+        ) : (
+          main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />
+        )}
       </div>
     )
   }
@@ -104,7 +118,9 @@ export default function SimpleRecommendationDisplay({
                 {renderPricingBadges()}
 
                 {recommendation.taskLabel && (
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-primary">{dict.v3.pick}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
+                    {recommendation.searched ? dict.v3.searched : approximate ? dict.v3.approxPick : dict.v3.pick}
+                  </p>
                 )}
                 <h2 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight break-words">
                   <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
@@ -120,26 +136,52 @@ export default function SimpleRecommendationDisplay({
                 href={main.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => onToolOpen(main, taskId)}
+                onClick={() => onToolOpen(main, signalTaskId)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>Araca Git</span>
               </a>
+              {onPrompt && promptProductId(main.toolName) && (
+                <button
+                  type="button"
+                  onClick={() => onPrompt(main.toolName)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-medium transition-all text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Wand2 className="w-4 h-4" aria-hidden />
+                  <span>{dict.prompt.forTool}</span>
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Prompt: seçimsel, tıklanınca bu sorgu ve araç için üretilir */}
-          {onPrompt && !promptOpen && promptProductId(main.toolName) && (
-            <PromptCta
-              label={format(dict.prompt.cta, { product: main.toolName })}
-              hint={format(dict.prompt.ctaHint, { product: main.toolName })}
-              query={query}
-              onClick={() => onPrompt(main.toolName)}
-            />
-          )}
-
           <div className="space-y-3 md:space-y-4">
+            {approximate && (
+              // Hata gibi durmaz (uyarı rengi/ikonu yok): tek satır not + "başka iş" düğmeleri. Tahmini olduğu rozet ve notta yine görünür.
+              <div role="status" className="flex flex-wrap items-center gap-2 rounded-lg border border-border/60 bg-muted/40 px-3 py-2 text-xs md:text-sm text-muted-foreground">
+                <span>{format(dict.v3.approxNote, { task: recommendation.taskLabel ?? "" })}</span>
+                {approximate.otherTasks.length > 0 && onSelectTask && (
+                  <>
+                    <span className="font-semibold text-foreground/80">{dict.v3.approxOther}</span>
+                    {approximate.otherTasks.map((t) => (
+                      <button
+                        key={t.taskId}
+                        type="button"
+                        onClick={() => onSelectTask(t.taskId)}
+                        className="min-h-9 rounded-lg border border-border bg-background/60 px-3 py-1 text-xs font-semibold text-foreground break-words hover:bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+            {recommendation.searched && (
+              <p role="status" className="text-xs md:text-sm rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-muted-foreground">
+                {dict.v3.searchedNote}
+              </p>
+            )}
             {recommendation.relaxedPricing && (
               <p role="status" className="text-xs md:text-sm rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-800 dark:text-amber-300">
                 {RELAXED_NOTE[recommendation.relaxedPricing] ?? RELAXED_NOTE.other}
@@ -166,6 +208,8 @@ export default function SimpleRecommendationDisplay({
               </p>
               {editor ? (
                 <EditorReasonsBox tool={main} dict={dict} />
+              ) : unverifiedMain ? (
+                <UnverifiedNote dict={dict} />
               ) : main.reasons ? (
                 <ReasonsBox tool={main} dict={dict} />
               ) : main.why && (
@@ -187,26 +231,34 @@ export default function SimpleRecommendationDisplay({
                 </div>
                 <div className="flex flex-col gap-2">
                   {recommendation.alternatives.map((alt) => (
-                    <a
-                      key={alt.toolName}
-                      href={alt.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => onToolOpen(alt, taskId)}
-                      className="text-sm flex justify-between items-center gap-3 hover:underline"
-                    >
-                      <span className="min-w-0 break-words">
-                        {alt.toolName}
-                        {alt.confidence && (
-                          <span className="ml-2 text-[10px] text-muted-foreground no-underline">{dict.rec.confidence[alt.confidence]}</span>
-                        )}
-                      </span>
-                      {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
-                          ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {displayPriceLabel(alt.pricing)}
-                      </span>
-                    </a>
+                    <div key={alt.toolName} className="flex items-center gap-2">
+                      <a
+                        href={alt.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => onToolOpen(alt, signalTaskId)}
+                        className="min-w-0 flex-1 text-sm flex justify-between items-center gap-3 hover:underline"
+                      >
+                        <span className="min-w-0 break-words">
+                          {alt.toolName}
+                          {alt.basis === "unverified" ? (
+                            <span className="ml-2 text-[10px] text-muted-foreground no-underline">{dict.v3.unverified}</span>
+                          ) : (
+                            alt.confidence && (
+                              <span className="ml-2 text-[10px] text-muted-foreground no-underline">{dict.rec.confidence[alt.confidence]}</span>
+                            )
+                          )}
+                        </span>
+                        {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
+                            ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                          {displayPriceLabel(alt.pricing)}
+                        </span>
+                      </a>
+                      {signalTaskId && alt.productId && (
+                        <VoteButtons taskId={signalTaskId} productId={alt.productId} toolName={alt.toolName} labels={VOTE_LABELS} />
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -219,23 +271,27 @@ export default function SimpleRecommendationDisplay({
                 </div>
                 <div className="flex flex-col gap-2">
                   {recommendation.unverified.map((alt) => (
-                    <a
-                      key={alt.toolName}
-                      href={alt.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => onToolOpen(alt, taskId)}
-                      className="text-sm flex justify-between items-center gap-3 hover:underline"
-                    >
-                      <span className="min-w-0 break-words">{alt.toolName}</span>
-                      <span className="shrink-0 text-xs text-muted-foreground">{displayPriceLabel(alt.pricing)}</span>
-                    </a>
+                    <div key={alt.toolName} className="flex items-center gap-2">
+                      <a
+                        href={alt.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => onToolOpen(alt, signalTaskId)}
+                        className="min-w-0 flex-1 text-sm flex justify-between items-center gap-3 hover:underline"
+                      >
+                        <span className="min-w-0 break-words">{alt.toolName}</span>
+                        <span className="shrink-0 text-xs text-muted-foreground">{displayPriceLabel(alt.pricing)}</span>
+                      </a>
+                      {signalTaskId && alt.productId && (
+                        <VoteButtons taskId={signalTaskId} productId={alt.productId} toolName={alt.toolName} labels={VOTE_LABELS} />
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {sessionId && taskId && main.productId ? (
+            {searched || approximate ? null : sessionId && taskId && main.productId ? (
               <FeedbackButtons
                 sessionId={sessionId}
                 taskId={taskId}

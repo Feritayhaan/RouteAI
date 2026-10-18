@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import { scoreProduct } from '../catalog/score';
 import { searchCatalog } from '../catalog/search';
+import type { Model } from '../catalog/schema';
 import { rubricToE } from '../catalog/weights';
 import { NOW, arenaModels, ctx, daysAgo, product, review, signal, task } from './catalogFixtures';
 
@@ -167,5 +168,86 @@ describe('RouteAI Skoru: gerekçeler, tarih, determinizm', () => {
     assert.deepStrictEqual(r1, r2);
     assert.deepStrictEqual(scoreProduct(ps[0], T, ctx({ products: ps, models })), scoreProduct(ps[0], T, ctx({ products: ps, models })));
     assert.ok(NOW > 0);
+  });
+});
+
+describe('RouteAI Skoru: LMArena alt kategori arenaları ve genel arenaya düşme', () => {
+  const PARENT = 'text_to_image';
+  const CAT = 'text_to_image/photorealistic';
+  const CAT2 = 'text_to_image/text_rendering';
+  const model = (id: string, scores: Record<string, number>): Model => ({
+    id, name: id.toUpperCase(), creator: 'lab', aliases: [], modalities: ['image'],
+    scores: Object.entries(scores).map(([key, value]) => ({ source: 'lmarena' as const, key, value, fetchedAt: daysAgo(3) })),
+  });
+  const taskOf = (...keys: string[]) => task('image.generate', keys.map((key) => ({ source: 'lmarena' as const, key })));
+  const run = (t: ReturnType<typeof task>, ps: ReturnType<typeof product>[], models: Model[], extra: { categoryFallback?: boolean } = {}) =>
+    ps.map((p) => scoreProduct(p, t, { ...ctx({ products: ps, tasks: [t], models }), ...extra }));
+  const A = product('a', { models: ['m0'] });
+  const B = product('b', { models: ['m2'] });
+
+  it('kategoride veri varsa sıra kategoriden gelir (genel arenanın tersi olsa bile) ve gerekçe kategori anahtarını yazar', () => {
+    const models = [model('m0', { [PARENT]: 100, [CAT]: 300 }), model('m1', { [PARENT]: 200, [CAT]: 200 }), model('m2', { [PARENT]: 300, [CAT]: 100 })];
+    const [a, b] = run(taskOf(CAT), [A, B], models);
+    assert.strictEqual(a.components.B, 1);
+    assert.strictEqual(b.components.B, 0);
+    assert.deepStrictEqual(a.reasons.find((r) => r.code === 'benchmark_rank')?.params, { source: 'lmarena', arena: CAT, rank: 1, total: 3, model: 'M0' });
+    const [pa, pb] = run(taskOf(PARENT), [A, B], models);
+    assert.strictEqual(pa.components.B, 0);
+    assert.strictEqual(pb.components.B, 1);
+  });
+
+  it('kategoride hiç veri yoksa sonuç, görevin doğrudan genel arenaya bağlı olduğu hâlle BİREBİR aynıdır (sıralama değişmez)', () => {
+    const models = arenaModels([100, 200, 300], PARENT);
+    assert.deepStrictEqual(run(taskOf(CAT), [A, B], models), run(taskOf(PARENT), [A, B], models));
+    const search = (t: ReturnType<typeof task>) => searchCatalog({ taskId: t.id }, ctx({ products: [A, B], tasks: [t], models })).items.map((i) => i.product.id);
+    assert.deepStrictEqual(search(taskOf(CAT)), search(taskOf(PARENT)));
+  });
+
+  it('kategoride tek model varsa (MIN_ARENA_MODELS altı) genel arenaya düşer', () => {
+    const models = [model('m0', { [PARENT]: 100, [CAT]: 999 }), model('m1', { [PARENT]: 200 }), model('m2', { [PARENT]: 300 })];
+    const [a, b] = run(taskOf(CAT), [A, B], models);
+    assert.strictEqual(a.components.benchmarks[0].arena, PARENT);
+    assert.strictEqual(a.components.B, 0);
+    assert.strictEqual(b.components.B, 1);
+  });
+
+  it('ürünün bağlı modeli kategoride yoksa o ürün genel arenadan ölçülür (kanıtı kaybolmaz); yedek kapalıysa B yok', () => {
+    const models = [model('m0', { [PARENT]: 100 }), model('m1', { [PARENT]: 200, [CAT]: 10 }), model('m2', { [PARENT]: 300, [CAT]: 20 })];
+    const [a, b] = run(taskOf(CAT), [A, B], models);
+    assert.strictEqual(a.hasEvidence, true);
+    assert.strictEqual(a.components.benchmarks[0].arena, PARENT, 'A kategoride yok -> genel arena');
+    assert.strictEqual(b.components.benchmarks[0].arena, CAT, 'B kategoride var -> kategori');
+    const [aOff, bOff] = run(taskOf(CAT), [A, B], models, { categoryFallback: false });
+    assert.strictEqual(aOff.hasEvidence, false, 'yedek kapalı: kategoride olmayan ürün B\'siz kalır (denetimin "ne olurdu" hesabı)');
+    assert.strictEqual(aOff.components.B, undefined);
+    assert.strictEqual(bOff.components.benchmarks[0].arena, CAT);
+  });
+
+  it('düşülen genel arena görevde zaten varsa tekrar sayılmaz (yinelenen girdi yok)', () => {
+    const models = arenaModels([100, 200, 300], PARENT);
+    const [both] = run(taskOf(PARENT, CAT, CAT2), [A], models);
+    const [single] = run(taskOf(PARENT), [A], models);
+    assert.strictEqual(both.components.benchmarks.length, 1);
+    assert.deepStrictEqual(both.components, single.components);
+    const [onlyCats] = run(taskOf(CAT, CAT2), [A], models);
+    assert.strictEqual(onlyCats.components.benchmarks.length, 1, 'iki kategori de genel arenaya düşse tek benchmark girdisi olur');
+  });
+
+  it('genel arena bir kategoriye düşmez: anahtarı "/" içermeyen arenada yedek yok', () => {
+    const [a] = run(taskOf('text'), [A], arenaModels([100, 200, 300], PARENT));
+    assert.strictEqual(a.hasEvidence, false);
+  });
+
+  it('iki kategori ve Artificial Analysis girdisi eşit ağırlıkla ortalanır (B 4 basamağa yuvarlanır)', () => {
+    const withAa = (id: string, scores: Record<string, number>, aa: number): Model => {
+      const m = model(id, scores);
+      return { ...m, scores: [...m.scores, { source: 'artificialanalysis' as const, key: 'text-to-image', value: aa, fetchedAt: daysAgo(3) }] };
+    };
+    const models = [withAa('m0', { [CAT]: 300, [CAT2]: 100 }, 1000), withAa('m1', { [CAT]: 200, [CAT2]: 200 }, 1100), withAa('m2', { [CAT]: 100, [CAT2]: 300 }, 1200)];
+    const t = task('image.generate', [{ source: 'lmarena', key: CAT }, { source: 'lmarena', key: CAT2 }, { source: 'artificialanalysis', key: 'text-to-image' }]);
+    const [a] = run(t, [A], models);
+    assert.strictEqual(a.components.benchmarks.length, 3);
+    // m0: CAT 1, CAT2 0, AA 0 -> 1/3. Not: iki LMArena girdisi AA'nın payını 1/2'den 1/3'e düşürür (bilinen yan etki).
+    assert.strictEqual(a.components.B, 0.3333);
   });
 });

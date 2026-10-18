@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "cursor-task"
-version: 6
+version: 1
 appliesTo: ["cursor"]
 modality: "code"
 promptLanguage: "user"
@@ -80,7 +80,6 @@ slots:
       tr: "Yeni bağımlılık yok"
     value: "no new dependencies"
   default: "infer"
-  multi: true
 - id: "verification"
   impact: "medium"
   question:
@@ -159,24 +158,12 @@ refinements:
     en: "Plan first"
     tr: "Önce plan"
   instruction: "Ask the agent to propose a plan and wait before editing."
-checklist: ["Goal in one sentence", "Expected behavior", "Scope and files", "Constraints", "How to verify", "Acceptance criteria"]
+checklist: ["Goal in one sentence", "Scope and files", "Constraints", "How to verify", "Acceptance criteria"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 4000
   message: "RouteAI limit: keep the prompt under 4000 characters."
-- id: "verification"
-  type: "regex"
-  value: "(test|lint|typecheck|type-check|tsc|build|verify|doğrula|kabul|acceptance|tip kontrol)"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "State how to verify the change (tests, typecheck, a manual check)."
-- id: "constraints"
-  type: "regex"
-  value: "(constraint|rule|do not|don't|does not|must|keep|never|avoid|remains?|intact|unchanged|kural|kısıt|değiştirme|değişmeden|olmalı|zorunlu|koru|asla|\\p{L}+(?:malı|meli)\\p{L}*)"
-  flags: "iu"
-  criterion: "actionability"
-  message: "State the constraints: what must not change and what must hold."
 ---
 
 ## Sözdizimi
@@ -185,28 +172,11 @@ KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişi
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Etiket zinciri değil, kıdemli bir mühendise verilen doğal bir görev tanımı:
-
-1. Amaç ve rol: değişikliğin ne olduğu ve neden gerektiği; ajanın bu kod tabanında kıdemli mühendis gibi çalışması.
-2. Bağlam: ilgili dosyalar/alanlar, hata mesajı, mevcut davranış; kullanıcının vermediği yollar için köşeli parantezli yer tutucular.
-3. Beklenen davranış ve kısıtlar: değişiklikten sonra ne olmalı, neyin kesinlikle değişmemesi gerektiği (dış API, stil, bağımlılıklar).
-4. Çalışma şekli: önce kök nedeni ya da planı kısaca açıklaması, sonra küçük ve gözden geçirilebilir adımlarla uygulaması.
-5. Doğrulama ve kabul kriterleri: çalıştırılacak kontroller (test, tip kontrolü, lint) ve madde madde kabul kriterleri.
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Görev: [amaç]. Kapsam: [kapsam]. Bağlam: [bağlam]. Kurallar: [kısıtlar]. Doğrulama: [doğrulama]. Kabul kriterleri: [liste].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Cursor resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
-
-RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
-
-- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
-- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
-- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
-- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
-- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
-- Beklenen davranış, kısıtlar (neyin değişmeyeceği) ve doğrulama adımı açıkça yazılır.
-- Meta-sınır: prompt konuyu anlatmaz ve isteği kendisi cevaplamaz; hedef araca ne yapacağını ve neyi teslim edeceğini söyler.
-- Mekanik etiket zinciri yok ("Görev: X. Kapsam: Y. Kurallar: Z. Doğrulama: W."); doğal, akıcı bölümler. Yalnızca kullanıcının bilebileceği bilgiler köşeli parantezli yer tutucu olur.
 
 ## Örnekler
 
