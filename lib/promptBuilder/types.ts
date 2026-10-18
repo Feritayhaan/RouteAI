@@ -7,8 +7,6 @@ export interface SlotState {
   /** null = üretici seçsin (varsayılan 'infer' ya da bilinmiyor). */
   value: string | null;
   source: SlotSource;
-  /** Değerin kullanıcı dilinde karşılığı ("Şunları varsaydım" listesi); yoksa seçenek etiketi ya da değer. */
-  label?: string;
 }
 
 export interface VariantValidation {
@@ -64,12 +62,6 @@ export interface PromptSession {
   guideId: string;
   guideVersion: number;
   goal: string;
-  /**
-   * Kullanıcının kendi mesajları (ham, eskiden yeniye). Üretici ayrıntıları
-   * buradan alır; `goal` ajanın kısa özetidir. Varsayılan olarak KV'ye
-   * YAZILMAZ (store.ts, PERSIST_USER_MESSAGES): sadece o istekte kullanılır.
-   */
-  userMessages?: string[];
   locale: 'en' | 'tr';
   slots: Record<string, SlotState>;
   /** Oturum başına en fazla 1 soru kartı. */

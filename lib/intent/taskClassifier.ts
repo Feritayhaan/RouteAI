@@ -9,7 +9,21 @@
 //     dil kısıtı da istenir (recommendV3 ikinci bir çağrı yapmasın).
 //
 // LLM de başarısız olursa (anahtar yok, hata, kesik yanıt) hata dönülmez:
-// kural puanına göre ilk 3 görev clarify olarak döner.
+// kural puanına göre ilk 3 görev clarify olarak döner. Hiçbir görev anahtar kelimesi tutmadıysa
+// (puan 0) "ilk üç görev" anlamsızdır (tasks.json sırası): bunun yerine kataloğun sözcük dağarcığıyla
+// en yakın görevler (lib/intent/understanding.ts relatedTasks) `reason: 'no_match'` ile döner;
+// hiç yakın görev yoksa liste boştur ve çağıran (recommendV3) başlangıç görevlerini sunar.
+// Kapatma: UNDERSTANDING_GATE=off (eski davranış: puan 0 olsa da ilk üç görev).
+//
+// LLM ayrıca `fit` (exact/partial/none) bildirir: "en yakın görev gerçekten bu işi yapıyor mu?".
+// Kararı recommendV3 verir (fit + sözcük desteği); burada yalnızca taşınır ve önbelleğe girer.
+//
+// Belirsizlik: aynı LLM çağrısında `needsClarification` + `candidates` da istenir.
+// Model "tek görev seçmek tahmin olur" derse ve geçerli en az 2 aday verirse sonuç
+// clarify olur (2-4 görev). Kapatma anahtarı: AMBIGUITY_CLARIFY=off (eski davranış:
+// LLM hep tek görev seçer). Bu karar yalnızca kural katmanının emin olmadığı
+// sorgularda devreye girer; lib/intent/domainClarify.ts ise LLM'den önce, kuralla
+// ve ücretsiz çalışır.
 //
 // Önbellek: lib/intent/taskCache.ts (KV, task:v1: öneki, 24 saat). Yalnızca
 // kesin sonuçlar (rules ya da llm) önbelleğe yazılır; clarify yazılmaz —
@@ -22,11 +36,15 @@ import { loadCatalog } from '../catalog/index';
 import type { Task } from '../catalog/schema';
 import { extractConstraints } from './parser';
 import { getCachedTask, setCachedTask } from './taskCache';
+import { relatedTasks, understandingEnabled } from './understanding';
 
 export interface TaskConstraints {
   pricing?: 'free' | 'freemium' | 'paid';
   language?: string;
 }
+
+/** LLM'in kendi değerlendirmesi: seçtiği görev isteği gerçekten karşılıyor mu? */
+export type TaskFit = 'exact' | 'partial' | 'none';
 
 export interface TaskClassification {
   taskId: string;
@@ -34,10 +52,20 @@ export interface TaskClassification {
   source: 'rules' | 'llm';
   alternatives: string[];
   constraints: TaskConstraints;
+  /** Yalnızca source 'llm' için: seçilen görev isteği tam karşılıyor mu (eski önbellek kayıtlarında yok). */
+  fit?: TaskFit;
+  /** Yalnızca source 'llm' için: LLM'in "en yakın" dediği görevler (en olası önce, katalogda ürünü olanlar). */
+  closest?: string[];
 }
 
 export interface TaskClarify {
-  clarify: [string, string, string];
+  /**
+   * Sorulacak görev id'leri: kural yedeğinde 3 (puan >0 ise), LLM belirsizlik kararında 2-4.
+   * `reason: 'no_match'` iken 0-4: sorguyla sözcük örtüşmesi olan görevler, hiç yoksa boş.
+   */
+  clarify: string[];
+  /** Yalnızca 'no_match': sorgunun hiçbir görev anahtar kelimesi tutmadı. Yoksa klasik belirsizlik. */
+  reason?: 'no_match';
 }
 
 export interface ClassifyTaskOptions {
@@ -78,6 +106,20 @@ function alternativesFrom(scores: RuleScore[], winnerId: string): string[] {
   return scores.filter((s) => s.taskId !== winnerId && s.score > 0).slice(0, 3).map((s) => s.taskId);
 }
 
+/** Bir sorguda en fazla bu kadar seçenek sorulur (ClarifyDisplay 3'lü ızgara; 4'ten fazlası karar yorgunluğu). */
+const MAX_CANDIDATES = 4;
+
+/**
+ * Kural katmanı emin değilken (ve LLM yok/başarısız) sorulacaklar. Puan 0 ise tasks.json sırası anlamsızdır:
+ * katalogla gerçekten örtüşen görevler sunulur (UNDERSTANDING_GATE=off: eski davranış).
+ */
+function ruleFallback(query: string, scores: RuleScore[], catalog: ReturnType<typeof loadCatalog>): TaskClarify {
+  if (scores[0].score > 0 || !understandingEnabled()) return { clarify: top3(scores) };
+  const offerable = (id: string) => (catalog.productsByTask.get(id) ?? []).length > 0;
+  const related = relatedTasks(query, catalog, MAX_CANDIDATES).map((r) => r.taskId).filter(offerable);
+  return { clarify: related, reason: 'no_match' };
+}
+
 function ruleConfidence(best: number, margin: number): number {
   return Math.min(0.95, 0.55 + 0.12 * best + 0.08 * margin);
 }
@@ -99,10 +141,84 @@ const PRICING_VALUES = ['free', 'freemium', 'paid', 'unspecified'] as const;
 
 function systemPrompt(tasks: Task[]): string {
   const list = tasks.map((t) => `- ${t.id}: ${t.label.en} — ${t.description.en}`).join('\n');
-  return `You are RouteAI's task classifier. Assign the user's request to EXACTLY ONE of the following tasks (pick the single closest match, even if imperfect):\n${list}\n\nAlso extract, ONLY if the user explicitly stated it:\n- pricing: "free" (must be free), "freemium" (has a free tier), "paid" (willing to pay) — "unspecified" if not stated.\n- language: the ISO 639-1 code of the language the user wrote in (e.g. "tr", "en").\nBe concise.`;
+  return `You are RouteAI's task classifier. Assign the user's request to EXACTLY ONE of the following tasks (pick the single closest match, even if imperfect):\n${list}\n\nAlso extract, ONLY if the user explicitly stated it:\n- pricing: "free" (must be free), "freemium" (has a free tier), "paid" (willing to pay) — "unspecified" if not stated.\n- language: the ISO 639-1 code of the language the user wrote in (e.g. "tr", "en").\n\nAmbiguity — set needsClarification:\n- true ONLY when the request is so open that recommending any single task would be a guess: it names just a broad area or goal ("something for my business", "help with content") or fits several different tasks about equally, and the user did not say what they want to make or do.\n- false whenever one task clearly fits, even if details such as style, length, audience or tool are missing.\nFit — set fit honestly, it is NOT the same as confidence:\n- "exact": one task directly does what the user wants to make or do.\n- "partial": the closest task is only adjacent or covers part of the request — typically the user names a specific engine, platform, domain or niche that no task is actually about, so the tools of that task would not really solve it.\n- "none": no task fits at all.\nWhen needsClarification is true OR fit is not "exact", list the 2-4 closest task ids in candidates, ordered by how much their tools could genuinely help with the request (most helpful first; the first one should be your taskId). Otherwise candidates must be an empty array. taskId is always your single best guess.\nBe concise.`;
 }
 
-async function classifyByLLM(query: string, tasks: Task[]): Promise<{ taskId: string; confidence: number; constraints: TaskConstraints } | null> {
+/** Kapatma anahtarı: AMBIGUITY_CLARIFY=off iken LLM "belirsiz" dese de tek görev seçilir (eski davranış). */
+function ambiguityEnabled(): boolean {
+  return process.env.AMBIGUITY_CLARIFY !== 'off';
+}
+
+export interface LLMClassification {
+  taskId: string;
+  confidence: number;
+  constraints: TaskConstraints;
+  /** LLM "belirsiz" dedi ve geçerli en az 2 aday verdi: sorulacak görevler, en olası önce. */
+  clarifyCandidates?: string[];
+  /** LLM'in bu işe yakın bulduğu görevler (belirsizlik kararından BAĞIMSIZ), katalogda ürünü olanlar, en olası önce. */
+  closest?: string[];
+  /** Seçilen görev isteği karşılıyor mu (LLM'in kendi değerlendirmesi). Geçersiz/eksikse yok. */
+  fit?: TaskFit;
+}
+
+/**
+ * LLM'in JSON cevabını doğrular (saf fonksiyon: ağ yok, testlerde doğrudan çağrılır).
+ * Geçersiz JSON ya da bilinmeyen taskId -> null (çağıran kural yedeğine düşer).
+ * `offerable`: sorulabilecek görevler (en az bir aktif ürünü olanlar); aday listesi bununla süzülür,
+ * böylece "ürünü olmayan" bir seçenek sunulmaz. Aday uydurması da aynı süzgeçten geçer.
+ */
+export function parseLLMClassification(
+  raw: string,
+  taskIds: readonly string[],
+  offerable: ReadonlySet<string>,
+  ambiguity: boolean = ambiguityEnabled()
+): LLMClassification | null {
+  let parsed: {
+    taskId?: unknown;
+    confidence?: unknown;
+    pricing?: unknown;
+    language?: unknown;
+    needsClarification?: unknown;
+    candidates?: unknown;
+    fit?: unknown;
+  };
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== 'object') return null;
+  if (typeof parsed.taskId !== 'string' || !taskIds.includes(parsed.taskId)) return null;
+
+  const constraints: TaskConstraints = {};
+  if (parsed.pricing === 'free' || parsed.pricing === 'freemium' || parsed.pricing === 'paid') {
+    constraints.pricing = parsed.pricing;
+  }
+  if (typeof parsed.language === 'string' && parsed.language.trim()) constraints.language = parsed.language.trim();
+
+  const confidence = typeof parsed.confidence === 'number' && Number.isFinite(parsed.confidence)
+    ? Math.max(0, Math.min(1, parsed.confidence))
+    : 0.6;
+
+  const out: LLMClassification = { taskId: parsed.taskId, confidence, constraints };
+  if (parsed.fit === 'exact' || parsed.fit === 'partial' || parsed.fit === 'none') out.fit = parsed.fit;
+  if (Array.isArray(parsed.candidates)) {
+    const closest = [...new Set(parsed.candidates.filter((c): c is string => typeof c === 'string'))]
+      .filter((id) => taskIds.includes(id) && offerable.has(id))
+      .slice(0, MAX_CANDIDATES);
+    if (closest.length > 0) out.closest = closest;
+  }
+
+  if (ambiguity && parsed.needsClarification === true && Array.isArray(parsed.candidates)) {
+    // En iyi tahmin de seçeneklerde olsun (model tutarsız verirse bile), tekrarsız, katalogda ürünü olanlar.
+    const ordered = [parsed.taskId, ...parsed.candidates.filter((c): c is string => typeof c === 'string')];
+    const unique = [...new Set(ordered)].filter((id) => taskIds.includes(id) && offerable.has(id)).slice(0, MAX_CANDIDATES);
+    if (unique.length >= 2) out.clarifyCandidates = unique;
+  }
+  return out;
+}
+
+async function classifyByLLM(query: string, tasks: Task[], offerable: ReadonlySet<string>): Promise<LLMClassification | null> {
   const taskIds = tasks.map((t) => t.id);
   try {
     const response = await openai.chat.completions.create({
@@ -123,16 +239,21 @@ async function classifyByLLM(query: string, tasks: Task[]): Promise<{ taskId: st
               confidence: { type: 'number', minimum: 0, maximum: 1 },
               pricing: { type: 'string', enum: [...PRICING_VALUES] },
               language: { type: 'string' },
+              needsClarification: { type: 'boolean' },
+              // minItems/maxItems bilerek yok: strict şemada desteği garanti değil, bir red tüm
+              // sınıflandırmayı bozar. Uzunluk parseLLMClassification'da doğrulanır.
+              candidates: { type: 'array', items: { type: 'string', enum: taskIds } },
+              fit: { type: 'string', enum: ['exact', 'partial', 'none'] },
             },
-            required: ['taskId', 'confidence', 'pricing', 'language'],
+            required: ['taskId', 'confidence', 'pricing', 'language', 'needsClarification', 'candidates', 'fit'],
             additionalProperties: false,
           },
         },
       },
       temperature: 0,
-      // Cevap 4 kısa alan: taskId, confidence, pricing, language. 200 fazlasıyla yeter;
-      // yine de kesilirse (finish_reason 'length') cevap kullanılmaz (parser.ts'teki gibi).
-      max_tokens: 200,
+      // Cevap 7 kısa alan (en çok 4 görev id'li aday listesi dahil) ~110 token tutar; 300 payı bol.
+      // Yine de kesilirse (finish_reason 'length') cevap kullanılmaz (parser.ts'teki gibi).
+      max_tokens: 300,
     });
 
     const choice = response.choices[0];
@@ -140,26 +261,7 @@ async function classifyByLLM(query: string, tasks: Task[]): Promise<{ taskId: st
     const content = choice?.message?.content;
     if (!content) return null;
 
-    const parsed = JSON.parse(typeof content === 'string' ? content : JSON.stringify(content)) as {
-      taskId?: unknown;
-      confidence?: unknown;
-      pricing?: unknown;
-      language?: unknown;
-    };
-
-    if (typeof parsed.taskId !== 'string' || !taskIds.includes(parsed.taskId)) return null;
-
-    const constraints: TaskConstraints = {};
-    if (parsed.pricing === 'free' || parsed.pricing === 'freemium' || parsed.pricing === 'paid') {
-      constraints.pricing = parsed.pricing;
-    }
-    if (typeof parsed.language === 'string' && parsed.language.trim()) constraints.language = parsed.language.trim();
-
-    const confidence = typeof parsed.confidence === 'number' && Number.isFinite(parsed.confidence)
-      ? Math.max(0, Math.min(1, parsed.confidence))
-      : 0.6;
-
-    return { taskId: parsed.taskId, confidence, constraints };
+    return parseLLMClassification(typeof content === 'string' ? content : JSON.stringify(content), taskIds, offerable);
   } catch (error) {
     console.error('[Task Classifier] LLM hatası:', error instanceof Error ? error.message : String(error));
     return null;
@@ -175,7 +277,8 @@ export async function classifyTask(query: string, options: ClassifyTaskOptions =
   const cached = useCache ? await getCachedTask(query) : null;
   if (cached) return cached;
 
-  const tasks = loadCatalog().tasks;
+  const catalog = loadCatalog();
+  const tasks = catalog.tasks;
   const scores = scoreTasks(query, tasks);
   const [best, second] = scores;
   const margin = best.score - (second?.score ?? 0);
@@ -193,18 +296,25 @@ export async function classifyTask(query: string, options: ClassifyTaskOptions =
       constraints: ruleConstraints,
     };
   } else if (options.allowLLM === false) {
-    result = { clarify: top3(scores) };
+    result = ruleFallback(query, scores, catalog);
   } else {
-    const llm = await classifyByLLM(query, tasks);
-    result = llm
-      ? {
-          taskId: llm.taskId,
-          confidence: llm.confidence,
-          source: 'llm',
-          alternatives: alternativesFrom(scores, llm.taskId),
-          constraints: Object.keys(llm.constraints).length > 0 ? llm.constraints : ruleConstraints,
-        }
-      : { clarify: top3(scores) };
+    const offerable = new Set(tasks.filter((t) => (catalog.productsByTask.get(t.id) ?? []).length > 0).map((t) => t.id));
+    const llm = await classifyByLLM(query, tasks, offerable);
+    if (llm?.clarifyCandidates) {
+      result = { clarify: llm.clarifyCandidates };
+    } else {
+      result = llm
+        ? {
+            taskId: llm.taskId,
+            confidence: llm.confidence,
+            source: 'llm',
+            alternatives: alternativesFrom(scores, llm.taskId),
+            constraints: Object.keys(llm.constraints).length > 0 ? llm.constraints : ruleConstraints,
+            ...(llm.fit ? { fit: llm.fit } : {}),
+            ...(llm.closest ? { closest: llm.closest } : {}),
+          }
+        : ruleFallback(query, scores, catalog);
+    }
   }
 
   if (useCache && !('clarify' in result)) await setCachedTask(query, result);

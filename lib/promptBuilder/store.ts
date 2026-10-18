@@ -10,30 +10,13 @@ export interface PromptSessionStore {
 
 const key = (id: string) => `ps:${id}`;
 
-/**
- * Kullanıcının ham mesajları (session.userMessages) oturumla birlikte saklansın mı?
- * Şimdilik HAYIR: mesajlar sadece o istekteki üretimde kullanılır, kayıttan önce
- * atılır (soru kartı cevabında ve iyileştirmede üretici yine `goal` ile çalışır).
- * Depolama sistemi hazır olunca true yapılır; o gün gizlilik metni
- * (lib/i18n/privacy.ts) ve docs/privacy-verification.md de güncellenmeli.
- */
-export const PERSIST_USER_MESSAGES = false;
-
-/** Depoya yazılacak hali: PERSIST_USER_MESSAGES kapalıysa userMessages atılır. */
-export function toStored(session: PromptSession, persistUserMessages = PERSIST_USER_MESSAGES): PromptSession {
-  if (persistUserMessages || !session.userMessages) return session;
-  const stored = { ...session };
-  delete stored.userMessages;
-  return stored;
-}
-
 export function kvPromptStore(): PromptSessionStore {
   return {
     async get(id) {
       return (await kv.get<PromptSession>(key(id))) ?? null;
     },
     async set(session) {
-      await kv.set(key(session.id), toStored(session), { ex: SESSION_TTL_SECONDS });
+      await kv.set(key(session.id), session, { ex: SESSION_TTL_SECONDS });
     },
   };
 }
@@ -48,7 +31,7 @@ export function memoryPromptStore(now: () => number = Date.now): PromptSessionSt
       return structuredClone(hit.session);
     },
     async set(session) {
-      map.set(session.id, { session: structuredClone(toStored(session)), expiresAt: now() + SESSION_TTL_SECONDS * 1000 });
+      map.set(session.id, { session: structuredClone(session), expiresAt: now() + SESSION_TTL_SECONDS * 1000 });
     },
     expire(id) {
       map.delete(id);

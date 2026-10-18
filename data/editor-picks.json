@@ -208,5 +208,155 @@
     },
     "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
     "date": "2026-09-28"
+  },
+  {
+    "taskId": "game.dev",
+    "productId": "rosebud-ai",
+    "reason": {
+      "en": "Creates playable games from text prompts; no coding required.",
+      "tr": "Metin istemlerinden oynanabilir oyun üretir; kod yazmak gerekmez."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "game.asset-art",
+    "productId": "scenario",
+    "reason": {
+      "en": "Generates images, textures and 3D models for game assets.",
+      "tr": "Oyun varlıkları için görsel, doku ve 3D model üretir."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "design.ui-prototype",
+    "productId": "figma-make",
+    "reason": {
+      "en": "Turns your ideas into a prototype inside Figma that you can polish and ship.",
+      "tr": "Fikirlerini Figma içinde prototipe çevirir; düzenleyip yayına alabilirsin."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "sales.prospecting",
+    "productId": "apollo-io",
+    "reason": {
+      "en": "Finds prospects in a contact and company database, with verified emails and phones and outreach sequences.",
+      "tr": "Kişi ve şirket veritabanından potansiyel müşteri bulur; doğrulanmış e-posta ve telefon ile erişim dizileri sunar."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "support.chatbot",
+    "productId": "tidio",
+    "reason": {
+      "en": "AI customer service chatbot software.",
+      "tr": "Müşteri hizmetleri için yapay zekâlı sohbet botu yazılımı."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "finance.bookkeeping",
+    "productId": "quickbooks",
+    "reason": {
+      "en": "Online accounting software with AI features such as expense categorization and AI chat.",
+      "tr": "Çevrimiçi muhasebe yazılımı; gider sınıflandırma ve yapay zekâ sohbeti gibi özellikleri var."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "marketing.seo",
+    "productId": "surfer-seo",
+    "reason": {
+      "en": "Helps you write and optimize content for search engines and AI search.",
+      "tr": "Arama motorları ve yapay zekâ aramaları için içerik yazmana ve optimize etmene yardım eder."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "project.management",
+    "productId": "asana",
+    "reason": {
+      "en": "Work management platform for planning and tracking tasks and projects, with AI Teammates and AI Studio.",
+      "tr": "Görev ve projeleri planlayıp takip etmek için iş yönetimi platformu; AI Teammates ve AI Studio özellikleri var."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "education.tutor",
+    "productId": "chatgpt-gpt-5",
+    "reason": {
+      "en": "Study mode works through problems step by step instead of just giving the answer.",
+      "tr": "Çalışma modu (study mode), soruyu doğrudan cevaplamak yerine adım adım çözdürerek öğrenmeyi destekler."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "education.language-learning",
+    "productId": "speak",
+    "reason": {
+      "en": "Gives real conversational practice with AI, without a live tutor.",
+      "tr": "Canlı öğretmen olmadan yapay zekâyla gerçek konuşma pratiği yaptırır."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "agent.browser",
+    "productId": "dia-browser",
+    "reason": {
+      "en": "Browser with an AI assistant that lets you chat with your tabs.",
+      "tr": "Yapay zekâ asistanı olan ve sekmelerinle sohbet etmeni sağlayan tarayıcı."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "productivity.inbox",
+    "productId": "fyxer",
+    "reason": {
+      "en": "Organizes your inbox, drafts replies in your tone and takes meeting notes.",
+      "tr": "Gelen kutunu düzenler, senin tonunda yanıt taslağı yazar ve toplantı notu alır."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "productivity.planning",
+    "productId": "reclaim",
+    "reason": {
+      "en": "AI agents that schedule work, meetings and life automatically.",
+      "tr": "Çalışma, toplantı ve günlük işleri otomatik zamanlayan yapay zekâ ajanları."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "productivity.notes",
+    "productId": "mem",
+    "reason": {
+      "en": "Note app (with Mem Agent) that ties together notes, meetings and ideas with the context to act.",
+      "tr": "Notları, toplantıları ve fikirleri bağlam içinde birleştiren, Mem Agent’lı not uygulaması."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
+  },
+  {
+    "taskId": "career.resume",
+    "productId": "rezi",
+    "reason": {
+      "en": "Builds, improves and tailors your resume to a job posting with AI.",
+      "tr": "Özgeçmişi yapay zekâyla hazırlar, geliştirir ve iş ilanına göre uyarlar."
+    },
+    "by": "RouteAI editör (taslak, Ferit onayı bekliyor)",
+    "date": "2026-10-18"
   }
 ]

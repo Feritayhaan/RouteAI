@@ -1,17 +1,32 @@
-# Aylık fiyat kontrolü: aktif ürünlerin pricingUrl sayfaları -> products.json
-# önerileri + data/price-report.md. Fark varsa prices/<tarih> dalına PR.
+# Haftalık fiyat kontrolü: doğrulaması 21 günden eski (ya da hiç yapılmamış)
+# aktif ürünlerin pricingUrl sayfaları -> products.json önerileri +
+# data/price-report.md. Fark varsa prices/auto dalındaki PR güncellenir.
 # priceCheckedAt sadece PR merge edilince güncellenmiş sayılır.
 #
-# Secret: OPENAI_API_KEY (yoksa sadece "pricingUrl yok" raporu).
+# Neden haftalık: fiyat 60 günden eskiyse arayüz tutarı göstermez. Aylık koşu
+# tek bir başarısız koşuda 30 gün pay bırakıyordu; haftalık koşuda başarısız
+# bir koşu hemen ertesi hafta telafi edilir. Taze ürüne bakılmadığı için maliyet
+# düşük kalır.
+#
+# Kırmızı biten iş = bir şey yolunda değil (anahtar yok, siteler engelliyor,
+# sayfa yapıları değişti). Rapor yine de iş özetine yazılır ve varsa PR açılır.
+#
+# Secret: OPENAI_API_KEY (zorunlu; yoksa iş kırmızı biter).
 # Settings > Actions > "Allow GitHub Actions to create and approve pull requests" açık olmalı.
+# Elle koşu: Actions > check-prices > Run workflow (--all için "tümü" kutusu).
 # Sadece GitHub'ın kendi action'ları kullanılıyor.
 
 name: check-prices
 
 on:
   schedule:
-    - cron: '0 5 1 * *'
+    - cron: '0 5 * * 1'
   workflow_dispatch:
+    inputs:
+      all:
+        description: 'Yaşına bakmadan tüm aktif ürünleri kontrol et'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -33,12 +48,26 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Fiyatları kontrol et
+        id: check
+        continue-on-error: true # kırmızı karar son adımda uygulanır; önce rapor ve PR çıksın
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: npm run check:prices
+          ALL: ${{ github.event.inputs.all }}
+        run: |
+          if [ "$ALL" = "true" ]; then
+            npm run check:prices -- --all
+          else
+            npm run check:prices
+          fi
+      - name: Raporu iş özetine yaz
+        if: always()
+        run: |
+          if [ -f data/price-report.md ]; then
+            cat data/price-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Kataloğu doğrula
         run: npm run validate:catalog
-      - name: Fark varsa PR aç
+      - name: Fark varsa PR aç ya da güncelle
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -47,12 +76,23 @@ jobs:
             exit 0
           fi
           DATE=$(date -u +%Y-%m-%d)
-          BRANCH="prices/${DATE}"
+          # Tek, sabit dal: merge edilmemiş PR varsa yenisi açılmaz, mevcut olan güncellenir.
+          BRANCH="prices/auto"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add data/products.json data/price-report.md
-          git commit -m "prices: aylık kontrol ${DATE}"
-          git push --force-with-lease origin "$BRANCH"
-          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
-            --title "prices: aylık kontrol ${DATE}" --body-file data/price-report.md
+          git commit -m "prices: haftalık kontrol ${DATE}"
+          git push --force origin "$BRANCH"
+          BASE="${{ github.event.repository.default_branch }}"
+          if gh pr list --head "$BRANCH" --base "$BASE" --state open --json number --jq '.[0].number' | grep -q '[0-9]'; then
+            gh pr edit "$BRANCH" --title "prices: haftalık kontrol ${DATE}" --body-file data/price-report.md
+          else
+            gh pr create --base "$BASE" --head "$BRANCH" \
+              --title "prices: haftalık kontrol ${DATE}" --body-file data/price-report.md
+          fi
+      - name: Kontrol başarısızsa işi kırmızı bitir
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::error::Fiyat kontrolü başarısız (anahtar yok ya da kontrol edilen ürünlerin çoğu okunamadı). Ayrıntı: iş özeti."
+          exit 1

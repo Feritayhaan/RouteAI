@@ -13,7 +13,11 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/creative_writing"
+      },
+      {
+        "source": "lmarena",
+        "key": "text/longer_query"
       },
       {
         "source": "artificialanalysis",
@@ -90,7 +94,7 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/creative_writing"
       },
       {
         "source": "artificialanalysis",
@@ -178,7 +182,7 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/instruction_following"
       },
       {
         "source": "artificialanalysis",
@@ -255,7 +259,11 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/longer_query"
+      },
+      {
+        "source": "lmarena",
+        "key": "text/instruction_following"
       },
       {
         "source": "artificialanalysis",
@@ -330,7 +338,7 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/non_english"
       },
       {
         "source": "artificialanalysis",
@@ -404,7 +412,7 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/instruction_following"
       },
       {
         "source": "artificialanalysis",
@@ -447,7 +455,7 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text"
+        "key": "text/multi_turn"
       },
       {
         "source": "artificialanalysis",
@@ -913,7 +921,11 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text_to_image"
+        "key": "text_to_image/text_rendering"
+      },
+      {
+        "source": "lmarena",
+        "key": "text_to_image/commercial_design"
       },
       {
         "source": "artificialanalysis",
@@ -1064,7 +1076,11 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text_to_image"
+        "key": "text_to_image/photorealistic"
+      },
+      {
+        "source": "lmarena",
+        "key": "text_to_image/commercial_design"
       },
       {
         "source": "artificialanalysis",
@@ -1241,7 +1257,11 @@
     "benchmark": [
       {
         "source": "lmarena",
-        "key": "text_to_image"
+        "key": "text_to_image/commercial_design"
+      },
+      {
+        "source": "lmarena",
+        "key": "text_to_image/text_rendering"
       },
       {
         "source": "artificialanalysis",
@@ -2504,6 +2524,1043 @@
         "text to 3d",
         "3d object generation",
         "3d model"
+      ]
+    }
+  },
+  {
+    "id": "game.dev",
+    "label": {
+      "tr": "Oyun geliştirme",
+      "en": "Game development"
+    },
+    "description": {
+      "tr": "Oyun yapma: yapay zekâ asistanıyla oyun prototipi ve oyun kodu üretme (bir oyun motorunda ya da tarayıcıda).",
+      "en": "Making a game: build prototypes and write game code with an AI assistant, in an engine or in the browser."
+    },
+    "modality": "code",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "engine",
+        "question": {
+          "tr": "Bir oyun motoru kullanıyor musun?",
+          "en": "Are you using a game engine?"
+        },
+        "options": [
+          {
+            "id": "unity",
+            "label": {
+              "tr": "Unity kullanıyorum",
+              "en": "I use Unity"
+            }
+          },
+          {
+            "id": "no-engine",
+            "label": {
+              "tr": "Motor yok, tarayıcıda oynansın",
+              "en": "No engine, playable in the browser"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "code"
+    ],
+    "keywords": {
+      "tr": [
+        "oyun geliştir",
+        "oyun yap",
+        "oyun motoru",
+        "oyun prototipi",
+        "oyun kodu",
+        "oyun tasarla",
+        "oyun projesi",
+        "unity",
+        "unreal",
+        "godot",
+        "roblox",
+        "gamedev"
+      ],
+      "en": [
+        "game development",
+        "make a game",
+        "build a game",
+        "game engine",
+        "game prototype",
+        "game code",
+        "unity",
+        "unreal engine",
+        "godot",
+        "roblox",
+        "gamedev",
+        "game dev"
+      ]
+    }
+  },
+  {
+    "id": "game.asset-art",
+    "label": {
+      "tr": "Oyun görseli ve varlıkları",
+      "en": "Game art and assets"
+    },
+    "description": {
+      "tr": "Oyun görseli üretme: sprite, karakter, doku, karo seti ve oyun arayüzü.",
+      "en": "Making game art: sprites, characters, textures, tilesets and UI for a game."
+    },
+    "modality": "image",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "art-style",
+        "question": {
+          "tr": "Hangi görsel stilde?",
+          "en": "Which art style?"
+        },
+        "options": [
+          {
+            "id": "pixel",
+            "label": {
+              "tr": "Piksel sanat",
+              "en": "Pixel art"
+            }
+          },
+          {
+            "id": "other",
+            "label": {
+              "tr": "Başka bir stil",
+              "en": "Another style"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "image"
+    ],
+    "keywords": {
+      "tr": [
+        "oyun görseli",
+        "oyun karakteri",
+        "oyun varlığı",
+        "oyun varlıkları",
+        "oyun assetleri",
+        "oyun arka planı",
+        "oyun ikonları",
+        "oyun dokusu",
+        "sprite",
+        "piksel sanat",
+        "pixel art",
+        "tileset"
+      ],
+      "en": [
+        "game asset",
+        "game art",
+        "game character art",
+        "game textures",
+        "game icons",
+        "sprite sheet",
+        "sprites",
+        "pixel art",
+        "tileset",
+        "2d game assets",
+        "character sprite"
+      ]
+    }
+  },
+  {
+    "id": "design.ui-prototype",
+    "label": {
+      "tr": "Arayüz tasarımı ve prototip",
+      "en": "UI design and prototype"
+    },
+    "description": {
+      "tr": "Uygulama ya da web sitesi ekranlarını tasarlayıp tıklanabilir ya da çalışan prototipe çevirme.",
+      "en": "Designing app or website screens and turning them into a clickable or working prototype."
+    },
+    "modality": "code",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "output",
+        "question": {
+          "tr": "Sonuç ne olsun?",
+          "en": "What should you get?"
+        },
+        "options": [
+          {
+            "id": "design",
+            "label": {
+              "tr": "Tasarım ve prototip",
+              "en": "A design and prototype"
+            }
+          },
+          {
+            "id": "code",
+            "label": {
+              "tr": "Çalışan kod",
+              "en": "Working code"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "code",
+      "image"
+    ],
+    "keywords": {
+      "tr": [
+        "arayüz",
+        "arayüz tasarla",
+        "arayüz tasarımı",
+        "uygulama arayüzü",
+        "ui tasarım",
+        "ui prototip",
+        "ux tasarım",
+        "ekran tasarımı",
+        "uygulama ekranları",
+        "wireframe",
+        "ui mockup",
+        "uygulama prototipi",
+        "figma"
+      ],
+      "en": [
+        "user interface",
+        "ui design",
+        "ui prototype",
+        "interface design",
+        "ux design",
+        "screen design",
+        "app screens",
+        "design an app",
+        "design a ui",
+        "wireframe",
+        "ui mockup",
+        "app mockup",
+        "app prototype",
+        "figma"
+      ]
+    }
+  },
+  {
+    "id": "sales.prospecting",
+    "label": {
+      "tr": "Müşteri adayı bulma",
+      "en": "Sales prospecting"
+    },
+    "description": {
+      "tr": "Potansiyel müşteri bulma ve onlara ulaşma (müşteri adayı listeleri, soğuk e-posta).",
+      "en": "Finding potential customers and reaching out to them (lead lists, cold email)."
+    },
+    "modality": "automation",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "goal",
+        "question": {
+          "tr": "Önce ne lazım?",
+          "en": "What do you need first?"
+        },
+        "options": [
+          {
+            "id": "find-leads",
+            "label": {
+              "tr": "Müşteri adayı listesi",
+              "en": "A list of leads"
+            }
+          },
+          {
+            "id": "outreach",
+            "label": {
+              "tr": "Toplu e-posta ile ulaşma",
+              "en": "Email outreach at scale"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "data"
+    ],
+    "keywords": {
+      "tr": [
+        "potansiyel müşteri",
+        "müşteri adayı",
+        "satış prospeksiyonu",
+        "lead bul",
+        "lead listesi",
+        "soğuk e-posta",
+        "soğuk eposta",
+        "soğuk mail",
+        "outbound satış",
+        "b2b müşteri",
+        "satış erişimi"
+      ],
+      "en": [
+        "lead generation",
+        "find leads",
+        "sales prospecting",
+        "prospecting",
+        "cold email",
+        "cold outreach",
+        "b2b leads",
+        "outbound sales",
+        "sales outreach",
+        "prospect list"
+      ]
+    }
+  },
+  {
+    "id": "support.chatbot",
+    "label": {
+      "tr": "Müşteri destek botu",
+      "en": "Customer support bot"
+    },
+    "description": {
+      "tr": "Sitene ya da destek sistemine müşteri sorularını yanıtlayan yapay zekâ ajanı koyma.",
+      "en": "Putting an AI agent on your site or helpdesk to answer customer questions."
+    },
+    "modality": "automation",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "where",
+        "question": {
+          "tr": "Bot nerede çalışsın?",
+          "en": "Where should the bot run?"
+        },
+        "options": [
+          {
+            "id": "website",
+            "label": {
+              "tr": "Web sitemde",
+              "en": "On my website"
+            }
+          },
+          {
+            "id": "helpdesk",
+            "label": {
+              "tr": "Mevcut destek sistemimde",
+              "en": "In my existing helpdesk"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ],
+    "keywords": {
+      "tr": [
+        "müşteri destek botu",
+        "müşteri destek chatbot",
+        "müşteri hizmetleri botu",
+        "destek chatbot",
+        "sitem için chatbot",
+        "web siteme chatbot",
+        "canlı destek",
+        "sss botu",
+        "destek ajanı",
+        "müşteri sorularını yanıtla",
+        "müşteri desteği",
+        "müşteri hizmetleri"
+      ],
+      "en": [
+        "customer support bot",
+        "customer service chatbot",
+        "support chatbot",
+        "chatbot for my",
+        "chatbot for the website",
+        "customer support automation",
+        "ai support agent",
+        "live chat",
+        "faq bot",
+        "helpdesk",
+        "answer customer questions",
+        "customer support",
+        "customer service"
+      ]
+    }
+  },
+  {
+    "id": "finance.bookkeeping",
+    "label": {
+      "tr": "Muhasebe ve gider takibi",
+      "en": "Bookkeeping and expenses"
+    },
+    "description": {
+      "tr": "Küçük işletme için muhasebe: fatura, gider takibi, banka hareketlerini eşleştirme.",
+      "en": "Bookkeeping and accounting for a small business: invoices, expenses, bank reconciliation."
+    },
+    "modality": "data",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "need",
+        "question": {
+          "tr": "En çok neye ihtiyacın var?",
+          "en": "What do you need most?"
+        },
+        "options": [
+          {
+            "id": "invoices-expenses",
+            "label": {
+              "tr": "Fatura ve gider takibi",
+              "en": "Invoices and expense tracking"
+            }
+          },
+          {
+            "id": "full-books",
+            "label": {
+              "tr": "Tam muhasebe defteri",
+              "en": "Full books"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "data"
+    ],
+    "keywords": {
+      "tr": [
+        "muhasebe",
+        "ön muhasebe",
+        "muhasebe yazılımı",
+        "gider takibi",
+        "gelir gider takibi",
+        "fatura kes",
+        "banka hareketlerini eşleştir",
+        "bookkeeping",
+        "küçük işletme muhasebesi"
+      ],
+      "en": [
+        "bookkeeping",
+        "accounting software",
+        "small business accounting",
+        "expense tracking",
+        "track expenses",
+        "bank reconciliation",
+        "reconcile transactions",
+        "invoicing software",
+        "send invoices",
+        "categorize expenses"
+      ]
+    }
+  },
+  {
+    "id": "marketing.seo",
+    "label": {
+      "tr": "SEO içeriği",
+      "en": "SEO content"
+    },
+    "description": {
+      "tr": "Arama motorlarında üst sıraya çıkması için içerik yazma ve optimize etme.",
+      "en": "Writing and optimizing content so it ranks in search engines."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "need",
+        "question": {
+          "tr": "Ne yapmak istiyorsun?",
+          "en": "What do you want to do?"
+        },
+        "options": [
+          {
+            "id": "write",
+            "label": {
+              "tr": "Yeni içerik yazmak",
+              "en": "Write new content"
+            }
+          },
+          {
+            "id": "optimize",
+            "label": {
+              "tr": "Mevcut içeriği iyileştirmek",
+              "en": "Improve existing content"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text",
+      "document"
+    ],
+    "keywords": {
+      "tr": [
+        "seo",
+        "seo içeriği",
+        "seo uyumlu",
+        "anahtar kelime araştırması",
+        "arama motoru optimizasyonu",
+        "google'da üst sıra",
+        "google sıralaması",
+        "içerik optimizasyonu",
+        "organik trafik"
+      ],
+      "en": [
+        "seo",
+        "seo content",
+        "seo article",
+        "keyword research",
+        "search engine optimization",
+        "rank on google",
+        "google ranking",
+        "content optimization",
+        "organic traffic"
+      ]
+    }
+  },
+  {
+    "id": "project.management",
+    "label": {
+      "tr": "Proje ve görev yönetimi",
+      "en": "Project and task management"
+    },
+    "description": {
+      "tr": "Kendin ya da ekibin için görev ve projeleri planlama ve takip etme.",
+      "en": "Planning and tracking tasks and projects for yourself or a team."
+    },
+    "modality": "automation",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "team",
+        "question": {
+          "tr": "Kimin için?",
+          "en": "Who is it for?"
+        },
+        "options": [
+          {
+            "id": "solo",
+            "label": {
+              "tr": "Sadece ben",
+              "en": "Just me"
+            }
+          },
+          {
+            "id": "team",
+            "label": {
+              "tr": "Ekibim",
+              "en": "My team"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "data"
+    ],
+    "keywords": {
+      "tr": [
+        "proje yönetimi aracı",
+        "proje yönetimi uygulaması",
+        "proje yönetim aracı",
+        "görev yönetimi",
+        "proje takibi",
+        "görev takibi",
+        "ekip görevleri",
+        "iş yönetimi",
+        "kanban",
+        "sprint planı",
+        "proje planla"
+      ],
+      "en": [
+        "project management software",
+        "project management app",
+        "task management",
+        "project tracking",
+        "track tasks",
+        "team tasks",
+        "work management",
+        "manage a project",
+        "project planning",
+        "kanban",
+        "sprint planning"
+      ]
+    }
+  },
+  {
+    "id": "education.tutor",
+    "label": {
+      "tr": "Yapay zekâ öğretmen",
+      "en": "AI tutor"
+    },
+    "description": {
+      "tr": "Yapay zekâ öğretmenle bir konuyu öğrenme ya da ödevi adım adım çözme.",
+      "en": "Learning a subject or working through homework step by step with an AI tutor."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "subject",
+        "question": {
+          "tr": "Hangi alan?",
+          "en": "Which subject?"
+        },
+        "options": [
+          {
+            "id": "math",
+            "label": {
+              "tr": "Matematik",
+              "en": "Math"
+            }
+          },
+          {
+            "id": "other",
+            "label": {
+              "tr": "Başka bir ders",
+              "en": "Another subject"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ],
+    "keywords": {
+      "tr": [
+        "ders çalış",
+        "ödev yardımı",
+        "ödevime yardım",
+        "konuyu anlat",
+        "özel ders",
+        "yapay zeka öğretmen",
+        "adım adım öğret",
+        "sınava hazırlan",
+        "matematik problemi çöz",
+        "bana öğret"
+      ],
+      "en": [
+        "homework help",
+        "help with my homework",
+        "homework helper",
+        "ai tutor",
+        "help me study",
+        "tutor me",
+        "explain step by step",
+        "exam prep",
+        "teach me",
+        "study for an exam",
+        "solve a math problem"
+      ]
+    }
+  },
+  {
+    "id": "education.language-learning",
+    "label": {
+      "tr": "Yabancı dil öğrenme",
+      "en": "Language learning"
+    },
+    "description": {
+      "tr": "Yapay zekâyla konuşarak yabancı dil öğrenme ve pratik yapma.",
+      "en": "Learning and practicing a foreign language by talking with AI."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "goal",
+        "question": {
+          "tr": "Asıl hedefin ne?",
+          "en": "What is your main goal?"
+        },
+        "options": [
+          {
+            "id": "speaking",
+            "label": {
+              "tr": "Konuşma pratiği",
+              "en": "Speaking practice"
+            }
+          },
+          {
+            "id": "general",
+            "label": {
+              "tr": "Genel dil öğrenme",
+              "en": "General learning"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ],
+    "keywords": {
+      "tr": [
+        "dil öğren",
+        "yabancı dil öğren",
+        "ingilizce öğren",
+        "almanca öğren",
+        "ispanyolca öğren",
+        "fransızca öğren",
+        "konuşma pratiği",
+        "dil pratiği",
+        "telaffuz çalış",
+        "dil öğrenme"
+      ],
+      "en": [
+        "learn a language",
+        "language learning",
+        "learn english",
+        "learn spanish",
+        "learn french",
+        "learn german",
+        "speaking practice",
+        "practice conversation",
+        "pronunciation practice",
+        "language app"
+      ]
+    }
+  },
+  {
+    "id": "agent.browser",
+    "label": {
+      "tr": "Yapay zekâlı tarayıcı",
+      "en": "AI browser"
+    },
+    "description": {
+      "tr": "Sekmelerinle sohbet eden ya da senin yerine web’de işlem yapan, yapay zekâsı içinde tarayıcı.",
+      "en": "A browser with built-in AI that chats with your tabs or acts on the web for you."
+    },
+    "modality": "automation",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "need",
+        "question": {
+          "tr": "Ne istiyorsun?",
+          "en": "What do you want?"
+        },
+        "options": [
+          {
+            "id": "chat-with-pages",
+            "label": {
+              "tr": "Sayfalarla sohbet",
+              "en": "Chat with pages"
+            }
+          },
+          {
+            "id": "do-tasks",
+            "label": {
+              "tr": "Benim yerime işlem yapsın",
+              "en": "Do tasks for me"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text",
+      "data"
+    ],
+    "keywords": {
+      "tr": [
+        "yapay zeka tarayıcı",
+        "yapay zekalı tarayıcı",
+        "ai tarayıcı",
+        "ajan tarayıcı",
+        "tarayıcı ajanı",
+        "akıllı tarayıcı",
+        "sekmelerimle sohbet",
+        "tarayıcıda otomatik"
+      ],
+      "en": [
+        "ai browser",
+        "agentic browser",
+        "browser agent",
+        "ai web browser",
+        "ai-powered browser",
+        "browser with ai",
+        "chat with tabs",
+        "browse the web for me",
+        "browser that can act"
+      ]
+    }
+  },
+  {
+    "id": "productivity.inbox",
+    "label": {
+      "tr": "E-posta kutusu yönetimi",
+      "en": "Inbox management"
+    },
+    "description": {
+      "tr": "E-posta kutusunu toparlama: gelen kutusunu düzenleme, yanıt taslağı hazırlama, toplantı notu.",
+      "en": "Taming your email: sorting the inbox, drafting replies, meeting notes."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "need",
+        "question": {
+          "tr": "En çok neyi çözmek istiyorsun?",
+          "en": "What do you most want to fix?"
+        },
+        "options": [
+          {
+            "id": "sort",
+            "label": {
+              "tr": "Gelen kutusunu düzenlemek",
+              "en": "Sorting the inbox"
+            }
+          },
+          {
+            "id": "reply",
+            "label": {
+              "tr": "Yanıtları hızlı yazmak",
+              "en": "Writing replies faster"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text"
+    ],
+    "keywords": {
+      "tr": [
+        "gelen kutusu",
+        "gelen kutum",
+        "e-posta asistanı",
+        "eposta asistanı",
+        "mail asistanı",
+        "e-posta kutusunu yönet",
+        "inbox",
+        "inbox zero",
+        "e-postaları sınıflandır",
+        "yanıt taslağı hazırla"
+      ],
+      "en": [
+        "inbox",
+        "email assistant",
+        "inbox management",
+        "manage my email",
+        "inbox zero",
+        "email triage",
+        "organize my inbox",
+        "clean up my inbox",
+        "draft replies"
+      ]
+    }
+  },
+  {
+    "id": "productivity.planning",
+    "label": {
+      "tr": "Takvim ve günlük planlama",
+      "en": "Calendar and daily planning"
+    },
+    "description": {
+      "tr": "Günü planlama: yapay zekâ görev ve toplantıları takvimine yerleştirir.",
+      "en": "Planning your day: AI schedules tasks and meetings on your calendar."
+    },
+    "modality": "automation",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "need",
+        "question": {
+          "tr": "Neye odaklanıyorsun?",
+          "en": "What do you focus on?"
+        },
+        "options": [
+          {
+            "id": "tasks",
+            "label": {
+              "tr": "Görevleri takvime yerleştirmek",
+              "en": "Placing tasks on the calendar"
+            }
+          },
+          {
+            "id": "meetings",
+            "label": {
+              "tr": "Toplantı zamanlamak",
+              "en": "Scheduling meetings"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "data"
+    ],
+    "keywords": {
+      "tr": [
+        "günümü planla",
+        "takvim asistanı",
+        "takvimimi planla",
+        "toplantı zamanla",
+        "toplantıları planla",
+        "zaman yönetimi",
+        "zaman bloklama",
+        "görevleri takvime",
+        "günlük plan",
+        "takvim yapay zeka"
+      ],
+      "en": [
+        "plan my day",
+        "calendar assistant",
+        "schedule meetings",
+        "time blocking",
+        "time management",
+        "ai calendar",
+        "daily planner",
+        "schedule my tasks",
+        "calendar scheduling",
+        "auto-schedule"
+      ]
+    }
+  },
+  {
+    "id": "productivity.notes",
+    "label": {
+      "tr": "Not alma ve bilgi yönetimi",
+      "en": "Notes and knowledge"
+    },
+    "description": {
+      "tr": "Not alma ve kaydettiğin her şeyin arasından cevap bulma.",
+      "en": "Taking notes and finding answers across everything you saved."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "style",
+        "question": {
+          "tr": "Nasıl kullanacaksın?",
+          "en": "How will you use it?"
+        },
+        "options": [
+          {
+            "id": "search",
+            "label": {
+              "tr": "Notlarımda soru sormak",
+              "en": "Ask questions about my notes"
+            }
+          },
+          {
+            "id": "write",
+            "label": {
+              "tr": "Not yazmak ve düzenlemek",
+              "en": "Write and edit notes"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "text",
+      "document"
+    ],
+    "keywords": {
+      "tr": [
+        "not al",
+        "not tutma",
+        "not uygulaması",
+        "not defteri",
+        "ikinci beyin",
+        "notlarımda ara",
+        "notlarımı düzenle",
+        "notlarım arasında",
+        "kişisel bilgi yönetimi"
+      ],
+      "en": [
+        "take notes",
+        "note taking",
+        "note-taking",
+        "notes app",
+        "second brain",
+        "personal knowledge management",
+        "organize my notes",
+        "search my notes",
+        "note app"
+      ]
+    }
+  },
+  {
+    "id": "career.resume",
+    "label": {
+      "tr": "Özgeçmişi ilana göre uyarlama",
+      "en": "Tailoring a resume to a job"
+    },
+    "description": {
+      "tr": "İş başvurusu için özgeçmişi (CV) iş ilanına göre geliştirme ve uyarlama.",
+      "en": "Improving and tailoring a resume (CV) for a job application."
+    },
+    "modality": "text",
+    "benchmark": [],
+    "slots": [
+      {
+        "id": "need",
+        "question": {
+          "tr": "Ne lazım?",
+          "en": "What do you need?"
+        },
+        "options": [
+          {
+            "id": "tailor",
+            "label": {
+              "tr": "Var olan özgeçmişi ilana göre uyarlamak",
+              "en": "Tailor an existing resume to a posting"
+            }
+          },
+          {
+            "id": "build",
+            "label": {
+              "tr": "Sıfırdan özgeçmiş hazırlamak",
+              "en": "Build one from scratch"
+            }
+          }
+        ],
+        "critical": false
+      }
+    ],
+    "outputTypes": [
+      "document",
+      "text"
+    ],
+    "keywords": {
+      "tr": [
+        "iş başvurusu",
+        "ats uyumlu",
+        "iş ilanına göre",
+        "özgeçmişimi geliştir",
+        "özgeçmişimi iyileştir",
+        "özgeçmişimi uyarla",
+        "cvmi geliştir",
+        "cvmi iyileştir",
+        "iş ilanına uygun"
+      ],
+      "en": [
+        "job application",
+        "ats-friendly",
+        "ats friendly",
+        "tailor my resume",
+        "improve my resume",
+        "resume for a job",
+        "job posting",
+        "apply for jobs",
+        "applicant tracking"
       ]
     }
   }

@@ -1,5 +1,5 @@
 // Prompt oturumu akışı:
-//   başlat: oturum -> extract -> plan -> (giriş aşırı belirsizse soru kartı) ya da (generate -> validate -> PromptCard)
+//   başlat: oturum -> extract -> plan -> (soru kartı) ya da (generate -> validate -> PromptCard)
 //   cevap:  soru kartı cevapları -> generate -> validate -> PromptCard
 //   iyileştir: hazır buton | varsayım değişikliği | serbest talimat -> yeni versiyon
 // Her sonuç oturuma yeni versiyon olarak eklenir. Oturum başına en fazla
@@ -10,9 +10,9 @@ import type { PromptCard, PromptQuestionCard } from '../agent/cards';
 import type { Guide } from './guideSchema';
 import type { JsonLLM } from './llm';
 import type { PromptSessionStore } from './store';
-import { extractSlots, type Extraction } from './extract';
+import { extractSlots } from './extract';
 import { resolveGuideId } from './fallback';
-import { applyAnswers, displayValue, filledBy, planSlots, SLOT_VALUE_MAX } from './plan';
+import { applyAnswers, filledBy, planSlots, SLOT_VALUE_MAX } from './plan';
 import { generatePrompt } from './generate';
 import { validateWithRepair } from './validate';
 import { MAX_REFINEMENTS, type PromptSession, type PromptVersion, type SlotState } from './types';
@@ -31,41 +31,8 @@ export interface PromptDeps {
 
 export type PromptError = 'unknown_product' | 'no_guide' | 'expired' | 'refine_limit' | 'unknown_refinement' | 'invalid' | 'no_pending_question';
 export type PromptResult =
-  | { card: PromptCard | PromptQuestionCard; tokens: number; session: PromptSession; diagnostics?: PromptDiagnostics }
+  | { card: PromptCard | PromptQuestionCard; tokens: number; session: PromptSession }
   | { error: PromptError; tokens: number };
-
-/**
- * Sadece startPromptSession: soru kartı kararının gerekçesi (eval:prompts).
- * Kullanıcı alıntısı içerir; HTTP yanıtına, depoya ve loga girmez (http.ts sadece kartı döner).
- */
-export interface PromptDiagnostics {
-  isBroadGoal: boolean;
-  evidence: Extraction['evidence'];
-}
-
-/** Üreticiye giden kullanıcı mesajları: en fazla bu kadar mesaj ve toplam karakter (en yeniler korunur). */
-export const USER_MESSAGES_MAX = 6;
-export const USER_MESSAGES_CHARS = 2000;
-
-/**
- * Konuşmadaki kullanıcı mesajları (asistan mesajları değil), eskiden yeniye.
- * Tek mesaj amaçla aynıysa (/api/prompt/start) boş: goal zaten o metin.
- */
-export function userMessagesFrom(conversation: { role: 'user' | 'assistant'; content: string }[], goal = ''): string[] {
-  const out: string[] = [];
-  let total = 0;
-  for (let i = conversation.length - 1; i >= 0 && out.length < USER_MESSAGES_MAX; i--) {
-    const m = conversation[i];
-    if (m.role !== 'user') continue;
-    const room = USER_MESSAGES_CHARS - total;
-    if (room <= 0) break;
-    const text = m.content.trim().slice(0, room);
-    if (!text) continue;
-    out.unshift(text);
-    total += text.length;
-  }
-  return out.length === 1 && out[0] === goal.trim() ? [] : out;
-}
 
 function context(deps: PromptDeps, productId: string) {
   const product = deps.products.find((p) => p.id === productId && p.status === 'active');
@@ -107,11 +74,8 @@ export function toPromptCard(session: PromptSession, guide: Guide, product: Prod
       const slot = guide.slots.find((s) => s.id === a.slotId)!;
       // Girişe göre üretilmiş soru varsa "Değiştir" aynı soruyu ve seçenekleri gösterir.
       const dynamic = session.questionOverrides?.[a.slotId];
-      const state = session.slots[a.slotId];
       return {
         ...a,
-        // Kullanıcı dilinde: Türkçe ekranda "a beginner" gibi ham seçenek değeri görünmez.
-        value: displayValue(slot, a.value, locale, { label: state?.value === a.value ? state.label : undefined, dynamic }),
         question: dynamic?.question ?? slot.question[locale],
         options: dynamic
           ? dynamic.options.map((o) => ({ id: o.id, label: o.label, value: o.value }))
@@ -147,25 +111,13 @@ function toQuestionCard(session: PromptSession, guide: Guide, product: Product):
   };
 }
 
-/**
- * Yeni versiyonun nedeni. changedSlots: iyileştirmede kullanıcının az önce
- * değiştirdiği slotlar; üreticiye ayrıca söylenir (2026-10-14 eval, cursor-full:
- * "Yeni bağımlılık yok" butonu yansımadı, model farkı bilmediği için önceki
- * promptteki dosya yolunu da yer tutucuyla değiştirdi).
- */
-interface RefineMeta {
-  refinementIds: string[];
-  instruction?: string;
-  changedSlots?: Record<string, string>;
-}
-
 /** generate -> validate (+1 onarım) -> yeni versiyon. */
 async function produceVersion(
   session: PromptSession,
   guide: Guide,
   product: Product,
   deps: PromptDeps,
-  meta: RefineMeta,
+  meta: { refinementIds: string[]; instruction?: string },
   generic: boolean
 ): Promise<{ version: PromptVersion; tokens: number }> {
   const previous = session.versions.at(-1);
@@ -178,7 +130,6 @@ async function produceVersion(
     signal: deps.signal,
     ...(previous && (meta.instruction || meta.refinementIds.length) ? { previous } : {}),
     ...(meta.instruction ? { instruction: meta.instruction } : {}),
-    ...(meta.changedSlots && Object.keys(meta.changedSlots).length ? { changedSlots: meta.changedSlots } : {}),
   };
   const gen = await generatePrompt(input);
   const checked = await validateWithRepair(gen.output, input);
@@ -211,18 +162,15 @@ export async function startPromptSession(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
-  const extraction = await extractSlots({ conversation: input.conversation, goal: input.goal, guide, locale: input.locale, llm: deps.llm, signal: deps.signal, productName: product.name });
+  const extraction = await extractSlots({ conversation: input.conversation, goal: input.goal, guide, locale: input.locale, llm: deps.llm, signal: deps.signal });
   // Ajanın zaten bildiği slotlar (build_prompt argümanı) kullanıcı bilgisi sayılır.
   for (const [id, value] of Object.entries(input.slots ?? {})) {
     if (guide.slots.some((s) => s.id === id) && value.trim()) extraction.slots[id] = { value: value.trim().slice(0, 200), source: 'user', confidence: 1 };
   }
-  const plan = planSlots(guide, extraction.slots, { questionAsked: false, isBroadGoal: extraction.isBroadGoal });
-  const diagnostics: PromptDiagnostics = { isBroadGoal: extraction.isBroadGoal, evidence: extraction.evidence };
-  // Soru kartı atlansa da girişe göre üretilmiş sorular saklanır: PromptCard'daki
-  // "Varsayımlar (Değiştir)" aynı soruyu ve seçenekleri gösterir (toPromptCard).
-  const questionOverrides = extraction.questions;
-  // Kullanıcının kendi sözleri üreticiye gider; depoya yazılmaz (store.ts, PERSIST_USER_MESSAGES).
-  const userMessages = userMessagesFrom(input.conversation, input.goal);
+  const plan = planSlots(guide, extraction.slots, { questionAsked: false });
+  const questionOverrides = Object.fromEntries(
+    plan.questions.filter((q) => extraction.questions[q.id]).map((q) => [q.id, extraction.questions[q.id]])
+  );
 
   const session: PromptSession = {
     id: deps.newId(),
@@ -230,7 +178,6 @@ export async function startPromptSession(
     guideId: guide.id,
     guideVersion: guide.version,
     goal: input.goal.slice(0, 1000),
-    ...(userMessages.length ? { userMessages } : {}),
     locale: input.locale,
     slots: plan.slots,
     questionAsked: plan.questions.length > 0,
@@ -242,13 +189,13 @@ export async function startPromptSession(
 
   if (plan.questions.length > 0) {
     await deps.store.set(session);
-    return { card: toQuestionCard(session, guide, product), tokens: extraction.tokens, session, diagnostics };
+    return { card: toQuestionCard(session, guide, product), tokens: extraction.tokens, session };
   }
 
   const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] }, generic);
   session.versions.push(version);
   await deps.store.set(session);
-  return { card: toPromptCard(session, guide, product, generic), tokens: extraction.tokens + tokens, session, diagnostics };
+  return { card: toPromptCard(session, guide, product, generic), tokens: extraction.tokens + tokens, session };
 }
 
 export async function answerPromptQuestions(
@@ -262,7 +209,7 @@ export async function answerPromptQuestions(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
-  session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions, session.questionOverrides, session.locale);
+  session.slots = applyAnswers(guide, session.slots, input.answers, session.pendingQuestions, session.questionOverrides);
   session.pendingQuestions = [];
   const { version, tokens } = await produceVersion(session, guide, product, deps, { refinementIds: [] }, generic);
   session.versions.push(version);
@@ -287,26 +234,10 @@ export async function refinePromptSession(
   if ('error' in ctx) return { error: ctx.error!, tokens: 0 };
   const { product, guide, generic } = ctx;
 
-  /**
-   * Hazır buton: çok değerli slotta (guide slot multi) yeni değer mevcut değerin yanına eklenir
-   * (2026-10-14 eval, cursor-full: "Yeni bağımlılık yok" "public API değişmesin"i siliyordu).
-   * Değer zaten varsa tekrar eklenmez. Varsayım değişikliği (kullanıcı değeri kendisi yazar) değiştirir.
-   */
-  const combined = (slotId: string, value: string): string => {
-    const slot = guide.slots.find((s) => s.id === slotId);
-    const current = session.slots[slotId]?.value?.trim();
-    if (!slot?.multi || !current) return value;
-    if (current.toLowerCase().includes(value.trim().toLowerCase())) return current;
-    return `${current}; ${value.trim()}`;
-  };
-  let meta: RefineMeta;
-  const changed: Record<string, string> = {};
+  let meta: { refinementIds: string[]; instruction?: string };
   const setSlot = (slotId: string, value: string): SlotState | null => {
-    const slot = guide.slots.find((s) => s.id === slotId);
-    if (!slot) return null;
-    const v = value.trim().slice(0, SLOT_VALUE_MAX);
-    const label = displayValue(slot, v, session.locale, { dynamic: session.questionOverrides?.[slotId] });
-    return { value: v, source: 'user', ...(label !== v ? { label } : {}) };
+    if (!guide.slots.some((s) => s.id === slotId)) return null;
+    return { value: value.trim().slice(0, SLOT_VALUE_MAX), source: 'user' };
   };
 
   if ('refinementId' in input) {
@@ -316,22 +247,16 @@ export async function refinePromptSession(
     const suggested = suggestedIdx ? session.versions.at(-1)!.suggestedRefinements[Number(suggestedIdx) - 1] : undefined;
     if (guideRef) {
       for (const [slotId, value] of Object.entries(guideRef.patch ?? {})) {
-        const state = setSlot(slotId, combined(slotId, value));
-        if (state?.value) {
-          session.slots[slotId] = state;
-          changed[slotId] = state.value;
-        }
+        const state = setSlot(slotId, value);
+        if (state) session.slots[slotId] = state;
       }
-      meta = { refinementIds: [guideRef.id], ...(guideRef.instruction ? { instruction: guideRef.instruction } : {}), changedSlots: changed };
+      meta = { refinementIds: [guideRef.id], ...(guideRef.instruction ? { instruction: guideRef.instruction } : {}) };
     } else if (suggested) {
       if (suggested.slotId && suggested.value) {
-        const state = setSlot(suggested.slotId, combined(suggested.slotId, suggested.value));
-        if (state?.value) {
-          session.slots[suggested.slotId] = state;
-          changed[suggested.slotId] = state.value;
-        }
+        const state = setSlot(suggested.slotId, suggested.value);
+        if (state) session.slots[suggested.slotId] = state;
       }
-      meta = { refinementIds: [input.refinementId], ...(suggested.instruction ? { instruction: suggested.instruction } : {}), changedSlots: changed };
+      meta = { refinementIds: [input.refinementId], ...(suggested.instruction ? { instruction: suggested.instruction } : {}) };
     } else {
       return { error: 'unknown_refinement', tokens: 0 };
     }
@@ -340,7 +265,7 @@ export async function refinePromptSession(
     const state = setSlot(input.slotId, input.value);
     if (!state || !state.value) return { error: 'invalid', tokens: 0 };
     session.slots[input.slotId] = state;
-    meta = { refinementIds: ['assumption'], changedSlots: { [input.slotId]: state.value } };
+    meta = { refinementIds: ['assumption'] };
   } else {
     // Serbest talimat: önceki versiyon + talimat
     const instruction = input.instruction.trim().slice(0, 1000);

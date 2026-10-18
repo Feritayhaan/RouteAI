@@ -174,3 +174,84 @@ AKTİF ürünlerden (validate:catalog bunu kontrol ediyor).
 ## Canlı tarama eki (2026-09-28) — 16 satır, needsReview: true
 
 Canlıda bulunan yanlış eşleşmelerden (Ferit: "C# programı yapmak istiyorum" → no-code araçlar) sonra ~75 gerçekçi sorguyla yapılan taramadan: tr-59 … tr-71, en-55 … en-57. Kural katmanının emin ama yanlış olduğu 4 durum düzeltildi: "metni sese çevir" (Çeviri → Seslendirme), "youtube thumbnail yap" ve "podcast sesini temizle" (iş akışı → tek parça), "instagram gönderisi için açıklama yaz" (görsel → metin). Kontrol et: beklenen görev ve kabul edilen araçlar mantıklı mı?
+
+## Katalog genişletme eki (2026-10-18) — 30 satır, needsReview: true
+
+Kerem genel iş kataloğunun genişletilmesini istedi; 15 yeni iş ve 45 yeni ürün kataloğa girdi (kaynak kanıtı: `data/yeni-isler-rapor.md`). Bu 30 satır (her yeni iş için tr + en) `evals/golden.jsonl` sonuna `tr-72…tr-86`, `en-58…en-72` olarak eklendi. `expectedTask` değerleri TASLAK: onaylayınca bu başlığı "Onaylandı — Ferit, <tarih>" yap, satırdaki `needsReview` alanını sil (ya da `false` yap), `npm test` çalıştır.
+
+Hepsinin `acceptableTools` listesi BOŞ ve notunda "katalog boşluğu" yazıyor: golden kabul listesi v1 araç listesinden (`lib/tools-database.json`) kontrol ediliyor ve yeni ürünler orada yok. Bu yüzden bu satırlar yalnızca GÖREV eşleşmesini (taskMatch) ölçer; araç isabetini (top1/top3) ölçmez.
+
+| id | ? | Sorgu | expectedTask | Gerekçe |
+| --- | --- | --- | --- | --- |
+| tr-72 |  | unity ile oyun yapmak istiyorum | game.dev | Oyun geliştirme: yeni iş. Katalogdaki araçlar: Bezi, GDevelop, Rosebud AI, Unity AI. |
+| en-58 |  | help me make a game in godot | game.dev | Oyun geliştirme: yeni iş. Katalogdaki araçlar: Bezi, GDevelop, Rosebud AI, Unity AI. |
+| tr-73 |  | oyunum için piksel sanat karakter sprite lazım | game.asset-art | Oyun görseli ve varlıkları: yeni iş. Katalogdaki araçlar: Ludo.ai, PixelLab, Scenario. |
+| en-59 |  | generate 2d game assets and sprite sheets | game.asset-art | Oyun görseli ve varlıkları: yeni iş. Katalogdaki araçlar: Ludo.ai, PixelLab, Scenario. |
+| tr-74 |  | mobil uygulamam için arayüz tasarlamak istiyorum | design.ui-prototype | Arayüz tasarımı ve prototip: yeni iş. Katalogdaki araçlar: Figma Make, Uizard, v0. |
+| en-60 |  | I need a wireframe and ui prototype for my app | design.ui-prototype | Arayüz tasarımı ve prototip: yeni iş. Katalogdaki araçlar: Figma Make, Uizard, v0. |
+| tr-75 |  | b2b satış için potansiyel müşteri listesi çıkar | sales.prospecting | Müşteri adayı bulma: yeni iş. Katalogdaki araçlar: Apollo.io, Clay, Instantly. |
+| en-61 |  | find leads for cold outreach to saas founders | sales.prospecting | Müşteri adayı bulma: yeni iş. Katalogdaki araçlar: Apollo.io, Clay, Instantly. |
+| tr-76 |  | web sitem için müşteri destek botu kurmak istiyorum | support.chatbot | Müşteri destek botu: yeni iş. Katalogdaki araçlar: Chatbase, Intercom Fin, Tidio. |
+| en-62 |  | I want an ai support agent that answers customer questions on my site | support.chatbot | Müşteri destek botu: yeni iş. Katalogdaki araçlar: Chatbase, Intercom Fin, Tidio. |
+| tr-77 |  | küçük işletmem için muhasebe ve gider takibi | finance.bookkeeping | Muhasebe ve gider takibi: yeni iş. Katalogdaki araçlar: QuickBooks, Xero, Zoho Books. |
+| en-63 |  | bookkeeping software for my small business expenses | finance.bookkeeping | Muhasebe ve gider takibi: yeni iş. Katalogdaki araçlar: QuickBooks, Xero, Zoho Books. |
+| tr-78 |  | blog yazılarım için seo anahtar kelime araştırması | marketing.seo | SEO içeriği: yeni iş. Katalogdaki araçlar: Frase, Surfer, Writesonic (SEO Content). |
+| en-64 |  | optimize my article for seo and rank on google | marketing.seo | SEO içeriği: yeni iş. Katalogdaki araçlar: Frase, Surfer, Writesonic (SEO Content). |
+| tr-79 |  | ekibim için proje yönetimi ve görev takibi aracı | project.management | Proje ve görev yönetimi: yeni iş. Katalogdaki araçlar: Asana, ClickUp Brain (Project AI), monday.com. |
+| en-65 |  | a tool for project management and tracking team tasks | project.management | Proje ve görev yönetimi: yeni iş. Katalogdaki araçlar: Asana, ClickUp Brain (Project AI), monday.com. |
+| tr-80 |  | bana matematiği adım adım öğretecek yapay zeka öğretmen | education.tutor | Yapay zekâ öğretmen: yeni iş. Katalogdaki araçlar: ChatGPT, Gemini, Khanmigo, Photomath. |
+| en-66 |  | an ai tutor to help me study for my exam | education.tutor | Yapay zekâ öğretmen: yeni iş. Katalogdaki araçlar: ChatGPT, Gemini, Khanmigo, Photomath. |
+| tr-81 |  | ingilizce konuşma pratiği yapmak istiyorum | education.language-learning | Yabancı dil öğrenme: yeni iş. Katalogdaki araçlar: Duolingo, Praktika, Speak. |
+| en-67 |  | I want to learn spanish and practice speaking | education.language-learning | Yabancı dil öğrenme: yeni iş. Katalogdaki araçlar: Duolingo, Praktika, Speak. |
+| tr-82 |  | yapay zeka tarayıcı ile sekmelerimle sohbet etmek istiyorum | agent.browser | Yapay zekâlı tarayıcı: yeni iş. Katalogdaki araçlar: Dia, Opera Neon, Perplexity Comet. |
+| en-68 |  | an ai browser that can browse the web for me | agent.browser | Yapay zekâlı tarayıcı: yeni iş. Katalogdaki araçlar: Dia, Opera Neon, Perplexity Comet. |
+| tr-83 |  | gelen kutumu düzenleyen e-posta asistanı | productivity.inbox | E-posta kutusu yönetimi: yeni iş. Katalogdaki araçlar: Fyxer, Shortwave, Superhuman. |
+| en-69 |  | an email assistant to manage my inbox and draft replies | productivity.inbox | E-posta kutusu yönetimi: yeni iş. Katalogdaki araçlar: Fyxer, Shortwave, Superhuman. |
+| tr-84 |  | günümü planla, görevlerimi takvime yerleştir | productivity.planning | Takvim ve günlük planlama: yeni iş. Katalogdaki araçlar: Akiflow, Motion, Reclaim. |
+| en-70 |  | ai calendar assistant to plan my day | productivity.planning | Takvim ve günlük planlama: yeni iş. Katalogdaki araçlar: Akiflow, Motion, Reclaim. |
+| tr-85 |  | notlarım arasında arama yapabileceğim not uygulaması | productivity.notes | Not alma ve bilgi yönetimi: yeni iş. Katalogdaki araçlar: Mem, Notion AI, Reflect. |
+| en-71 |  | a notes app that works like a second brain | productivity.notes | Not alma ve bilgi yönetimi: yeni iş. Katalogdaki araçlar: Mem, Notion AI, Reflect. |
+| tr-86 |  | iş ilanına göre özgeçmişimi geliştir, ats uyumlu olsun | career.resume | Özgeçmişi ilana göre uyarlama: yeni iş. Katalogdaki araçlar: Kickresume, Rezi, Teal (Resume Builder AI). |
+| en-72 |  | tailor my resume to a job posting and make it ats-friendly | career.resume | Özgeçmişi ilana göre uyarlama: yeni iş. Katalogdaki araçlar: Kickresume, Rezi, Teal (Resume Builder AI). |
+
+### Özellikle kontrol et
+
+1. **Kanıt yok başlangıcı:** Bu 15 işin hiçbirinde benchmark ve RouteAI kanıtı yok; ekranda araçlar alfabetik ve sıralama iddiası olmadan listelenir (mevcut 40 işin 21'i de böyle). Satırlar yalnızca "doğru işe düştü mü" sorusunu ölçer.
+2. **tr-86 / en-72 (career.resume) ile tr-37 / en-37 (docs.create):** "cv hazırla" ve "help me build a resume for a marketing job" bilerek `docs.create`'te kaldı (Kerem kararı). Yeni iş yalnızca "ats uyumlu özgeçmiş", "özgeçmişimi iş ilanına göre geliştir", "tailor my resume" gibi özel cümlelerde devreye girer. Bu ayrım doğru görünüyorsa dokunma; "cv/özgeçmiş" sözcüklerini docs.create'ten alıp tr-37/en-37'yi career.resume'e çevirmek ayrı bir onay ister.
+3. **en-36 (research.web) ile project.management:** en-36 ("research the top project management tools…") `research.web` bekliyor; project.management çıplak "project management" ifadesini almadığı için çakışmıyor (test kilitler).
+4. **en-20 / tr-51 / en-51 (3d.generate, "katalog boşluğu" notlu):** 3D araçları artık katalogda (Meshy, Tripo, Hyper3D Rodin), yani bu boşluk kapandı. Ancak `acceptableTools` v1 araç listesinden kontrol edildiği için bu adları ekleyemiyoruz; v1 listesi güncellenince bu satırların notlarını ve araç listelerini yenile.
+5. **Komşu işlerle sınır:** tr-77 / en-63 (finance.bookkeeping) ile data.spreadsheet-analysis, tr-83 / en-69 (productivity.inbox) ile text.email, tr-85 / en-71 (productivity.notes) ile audio.meeting-notes en kolay karışan yerler. Sınırı farklı çizmek istersen expectedTask'ı değiştir.
+6. **Sözleşme inceleme yok:** `legal.contract-review` taslakta vardı, Kerem kararıyla kataloğa alınmadı; golden'da da satırı yok.
+7. **Bağımsız değil:** Yeni işlerin anahtar kelimelerini bu satırlara bakarak ayarladım; kural katmanının 30/30 doğru çıkması bağımsız bir kanıt değil. Gerçek kullanıcı sorgularında ne olacağını canlıdaki `clarifyRate` ve görev dağılımı gösterecek.
+
+## Editör seçimi eki (2026-10-18) — 15 yeni iş için TASLAK seçim
+
+Kerem, yeni işlerin ekranının "sunum hazırla" gibi eski işlerle aynı olmasını istedi (`Bu iş için henüz güvenilir veri yok` ekranı çıkmasın). Eski işlerde bu ekranı `data/editor-picks.json` sağlıyor: kanıt yokken görev başına bir "Editör seçimi" ana araç olur, diğerleri "Diğer araçlar (henüz doğrulanmadı)" altında listelenir. Yeni 15 işe de aynı biçimde birer TASLAK seçim eklendi (`by: "RouteAI editör (taslak, Ferit onayı bekliyor)"`, tarih 2026-10-18).
+
+Bu seçimler öznel bir karardır; benim koyduğum ölçüt: (1) aracın resmi sayfası görevi doğrudan anlatıyor, (2) genel kullanıcı için başlangıç, (3) eşitlikte sayfada ücretsiz başlangıcı net yazan araç. Gerekçe metni yalnızca işlev tanımıdır (üstünlük ve fiyat iddiası yok). Ferit değiştirmek isterse `data/editor-picks.json`'da `productId`'yi aynı işteki başka bir aktif ürünle değiştirmek yeter.
+
+| İş | Seçilen | Gerekçe (ekranda yazan) |
+| --- | --- | --- |
+| game.dev (Oyun geliştirme) | Rosebud AI | Metin istemlerinden oynanabilir oyun üretir; kod yazmak gerekmez. |
+| game.asset-art (Oyun görseli ve varlıkları) | Scenario | Oyun varlıkları için görsel, doku ve 3D model üretir. |
+| design.ui-prototype (Arayüz tasarımı ve prototip) | Figma Make | Fikirlerini Figma içinde prototipe çevirir; düzenleyip yayına alabilirsin. |
+| sales.prospecting (Müşteri adayı bulma) | Apollo.io | Kişi ve şirket veritabanından potansiyel müşteri bulur; doğrulanmış e-posta ve telefon ile erişim dizileri sunar. |
+| support.chatbot (Müşteri destek botu) | Tidio | Müşteri hizmetleri için yapay zekâlı sohbet botu yazılımı. |
+| finance.bookkeeping (Muhasebe ve gider takibi) | QuickBooks | Çevrimiçi muhasebe yazılımı; gider sınıflandırma ve yapay zekâ sohbeti gibi özellikleri var. |
+| marketing.seo (SEO içeriği) | Surfer | Arama motorları ve yapay zekâ aramaları için içerik yazmana ve optimize etmene yardım eder. |
+| project.management (Proje ve görev yönetimi) | Asana | Görev ve projeleri planlayıp takip etmek için iş yönetimi platformu; AI Teammates ve AI Studio özellikleri var. |
+| education.tutor (Yapay zekâ öğretmen) | ChatGPT | Çalışma modu (study mode), soruyu doğrudan cevaplamak yerine adım adım çözdürerek öğrenmeyi destekler. |
+| education.language-learning (Yabancı dil öğrenme) | Speak | Canlı öğretmen olmadan yapay zekâyla gerçek konuşma pratiği yaptırır. |
+| agent.browser (Yapay zekâlı tarayıcı) | Dia | Yapay zekâ asistanı olan ve sekmelerinle sohbet etmeni sağlayan tarayıcı. |
+| productivity.inbox (E-posta kutusu yönetimi) | Fyxer | Gelen kutunu düzenler, senin tonunda yanıt taslağı yazar ve toplantı notu alır. |
+| productivity.planning (Takvim ve günlük planlama) | Reclaim | Çalışma, toplantı ve günlük işleri otomatik zamanlayan yapay zekâ ajanları. |
+| productivity.notes (Not alma ve bilgi yönetimi) | Mem | Notları, toplantıları ve fikirleri bağlam içinde birleştiren, Mem Agent’lı not uygulaması. |
+| career.resume (Özgeçmişi ilana göre uyarlama) | Rezi | Özgeçmişi yapay zekâyla hazırlar, geliştirir ve iş ilanına göre uyarlar. |
+
+### Özellikle kontrol et
+
+1. **Seçimler öznel:** Her işte 3-4 araç var; hangisinin "Editör seçimi" olacağı bir editör kararı. Beğenmediğin seçimi değiştir.
+2. **education.tutor → ChatGPT:** Bu işte Khanmigo ve Photomath de var. ChatGPT'yi seçtim çünkü sayfası (study mode) görevi doğrudan anlatıyor ve ücretsiz kullanıcılara açık. ChatGPT zaten docs.create ve data.spreadsheet-analysis işlerinin de seçimi.
+3. **game.dev → Rosebud AI:** "unity ile oyun yapmak istiyorum" gibi bir sorguda ana araç Unity'ye özel değil (Rosebud kodsuz, tarayıcıda). Unity AI ve Bezi "Diğer araçlar" altında. Unity odaklı sorgular için Unity AI daha uygun olabilir; karar senin.
+4. **3d.generate:** Bu işin mevcut seçimi World Labs Marble (sahne/dünya üretir, tek nesne değil). Artık Meshy, Tripo ve Hyper3D Rodin (tek 3D nesne) de katalogda; seçimi değiştirmek istersen `data/editor-picks.json`'daki 3d.generate satırı. Bu turda dokunulmadı.
+5. **Ekranda hâlâ "henüz doğrulanmadı" yazan yerler:** Seçilmeyen araçların başlığı "Diğer araçlar (henüz doğrulanmadı)"; eski işlerle aynı metin, değiştirilmedi.

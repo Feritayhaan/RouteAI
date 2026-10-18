@@ -20,7 +20,7 @@ export default function PricingBadges({ pricing, pricingUrl }: { pricing?: Recom
   const verified = isPriceVerified(pricing)
 
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <span className="flex flex-wrap gap-1.5">
       <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted/60 dark:bg-muted/30 text-[10px] font-semibold text-muted-foreground">
         {pricingModelLabel(pricing)}
       </span>
@@ -52,6 +52,6 @@ export default function PricingBadges({ pricing, pricingUrl }: { pricing?: Recom
           {new Date(pricing.priceCheckedAt).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })} verisi
         </span>
       )}
-    </div>
+    </span>
   )
 }

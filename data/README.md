@@ -8,7 +8,7 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 
 | Dosya | Ne | Kim yazar |
 | --- | --- | --- |
-| `tasks.json` | Görev taksonomisi (40 görev). Sıralamanın birimi (ürün, görev) çiftidir. | Elle |
+| `tasks.json` | Görev taksonomisi (55 görev). Sıralamanın birimi (ürün, görev) çiftidir. | Elle |
 | `products.json` | Seçilmiş ürünler. `status`: `active` (önerilir), `candidate` (keşiften gelen aday, önerilmez), `retired` (emekli). **Ana sayfanın tek kaynağı:** gösterilen ad, link, fiyat ve aktif/emekli durumu buradan gelir (`lib/catalog/navigator.ts`); KV'deki araç kopyasını yeniden doldurmak gerekmez. Ad sürümsüz yazılır ("ChatGPT", "Claude"); güncel model `modelRule` ile otomatik bulunur. | Elle; ilk hali `scripts/migrate-to-catalog.mjs` |
 | `models.json` | Modeller ve benchmark puanları (Artificial Analysis, LMArena). | Gece senkronu, PR ile; kontrollerden geçen PR otomatik merge edilir (`scripts/automerge-guard.mjs`) |
 | `briefs.json` | Uzman değerlendirmesi için sabit test brifleri. **Şu anki 30 brif TASLAK; Ferit onaylamalı.** | Elle |
@@ -20,6 +20,7 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 | `prompt-guides.json` | Rehberlerin derlenmiş hali (edge'de fs yok). Elle düzenleme. | `npm run build:guides` |
 | `prompt-products.json` | Ana sayfadaki prompt aracı listesi: ürün adı → id (rehberi olan aktif ürünler). Elle düzenleme. | `npm run build:guides` |
 | `link-review.md` | Ürün → model bağlantı önerileri; `[x]` işaretlenenler `--apply` ile products.json'a yazılır. | `scripts/link-products.mjs` |
+| `yeni-isler-rapor.md` | 2026-10-18 katalog genişletmesinin KAYNAK KANITI: 15 yeni görev ve 45 yeni ürün için hangi resmi sayfa okundu, sayfada ne yazıyordu; alınmayan adaylar, çakışma ölçümü, sıradaki adımlar. Canlı katalog bunu OKUMAZ. | Elle (2026-10-18) |
 
 ### tasks.json
 
@@ -29,13 +30,14 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
   "label": { "en": "Logo design", "tr": "Logo tasarımı" },
   "description": { "en": "...", "tr": "..." },
   "modality": "image",
-  "benchmark": [{ "source": "lmarena", "key": "text_to_image" }],
+  "benchmark": [{ "source": "lmarena", "key": "text_to_image/text_rendering" }, { "source": "lmarena", "key": "text_to_image/commercial_design" }],
   "slots": [{ "id": "text-in-logo", "question": { "en": "...", "tr": "..." }, "options": [...], "critical": true }],
   "outputTypes": ["image"]
 }
 ```
 
 - `benchmark[].key` sadece `lib/catalog/benchmarkKeys.ts`'teki sabitlerden gelir. Boş dizi = bu görevin genel bir benchmark'ı yok; puan kendi kanıtımızdan gelir.
+- Bir LMArena alt kategorisi (`<config>/<kategori>`) kullanmak için önce `benchmarkKeys.ts`'e kaydedilmesi ve kategorinin kaynakta gerçekten görülmüş olması gerekir (uydurma yok). Kategori verisi (henüz) yoksa o girdi için üst arena kullanılır; aynı arena iki girdiden gelirse bir kez sayılır.
 - `slots`: sadece öneriyi değiştiren bilgiler, en fazla 3. `critical: true` olanı ajan eksikse sorabilir.
 
 ### products.json
@@ -76,6 +78,8 @@ Katalog git'te JSON olarak durur. Şema `lib/catalog/schema.ts` (Zod), yükleyic
 ```
 
 Bu dosyayı elle düzenleme; gece senkronu yazar. Burada gördüğün değerler şablondur, gerçek veri değildir.
+
+`scores[].key` genel bir arena (`text`, `text_to_image`, ...) ya da bir **LMArena alt kategorisi** olabilir: `<config>/<kategori>` (ör. `text/creative_writing`). Alt kategori skorunda yalnızca `value` ve `fetchedAt` bulunur (`votes`/`rank`/güven aralığı yok), ve yalnızca aynı modelin genel arenada da satırı varsa yazılır. Hangi alt kategorilerin yazılacağını `lib/catalog/benchmarkKeys.ts` belirler (yalnızca `tasks.json`'da kullanılanlar). Bir alt kategoride en az 2 model yoksa ya da ürünün bağlı modeli o kategoride yoksa skor hesabı üst (genel) arenaya düşer; `npm run validate:catalog` bunu uyarıyla gösterir.
 
 ### briefs.json
 

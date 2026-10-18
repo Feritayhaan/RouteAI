@@ -5,7 +5,8 @@
 // HATA (çıkış kodu 1): şema ihlali, tekrar eden id, olmayan göreve/modele/
 // brife/rehbere referans, bilinmeyen benchmark anahtarı, golden setin
 // katalogla uyuşmaması.
-// UYARI (çıkış kodu 0): aktif ürünü olmayan görev, görevi olmayan aktif ürün.
+// UYARI (çıkış kodu 0): aktif ürünü olmayan görev, görevi olmayan aktif ürün, verisi (henüz) olmayan
+// LMArena alt kategori arenası (skor hesabı genel arenaya düşer; gece senkronundan sonra kaybolmalı).
 
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -20,7 +21,7 @@ import {
   candidatesFileSchema,
   editorPicksFileSchema,
 } from '../lib/catalog/schema.ts';
-import { isKnownArena } from '../lib/catalog/benchmarkKeys.ts';
+import { categoryArenaCoverage, isKnownArena } from '../lib/catalog/benchmarkKeys.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => JSON.parse(readFileSync(path.join(ROOT, rel), 'utf8'));
@@ -75,6 +76,14 @@ for (const task of tasks) {
     if (!isKnownArena(b.source, b.key)) {
       errors.push(`tasks.json ${task.id}: bilinmeyen benchmark ${b.source}:${b.key} (lib/catalog/benchmarkKeys.ts)`);
     }
+  }
+}
+
+// Alt kategori arenaları: veri yoksa HATA DEĞİL (lib/catalog/score.ts genel arenaya döner), ama görünür olsun.
+const categoryCoverage = categoryArenaCoverage(tasks, models);
+for (const c of categoryCoverage) {
+  if (!c.usable) {
+    warnings.push(`alt kategori arenası ${c.source}:${c.key} verisiz (${c.models} model): ${c.tasks.length} görevin sıralaması genel arenaya (${c.fallsBackTo}) düşüyor — gece senkronu henüz yazmamış ya da kategori alınamamış olabilir`);
   }
 }
 
@@ -161,6 +170,10 @@ for (const { id, n } of counts) {
 }
 
 console.log(`[validate:catalog] ${tasks.length} görev, ${products.length} ürün (${active.length} aktif), ${models.length} model, ${briefs.length} brif, ${reviews.length} değerlendirme, ${signals.length} sinyal, ${editorPicks.length} editör seçimi, ${candidates.length} aday`);
+if (categoryCoverage.length > 0) {
+  const ok = categoryCoverage.filter((c) => c.usable).length;
+  console.log(`[validate:catalog] alt kategori arenaları: ${ok}/${categoryCoverage.length} veri dolu (${categoryCoverage.map((c) => `${c.key}=${c.models}`).join(', ')})`);
+}
 const thin = counts.filter((c) => c.n === 1).map((c) => c.id);
 if (thin.length) console.log(`[validate:catalog] tek aktif ürünlü görevler (${thin.length}): ${thin.join(', ')}`);
 for (const w of warnings) console.log(`UYARI: ${w}`);

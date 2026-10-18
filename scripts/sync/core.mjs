@@ -180,15 +180,19 @@ export async function fetchArtificialAnalysis({ fetchJson, sleep, aaKey, arenas,
   for (const [endpoint, fields] of byEndpoint) {
     await sleep(1000);
     let body;
+    // Alınamayan arenanın eski skorları mergeModels'te korunur (report.failedArenas).
+    const failEndpoint = () => { for (const { key } of fields) markArenaFailed(report, 'artificialanalysis', key); };
     try {
       body = await fetchJson(`${AA_BASE}${endpoint}`, { headers: { 'x-api-key': aaKey } });
     } catch (error) {
       report.errors.push(`AA ${endpoint}: ${error?.message ?? error}`);
+      failEndpoint();
       continue;
     }
     const rows = Array.isArray(body?.data) ? body.data : Array.isArray(body) ? body : null;
     if (!rows) {
       report.errors.push(`AA ${endpoint}: yanıtta 'data' dizisi yok (üst düzey alanlar: ${Object.keys(body ?? {}).join(', ')})`);
+      failEndpoint();
       continue;
     }
     report.sample[`AA ${endpoint}`] = Object.keys(rows[0] ?? {});
@@ -222,6 +226,7 @@ export async function fetchArtificialAnalysis({ fetchJson, sleep, aaKey, arenas,
       }
       report.fieldUse.push(`AA ${key}: ${endpoint} → ${field} (${found}/${rows.length} satırda sayı)`);
       if (found === 0) {
+        markArenaFailed(report, 'artificialanalysis', key);
         const available = Object.keys(getPath(rows[0] ?? {}, field.split('.').slice(0, -1).join('.')) ?? rows[0] ?? {});
         report.errors.push(`AA ${key}: '${field}' alanı hiçbir satırda yok; mevcut alanlar: ${available.join(', ')}`);
       }
@@ -241,8 +246,100 @@ function aaPricing(p, today) {
   return pricing;
 }
 
-/** LMArena (Hugging Face datasets-server). Başarılı config'ler için satırlar; hiçbiri yoksa null. */
-export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) {
+/** Kategori sütunundaki değerler ve satır sayıları (ada göre sıralı). Boş/yok değerler "(boş)" olur. */
+export function countCategories(rows, categoryField) {
+  const counts = new Map();
+  for (const r of rows) {
+    const name = r?.[categoryField] === undefined || r?.[categoryField] === null || r?.[categoryField] === '' ? '(boş)' : String(r[categoryField]);
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+  return [...counts.entries()].map(([name, n]) => ({ name, rows: n })).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * "Genel" olmayan kategorilerdeki geçerli skor satırları: { config, category, rawName, value, votes? }.
+ * Değer yalnızca satırdaki alandan gelir; sayı değilse satır atlanır (uydurma yok).
+ */
+export function collectCategoryRows(rows, { config, fields }) {
+  const out = [];
+  if (!fields.category || !fields.name || !fields.score) return out;
+  for (const r of rows) {
+    const category = r?.[fields.category];
+    if (category === undefined || category === null || category === '' || LMARENA_OVERALL.includes(category)) continue;
+    const value = toNumber(r[fields.score]);
+    const rawName = r[fields.name];
+    if (value === null || !rawName) continue;
+    const entry = { config, category: String(category), rawName: String(rawName), value };
+    const votes = fields.votes ? toNonNegInt(r[fields.votes]) : null;
+    if (votes !== null) entry.votes = votes;
+    out.push(entry);
+  }
+  return out;
+}
+
+/**
+ * Toplanan alt kategori satırları -> { config: { category: { modelId: { value, votes? } } } }.
+ * Model kimliği mergeModels ile aynı kuralla bulunur (ad normalizasyonu + data/model-aliases.json);
+ * models.json'da olmayan model atlanır (sayısı döner). Aynı model iki adla gelirse yüksek olan kalır.
+ */
+export function buildCategoryScores({ rows, aliases, modelIds }) {
+  const canonical = (raw) => {
+    const k = normalizeModelKey(raw);
+    return aliases[k] ?? k;
+  };
+  const configs = {};
+  let skippedUnknownModel = 0;
+  for (const r of rows) {
+    const id = canonical(r.rawName);
+    if (!id || !modelIds.has(id)) {
+      skippedUnknownModel++;
+      continue;
+    }
+    const byCategory = ((configs[r.config] ??= {})[r.category] ??= {});
+    const prev = byCategory[id];
+    if (prev && prev.value >= r.value) continue;
+    byCategory[id] = r.votes !== undefined ? { value: r.value, votes: r.votes } : { value: r.value };
+  }
+  // Kararlı sıra: config, kategori ve model kimliğine göre (gereksiz diff olmasın).
+  const sorted = {};
+  for (const config of Object.keys(configs).sort()) {
+    sorted[config] = {};
+    for (const category of Object.keys(configs[config]).sort()) {
+      sorted[config][category] = Object.fromEntries(Object.entries(configs[config][category]).sort(([a], [b]) => a.localeCompare(b)));
+    }
+  }
+  return { configs: sorted, skippedUnknownModel };
+}
+
+/** data/lmarena-categories.json biçimi: kategori başına tek satır (okunur ve küçük diff). */
+export function serializeCategoryScores({ fetchedAt, configs }) {
+  const lines = ['{', '  "source": "LMArena (lmarena-ai/leaderboard-dataset, Hugging Face)",', `  "fetchedAt": ${JSON.stringify(fetchedAt)},`, '  "configs": {'];
+  const configNames = Object.keys(configs);
+  configNames.forEach((config, ci) => {
+    lines.push(`    ${JSON.stringify(config)}: {`);
+    const categories = Object.keys(configs[config]);
+    categories.forEach((category, ki) => {
+      lines.push(`      ${JSON.stringify(category)}: ${JSON.stringify(configs[config][category])}${ki < categories.length - 1 ? ',' : ''}`);
+    });
+    lines.push(`    }${ci < configNames.length - 1 ? ',' : ''}`);
+  });
+  lines.push('  }', '}');
+  return `${lines.join('\n')}\n`;
+}
+
+/**
+ * LMArena (Hugging Face datasets-server). Başarılı config'ler için satırlar; hiçbiri yoksa null.
+ *
+ * `io.arenas`: genel arenalar (config başına bir kez çekilir). `io.categoryArenas` (isteğe bağlı):
+ * aynı config'lerin alt kategorileri `{ source, key: 'config/kategori', sourceField: config, category }`;
+ * ekstra istek YOKTUR (kategori satırları zaten aynı config'in sayfalarında gelir). Her alt kategori
+ * ayrı bir arena anahtarıyla satır üretir; yalnızca genel arenada da satırı olan modeller için
+ * (kategori satırı yüzünden yeni model oluşmaz). Bir config alınamazsa onun alt kategorileri de
+ * "alınamadı" işaretlenir (eski skorlar korunur).
+ */
+export async function fetchLmArena(io, report) {
+  const { fetchJson, sleep, arenas, today } = io;
+  const categoryArenas = (io.categoryArenas ?? []).filter((c) => c.source === 'lmarena');
   const out = [];
   let splits;
   try {
@@ -257,8 +354,15 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
   let anyOk = false;
   for (const arena of arenas.filter((a) => a.source === 'lmarena')) {
     const config = arena.sourceField;
+    const cats = categoryArenas.filter((c) => c.sourceField === config);
+    // Bu koşuda alınamayan arenanın (ve alt kategorilerinin) eski skorları mergeModels'te korunur (report.failedArenas).
+    const fail = () => {
+      markArenaFailed(report, 'lmarena', arena.key);
+      for (const c of cats) markArenaFailed(report, 'lmarena', c.key);
+    };
     if (!available.has(`${config}/${LMARENA_SPLIT}`)) {
       report.errors.push(`LMArena ${config}: '${LMARENA_SPLIT}' split'i yok`);
+      fail();
       continue;
     }
     const rows = [];
@@ -280,6 +384,7 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
     }
     if (failed || rows.length === 0) {
       if (!failed) report.errors.push(`LMArena ${config}: satır yok`);
+      fail();
       continue;
     }
 
@@ -288,7 +393,15 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
     report.fieldUse.push(`LMArena ${config}: ${Object.entries(f).map(([k, v]) => `${k}=${v ?? '—'}`).join(', ')}`);
     if (!f.name || !f.score) {
       report.errors.push(`LMArena ${config}: model adı ya da skor alanı bulunamadı; mevcut alanlar: ${Object.keys(rows[0] ?? {}).join(', ')}`);
+      fail();
       continue;
+    }
+
+    // Kategori listesi her koşuda rapora yazılır (karar için: hangi alt kategoriler gerçekten var).
+    // Alt kategori satırları SADECE io.categoryRows verilmişse (--categories) toplanır; models.json'a girmez.
+    report.categories[config] = f.category ? countCategories(rows, f.category) : [];
+    if (f.category && io.categoryRows) {
+      io.categoryRows.push(...collectCategoryRows(rows, { config, fields: f }));
     }
 
     let selected = rows;
@@ -297,6 +410,7 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
       const overall = LMARENA_OVERALL.find((c) => categories.has(c));
       if (!overall) {
         report.errors.push(`LMArena ${config}: genel kategori bulunamadı; kategoriler: ${[...categories].slice(0, 20).join(', ')}`);
+        fail();
         continue;
       }
       selected = rows.filter((r) => r[f.category] === overall);
@@ -328,6 +442,48 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
         score,
       });
     }
+
+    // Alt kategoriler: sadece değer (ci/votes/rank yok: dosya küçük kalsın, "güncel model" seçimi
+    // (currentModel.ts rank'e bakar) değişmesin). Genel arenada satırı olmayan model atlanır.
+    if (cats.length > 0) {
+      if (!f.category) {
+        report.errors.push(`LMArena ${config}: kategori sütunu yok; alt kategoriler alınamadı: ${cats.map((c) => c.key).join(', ')}`);
+        for (const c of cats) markArenaFailed(report, 'lmarena', c.key);
+        continue;
+      }
+      const overallNames = new Set(selected.map((r) => String(r[f.name])));
+      for (const c of cats) {
+        const catRows = rows.filter((r) => r[f.category] === c.category);
+        let emitted = 0;
+        let skippedNoOverall = 0;
+        for (const row of catRows) {
+          const value = toNumber(row[f.score]);
+          const rawName = row[f.name];
+          if (value === null || !rawName) continue;
+          if (!overallNames.has(String(rawName))) {
+            skippedNoOverall++;
+            continue;
+          }
+          emitted++;
+          out.push({
+            source: 'lmarena',
+            key: c.key,
+            rawName: String(rawName),
+            displayName: String(rawName),
+            creator: f.organization ? nonEmpty(row[f.organization]) : null,
+            modality: LMARENA_MODALITY[config],
+            releaseDate: null,
+            pricing: null,
+            score: { source: 'lmarena', key: c.key, value, fetchedAt: today },
+          });
+        }
+        report.fieldUse.push(`LMArena ${c.key}: kategori '${c.category}' (${emitted}/${catRows.length} satır${skippedNoOverall > 0 ? `; genel arenada olmayan ${skippedNoOverall} model atlandı` : ''})`);
+        if (emitted === 0) {
+          report.errors.push(`LMArena ${c.key}: '${c.category}' kategorisinde kullanılabilir satır yok`);
+          markArenaFailed(report, 'lmarena', c.key);
+        }
+      }
+    }
   }
   return anyOk ? out : null;
 }
@@ -337,12 +493,25 @@ export async function fetchLmArena({ fetchJson, sleep, arenas, today }, report) 
 // ------------------------------------------------------------------
 
 /**
+ * Bir arenanın bu koşuda alınamadığını rapora yazar ("kaynak:anahtar", örn. "lmarena:text").
+ * mergeModels bu arenaların ESKİ skorlarını korur; yoksa tek bir sayfanın zaman aşımı
+ * bir arenanın tüm skorlarını (ve yalnız o arenada olan modelleri) siler.
+ */
+export function markArenaFailed(report, source, key) {
+  const id = `${source}:${key}`;
+  const list = (report.failedArenas ??= []);
+  if (!list.includes(id)) list.push(id);
+}
+
+/**
  * Eski modeller + başarılı kaynaklardan gelen taze satırlar -> yeni models dizisi.
- * Başarısız kaynağın eski skorları KORUNUR. Ürünlere bağlı model skoru
- * kalmasa bile silinmez (rapora yazılır).
+ * Başarısız kaynağın eski skorları KORUNUR. Kaynak başarılı olsa bile bu koşuda
+ * alınamayan arenaların ("kaynak:anahtar", keepArenas) eski skorları da korunur;
+ * eski fetchedAt tarihleriyle kalır, yani bayatlar ve denetim raporunda öyle görünür.
+ * Ürünlere bağlı model skoru kalmasa bile silinmez (rapora yazılır).
  */
 /** @returns {SyncedModel[]} */
-export function mergeModels({ oldModels, fresh, succeededSources, aliases, linkedModelIds, today }, report) {
+export function mergeModels({ oldModels, fresh, succeededSources, aliases, linkedModelIds, today, keepArenas = new Set() }, report) {
   const canonical = (raw) => {
     const k = normalizeModelKey(raw);
     return aliases[k] ?? k;
@@ -350,13 +519,14 @@ export function mergeModels({ oldModels, fresh, succeededSources, aliases, linke
   const oldById = new Map(oldModels.map((m) => [m.id, m]));
   const byId = new Map();
 
-  // 1) Eski modeller: başarılı kaynakların skorları çıkarılır (yenisi gelecek).
+  // 1) Eski modeller: başarılı kaynakların skorları çıkarılır (yenisi gelecek);
+  //    ama bu koşuda alınamayan arenaların eski skorları kalır.
   for (const m of oldModels) {
     byId.set(m.id, {
       ...m,
       aliases: [...m.aliases],
       modalities: [...m.modalities],
-      scores: m.scores.filter((s) => !succeededSources.has(s.source)),
+      scores: m.scores.filter((s) => !succeededSources.has(s.source) || keepArenas.has(`${s.source}:${s.key}`)),
       pricing: succeededSources.has('artificialanalysis') ? undefined : m.pricing,
     });
   }
@@ -497,7 +667,7 @@ export function suggestModels(product, models) {
 }
 
 export function newReport() {
-  return { errors: [], warnings: [], skipped: [], fieldUse: [], sample: {}, added: [], disappeared: [], fetchedAt: {} };
+  return { errors: [], warnings: [], skipped: [], fieldUse: [], sample: {}, added: [], disappeared: [], fetchedAt: {}, categories: {}, failedArenas: [] };
 }
 
 // ------------------------------------------------------------------
@@ -511,10 +681,13 @@ export function newReport() {
  *  - Veri gelen kaynaklardaki tekil hatalar (kısmi hata) işi kırmızı yapmaz; gerekçede görünür.
  * `gotData`: okuma başarılı ve kullanılabilir yanıt geldi (boş kayıt listesi de veridir).
  *
- * @param {{ sources: { name: string, needsKey: boolean, hasKey?: boolean, gotData: boolean }[], errors: string[] }} input
+ * `failedArenas`: kaynak başarılı olsa da bu koşuda alınamayan arenalar; eski skorları korunur,
+ * işi kırmızı yapmaz ama gerekçede görünür (aksi halde bayat veri sessizce kalırdı).
+ *
+ * @param {{ sources: { name: string, needsKey: boolean, hasKey?: boolean, gotData: boolean }[], errors: string[], failedArenas?: string[] }} input
  * @returns {{ code: 0 | 1, reasons: string[] }}
  */
-export function syncExitDecision({ sources, errors }) {
+export function syncExitDecision({ sources, errors, failedArenas = [] }) {
   const reasons = [];
   let code = 0;
   if (sources.length === 0) {
@@ -533,6 +706,9 @@ export function syncExitDecision({ sources, errors }) {
       ? `${errors.length} hata.`
       : `Kısmi hata: ${errors.length} hata; beklenen kaynakların hepsinden veri geldi.`);
   }
+  if (failedArenas.length > 0) {
+    reasons.push(`Tazelenemeyen arena (${failedArenas.length}): ${failedArenas.join(', ')} — eski skorları korundu, güncellenmedi.`);
+  }
   return { code, reasons };
 }
 
@@ -550,6 +726,10 @@ export function renderReport(report, { models, dryRun, wrote, decision }) {
   lines.push('', `Toplam model: ${models.length} (Artificial Analysis: ${bySource('artificialanalysis')}, LMArena: ${bySource('lmarena')}, iki kaynakta: ${models.filter((m) => new Set(m.scores.map((s) => s.source)).size === 2).length})`);
   lines.push('', '## Hatalar', '');
   lines.push(...(report.errors.length ? report.errors.map((e) => `- ${e}`) : ['- yok']));
+  if (report.failedArenas && report.failedArenas.length > 0) {
+    lines.push('', '## Tazelenemeyen arenalar (eski skorlar korundu)', '');
+    lines.push(...report.failedArenas.map((a) => `- ${a}: bu koşuda alınamadı; eski skorlar eski tarihiyle kaldı (bayatlar).`));
+  }
   lines.push('', '## Yeni modeller', '');
   lines.push(...(report.added.length ? [`${report.added.length}: ${report.added.slice(0, 80).join(', ')}${report.added.length > 80 ? ', …' : ''}`] : ['- yok']));
   lines.push('', '## Kaybolan modeller', '');
@@ -561,6 +741,14 @@ export function renderReport(report, { models, dryRun, wrote, decision }) {
   lines.push(...(report.warnings.length ? report.warnings.slice(0, 100).map((w) => `- ${w}`) : ['- yok']));
   lines.push('', '## Alan eşlemesi (doğrula)', '');
   lines.push(...(report.fieldUse.length ? report.fieldUse.map((f) => `- ${f}`) : ['- yok']));
+  if (report.categories && Object.keys(report.categories).length > 0) {
+    lines.push('', '## LMArena kategorileri (kaynakta görülenler)', '');
+    for (const [config, list] of Object.entries(report.categories)) {
+      lines.push(list.length > 0
+        ? `- ${config}: ${list.length} kategori — ${list.map((c) => `${c.name} (${c.rows})`).join(', ')}`
+        : `- ${config}: kategori sütunu yok`);
+    }
+  }
   lines.push('', '## Yanıtlarda görülen alanlar', '');
   for (const [k, v] of Object.entries(report.sample)) lines.push(`- ${k}: ${v.join(', ')}`);
   lines.push('', 'Kaynak ve lisans: skorlar Artificial Analysis (artificialanalysis.ai) ve LMArena (lmarena.ai) verisidir; gösterilirken kaynak adı görünür olmalı.');

@@ -1,29 +1,15 @@
-// Deterministik (LLM yok): hangi slotlar sorulacak, hangileri nasıl dolacak.
+// Deterministik (LLM yok): hangi slotlar sorulacak, hangileri varsayılanla dolacak.
 //
-// Navigasyon eşiği (forceAutoGenerate, varsayılan): kullanıcı ayrıntılı yazdıysa
-// soru yok, doğrudan üretim; çok genel bir hedef yazdıysa önce soru kartı.
-// Doğrudan üretim için şunlardan biri gerekir (ve hedef geniş olmamalı):
-//  - kullanıcının açıkça söylediği (source 'user', güven >= USER_DETAIL_CONFIDENCE)
-//    en az MIN_USER_DETAILS anlamlı ayrıntı, ya da
-//  - tüm 'high' slotların güvenle (>= MIN_CONFIDENCE) çıkarılmış olması.
-// İkisinde de ayrıntılar farklı alıntı sayısıyla ölçülür (distinctDetails).
-// Kart çıkarsa aday: impact 'high' ve kullanıcının açıkça söylemediği (değeri yok,
-// güveni < MIN_CONFIDENCE ya da sadece ima: source 'inferred');
-// rehber sırasıyla en fazla 3 tanesi TEK kartta. Oturum başına en fazla 1 soru kartı.
-//
-// LLM'in ürettiği değer statik default ile ezilmez. Güveni düşük değerler
-// (akıllı varsayım) source 'default' olur: PromptCard'da "Varsayımlar" altında
-// girişe göre üretilmiş seçenekleriyle listelenir.
+// Soru adayı: impact 'high' ve değeri yok ya da güveni < 0.6. Rehberdeki
+// sırayla en fazla 3 tanesi TEK kartta sorulur. Oturum başına en fazla 1 soru
+// kartı; bütçe bittiyse ya da aday yoksa kalan boşluklar default ile dolar.
 
 import type { Guide, GuideSlot } from './guideSchema';
 import type { ExtractedSlot } from './extract';
 import type { DynamicQuestion, SlotState } from './types';
 
 export const MAX_QUESTIONS_PER_CARD = 3;
-export const MIN_CONFIDENCE = 0.65;
-/** Doğrudan üretim için kullanıcının açıkça söylediği en az ayrıntı sayısı ve güveni. */
-export const MIN_USER_DETAILS = 2;
-export const USER_DETAIL_CONFIDENCE = 0.75;
+export const MIN_CONFIDENCE = 0.6;
 /** Serbest cevap ve varsayım değişikliği üst sınırı (lib/validations/prompt.ts ile aynı). */
 export const SLOT_VALUE_MAX = 300;
 
@@ -39,50 +25,26 @@ export interface Plan {
   questions: GuideSlot[];
 }
 
-/**
- * Farklı ayrıntı sayısı: aynı alıntıya dayanan slotlar tek ayrıntıdır (model tek
- * cümleyi her slota kanıt diye verebilir: 2026-10-14 eval, "Make me a presentation.").
- * Alıntısı olmayan (ajanın verdiği) slot kendi başına sayılır.
- */
-export function distinctDetails(entries: [string, ExtractedSlot][]): number {
-  return new Set(entries.map(([id, e]) => e.evidence ?? `slot:${id}`)).size;
-}
-
-/** Soru kartını atlayıp doğrudan üretmeye yetecek kadar ayrıntı var mı? */
-export function hasEnoughDetail(guide: Guide, extracted: Record<string, ExtractedSlot>, isBroadGoal = false): boolean {
-  if (isBroadGoal) return false;
-  const userDetails = distinctDetails(
-    Object.entries(extracted).filter(([, e]) => e.value !== null && e.source === 'user' && e.confidence >= USER_DETAIL_CONFIDENCE)
-  );
-  const high = guide.slots.filter((s) => s.impact === 'high').map((s) => [s.id, extracted[s.id]] as [string, ExtractedSlot | undefined]);
-  const known = high.filter((x): x is [string, ExtractedSlot] => !!x[1] && x[1].value !== null && x[1].confidence >= MIN_CONFIDENCE);
-  const allHighKnown = known.length === high.length && distinctDetails(known) >= Math.min(MIN_USER_DETAILS, high.length);
-  return userDetails >= MIN_USER_DETAILS || allHighKnown;
-}
-
-export function planSlots(
-  guide: Guide,
-  extracted: Record<string, ExtractedSlot>,
-  { questionAsked, forceAutoGenerate = true, isBroadGoal = false }: { questionAsked: boolean; forceAutoGenerate?: boolean; isBroadGoal?: boolean }
-): Plan {
-  const skipQuestions = questionAsked || (forceAutoGenerate && hasEnoughDetail(guide, extracted, isBroadGoal));
-  const candidates = skipQuestions
+export function planSlots(guide: Guide, extracted: Record<string, ExtractedSlot>, { questionAsked }: { questionAsked: boolean }): Plan {
+  const candidates = questionAsked
     ? []
     : guide.slots
         .filter((s) => s.impact === 'high')
         .filter((s) => {
-          // Kullanıcının açıkça (alıntıyla) söylediği sorulmaz; ayrıntı yetmediyse güçlü ima da sorulur.
           const e = extracted[s.id];
-          return !e || e.value === null || e.confidence < MIN_CONFIDENCE || e.source !== 'user';
+          return !e || e.value === null || e.confidence < MIN_CONFIDENCE;
         })
         .slice(0, MAX_QUESTIONS_PER_CARD);
+  const asked = new Set(candidates.map((s) => s.id));
 
   const slots: Record<string, SlotState> = {};
   for (const s of guide.slots) {
     const e = extracted[s.id];
-    if (e && e.value !== null) {
-      // Sorulan slotta da LLM'in değeri kalır; kullanıcı "Sen seç" derse o kullanılır.
-      slots[s.id] = { value: e.value, source: e.confidence < MIN_CONFIDENCE ? 'default' : e.source, ...(e.label ? { label: e.label } : {}) };
+    if (asked.has(s.id)) {
+      // Cevap gelene kadar varsayılan; kullanıcı "Sen seç" derse bu kalır.
+      slots[s.id] = { value: defaultValue(s), source: 'default' };
+    } else if (e && e.value !== null) {
+      slots[s.id] = { value: e.value, source: e.source };
     } else {
       slots[s.id] = { value: defaultValue(s), source: 'default' };
     }
@@ -92,7 +54,7 @@ export function planSlots(
 
 /**
  * Soru kartı cevapları: seçenek id'si -> seçeneğin değeri (user),
- * 'auto' ya da boş -> mevcut (akıllı) varsayım, yoksa rehber varsayılanı (default), başka metin -> serbest cevap (user).
+ * 'auto' -> varsayılan (default), başka metin -> serbest cevap (user).
  * Slot için girişe göre üretilmiş soru varsa önce onun seçeneklerine bakılır.
  */
 export function applyAnswers(
@@ -100,8 +62,7 @@ export function applyAnswers(
   slots: Record<string, SlotState>,
   answers: Record<string, string>,
   asked: string[],
-  overrides: Record<string, DynamicQuestion> = {},
-  locale: 'en' | 'tr' = 'tr'
+  overrides: Record<string, DynamicQuestion> = {}
 ): Record<string, SlotState> {
   const next = { ...slots };
   for (const slotId of asked) {
@@ -109,36 +70,13 @@ export function applyAnswers(
     if (!slot) continue;
     const answer = answers[slotId]?.trim();
     if (!answer || answer === 'auto') {
-      const kept = slots[slotId]?.value ?? null;
-      next[slotId] = { value: kept ?? defaultValue(slot), source: 'default', ...(kept && slots[slotId]?.label ? { label: slots[slotId].label } : {}) };
+      next[slotId] = { value: defaultValue(slot), source: 'default' };
       continue;
     }
-    const dynamic = overrides[slotId]?.options.find((o) => o.id === answer);
-    const option = slot.options.find((o) => o.id === answer);
-    if (dynamic) next[slotId] = { value: dynamic.value, source: 'user', label: dynamic.label };
-    else if (option) next[slotId] = { value: option.value, source: 'user', label: option.label[locale] };
-    else next[slotId] = { value: answer.slice(0, SLOT_VALUE_MAX), source: 'user' };
+    const option = overrides[slotId]?.options.find((o) => o.id === answer) ?? slot.options.find((o) => o.id === answer);
+    next[slotId] = { value: option ? option.value : answer.slice(0, SLOT_VALUE_MAX), source: 'user' };
   }
   return next;
-}
-
-/**
- * Slot değerinin kullanıcı dilindeki gösterimi: kayıtlı etiket, girişe göre
- * üretilmiş seçeneğin etiketi, rehber seçeneğinin etiketi; hiçbiri yoksa değer.
- * Türkçe ekranda "a beginner" gibi ham İngilizce seçenek değerleri görünmez.
- */
-export function displayValue(
-  slot: GuideSlot | undefined,
-  value: string,
-  locale: 'en' | 'tr',
-  { label, dynamic }: { label?: string; dynamic?: DynamicQuestion } = {}
-): string {
-  if (label) return label;
-  const key = value.trim().toLowerCase();
-  const fromDynamic = dynamic?.options.find((o) => o.value.trim().toLowerCase() === key);
-  if (fromDynamic) return fromDynamic.label;
-  const fromGuide = slot?.options.find((o) => o.value.trim().toLowerCase() === key);
-  return fromGuide ? fromGuide.label[locale] : value;
 }
 
 export function filledBy(slots: Record<string, SlotState>) {
