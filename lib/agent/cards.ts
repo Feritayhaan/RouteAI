@@ -61,7 +61,7 @@ export const promptCardSchema = z.object({
   guideVersion: z.number().int(),
   /** Rehber henüz gözden geçirilmedi ("Taslak rehber"). */
   draft: z.boolean(),
-  /** Bu araca özel rehber yok; aynı türdeki araçlar için genel rehberle yazıldı ("Genel rehber"). */
+  /** Bu araca özel rehber yok; kullanıcının işi için görev rehberiyle (ya da türün genel iskeletiyle) yazıldı ("Genel rehber"). */
   genericGuide: z.boolean().optional(),
   versionN: z.number().int().positive(),
   variants: z.array(z.object({
@@ -79,6 +79,7 @@ export const promptCardSchema = z.object({
     question: z.string(),
     options: z.array(z.object({ id: z.string(), label: z.string(), value: z.string() })),
   })),
+  // Arayüz artık göstermez (düzenleme sohbetle yapılır); eski istemciler ve `{ refinementId }` isteği için duruyor.
   refinements: z.array(z.object({
     id: z.string(),
     label: z.string(),

@@ -77,10 +77,11 @@ list:
 describe('rehberler (data/prompt-guides)', () => {
   const guides = loadGuides();
 
-  it("10 rehber derlenmiş; kurallar temiz; her rehberde ≥4 slot, ≥2 'high', 4–8 refinement", () => {
+  it("rehberler derlenmiş (10 araç/ortak + görev rehberleri); kurallar temiz; her rehberde ≥4 slot, ≥2 'high', 4–8 refinement", () => {
     const files = readdirSync(new URL('../../data/prompt-guides/', import.meta.url)).filter((f) => f.endsWith('.md'));
     assert.strictEqual(guides.length, files.length);
-    assert.strictEqual(guides.length, 10);
+    // Görev rehberleri (tasks dolu) lib/__tests__/promptTaskGuides.test.ts'te kilitlidir.
+    assert.strictEqual(guides.filter((g) => g.tasks.length === 0).length, 10);
     for (const g of guides) {
       assert.deepStrictEqual(guideRuleErrors(g), [], g.id);
       assert.ok(g.slots.length >= 4 && g.slots.filter((s) => s.impact === 'high').length >= 2, g.id);
@@ -121,7 +122,8 @@ function fakeLLM(opts: { extracted?: Record<string, string | null>; failRegexTim
       const slots = Object.entries(opts.extracted ?? {}).map(([id, value]) => ({ id, value, source: 'user', confidence: value ? 0.9 : 0 }));
       return { data: { slots, goalSummary: 'summary', ...(opts.questions ? { questions: opts.questions } : {}) }, tokens: 10 };
     }
-    const values = Object.fromEntries(input.slots.map((s: { id: string; value: string | null }) => [s.id, s.value ?? 'auto']));
+    // Başka rehberin (görev rehberi) slotlarında style/mood yok: eksik anahtar 'auto' sayılır
+    const values = new Proxy(Object.fromEntries(input.slots.map((s: { id: string; value: string | null }) => [s.id, s.value ?? 'auto'])) as Record<string, string>, { get: (t, k: string) => t[k] ?? 'auto' });
     const ar = failures > 0 ? '' : ` --ar ${values.aspect === 'auto' ? '1:1' : values.aspect}`;
     if (failures > 0) failures--;
     const extra = input.refinementInstruction ? ` [${input.refinementInstruction}]` : '';
@@ -186,7 +188,7 @@ describe('doğrulama ve tek onarım', () => {
 
   it('başarısız varyant için BİR onarım; ikinci kez de başarısızsa "kontrol edilmedi"', async () => {
     const session = { id: 's', productId: 'midjourney-v7', guideId: g.id, guideVersion: 1, goal: 'logo', locale: 'en' as const, slots: {}, questionAsked: false, pendingQuestions: [], versions: [], refinementCount: 0 };
-    const base = { variants: [{ id: 'safe' as const, prompt: 'cat --ar 1:1', negativePrompt: null, settings: [] }, { id: 'creative' as const, prompt: 'cat', negativePrompt: null, settings: [] }], assumptions: [], suggestedRefinements: [], howToUse: [] };
+    const base = { variants: [{ id: 'safe' as const, prompt: 'cat --ar 1:1', negativePrompt: null, settings: [] }, { id: 'creative' as const, prompt: 'cat', negativePrompt: null, settings: [] }], assumptions: [], suggestedRefinements: [], howToUse: [], changeSummary: '' };
 
     const ok = fakeLLM();
     const fixed = await validateWithRepair(base, { session, guide: g, productName: 'MJ', llm: ok.llm });
@@ -300,18 +302,20 @@ describe('prompt oturumu', () => {
 
   it('rehberi olmayan ya da aktif olmayan ürün', async () => {
     const { llm } = fakeLLM();
-    assert.deepStrictEqual(await startPromptSession({ productId: 'tableau', goal: 'dashboard', conversation, locale: 'en' }, deps(llm)), { error: 'no_guide', tokens: 0 });
+    // Görev rehberi muaf (toplantı notu = araçta yazılan prompt yok) ve görev haritası yok -> rehber yok
+    assert.deepStrictEqual(await startPromptSession({ productId: 'fathom-meeting-assistant', goal: 'notes', conversation, locale: 'en' }, deps(llm)), { error: 'no_guide', tokens: 0 });
     assert.deepStrictEqual(await startPromptSession({ productId: 'yok-urun', goal: 'x', conversation, locale: 'en' }, deps(llm)), { error: 'unknown_product', tokens: 0 });
   });
 
   it('rehberi olmayan ürün: aynı türdeki araçların genel rehberiyle yazılır, kartta "Genel rehber"', async () => {
-    const { llm, calls } = fakeLLM({ extracted: { subject: 'a fox', style: 'watercolor', aspect: '1:1', mood: 'calm', background: 'forest' } });
+    const { llm, calls } = fakeLLM({ extracted: { subject: 'a fox', medium: 'illustration', purpose: 'for a social media post', background: 'forest' } });
     const d = { ...deps(llm), tasksById: loadCatalog().tasksById };
     const r = await startPromptSession({ productId: 'leonardo-ai', goal: 'watercolor fox', conversation, locale: 'en' }, d);
     if ('error' in r || r.card.type !== 'prompt') return assert.fail(JSON.stringify(r));
-    assert.strictEqual(r.card.guideId, 'image-natural');
+    // Araca özel rehber yok -> kullanıcının işine (image.generate) yazılmış görev rehberi
+    assert.strictEqual(r.card.guideId, 'task-image-generate');
     assert.strictEqual(r.card.genericGuide, true);
-    assert.match(calls.find((c) => c.name === 'prompt_generation')!.system, /general guide for this kind of tool, not specific to Leonardo/);
+    assert.match(calls.find((c) => c.name === 'prompt_generation')!.system, /general guide for this kind of job, not specific to Leonardo/);
     // İyileştirme de aynı genel rehberle
     const refined = await refinePromptSession({ promptSessionId: r.card.promptSessionId, instruction: 'add a red scarf' }, d);
     if ('error' in refined || refined.card.type !== 'prompt') return assert.fail();
@@ -323,6 +327,12 @@ describe('prompt oturumu', () => {
     if ('error' in mj || mj.card.type !== 'prompt') return assert.fail();
     assert.strictEqual(mj.card.genericGuide, undefined);
     assert.doesNotMatch(own.calls.find((c) => c.name === 'prompt_generation')!.system, /not specific to/);
+
+    // Görev rehberi olmayan işte (muaf) tür rehberine düşer: toplantı notu -> sohbet iskeleti
+    const meeting = fakeLLM({ extracted: {} });
+    const m = await startPromptSession({ productId: 'fathom-meeting-assistant', goal: 'notes', conversation, locale: 'en' }, { ...deps(meeting.llm), tasksById: loadCatalog().tasksById });
+    if ('error' in m) return assert.fail(JSON.stringify(m));
+    assert.strictEqual(m.card.guideId, 'chat-general');
   });
 
   it('üretici kuralları: kullanıcının isteği ve iyileştirme talimatı rehberden önce gelir', async () => {

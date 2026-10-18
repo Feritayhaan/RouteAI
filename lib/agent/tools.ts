@@ -37,6 +37,7 @@ export const askUserArgs = z.object({
 export const buildPromptArgs = z.object({
   productId: z.string(),
   goal: z.string().min(3).max(1000),
+  taskId: z.string().optional(),
   slots: z.record(z.string().max(300)).optional(),
 }).strict();
 
@@ -103,6 +104,7 @@ export function toolDefinitions(tasks: Task[]) {
           type: 'object',
           properties: {
             productId: { type: 'string', description: 'productId from a search_catalog result' },
+            taskId: { type: 'string', description: 'The task id you searched with; picks the prompt guide for this job' },
             goal: { type: 'string', description: 'What the user wants to create, in their words' },
             slots: { type: 'object', additionalProperties: { type: 'string' }, description: 'Details already known' },
           },

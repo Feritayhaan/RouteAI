@@ -152,12 +152,20 @@ describe('ürün adı araması: ekran verisi (apiResponseFromV3)', () => {
     const source = readFileSync(new URL('../../components/SimpleRecommendationDisplay.tsx', import.meta.url), 'utf8');
     // Tahmini eşleşme (approximate) de aynı kuralı izler: kullanıcının isteği o iş değil, sinyal yazılmaz.
     assert.match(source, /const signalTaskId = searched \|\| approximate \? undefined : taskId/);
-    const toolOpens = source.match(/onToolOpen\([^)]*\)/g) ?? [];
-    assert.ok(toolOpens.length >= 3);
-    for (const call of toolOpens) assert.ok(call.endsWith('signalTaskId)'), `${call}: ham taskId ile çağrılmamalı`);
-    const votes = source.match(/<VoteButtons taskId=\{[^}]*\}/g) ?? [];
-    assert.ok(votes.length >= 2);
-    for (const v of votes) assert.ok(v.includes('signalTaskId'), `${v}: ham taskId kullanılmamalı`);
+    // Oy ve "araca git" kaydı artık components/ToolDetail.tsx'te (ana kart ve açılır alternatifler aynı parçaları kullanır).
+    // Kural iki yerde kilitlenir: (1) ekran bu parçalara HAM taskId değil signalTaskId verir,
+    // (2) parçalar taskId yoksa ne oy düğmesi çizer ne de tıklama kaydı yazar.
+    const passed = source.match(/<(?:ToolActions|AlternativeTool)\b[^>]*>/g) ?? [];
+    assert.ok(passed.length >= 3, 'ana kart + alternatifler + diğer araçlar');
+    for (const el of passed) assert.match(el, /taskId=\{signalTaskId\}/, `${el}: ham taskId ile çağrılmamalı`);
+    assert.doesNotMatch(source, /onToolOpen\(/, 'tıklama kaydı ekranda doğrudan değil, ToolDetail içinde');
+    const detail = readFileSync(new URL('../../components/ToolDetail.tsx', import.meta.url), 'utf8');
+    const toolOpens = detail.match(/onToolOpen\([^)]*\)/g) ?? [];
+    assert.ok(toolOpens.length >= 1);
+    for (const call of toolOpens) assert.ok(call.endsWith('taskId)'), `${call}: yalnız gelen taskId ile çağrılmalı`);
+    assert.match(detail, /\{taskId && tool\.productId && <VoteButtons taskId=\{taskId\}/, 'taskId yoksa alternatifte oy düğmesi çizilmez');
+    assert.match(readFileSync(new URL('../../components/toolOpen.ts', import.meta.url), 'utf8'), /if \(!tool\.productId \|\| !taskId\) return/, 'taskId yoksa kayıt yazılmaz');
+    assert.doesNotMatch(source, /<VoteButtons/, 'oy düğmeleri yalnız ToolDetail içinde (taskId korumasıyla)');
     assert.match(source, /trackEvent\("recommendation_shown", \{ taskId: signalTaskId \}\)/);
     assert.match(source, /\{searched \|\| approximate \? null : sessionId && taskId && main\.productId \? \(/, 'geri bildirim düğmeleri (ve arama metnini gönderen eski düğme) kapalı');
   });

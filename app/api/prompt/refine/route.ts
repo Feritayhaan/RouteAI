@@ -3,7 +3,8 @@ import { promptRefineSchema } from "@/lib/validations/prompt";
 import { refinePromptSession } from "@/lib/promptBuilder/service";
 import { handlePromptRequest } from "@/lib/promptBuilder/http";
 
-// Prompt iyileştirme: hazır buton | varsayım değişikliği | serbest talimat -> yeni PromptCard.
+// Prompt düzenleme: sohbet mesajı (düzenle | eski sürüme dön | cevap) ya da eski hazır buton |
+// varsayım değişikliği | serbest talimat -> PromptCard (+ sohbet cevabı).
 // Node: düşünen modelle (OPENAI_PROMPT_MODEL) tur 25 sn'yi aşabilir; edge'de yanıt
 // 25 sn içinde başlamak zorunda. Zaman aşımı: lib/promptBuilder/deps.ts.
 export const runtime = "nodejs";

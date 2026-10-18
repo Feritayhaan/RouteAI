@@ -1,5 +1,5 @@
 // /api/prompt/* ortak akışı: rate limit, bütçe, zaman aşımı, kullanım kaydı.
-// Kullanıcı metni (serbest talimat) loglanmaz.
+// Kullanıcı metni (sohbet mesajı, serbest talimat) loglanmaz.
 
 import { NextResponse, type NextRequest } from "next/server";
 import { checkRateLimit } from "../rateLimit";
@@ -47,7 +47,7 @@ export async function handlePromptRequest<T>(
     await recordUsage(usage, result.tokens);
     console.log(`[prompt/${label}] ${JSON.stringify({ latencyMs: Date.now() - started, tokens: result.tokens, error: "error" in result ? result.error : null })}`);
     if ("error" in result) return NextResponse.json({ error: result.error }, { status: STATUS[result.error] ?? 400 });
-    return NextResponse.json({ card: result.card });
+    return NextResponse.json({ card: result.card, ...(result.chat ? { chat: result.chat } : {}) });
   } catch (error) {
     console.error(`[prompt/${label}] üretim hatası: ${abort.signal.aborted ? "timeout" : error instanceof Error ? error.name : "unknown"}`);
     return NextResponse.json({ error: abort.signal.aborted ? "timeout" : "generation_failed" }, { status: 502 });

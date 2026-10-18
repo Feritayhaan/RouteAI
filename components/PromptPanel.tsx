@@ -23,9 +23,11 @@ const box = "rounded-2xl border border-border/50 bg-card p-4 md:p-6 shadow-lg"
 type Card = PromptCardData | PromptQuestionData
 type State = { status: "loading" } | { status: "error" } | { status: "done"; card: Card }
 
-export default function PromptPanel({ target, goal, locale = "tr", cached, onResult, choices = [], onChoose }: {
+export default function PromptPanel({ target, goal, taskId, locale = "tr", cached, onResult, choices = [], onChoose }: {
   target: PromptTarget
   goal: string
+  /** Kullanıcının işi (data/tasks.json): araca özel rehber yoksa bu işe uygun şablon seçilir. */
+  taskId?: string
   locale?: Locale
   cached?: Card
   onResult?: (card: Card) => void
@@ -54,7 +56,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
   useEffect(() => {
     if (!productId || (initialCard && attempt === 0)) return
     let cancelled = false
-    startPrompt(productId, goal, locale).then((result) => {
+    startPrompt(productId, goal, locale, taskId).then((result) => {
       if (cancelled) return
       if ("error" in result) {
         setState({ status: "error" })
@@ -66,7 +68,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
     return () => {
       cancelled = true
     }
-  }, [productId, goal, locale, attempt, initialCard])
+  }, [productId, goal, taskId, locale, attempt, initialCard])
 
   const retry = () => {
     setState({ status: "loading" })
@@ -74,7 +76,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
   }
 
   return (
-    <section className="space-y-2 animate-in fade-in slide-in-from-bottom-8 duration-700" aria-live="polite">
+    <section className="space-y-2 animate-in fade-in slide-in-from-bottom-8 duration-700 motion-reduce:animate-none" aria-live="polite">
       <div className="flex items-center gap-2 px-1 text-xs font-semibold text-muted-foreground">
         <Wand2 className="w-4 h-4 text-primary" aria-hidden />
         {format(dict.prompt.panelTitle, { product: toolName })}
@@ -90,7 +92,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
               aria-pressed={name === toolName}
               disabled={name === toolName}
               onClick={() => onChoose(name)}
-              className="min-h-9 rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground border-border bg-card hover:bg-muted"
+              className="min-h-9 touch:min-h-11 rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground border-border bg-card hover:bg-muted"
             >
               {name}
             </button>
@@ -118,7 +120,7 @@ export default function PromptPanel({ target, goal, locale = "tr", cached, onRes
           <button
             type="button"
             onClick={retry}
-            className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="min-h-11 rounded-lg border border-border px-3 py-1.5 text-sm font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {dict.chat.retry}
           </button>
