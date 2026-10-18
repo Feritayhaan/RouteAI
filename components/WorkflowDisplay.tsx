@@ -121,6 +121,7 @@ export default function WorkflowDisplay({ workflow, goal, locale = "tr", autoPro
             key={side.cacheKey}
             target={{ productId: side.productId, toolName: sideStep.primary.toolName }}
             goal={side.goal}
+            taskId={side.taskId}
             locale={locale}
             cached={cache.get(side.cacheKey)}
             onResult={(card) => cache.set(side.cacheKey, card)}

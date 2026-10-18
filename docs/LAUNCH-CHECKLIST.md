@@ -56,11 +56,11 @@ Bugün: 40 görev, 56 aktif ürün, **0 model, 0 uzman değerlendirmesi, 0 sinya
 ## 4. Prompt rehberleri
 
 - [ ] 10 rehberden gözden geçirilmiş (`reviewedBy` dolu) olan: **0 / 10**. Hepsi resmi dokümana erişilemediği için KAYNAK GEREKLİ; `docs/prompt-guides-review.md`'deki listeyle her rehberde kaynak eklenip gövde yazılmalı. Her rehber için resmi doküman linkleri aynı dosyada "Resmi kaynak adayları" bölümünde (2026-09-25).
-- [ ] En az 3 rehberde uçtan uca elle test: soru kartı → iki varyant → buton ile iyileştirme → varsayım değiştirme → serbest metin → kopyala.
+- [ ] En az 3 rehberde uçtan uca elle test: soru kartı → iki varyant → sohbetle düzenleme ("sonuna uyarı ekle", "2. maddeyi sil", "geri al", eski sürümü açıp yazma) → varsayım değiştirme → kopyala.
 
 ## 5. Uygulama kontrolleri
 
-- [ ] Navigasyon uçtan uca (gerçek anahtarlarla): ana sayfada "Prompt da yaz" açık → sorgu → öneri + altında (soru kartı) → prompt kartı → iyileştir → kopyala. Sağdaki listeden araç değiştirince prompt o araç için gelmeli; rehberi olmayan önerilen araçta "rehber yok" mesajı çıkmalı. `/chat` ve `/api/chat` 404, `/classic` `/`'a yönlenmeli.
+- [ ] Navigasyon uçtan uca (gerçek anahtarlarla): ana sayfada "Prompt da yaz" açık → sorgu → öneri + altında (soru kartı) → prompt kartı → sohbetle düzenle → kopyala. Sağdaki listeden araç değiştirince prompt o araç için gelmeli; rehberi olmayan önerilen araçta "rehber yok" mesajı çıkmalı. Alternatif araçlar ve "Diğer araçlar" satırına tıklayınca siteye GİTMEMELİ, altında ayrıntı açılmalı (rozetler, neden, "Araca Git", rehberi varsa "Prompt yaz"); "Araca Git" yeni sekmede açmalı, oy düğmeleri satırın yanında çalışmalı. `/chat` ve `/api/chat` 404, `/classic` `/`'a yönlenmeli.
 - [ ] Rate limit testi: `/api/recommend` 10/dk, `/api/prompt/*` 30/dk, `/api/events` 60/dk aşılınca 429.
 - [ ] Bütçe testi: düşük `OPENAI_MONTHLY_TOKEN_BUDGET` ile v1'e düşüş; kartta "Quick keyword match … No score." / Türkçe karşılığı görünüyor.
 - [ ] Mobil kontrol: 360 px'de taşma yok, klavye ile gezinme, karanlık tema. (2026-09-25: `/privacy` en/tr ve 404 en/tr 360 px'de taşmasız: `docs/screenshots/p8-*-360.png`. Tek ekran ana sayfa (prompt açık/kapalı, rehber yok durumu) 360 ve 1280 px, aydınlık ve karanlık temada taşmasız: `docs/screenshots/one-*.png`. Bunlar sahte API cevaplarıyla alındı; öneri ve prompt metinleri örnek. Gerçek telefonda tekrar bak.)

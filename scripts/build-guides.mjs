@@ -7,14 +7,17 @@
 // gövde bölümleri (## Sözdizimi, ## Şablon, ## Yap / Yapma, ## Örnekler).
 // Doğrulama: Zod şeması + kurallar (en az 2 'high' slot, refinement slotId'leri,
 // regex'ler derleniyor mu) + ürün tutarlılığı (appliesTo ürünleri var mı,
-// product.promptGuide doğru rehbere mi işaret ediyor). Hata varsa çıkış 1.
+// product.promptGuide doğru rehbere mi işaret ediyor) + GÖREV rehberleri (tasks:
+// görev var mı, bir görevin tek rehberi mi, tür görevle aynı mı, id "task-<görev>"
+// mi). Rehberi olmayan görev uyarılır (fallback.ts TASKS_WITHOUT_PROMPT_GUIDE hariç).
+// Hata varsa çıkış 1.
 
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYamlSubset, splitFrontmatter, splitSections } from '../lib/promptBuilder/yaml.ts';
 import { GUIDE_SECTIONS, guideRuleErrors, guideSchema } from '../lib/promptBuilder/guideSchema.ts';
-import { FALLBACK_BY_MODALITY, FALLBACK_BY_TASK, resolveGuideId } from '../lib/promptBuilder/fallback.ts';
+import { FALLBACK_BY_MODALITY, FALLBACK_BY_TASK, TASKS_WITHOUT_PROMPT_GUIDE, resolveGuideId } from '../lib/promptBuilder/fallback.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = path.join(ROOT, 'data/prompt-guides');
@@ -55,6 +58,8 @@ for (const file of readdirSync(DIR).filter((f) => f.endsWith('.md')).sort()) {
 // Ürün tutarlılığı
 const products = JSON.parse(readFileSync(path.join(ROOT, 'data/products.json'), 'utf8'));
 const byId = new Map(products.map((p) => [p.id, p]));
+const tasks = JSON.parse(readFileSync(path.join(ROOT, 'data/tasks.json'), 'utf8'));
+const tasksById = new Map(tasks.map((t) => [t.id, t]));
 const guideIds = new Set(guides.map((g) => g.id));
 for (const g of guides) {
   for (const productId of g.appliesTo) {
@@ -76,8 +81,24 @@ for (const p of products) {
 for (const [key, id] of [...Object.entries(FALLBACK_BY_MODALITY), ...Object.entries(FALLBACK_BY_TASK)]) {
   if (!guideIds.has(id)) errors.push(`fallback.ts ${key}: rehber "${id}" yok`);
 }
-const tasks = JSON.parse(readFileSync(path.join(ROOT, 'data/tasks.json'), 'utf8'));
-const tasksById = new Map(tasks.map((t) => [t.id, t]));
+
+// Görev rehberleri
+const guideOfTask = new Map();
+for (const g of guides) {
+  for (const taskId of g.tasks) {
+    const task = tasksById.get(taskId);
+    if (!task) { errors.push(`${g.id}: tasks'ta olmayan görev "${taskId}"`); continue; }
+    if (guideOfTask.has(taskId)) errors.push(`${g.id}: "${taskId}" görevinin rehberi zaten var (${guideOfTask.get(taskId)})`);
+    guideOfTask.set(taskId, g.id);
+    if (task.modality !== g.modality) errors.push(`${g.id}: modality "${g.modality}" ama görev "${taskId}" "${task.modality}"`);
+    if (TASKS_WITHOUT_PROMPT_GUIDE.includes(taskId)) errors.push(`${g.id}: "${taskId}" TASKS_WITHOUT_PROMPT_GUIDE listesinde (fallback.ts); ya listeden çıkar ya rehberi sil`);
+    if (g.tasks.length === 1 && g.id !== `task-${taskId.replace('.', '-')}`) errors.push(`${g.id}: tek görevli rehberin id'si "task-${taskId.replace('.', '-')}" olmalı`);
+  }
+}
+for (const t of tasks) {
+  if (!guideOfTask.has(t.id) && !TASKS_WITHOUT_PROMPT_GUIDE.includes(t.id)) warnings.push(`${t.id}: görev rehberi yok (yazılmalı ya da fallback.ts TASKS_WITHOUT_PROMPT_GUIDE'a eklenmeli)`);
+}
+for (const id of TASKS_WITHOUT_PROMPT_GUIDE) if (!tasksById.has(id)) errors.push(`fallback.ts TASKS_WITHOUT_PROMPT_GUIDE: görev "${id}" yok`);
 
 for (const w of warnings) console.log(`UYARI: ${w}`);
 for (const e of errors) console.log(`HATA: ${e}`);
@@ -86,16 +107,16 @@ if (errors.length > 0) {
   process.exit(1);
 }
 writeFileSync(path.join(ROOT, 'data/prompt-guides.json'), `${JSON.stringify(guides, null, 2)}\n`);
-console.log(`[build-guides] ${guides.length} rehber -> data/prompt-guides.json (${guides.filter((g) => !g.reviewedBy).length} taslak)`);
+console.log(`[build-guides] ${guides.length} rehber (${guides.filter((g) => g.tasks.length > 0).length} görev rehberi) -> data/prompt-guides.json (${guides.filter((g) => !g.reviewedBy).length} taslak)`);
 
 // Navigasyon arayüzünün prompt kutusu için küçük harita: araç adı -> ürün id
 // (özel ya da genel rehberi olan aktif ürünler; tarayıcıya tüm katalog gitmesin).
 const promptProducts = Object.fromEntries(
   products
-    .filter((p) => p.status === 'active' && guideIds.has(resolveGuideId(p, tasksById)?.guideId))
+    .filter((p) => p.status === 'active' && guideIds.has(resolveGuideId(p, tasksById, { guides })?.guideId))
     .map((p) => [p.name, p.id])
     .sort(([a], [b]) => a.localeCompare(b, 'en'))
 );
 writeFileSync(path.join(ROOT, 'data/prompt-products.json'), `${JSON.stringify(promptProducts, null, 2)}\n`);
-const genericCount = products.filter((p) => p.name in promptProducts && !p.promptGuide).length;
+const genericCount = products.filter((p) => p.name in promptProducts && resolveGuideId(p, tasksById, { guides })?.generic).length;
 console.log(`[build-guides] ${Object.keys(promptProducts).length} ürün -> data/prompt-products.json (${genericCount} genel rehberle)`);

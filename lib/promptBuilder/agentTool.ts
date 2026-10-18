@@ -8,7 +8,7 @@ import { startPromptSession, type PromptDeps } from './service';
 export function makeBuildPromptTool(depsFactory: () => PromptDeps = () => defaultPromptDeps()): BuildPromptFn {
   return async (args, locale, conversation) => {
     const result = await startPromptSession(
-      { productId: args.productId, goal: args.goal, slots: args.slots, conversation, locale },
+      { productId: args.productId, goal: args.goal, taskId: args.taskId, slots: args.slots, conversation, locale },
       depsFactory()
     );
     if ('error' in result) return { error: result.error, tokens: result.tokens };
