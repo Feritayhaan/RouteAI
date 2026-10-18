@@ -1,39 +1,17 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AlertTriangle, ExternalLink, Rocket, Wand2 } from "lucide-react"
+import { AlertTriangle, Rocket } from "lucide-react"
 import { SimpleRecommendation } from "@/lib/types"
-import { displayPriceLabel } from "@/lib/pricing"
 import { format, getDictionary } from "@/lib/i18n"
-import PricingBadges from "./PricingBadges"
 import CategoryBadge from "./CategoryBadge"
 import FeedbackButtons from "./FeedbackButtons"
-import { ConfidenceBadge, EditorPickBadge, EditorReasonsBox, ReasonsBox, UnverifiedBadge, UnverifiedNote } from "./Evidence"
-import VoteButtons from "./VoteButtons"
-import { onToolOpen } from "./toolOpen"
+import { AlternativeTool, CurrentModelLine, ToolActions, ToolBadges, ToolReasons } from "./ToolDetail"
 import { trackEvent } from "@/lib/analytics/client"
 import { getSessionId } from "@/lib/chat/session"
-import { SOURCES } from "@/lib/catalog/sources"
-import { promptProductId } from "@/lib/promptBuilder/products"
-import type { CurrentModel } from "@/lib/catalog/currentModel"
 
 const dict = getDictionary("tr")
 const VOTE_LABELS = { recommend: dict.feedback.recommend, dontRecommend: dict.feedback.dontRecommend }
-
-/** "Güncel model: X · Artificial Analysis · 26 Eyl 2026" — kaynak adı görünür (lisans şartı). */
-function CurrentModelLine({ model }: { model: CurrentModel }) {
-  const source = SOURCES[model.source]
-  const date = new Date(`${model.fetchedAt}T00:00:00Z`).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
-  return (
-    <p className="text-[11px] md:text-xs text-muted-foreground">
-      Güncel model: <span className="font-semibold text-foreground/90">{model.name}</span>
-      {" · "}
-      <a href={source.leaderboardUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">{source.label}</a>
-      {" · "}
-      <span className="whitespace-nowrap">{date}</span>
-    </p>
-  )
-}
 
 /** Sorgudaki fiyat koşulu tutmayınca gösterilen not (sunucu koşulu gevşetti). */
 const RELAXED_NOTE: Record<string, string> = {
@@ -47,6 +25,7 @@ export default function SimpleRecommendationDisplay({
   query,
   onPrompt,
   onSelectTask,
+  beside = false,
 }: {
   recommendation: SimpleRecommendation
   query: string
@@ -54,10 +33,10 @@ export default function SimpleRecommendationDisplay({
   onPrompt?: (toolName: string) => void
   /** Tahmini eşleşmede "başka bir iş mi demek istedin?" düğmesi: aynı sorgu seçilen işle yeniden aranır (HomeClient). */
   onSelectTask?: (taskId: string) => void
+  /** Prompt paneli yanında (geniş ekranda yarım sütun): başlık ve düğmeler alt alta, yazı bir kademe küçük. */
+  beside?: boolean
 }) {
   const { main, taskId } = recommendation
-  const editor = main.basis === "editor"
-  const unverifiedMain = main.basis === "unverified"
   // Kullanıcı bir ürünün ADINI yazdıysa görevi biz seçtik, kullanıcının niyeti o görev değil:
   // o göreve oy, "işini gördü mü?" kaydı ve görev olayı yazılmaz (sıralama verisi kirlenmesin).
   const searched = recommendation.searched === true
@@ -70,30 +49,16 @@ export default function SimpleRecommendationDisplay({
   useEffect(() => {
     if (signalTaskId) trackEvent("recommendation_shown", { taskId: signalTaskId })
   }, [signalTaskId])
-  const renderPricingBadges = () => {
-    if (!main.pricing && !main.confidence) return null
-    return (
-      <div className="flex flex-wrap items-center gap-1.5">
-        {main.pricing && <PricingBadges pricing={main.pricing} pricingUrl={main.pricingUrl} />}
-        {editor ? (
-          <EditorPickBadge dict={dict} />
-        ) : unverifiedMain ? (
-          <UnverifiedBadge dict={dict} />
-        ) : (
-          main.confidence && <ConfidenceBadge confidence={main.confidence} dict={dict} />
-        )}
-      </div>
-    )
-  }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 motion-reduce:animate-none">
       <div className="relative group">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-primary/60 to-primary/40 rounded-3xl blur-lg opacity-40 dark:opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
+        {/* Kart arkası parıltı: mobilde yok (blur kaydırmayı ağırlaştırır) */}
+        <div className="mobile:hidden absolute -inset-0.5 bg-gradient-to-r from-primary via-primary/60 to-primary/40 rounded-3xl blur-lg opacity-40 dark:opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
 
-        <div className="relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-6 lg:p-10 space-y-4 md:space-y-6 shadow-2xl">
+        <div className={`relative bg-gradient-to-br from-card via-card to-card/95 border border-border/50 rounded-2xl p-4 md:p-6 ${beside ? "" : "lg:p-10"} space-y-4 md:space-y-6 shadow-2xl mobile:shadow-lg`}>
           {/* Card Header */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 md:gap-4 pb-3 md:pb-4 border-b border-border/50">
+          <div className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 md:gap-4 pb-3 md:pb-4 border-b border-border/50 ${beside ? "lg:flex-col" : ""}`}>
             <div className="flex items-start gap-2 md:gap-4 flex-1 min-w-0">
               <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
                 <Rocket className="w-6 h-6 md:w-8 md:h-8 text-primary" />
@@ -115,14 +80,14 @@ export default function SimpleRecommendationDisplay({
                     <CategoryBadge category={recommendation.category} />
                   </div>
                 )}
-                {renderPricingBadges()}
+                <ToolBadges tool={main} dict={dict} />
 
                 {recommendation.taskLabel && (
                   <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
                     {recommendation.searched ? dict.v3.searched : approximate ? dict.v3.approxPick : dict.v3.pick}
                   </p>
                 )}
-                <h2 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight break-words">
+                <h2 className={`text-xl md:text-3xl ${beside ? "" : "lg:text-4xl"} font-black tracking-tight leading-tight break-words`}>
                   <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                     {main.toolName}
                   </span>
@@ -131,28 +96,7 @@ export default function SimpleRecommendationDisplay({
               </div>
             </div>
 
-            <div className="self-start flex flex-wrap gap-2">
-              <a
-                href={main.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => onToolOpen(main, signalTaskId)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all shadow-lg text-sm"
-              >
-                <ExternalLink className="w-4 h-4" />
-                <span>Araca Git</span>
-              </a>
-              {onPrompt && promptProductId(main.toolName) && (
-                <button
-                  type="button"
-                  onClick={() => onPrompt(main.toolName)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-medium transition-all text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <Wand2 className="w-4 h-4" aria-hidden />
-                  <span>{dict.prompt.forTool}</span>
-                </button>
-              )}
-            </div>
+            <ToolActions tool={main} dict={dict} taskId={signalTaskId} onPrompt={onPrompt} className="self-start" />
           </div>
 
           <div className="space-y-3 md:space-y-4">
@@ -206,59 +150,18 @@ export default function SimpleRecommendationDisplay({
               <p className="text-sm md:text-base lg:text-lg leading-relaxed text-card-foreground">
                 {main.description}
               </p>
-              {editor ? (
-                <EditorReasonsBox tool={main} dict={dict} />
-              ) : unverifiedMain ? (
-                <UnverifiedNote dict={dict} />
-              ) : main.reasons ? (
-                <ReasonsBox tool={main} dict={dict} />
-              ) : main.why && (
-                <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                  <div className="flex items-start gap-2">
-                    <span className="text-primary text-xs font-semibold">💡</span>
-                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                      {main.why}
-                    </p>
-                  </div>
-                </div>
-              )}
+              <ToolReasons tool={main} dict={dict} />
             </div>
 
             {recommendation.alternatives && recommendation.alternatives.length > 0 && (
               <div className="mt-4 border-t border-border/50 pt-3">
-                <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase">
-                  Alternatif araçlar
+                <div className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">Alternatif araçlar</span>
+                  <span className="text-[11px] text-muted-foreground/80">{dict.rec.altHint}</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   {recommendation.alternatives.map((alt) => (
-                    <div key={alt.toolName} className="flex items-center gap-2">
-                      <a
-                        href={alt.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => onToolOpen(alt, signalTaskId)}
-                        className="min-w-0 flex-1 text-sm flex justify-between items-center gap-3 hover:underline"
-                      >
-                        <span className="min-w-0 break-words">
-                          {alt.toolName}
-                          {alt.basis === "unverified" ? (
-                            <span className="ml-2 text-[10px] text-muted-foreground no-underline">{dict.v3.unverified}</span>
-                          ) : (
-                            alt.confidence && (
-                              <span className="ml-2 text-[10px] text-muted-foreground no-underline">{dict.rec.confidence[alt.confidence]}</span>
-                            )
-                          )}
-                        </span>
-                        {/* `{price && ...}` YOK: 0 falsy oldugu halde React onu
-                            ekrana basiyor, fiyat yerine ciplak "0" cikiyordu. */}
-                        <span className="shrink-0 text-xs text-muted-foreground">
-                          {displayPriceLabel(alt.pricing)}
-                        </span>
-                      </a>
-                      {signalTaskId && alt.productId && (
-                        <VoteButtons taskId={signalTaskId} productId={alt.productId} toolName={alt.toolName} labels={VOTE_LABELS} />
-                      )}
-                    </div>
+                    <AlternativeTool key={alt.toolName} tool={alt} dict={dict} taskId={signalTaskId} onPrompt={onPrompt} voteLabels={VOTE_LABELS} />
                   ))}
                 </div>
               </div>
@@ -266,26 +169,13 @@ export default function SimpleRecommendationDisplay({
 
             {recommendation.unverified && recommendation.unverified.length > 0 && (
               <div className="mt-4 border-t border-border/50 pt-3">
-                <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase">
-                  {dict.v3.otherTools}
+                <div className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">{dict.v3.otherTools}</span>
+                  <span className="text-[11px] text-muted-foreground/80">{dict.rec.altHint}</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   {recommendation.unverified.map((alt) => (
-                    <div key={alt.toolName} className="flex items-center gap-2">
-                      <a
-                        href={alt.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => onToolOpen(alt, signalTaskId)}
-                        className="min-w-0 flex-1 text-sm flex justify-between items-center gap-3 hover:underline"
-                      >
-                        <span className="min-w-0 break-words">{alt.toolName}</span>
-                        <span className="shrink-0 text-xs text-muted-foreground">{displayPriceLabel(alt.pricing)}</span>
-                      </a>
-                      {signalTaskId && alt.productId && (
-                        <VoteButtons taskId={signalTaskId} productId={alt.productId} toolName={alt.toolName} labels={VOTE_LABELS} />
-                      )}
-                    </div>
+                    <AlternativeTool key={alt.toolName} tool={alt} dict={dict} taskId={signalTaskId} onPrompt={onPrompt} voteLabels={VOTE_LABELS} unverified />
                   ))}
                 </div>
               </div>

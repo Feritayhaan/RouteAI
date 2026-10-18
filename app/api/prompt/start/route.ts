@@ -15,8 +15,8 @@ export function POST(req: NextRequest) {
   return handlePromptRequest(
     req,
     promptStartSchema,
-    ({ productId, goal, locale }, deps) =>
-      startPromptSession({ productId, goal, locale, conversation: [{ role: "user", content: goal }] }, deps),
+    ({ productId, goal, locale, taskId }, deps) =>
+      startPromptSession({ productId, goal, locale, taskId, conversation: [{ role: "user", content: goal }] }, deps),
     "start"
   );
 }

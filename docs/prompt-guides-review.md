@@ -1,5 +1,7 @@
 # Prompt rehberleri — Ferit incelemesi
 
+> **2026-10-18 — Görev rehberleri:** Aşağıdaki 10 araç/ortak rehbere ek olarak her prompt yazılan göreve özel **47 görev rehberi** eklendi (`data/prompt-guides/task-*.md`, bölüm sonundaki tablo). Araca özel rehberi olmayan HER araçta, kullanıcının işine göre bu rehber kullanılır. Hepsi **TASLAK** (`reviewedBy` boş). Önceki 10 rehberden farkı: kaynakları vardır (aşağıda) ve bölümleri doludur; ama araca özel sözdizimi içermez, çünkü hiçbir araca bağlı değildir.
+
 10 rehberin hepsi **TASLAK** (`reviewedBy` boş) ve **kaynaksız**: yazılırken resmi dokümantasyon sitelerine erişilemedi. Kural gereği ("resmi dokümana erişemediğin rehberi UYDURMA") sözdizimi, yap/yapma ve örnek bölümlerinde `KAYNAK GEREKLİ` yazıyor. Şablon bölümü RouteAI'ın kendi iskeleti; araca özel sözdizimi içermiyor.
 
 Taslak rehberle üretilen promptlar kartta "Taslak rehber" etiketiyle görünür. Üretici, KAYNAK GEREKLİ bölümlerde belgelenmemiş araç sözdizimine dayanmaz; sade ve yaygın uyumlu ifade kullanır.
@@ -54,3 +56,80 @@ Aşağıdaki sayfalar, resmi alan adlarıyla sınırlı web aramasıyla bulundu.
 ## Eval
 
 `npm run eval:prompts` (OPENAI_API_KEY gerekir): rehber başına 2 senaryo (`evals/prompts.jsonl`). Bu ortamda anahtar yok, 20/20 skipped (`evals/results/2026-09-24-prompts.json`).
+
+## Görev rehberleri (47) — Ferit incelemesi
+
+Kural: araca özel rehberi olan ürün kendi rehberini kullanır (yalnız işin türü rehberle aynıysa). Yoksa kullanıcının işi (`taskId`) için yazılmış görev rehberi, o da yoksa ortak iskelet, o da yoksa türün genel iskeleti kullanılır (`lib/promptBuilder/fallback.ts`). Görev rehberi, ortak iskeletten (`chat-general`, `image-natural`, `text-to-video`) **önce** gelir; ortak iskelet yalnızca görev rehberi olmayan işte (8 muaf görev) kullanılır.
+
+**Muaf 8 görev** (araca yazılan prompt yok; dosya yükle, düğmeye bas, ayar seç): `image.background-remove`, `image.upscale`, `video.subtitles`, `video.repurpose-clips`, `audio.voice-clone`, `audio.transcribe`, `audio.cleanup`, `audio.meeting-notes`. Bunlar eskisi gibi tür/görev eşlemesine düşer (`FALLBACK_BY_MODALITY` / `FALLBACK_BY_TASK`).
+
+### Nasıl yazıldı
+- Kaynaklar: yalnız bu çalışmada GERÇEKTEN okunan sayfalar (OpenAI, Anthropic, Google genel prompt rehberleri; görev türüne göre OpenAI görsel, Midjourney, Veo, Sora, ElevenLabs, Cursor, Claude Code, Meshy, Gamma rehberleri). Sayfalar otomatik özetleyiciyle okundu; **kelimesi kelimesine alıntı değildir.** Ferit sayfalarla karşılaştırmalı.
+- Kaynağı okunamayan ya da zayıf çıkan sayfalardan (Ideogram, Runway Gen-3 [kullanımdan kalkmış], Imagen [kapatılmış], Suno, BFL) kural alınmadı.
+- Tüm rehberler aynı yapıda: ≥6 slot (≥2 'high'), 6–8 hazır iyileştirme, ≥6 maddelik kontrol listesi, uzunluk sınırı ≤3000 karakter, doldurulmamış `{ }` yasağı, 2 örnek (örnek promptlar rehberin kendi doğrulayıcılarından geçer; test kilitler).
+- Uydurma koruması: bilgi uydurmanın zarar verdiği görevlerde (metin, CV, araştırma, muhasebe, satış, destek botu, proje, planlama, slayt) şablonda açık kural var; test kilitler.
+
+### Ferit ne kontrol etmeli
+1. Her rehberde `## Sözdizimi` bölümündeki genel öneriler doğru mu? Özellikle iddialı olanlar: Veo/Sora (tek eylem, kamera), ElevenLabs/TTS (rakamı yazıyla yaz, noktalama), Meshy/3D (tek nesne, A-pose), Gamma/slayt (kitle + amaç).
+2. Slot seçeneklerinin `value` alanları prompta aynen girer; Türkçe/İngilizce karşılıkları ve değerleri oku.
+3. Araç adı geçen yerler (örn. "Zapier, Make, n8n", "Intercom Fin", "Comet, Atlas") yalnız örnektir; ürün iddiası değildir. Kaldırmak istersen rehberden çıkarman yeterli.
+4. Uygun bulunca: `reviewedBy: ferit`, `reviewedAt: YYYY-MM-DD`, içerik değiştiyse `version`'ı artır, `npm run build:guides`.
+5. Görev rehberi bir araçta kötü sonuç veriyorsa o araca özel rehber yazılabilir; araca özel rehber (aynı türde) her zaman önce gelir.
+
+### Bilinen sınırlar
+- LLM üretimi gerçek anahtarla denenmedi (bu ortamda anahtar yok): şablonların gerçek çıktı kalitesi ÖLÇÜLMEDİ. Yayından önce en az 5 farklı görevde elle dene (`/dev/cards` yalnızca kartı gösterir).
+- Rehber gövdesi her çağrıda sistem promptuna girer; görev rehberleri eski taslaklardan uzundur, çağrı başına token maliyeti artar. Çıktı sınırı (`maxTokensFor`) değişmedi.
+- `video.edit-short-social` gibi bazı işlerde araçların çoğu prompt almaz; rehber "düzenleme özeti" yazar. Araç komut alanı yoksa kullanıcı özeti elle uygular.
+- Sözdizimi bölümleri araç-bağımsızdır; araca özel parametreler (örn. `--ar`) görev rehberinde YOKTUR.
+
+### Görev rehberi tablosu
+
+| Rehber | Görev | Tür | Prompt dili | 'high' slotlar | Kaynak siteler |
+| --- | --- | --- | --- | --- | --- |
+| `task-3d-generate` | `3d.generate` | 3d | en | **object**, **style**, **purpose** | developers.openai.com, docs.meshy.ai |
+| `task-audio-tts-voiceover` | `audio.tts-voiceover` | audio | user | **use**, **voice**, **length** | developers.openai.com, elevenlabs.io, platform.claude.com |
+| `task-agent-browser` | `agent.browser` | automation | user | **job**, **scope**, **autonomy**, **sensitive** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-automation-workflow` | `automation.workflow` | automation | user | **trigger**, **action**, **safety** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-productivity-planning` | `productivity.planning` | automation | user | **need**, **tasks**, **fixed**, **hours** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-project-management` | `project.management` | automation | user | **need**, **project**, **level** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-sales-prospecting` | `sales.prospecting` | automation | user | **need**, **customer**, **offer**, **personalization** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-support-chatbot` | `support.chatbot` | automation | user | **business**, **scope**, **handoff** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-code-agent-cli` | `code.agent-cli` | code | user | **job**, **scope**, **autonomy**, **verify**, **safety** | code.claude.com, cursor.com, developers.openai.com, platform.claude.com |
+| `task-code-app-builder` | `code.app-builder` | code | user | **app**, **users**, **features** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-code-assistant-ide` | `code.assistant-ide` | code | user | **job**, **scope**, **language**, **verify** | code.claude.com, cursor.com, developers.openai.com, platform.claude.com |
+| `task-code-debug` | `code.debug` | code | user | **symptom**, **evidence**, **approach** | code.claude.com, cursor.com, developers.openai.com, platform.claude.com |
+| `task-code-website-builder` | `code.website-builder` | code | user | **site**, **goal**, **pages**, **content** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-design-ui-prototype` | `design.ui-prototype` | code | user | **what**, **screens**, **goal** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-game-dev` | `game.dev` | code | user | **game**, **engine**, **job** | code.claude.com, cursor.com, developers.openai.com, platform.claude.com |
+| `task-data-dashboard` | `data.dashboard` | data | user | **purpose**, **audience**, **kpis** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-data-spreadsheet-analysis` | `data.spreadsheet-analysis` | data | user | **question**, **data**, **output**, **rigor** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-finance-bookkeeping` | `finance.bookkeeping` | data | user | **need**, **data**, **categories**, **uncertain** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-design-social-graphic` | `design.social-graphic` | image | en | **format**, **message**, **style** | developers.openai.com, docs.midjourney.com |
+| `task-game-asset-art` | `game.asset-art` | image | en | **asset-type**, **art-style**, **view**, **background** | developers.openai.com, docs.midjourney.com |
+| `task-image-edit` | `image.edit` | image | en | **edit-type**, **preserve**, **target** | developers.openai.com |
+| `task-image-generate` | `image.generate` | image | en | **subject**, **medium**, **purpose** | developers.openai.com, docs.midjourney.com |
+| `task-image-logo` | `image.logo` | image | en | **logo-type**, **style** | developers.openai.com, docs.midjourney.com |
+| `task-image-product-photo` | `image.product-photo` | image | en | **source**, **scene**, **background** | developers.openai.com, docs.midjourney.com |
+| `task-music-generate` | `music.generate` | music | user | **kind**, **genre**, **mood** | developers.openai.com, help.suno.com, platform.claude.com |
+| `task-research-academic` | `research.academic` | research | user | **need**, **field**, **scope**, **evidence** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-research-document-qa` | `research.document-qa` | research | user | **question**, **basis**, **citations**, **missing** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-research-web` | `research.web` | research | user | **question**, **scope**, **sources** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-slides-create` | `slides.create` | slides | user | **deck**, **audience**, **goal** | developers.openai.com, gamma.app, platform.claude.com |
+| `task-career-resume` | `career.resume` | text | user | **need**, **level**, **facts** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-chat-general-assistant` | `chat.general-assistant` | text | user | **request**, **role**, **format** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-docs-create` | `docs.create` | text | user | **doc**, **audience**, **purpose** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-education-language-learning` | `education.language-learning` | text | user | **level**, **goal**, **mode** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-education-tutor` | `education.tutor` | text | user | **level**, **mode**, **method** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-marketing-seo` | `marketing.seo` | text | user | **need**, **intent**, **audience** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-productivity-inbox` | `productivity.inbox` | text | user | **need**, **priority**, **autonomy** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-productivity-notes` | `productivity.notes` | text | user | **need**, **source**, **structure** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-text-email` | `text.email` | text | user | **type**, **recipient**, **goal** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-text-marketing-copy` | `text.marketing-copy` | text | user | **channel**, **audience**, **angle** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-text-rewrite-edit` | `text.rewrite-edit` | text | user | **action**, **preserve** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-text-summarize` | `text.summarize` | text | user | **source**, **form**, **fidelity** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-text-translate` | `text.translate` | text | user | **register**, **domain**, **fidelity** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-text-write-longform` | `text.write-longform` | text | user | **kind**, **audience**, **purpose** | ai.google.dev, developers.openai.com, platform.claude.com |
+| `task-video-avatar-presenter` | `video.avatar-presenter` | video | user | **purpose**, **audience**, **length** | developers.openai.com, elevenlabs.io, platform.claude.com |
+| `task-video-edit-short-social` | `video.edit-short-social` | video | user | **platform**, **goal**, **source** | developers.openai.com, platform.claude.com |
+| `task-video-image-to-video` | `video.image-to-video` | video | en | **motion**, **camera**, **keep** | deepmind.google, developers.openai.com |
+| `task-video-text-to-video` | `video.text-to-video` | video | en | **subject**, **action**, **shot** | deepmind.google, developers.openai.com |

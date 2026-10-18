@@ -4,6 +4,8 @@
 // açılınca ayrıntı (araç açıklaması, fiyat, link, alternatif, ipuçları) ve
 // araç için prompt rehberi varsa "Bu adım için prompt yaz". Prompt, kullanıcının
 // amacı + adım adıyla mevcut prompt oluşturucudan (PromptPanel) gelir.
+// Yan yana düzende (geniş ekran) prompt kartın içinde değil, WorkflowDisplay'in
+// sağ sütununda çizilir (placement: "side").
 
 import { ArrowRight, ChevronDown, ExternalLink, Wand2 } from "lucide-react"
 import type { PromptCard as PromptCardData, PromptQuestionCard as PromptQuestionData } from "@/lib/agent/cards"
@@ -26,6 +28,20 @@ export interface StepPrompt {
   onToggle: () => void
   /** Aynı adım için üretilmiş prompt: kapatıp açınca yeniden üretilmez. */
   cache: Map<string, StepPromptCard>
+  /** "side": panel sağ sütunda (WorkflowDisplay), düğme sadece seçer. Varsayılan "inline". */
+  placement?: "inline" | "side"
+}
+
+/** Adım promptunun ürünü, amacı ve önbellek anahtarı (kart içi ve yan panel aynı hesabı kullanır). */
+export function stepPromptInput(step: WorkflowStep, goal: string, dict: Dictionary) {
+  const productId = promptProductId(step.primary.toolName)
+  return {
+    productId,
+    cacheKey: `${step.order}|${productId}`,
+    goal: `${goal}\n\n${format(dict.workflow.stepGoal, { step: step.name, description: step.description })}`,
+    /** Adımın görevi: prompt, araca özel rehber yoksa bu göreve özel rehberle yazılır (kart içi ve yan panel aynı değeri kullanır). */
+    taskId: step.primary.taskId ?? step.taskId,
+  }
 }
 
 export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, prompt }: {
@@ -36,12 +52,9 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
   /** Verilmezse prompt düğmesi gösterilmez. */
   prompt?: StepPrompt
 }) {
-  const productId = prompt ? promptProductId(step.primary.toolName) : null
+  const input = prompt ? stepPromptInput(step, prompt.goal, dict) : null
+  const productId = input?.productId ?? null
   const detailsId = `workflow-step-${step.order}`
-  const cacheKey = `${step.order}|${productId}`
-  const stepGoal = prompt
-    ? `${prompt.goal}\n\n${format(dict.workflow.stepGoal, { step: step.name, description: step.description })}`
-    : ""
   const voteLabels = { recommend: dict.feedback.recommend, dontRecommend: dict.feedback.dontRecommend }
   // Oy, aracın o adımda geldiği göreve verilir. Araç yerine durum yazılan adımlarda (productId yok) oy yok.
   const primaryTaskId = step.primary.taskId ?? step.taskId
@@ -151,13 +164,14 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
                 <Wand2 className="w-3.5 h-3.5" aria-hidden />
                 {prompt.open ? dict.workflow.hidePrompt : dict.workflow.writePrompt}
               </button>
-              {prompt.open && (
+              {prompt.open && prompt.placement !== "side" && input && (
                 <PromptPanel
                   target={{ productId, toolName: step.primary.toolName }}
-                  goal={stepGoal}
+                  goal={input.goal}
+                  taskId={input.taskId}
                   locale={prompt.locale}
-                  cached={prompt.cache.get(cacheKey)}
-                  onResult={(card) => prompt.cache.set(cacheKey, card)}
+                  cached={prompt.cache.get(input.cacheKey)}
+                  onResult={(card) => prompt.cache.set(input.cacheKey, card)}
                 />
               )}
             </div>
