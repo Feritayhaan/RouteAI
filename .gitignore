@@ -46,3 +46,9 @@ next-env.d.ts
 
 # scripts/ altındaki göç scriptlerinin ürettiği yerel yedekler (git geçmişinde duruyorlar)
 lib/tools-database.*backup*.json
+
+data/page-snapshots/
+data/products.yedek.json
+data/price-report-yedek.md
+data/price-report-elle-tur.md
+logs/

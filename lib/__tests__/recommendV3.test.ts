@@ -39,16 +39,18 @@ describe('recommendV3: no_evidence (kanıtsız görev)', () => {
 });
 
 describe('recommendV3: clarify (belirsiz görev, iş akışı şablonu da yok)', () => {
-  it('tamamen belirsiz sorgu -> clarify, üç seçenek', async () => {
-    // Gerçek katalog: classifyTask'ın seçtiği 3 görev id'si her ne olursa
-    // olsun tasksById içinde bulunur (40 görevin tamamı burada).
+  it('tamamen belirsiz sorgu -> clarify (reason unclear), başlangıç görevleri', async () => {
+    // Gerçek katalog: seçeneklerin id'leri tasksById içinde bulunur (40 görevin tamamı burada).
+    // Sorgunun hiçbir kelimesi katalogla örtüşmez: tasks.json'daki ilk üç görev yerine başlangıç görevleri sunulur.
     const r = await recommendV3('bir şeyler yapmak istiyorum ama ne yapacağımı bilmiyorum', 'all', {
       ...noLLM,
       ctx: defaultSearchContext(),
     });
     assert.strictEqual(r.kind, 'clarify');
     if (r.kind !== 'clarify') return;
-    assert.strictEqual(r.options.length, 3);
+    assert.strictEqual(r.reason, 'unclear');
+    assert.strictEqual(r.options.length, 6);
+    assert.strictEqual(new Set(r.options.map((o) => o.taskId)).size, 6);
     for (const o of r.options) {
       assert.match(o.taskId, /^[a-z0-9]+\.[a-z0-9-]+$/);
       assert.ok(o.label.en && o.label.tr);

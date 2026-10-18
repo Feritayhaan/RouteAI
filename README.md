@@ -26,6 +26,7 @@ Bu tablo `data/` ve `evals/results/` altındaki dosyalardan okundu; dosyalar de�
 | Prompt rehberi | 10 (10'u taslak, 0'ı gözden geçirilmiş; hepsi KAYNAK GEREKLİ) | `data/prompt-guides/*.md` |
 | Rehbere bağlı ürün | 17 | `data/products.json` → `promptGuide` |
 | `pricingUrl` dolu aktif ürün | 46 / 56 (eksikler: `docs/catalog-review-2026-09-25.md`) | `data/products.json` |
+| Fiyatı doğrulanmış aktif ürün (son 60 gün) | 13 / 56 (2026-10-14 elle tur; kalan 43'ün nedenleri `data/price-report.md`) | `data/products.json` → `pricing.priceCheckedAt` |
 
 Sonuç: benchmark, uzman ve kendi sinyal verisi olmadığı için **RouteAI Skoru bugün hiçbir ürünü önermiyor** (kanıt kuralı). Ana sayfa bundan etkilenmez: öneriler v1 araç veritabanından (`lib/tools-database.json`) gelir; RouteAI Skoru şu an sadece v2 eval'inde kullanılıyor. Ayrıntı: `evals/results/v2-oracle-misses.md`.
 
@@ -67,10 +68,14 @@ GitHub Actions: nightly-data  (AA + LMArena → models.json; KV → signals.json
 | --- | --- | --- | --- |
 | [Artificial Analysis](https://artificialanalysis.ai) | Model benchmark skorları | `npm run sync:models`, API (`AA_API_KEY`) | Gösterilirken kaynak adı görünür olmalı; kartlar adı `lib/catalog/sources.ts`'ten yazar |
 | [LMArena](https://lmarena.ai) | Arena sıralamaları | Hugging Face datasets-server, `lmarena-ai/leaderboard-dataset` | Aynı atıf şartı |
-| [Hacker News Algolia API](https://hn.algolia.com/api) | Aday ürün keşfi (Show HN) | `npm run discover:tools` | Sadece ad, URL, tarih ve HN bağlantısı saklanır |
+| [Hacker News Algolia API](https://hn.algolia.com/api) | Aday ürün keşfi (Show HN) | `npm run backfill:points` | Oy kayıtlarını (`sig:vote:*`) okur, `pts:<görev>` sayaçlarıyla farkı **gösterir**; yazmaz. `-- --apply` farkı sayaçlara yazar (mutlak değer, tekrar çalıştırmak güvenli, hiçbir anahtar silmez). Puan sistemi canlıya çıkınca bir kez çalıştırılır |
+| `npm run points:show` | Gizli kullanıcı puanlarını görev görev tablo olarak gösterir (araç, beğeni, beğenmeme, oy, puan, sıralamada sayılıyor mu). Sadece okur. `-- --task=image.generate` ile tek görev. Sayaçlar oy kayıtlarıyla uyuşmuyorsa uyarır (düzeltme: `backfill:points`). KV bilgisini `.env.local`'dan alır |
+| `npm run reset:points` | Gizli puanları sıfırlar (puan 500'e döner). **Varsayılan: sadece gösterir.** `-- --apply` sayaçları 0'lar (anahtar silmez) ve kapsamdaki oy kayıtlarını da siler (geri alınamaz; silinen oylar RouteAI Skoru'na da girmez; kayıt kalsaydı aynı oturumun aynı oyu puana girmezdi). `--task=<görev>` / `--product=<araç>` ile daraltır; kapsam vermeden `--apply` için `--all` şart. Test sonrası tam temizlik: `npm run reset:points -- --apply --all`. Veri silmeden sıralamayı kapatmak için `POINTS_RANKING=off` |
+| `npm run discover:tools` | Sadece ad, URL, tarih ve HN bağlantısı saklanır |
 | [Product Hunt API](https://api.producthunt.com/v2/docs) | Aday ürün keşfi | `PRODUCT_HUNT_TOKEN` varsa | Aynı |
 | Ürünlerin kendi fiyat sayfaları | Fiyat kontrolü | `npm run check:prices` | Öneri + rapor PR ile gelir; fiyat PR merge edilince geçerli |
 | Kendi sinyallerimiz | İş sonucu, karşılaştırma, oy | KV → `npm run aggregate:signals` | Anonim; mesaj metni ve IP saklanmaz |
+| Gizli kullanıcı puanı | 👍/👎 oyları → öneri sırası | KV `pts:<görev>` sayaçları, anlık | Kullanıcıya gösterilmez; ayrıntı aşağıda ("Gizli kullanıcı puanı") |
 
 Her sayı `data/` altında kaynağı ve tarihiyle durur. Kaynaklarının lisans metinleri bu repoda kopyalanmadı; kullanım koşulları lansmandan önce kaynakların kendi sayfalarından doğrulanmalı (bkz. `docs/LAUNCH-CHECKLIST.md`).
 
@@ -103,6 +108,7 @@ npm run dev                         # http://localhost:3000
 | `KV_REST_API_READ_ONLY_TOKEN` | Salt okunur token; `aggregate:signals` bunu tercih eder | ⬜ |
 | `KV_URL` | Vercel KV entegrasyonu ekler; kod kullanmaz | ⬜ |
 | `REDIS_URL` | Vercel KV entegrasyonu ekler; kod kullanmaz | ⬜ |
+| `POINTS_RANKING` | `off` ise gizli kullanıcı puanı öneri sırasını etkilemez (eski sıra); boş = açık | ⬜ |
 | `ADMIN_SECRET` | `/api/admin/*` ve `/api/update-tools`; sadece `x-admin-key` başlığıyla | ✅ |
 | `AA_API_KEY` | Artificial Analysis API; boşsa senkron AA'yı atlar, LMArena yine çalışır | ⬜ |
 | `PRODUCT_HUNT_TOKEN` | Keşif; boşsa sadece Hacker News | ⬜ |
@@ -116,16 +122,20 @@ npm run dev                         # http://localhost:3000
 | `npm run dev` / `build` / `start` | Next.js (build öncesi `build:guides` çalışır) |
 | `npm run lint` | ESLint |
 | `npm test` | Birim testleri (`node:test`, `lib/__tests__/*.test.ts`) |
-| `npm run validate:catalog` | Rehberleri derler, `data/` altındaki tüm katalog dosyalarını Zod + çapraz kontrollerle doğrular |
+| `npm run validate:catalog` | Rehberleri derler, `data/` altındaki tüm katalog dosyalarını Zod + çapraz kontrollerle doğrular. LMArena alt kategori arenalarının veri durumunu yazar ("N/8 veri dolu"); verisiz kategori UYARIdır, hata değil (skor hesabı o zaman genel arenaya düşer) |
 | `npm run build:guides` | `data/prompt-guides/*.md` → `data/prompt-guides.json` + `data/prompt-products.json` (prompt aracı listesi: araç adı → ürün) |
 | `npm run eval -- --recommender=v1\|v2-oracle\|v2` | Altın set değerlendirmesi → `evals/results/<tarih>-<recommender>.json` |
 | `npm run eval:prompts` | Prompt oluşturucu senaryoları (OpenAI gerekir) |
 | `npm run eval:simulate` | RouteAI Skoru'nun sentetik veriyle davranışı (gerçek veri değil) |
-| `npm run sync:models` | Artificial Analysis + LMArena → `data/models.json` + `data/sync-report.md` |
+| `npm run sync:models` | Artificial Analysis + LMArena → `data/models.json` + `data/sync-report.md`. Bir arena bu koşuda alınamazsa (zaman aşımı, split yok, alan yok) o arenanın **eski skorları eski tarihiyle korunur** ve raporda "Tazelenemeyen arenalar" bölümünde listelenir; iş kırmızı bitmez, bayat veri sessiz kalmaz. `tasks.json`'da kullanılan LMArena alt kategorileri (`lib/catalog/benchmarkKeys.ts`, anahtar `config/kategori`, ör. `text/creative_writing`) aynı koşuda, **ek istek olmadan** `models.json`'a yazılır (yalnızca değer + tarih) |
+| `npm run sync:models -- --categories` | Yukarıdakine ek olarak LMArena'nın TÜM genel dışı alt kategori skorlarını (`tasks.json`'da kullanılmayanlar dahil) `data/lmarena-categories.json`'a yazar (bu dosya sıralamaya girmez; yalnızca denetim için). Kaynakta görülen kategori adları her senkronda `data/sync-report.md`'de listelenir. `--dry-run` ile dosya yazılmaz |
+| `npm run audit:catalog` | **Salt okunur** kanıt denetimi: kaç ürün-görev çiftinin benchmark/uzman/kullanıcı kanıtı var, hangi görevlerin benchmark eşlemesi yok, hangi arenalarda veri yok, ortak benchmark paylaşan görevler. `data/lmarena-categories.json` varsa "alt kategoriyle sıra nasıl değişirdi" tablosunu da hesaplar (`scripts/audit/proposals.mjs` önerileri). `--write` raporu `data/audit-report.md`'ye yazar, `--today=YYYY-MM-DD` tarihi sabitler. Katalogu ve sıralamayı **değiştirmez**; `scripts/audit/proposals.mjs`'te yalnızca henüz uygulanmamış öneriler kalır (`code.debug` karar bekliyor); uygulanmış eşlemeler `data/tasks.json`'dadır |
+| `npm run check:capabilities` | **Yetenek denetimi (salt rapor):** her aktif ürünün `url` ve `pricingUrl` sayfasını çeker, OpenAI'a "bu sayfa ürünün şu işi yaptığını söylüyor mu?" diye sorar, **alıntının sayfada gerçekten geçtiğini kodla doğrular** (geçmiyorsa cevabı atar) ve ürünün kapandığına / yeniden adlandırıldığına dair doğrulanmış işaretleri ayrıca listeler. Çıktı `data/capability-report.md`; **`data/products.json`'a hiçbir şey yazmaz**. "Bulunamadı" ürünün yapamadığı anlamına gelmez; "kanıtlı" ürünün en iyi olduğunu göstermez. Seçenekler: `--only=id,id`, `--dry-run`. `OPENAI_API_KEY` gerekir (yoksa çıkış kodu 1). Ürün başına tek OpenAI çağrısı yapılır; modeli `OPENAI_PROMPT_MODEL` / `OPENAI_MODEL` belirler |
 | `npm run aggregate:signals` | KV'den iş sonucu, karşılaştırma ve oyları **okur** → `data/signals.json` + `data/signals-anomalies.md` |
 | `npm run discover:tools` | Show HN + Product Hunt → `data/candidates.json` + `data/discovery-report.md` |
 | `npm run automerge:guard` | Gece PR'ı otomatik merge edilebilir mi (veri dışı dosya, ilk senkron, model sayısı düşüşü, kaybolan güncel model, sinyal anormalliği) |
-| `npm run check:prices` | Aktif ürünlerin `pricingUrl` sayfaları → `data/products.json`'da fiyat önerisi + `data/price-report.md` |
+| `npm run check:prices` | Doğrulaması 21 günden eski/tarihsiz aktif ürünlerin `pricingUrl` sayfaları → `data/products.json`'da fiyat önerisi + `data/price-report.md`. LLM'in alıntısı sayfada yoksa fiyat yazılmaz. Seçenekler: `--all`, `--only=id,id`, `--accept=id` (büyük değişikliği onayla), `--max-age-days=N`, `--dry-run`. Yıllık/promosyon fiyatlar yazılmaz, incelemeye düşer. Anahtar yoksa ya da yarıdan fazlası okunamazsa çıkış kodu 1. Bot engelli, JS ile çizilen ya da yalnızca yıllık fiyat gösteren sayfalar için `npm run price:snap -- --guided` (sayfaları sırayla tarayıcıda açar, Aylık seçili kopyalanan metni kaydeder; tek ürün: `price:snap -- <id>`), aday adres denemek için `npm run check:url -- <adres>`, "neden emin değil" için `--verbose`. Ayrıntı: `docs/FIYAT-DOGRULAMA.md` |
+| `python scripts/price_scheduler.py run` | Fiyat kontrolünü yerel makinede (GitHub'sız) güvenle çalıştırır: `products.json` yedeği → `check:prices` → `validate:catalog` (bozulursa yedeği geri yükler) → özet `logs/price-check/latest.md` → isteğe bağlı bildirim. `install --every-days 7 --at 09:00` Windows zamanlanmış görevi kurar; `status`, `uninstall`, `restore`, `notify-test`, `run --dry-run`. Yalnızca Python standart kütüphanesi; git push, deploy ya da KV işlemi yapmaz. Tüm komutlar sırayla tek dosyada: `docs/FIYAT-KOMUTLARI.md`. Testi: `python -I scripts/test_price_scheduler.py` |
 | `npm run validate:db` / `bench` / `migrate:pricing` | v1 veritabanı (`lib/tools-database.json`) araçları |
 
 ## GitHub Actions
@@ -138,7 +148,7 @@ Veri workflow'ları (`nightly-data`, `discover-tools`, `check-prices`) değişik
 | `nightly-data` (`sync-models.yml`; kontrollerden geçen PR otomatik merge edilir). LMArena'dan ya da anahtarı tanımlı bir kaynaktan (AA, KV) hiç veri gelmezse iş kırmızı biter; anahtarı olmayan kaynak "atlandı" sayılır. Rapor iş özetinde | her gün 03:00 | `AA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_READ_ONLY_TOKEN` |
 | `eval` (`eval.yml`): `npm run eval` + `npm run eval:prompts`, gerçek OpenAI çağrılarıyla (token harcar). Özet iş özetinde, `evals/results/*.json` artifact. KV secret'ı verilmez | sadece elle (Actions → eval → Run workflow) | `OPENAI_API_KEY` |
 | `discover-tools` | pazartesi 04:00 | `OPENAI_API_KEY`, `PRODUCT_HUNT_TOKEN` (ikisi de isteğe bağlı) |
-| `check-prices` | ayın 1'i 05:00 | `OPENAI_API_KEY` |
+| `check-prices` (haftalık; kırmızı biterse bir şey yolunda değil) | pazartesi 05:00 | `OPENAI_API_KEY` (zorunlu) |
 
 Adaylar (`status: candidate`) hiçbir zaman önerilmez; ürün `data/products.json`'a `active` olarak elle taşınınca girer.
 
@@ -155,7 +165,20 @@ Adaylar (`status: candidate`) hiçbir zaman önerilmez; ürün `data/products.js
 | `POST /api/recommend` | Navigasyon önerisi (ana sayfa, v1) | 10/dk, 60/saat |
 | `GET /api/admin/stats` | Son 30 gün ve ROADMAP metrikleri. Yerelde `?sample=1` sentetik veri (üretimde kapalı) | `x-admin-key` |
 | `GET /api/admin/feedback` | Son geri bildirimler | `x-admin-key` |
+| `GET /api/admin/points` | Gizli kullanıcı puanları (ham puan, sıralamada kullanılan puan `rankingPoints`, 👍/👎 sayısı, `counted`: sıralamada etkili mi). `?task=<görev>` ile tek görev. Sadece okur | `x-admin-key` |
 | `POST /api/admin/seed` | v1 araçlarını KV'ye (ve açıksa vektöre) yazar — yıkıcı | `x-admin-key` |
+
+## Gizli kullanıcı puanı
+
+Her (görev, ürün) çifti 500 puanla başlar; kullanıcıların 👍 ("Bu aracı öner") ve 👎 ("Bu aracı önerme") oyları puanı oynatır, öneriler puanı yüksek olandan düşüğe sıralanır. **Puan kullanıcıya hiçbir yerde gösterilmez** (ne arayüzde ne istemciye giden yanıtlarda); yalnızca `npm run points:show` ve `GET /api/admin/points` gösterir.
+
+- Formül (`lib/points/points.ts`): `puan = 500 + 500 · (👍 − 👎) / (👍 + 👎 + 20)`; aralık 0–1000. 20 "hayali" nötr oy ilk oyların etkisini küçük tutar: 1 👍 → 523,81; 5 👍 → 600; 20 👍 → 750; 100 👍 → 916,67; eşit 👍 ve 👎 → 500.
+- Yumuşak eşik (`DEAD_ZONE = 25`): sıralamada kullanılan puan, ham puan 500'den en az 25 puan uzaklaşmadıkça 500 sayılır; fazlası kademeli sayılır (aralık yine 0–1000). Tek bir oy sıralamayı değiştirmez; 2 👍 → 521,53, 5 👍 → 578,95, 20 👍 → 736,84. Ölü bölge oy sayısıyla genişler: gürültü sayılmaz (20 oyda net +2 etkisiz). Ani sıçrama yoktur.
+- Eşit puanda eski sıra korunur: önce RouteAI Skoru'yla kanıtlı ürünler, sonra editör seçimi, sonra kanıtı olmayan ürünler (alfabetik, kartta "Doğrulanmadı"). Arayüz fiyat filtresi puanla asla gevşemez. En çok 5 araç listelenir, kalanlar "Diğer araçlar"a gider.
+- Saklama: KV'de görev başına tek hash `pts:<görev>` (`<ürün>|up`, `<ürün>|down` sayaçları, anlık HINCRBY). Oy kaydı `sig:vote:*` olarak aynen sürer (oturum + ürün + görev başına tek oy, son oy geçerli); oy değişirse eski yön bir azalır, yeni yön bir artar.
+- KV okunamazsa ya da 800 ms'yi aşarsa sıralama puansız (eski) haliyle döner; kullanıcı hata görmez. Kapatmak için `POINTS_RANKING=off`.
+- Puan RouteAI Skoru'nun yerine geçmez; sponsorluk/affiliate sıralamaya girmez. Katalogda olmayan ürün/görev çifti için gelen oy 400 ile reddedilir.
+- Sınır: oturum kimliği anonimdir; aynı kişi yeni oturum açarak oy sayısını şişirebilir (sadece IP başına rate limit var). Şüpheli artış için `/api/admin/points` bakılır.
 
 ## Eval nasıl çalışır
 

@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "gamma"
-version: 3
+version: 1
 appliesTo: ["gamma-ai"]
 modality: "slides"
 promptLanguage: "user"
@@ -57,7 +57,7 @@ slots:
       en: "15 or more"
       tr: "15 ve üzeri"
     value: "15 slides"
-  default: "infer"
+  default: "medium"
 - id: "tone"
   impact: "medium"
   question:
@@ -147,24 +147,6 @@ validators:
   type: "maxLength"
   value: 4000
   message: "RouteAI limit: keep the prompt under 4000 characters."
-- id: "slide-count"
-  type: "regex"
-  value: "\\d+\\s*(-\\s*\\d+\\s*)?(slides?|slayt)"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "State the number of slides (e.g. 8 slides)."
-- id: "audience"
-  type: "regex"
-  value: "(audience|kitle|dinleyici|investor|yatırımcı|customer|müşteri|student|öğrenci|team|ekip|for )"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "State who the deck is for."
-- id: "outline"
-  type: "regex"
-  value: "(outline|section|agenda|structure|bölüm|akış|başlık|slide 1|slayt 1)"
-  flags: "i"
-  criterion: "actionability"
-  message: "Give an outline of the sections or slides."
 ---
 
 ## Sözdizimi
@@ -173,27 +155,11 @@ KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişil
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Etiket zinciri değil, sunum aracına verilen doğal bir brif:
-
-1. Sunumun konusu, kime yapılacağı ve sunumdan beklenen sonuç (karar, onay, öğrenme, satış) bir iki cümlede.
-2. Slayt sayısı ve slayt slayt akış: her slaydın başlığı ve tek cümlelik amacı.
-3. Ton, görsel dil ve yoğunluk: metin/görsel dengesi, grafik ihtiyacı.
-4. Bilinmeyen rakamlar ve kullanıcıya özel bilgiler için açıkça işaretli köşeli parantezli yer tutucular; rakam uydurulmaz.
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): [konu] hakkında [kitle] için [slayt sayısı] slaytlık sunum. Bölümler: [taslak]. Ton: [ton]. Görseller: [görseller].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — Gamma resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
-
-RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
-
-- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
-- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
-- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
-- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
-- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
-- Slayt sayısı, kitle ve bölüm taslağı her zaman yazılır; rakam uydurulmaz.
-- Meta-sınır: prompt konuyu anlatmaz ve isteği kendisi cevaplamaz; hedef araca ne yapacağını ve neyi teslim edeceğini söyler.
-- Mekanik etiket zinciri yok ("Görev: X. Kapsam: Y. Kurallar: Z. Doğrulama: W."); doğal, akıcı bölümler. Yalnızca kullanıcının bilebileceği bilgiler köşeli parantezli yer tutucu olur.
 
 ## Örnekler
 

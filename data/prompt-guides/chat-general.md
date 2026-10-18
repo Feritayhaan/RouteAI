@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "chat-general"
-version: 3
+version: 1
 appliesTo: ["chatgpt-gpt-5", "claude-ai-claude-4", "gemini-25-pro"]
 modality: "text"
 promptLanguage: "user"
@@ -9,136 +9,104 @@ sources: []
 reviewedBy: ""
 reviewedAt: ""
 slots:
-- id: "intent"
+- id: "role"
   impact: "high"
   question:
-    en: "What should the AI do for you?"
-    tr: "Yapay zekâ senin için ne yapsın?"
+    en: "Which role should the assistant take?"
+    tr: "Asistan hangi rolde olsun?"
   options:
-  - id: "build"
-    label:
-      en: "Build it with me"
-      tr: "Benimle birlikte inşa etsin"
-    value: "build it with me end to end"
-  - id: "solve"
-    label:
-      en: "Solve a problem"
-      tr: "Bir sorunu çözsün"
-    value: "find the root cause and solve the problem step by step"
-  - id: "analyze"
-    label:
-      en: "Analyze and decide"
-      tr: "Analiz edip karar versin"
-    value: "analyze the options and recommend a decision"
-  - id: "transform"
-    label:
-      en: "Transform my text"
-      tr: "Metnimi dönüştürsün"
-    value: "transform my existing text"
-  - id: "learn"
-    label:
-      en: "Teach me"
-      tr: "Bana öğretsin"
-    value: "teach me the topic"
-  default: "infer"
-- id: "deliverable"
-  impact: "high"
-  question:
-    en: "What should the output be?"
-    tr: "Çıktı ne olsun?"
-  options:
-  - id: "roadmap"
-    label:
-      en: "Roadmap with milestones"
-      tr: "Kilometre taşlı yol haritası"
-    value: "a step-by-step roadmap with milestones"
-  - id: "draft"
-    label:
-      en: "Ready-to-use draft"
-      tr: "Kullanıma hazır taslak"
-    value: "a ready-to-use first draft of the work"
-  - id: "spec"
-    label:
-      en: "Structured plan or spec"
-      tr: "Yapılandırılmış plan / şema"
-    value: "a structured plan or specification"
-  - id: "matrix"
-    label:
-      en: "Comparison with criteria"
-      tr: "Kriterli karşılaştırma"
-    value: "a comparison table with explicit criteria"
-  default: "infer"
-- id: "stage"
-  impact: "high"
-  question:
-    en: "Where are you now?"
-    tr: "Şu an hangi aşamadasın?"
-  options:
-  - id: "idea"
-    label:
-      en: "Just an idea"
-      tr: "Sadece bir fikir"
-    value: "starting from an idea, nothing built yet"
-  - id: "draft"
-    label:
-      en: "I have a draft"
-      tr: "Taslağım var"
-    value: "a first draft or prototype exists"
-  - id: "live"
-    label:
-      en: "Running, want to improve"
-      tr: "Çalışıyor, geliştireceğim"
-    value: "already running and needs improvement"
-  default: "infer"
-- id: "depth"
-  impact: "medium"
-  question:
-    en: "How deep should it go?"
-    tr: "Ne kadar derin olsun?"
-  options:
-  - id: "concise"
-    label:
-      en: "Concise"
-      tr: "Öz ve net"
-    value: "concise and to the point"
-  - id: "thorough"
-    label:
-      en: "Thorough"
-      tr: "Kapsamlı"
-    value: "thorough, covering every part"
   - id: "expert"
     label:
-      en: "Expert depth"
-      tr: "Uzman derinliğinde"
-    value: "exhaustive, expert-level depth"
+      en: "Subject expert"
+      tr: "Konu uzmanı"
+    value: "a subject-matter expert"
+  - id: "editor"
+    label:
+      en: "Editor"
+      tr: "Editör"
+    value: "an editor"
+  - id: "teacher"
+    label:
+      en: "Teacher"
+      tr: "Öğretmen"
+    value: "a patient teacher"
+  - id: "analyst"
+    label:
+      en: "Analyst"
+      tr: "Analist"
+    value: "an analyst"
+  default: "infer"
+- id: "format"
+  impact: "high"
+  question:
+    en: "What output format?"
+    tr: "Çıktı nasıl olsun?"
+  options:
+  - id: "bullets"
+    label:
+      en: "Bullet list"
+      tr: "Madde listesi"
+    value: "a bullet list"
+  - id: "table"
+    label:
+      en: "Table"
+      tr: "Tablo"
+    value: "a table"
+  - id: "paragraph"
+    label:
+      en: "Short text"
+      tr: "Kısa metin"
+    value: "a short paragraph"
+  - id: "steps"
+    label:
+      en: "Step by step"
+      tr: "Adım adım"
+    value: "numbered steps"
   default: "infer"
 - id: "audience"
   impact: "medium"
   question:
-    en: "Who is the output for?"
-    tr: "Çıktı kimin için?"
+    en: "Who is it for?"
+    tr: "Kimin için?"
   options:
   - id: "beginner"
     label:
-      en: "A beginner"
-      tr: "Yeni başlayan biri"
+      en: "Beginner"
+      tr: "Yeni başlayan"
     value: "a beginner"
   - id: "pro"
     label:
-      en: "A professional"
-      tr: "Bir profesyonel"
+      en: "Professional"
+      tr: "Profesyonel"
     value: "a professional"
   - id: "exec"
     label:
-      en: "An executive"
-      tr: "Bir yönetici"
+      en: "Executive"
+      tr: "Yönetici"
     value: "an executive"
-  - id: "team"
-    label:
-      en: "My team"
-      tr: "Ekibim"
-    value: "my team"
   default: "infer"
+- id: "length"
+  impact: "medium"
+  question:
+    en: "How long?"
+    tr: "Ne uzunlukta?"
+  options:
+  - id: "short"
+    label:
+      en: "Short"
+      tr: "Kısa"
+    value: "short"
+  - id: "medium"
+    label:
+      en: "Medium"
+      tr: "Orta"
+    value: "medium length"
+  - id: "long"
+    label:
+      en: "Detailed"
+      tr: "Detaylı"
+    value: "detailed"
+  default: "medium"
 - id: "tone"
   impact: "low"
   question:
@@ -160,35 +128,30 @@ slots:
       en: "Formal"
       tr: "Resmî"
     value: "formal"
-  default: "infer"
+  default: "neutral"
 refinements:
 - id: "shorter"
   label:
     en: "Shorter"
     tr: "Daha kısa"
   patch:
-    depth: "concise and to the point"
+    length: "short"
 - id: "more-detail"
   label:
-    en: "More depth"
-    tr: "Daha derin"
+    en: "More detail"
+    tr: "Daha detaylı"
   patch:
-    depth: "exhaustive, expert-level depth"
+    length: "detailed"
 - id: "table"
   label:
     en: "As a table"
     tr: "Tablo olarak"
-  instruction: "Ask for the main output as a table with clear columns."
-- id: "roadmap"
-  label:
-    en: "Roadmap"
-    tr: "Yol haritası"
   patch:
-    deliverable: "a step-by-step roadmap with milestones"
+    format: "a table"
 - id: "simpler"
   label:
-    en: "Simpler language"
-    tr: "Daha sade dil"
+    en: "Simpler"
+    tr: "Daha basit"
   patch:
     audience: "a beginner"
 - id: "formal"
@@ -202,18 +165,18 @@ refinements:
     en: "Add examples"
     tr: "Örnek ekle"
   instruction: "Ask for one concrete example per point."
-checklist: ["Expert role and goal", "Context and constraints", "Concrete deliverable matched to the intent", "Output structure or working steps", "Placeholders only for facts the user must fill in", "Quality bar and depth"]
+- id: "steps"
+  label:
+    en: "Step by step"
+    tr: "Adım adım"
+  patch:
+    format: "numbered steps"
+checklist: ["Role", "Context", "Task", "Output format", "Constraints"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 6000
   message: "RouteAI limit: keep the prompt under 6000 characters."
-- id: "deliverable"
-  type: "regex"
-  value: "(?<![\\p{L}])(çıktı|output|deliver|teslim|format|bölüm|section|başlık|heading|adım|step|madde|bullet|liste|list|tablo|table|matris|matrix|yol haritası|roadmap|kilometre|milestone|aşama|phase|plan|taslak|draft|şema|schema|outline|rapor|report|paragraf|paragraph|kelime|words|cümle|sentence|json|markdown)"
-  flags: "iu"
-  criterion: "toolReadiness"
-  message: "State the expected output and its structure (e.g. sections, steps, a roadmap, a table)."
 ---
 
 ## Sözdizimi
@@ -222,28 +185,11 @@ KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber 
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez). Mekanik etiket zinciri değil; doğal ve akıcı bölümlerden oluşan bir uzman promptu:
-
-1. Uzmanlık rolü ve amaç: hedef AI'ı işin gerektirdiği kıdemli uzman olarak konumlandıran ve kullanıcının asıl hedefini net söyleyen giriş. Üretim isteğinde işi kullanıcıyla uçtan uca inşa eden rol (kıdemli kurucu ortak, baş mimar, baş yaratıcı yönetmen gibi).
-2. Bağlam ve kısıtlar: kullanıcının verdiği tüm ayrıntılar (adlar, sayılar, dil, bütçe, süre, teknik sınırlar), bulunduğu aşama ve henüz bilinmeyenler.
-3. Beklenen çıktı: niyete göre somut teslimat (kilometre taşlı yol haritası, üretim taslağı, yapılandırılmış plan ya da şema, kriterli karar matrisi, kök neden analizi ve çözüm adımları) ve bölüm bölüm yapısı.
-4. Kalite ölçütleri ve çalışma şekli: derinlik, kitle, ton; kritik bir bilgi eksikse önce en fazla 3 net soru sorması, sonra teslim etmesi.
-5. Kullanıcının dolduracağı bilgiler: yalnızca kullanıcının bilebileceği gerçekler için köşeli parantezli yer tutucular.
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Rol: [rol]. Bağlam: [bağlam]. Görev: [görev]. Format: [format], [uzunluk]. Kısıtlar: [kısıtlar]. Kitle: [kitle]. Ton: [ton].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — ChatGPT, Claude ve Gemini resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
-
-RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
-
-- Meta-sınır: prompt konuyu anlatmaz ve kullanıcının sorusunu cevaplamaz; hedef AI'a ne yapacağını ve neyi teslim edeceğini söyler.
-- Niyet korunur: "X yapmak/üretmek istiyorum" diyen kullanıcıya "X hakkında kısa bilgi ver" promptu yazılmaz; hedef AI işi birlikte inşa eden kıdemli rolde somut teslimat üretir (yol haritası, taslak, şema, eserin kendisi).
-- Öğretici/açıklayıcı prompt sadece kullanıcı açıkça "nedir, nasıl çalışır, anlat/öğret" dediğinde.
-- Mekanik etiket zinciri yok ("Rol: X. Bağlam: Y. Görev: Z. Format: W."); doğal, akıcı bölümler.
-- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır; yalnızca kullanıcının bilebileceği gerçekler köşeli parantezli yer tutucu olur.
-- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf yok; muğlak ifade ("vb.", "güzel bir şey") yok.
-- Derinlik isteğin ağırlığına göre seçilir; varsayılan olarak "başlangıç seviyesi" ya da "kısa paragraf" seçilmez.
-- Bu tür araçta negatif prompt alanı yok: istenmeyenler promptta kısıt olarak yazılır, negativePrompt boş kalır.
 
 ## Örnekler
 

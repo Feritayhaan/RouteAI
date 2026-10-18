@@ -1,7 +1,7 @@
 ---
 # TASLAK — reviewedBy boş. Resmi dokümana erişilemedi; sözdizimi bölümleri KAYNAK GEREKLİ.
 id: "image-natural"
-version: 3
+version: 1
 appliesTo: ["chatgpt-gpt-4o-image", "dall-e-3", "google-imagen-4", "gemini-3-pro-image", "flux1-pro"]
 modality: "image"
 promptLanguage: "en"
@@ -164,18 +164,12 @@ refinements:
     tr: "Daha aydınlık"
   patch:
     mood: "bright and cheerful"
-checklist: ["Full-sentence description of the subject", "Setting or background stated", "Style stated", "Composition and format stated", "Lighting or mood stated"]
+checklist: ["Full-sentence description of the subject", "Style stated", "Composition and format stated", "Lighting or mood stated"]
 validators:
 - id: "length"
   type: "maxLength"
   value: 2000
   message: "RouteAI limit: keep the prompt under 2000 characters."
-- id: "no-foreign-params"
-  type: "forbidRegex"
-  value: "(^|\\s)--[a-z]+"
-  flags: "i"
-  criterion: "toolReadiness"
-  message: "Do not use Midjourney-style --parameters; describe the format in words or put it in settings."
 ---
 
 ## Sözdizimi
@@ -184,21 +178,11 @@ KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.
 
 ## Şablon
 
-RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Tam cümlelerle: [konu ve eylem]. [ortam ve arka plan]. [stil]. [kompozisyon, çekim açısı ve format]. [ışık ve hava]. [görselde yazı varsa tırnak içinde].
+RouteAI iskeleti (doğrulanmadı, araca özel sözdizimi içermez): Tam cümlelerle: [konu ve eylem]. [stil]. [kompozisyon ve format]. [ışık ve hava]. [arka plan].
 
 ## Yap / Yapma
 
 KAYNAK GEREKLİ — GPT görsel, DALL-E 3, Imagen 4, Gemini 3 Pro Image ve Flux.1 Pro resmi dokümantasyonuna bu rehber yazılırken erişilemedi. Ferit resmi dokümandan doldurup `sources` alanına sayfa URL'lerini eklemeli.
-
-RouteAI kuralları (araç dokümanına dayanmaz; hedef AI yeterlilik rubriği, lib/promptBuilder/sufficiency.ts):
-
-- Hedef araç RouteAI konuşmasını görmez: kullanıcının verdiği adlar, tırnaklı metinler, sayılar ve kısıtlar promptta aynen yer alır.
-- Sadece prompt metni: "Elbette", "İşte promptun" gibi giriş yok; konuşmaya atıf ("yukarıda konuştuğumuz") yok.
-- Şablondaki köşeli yer tutucular doldurulur; kopyalanmaz.
-- Muğlak ifade ("vb.", "etc.", "güzel bir şey") yerine somut tarif.
-- Araca seslenme yok ("Please create an image of...", "Lütfen..."): doğrudan konu/sahne ile başla.
-- negativePrompt promptta istenen bir şeyi dışlamaz; ayarlar (oran, format) promptla çelişmez.
-- Format (kare/yatay/dikey) kelimeyle yazılır; başka araçların --parametreleri kullanılmaz.
 
 ## Örnekler
 

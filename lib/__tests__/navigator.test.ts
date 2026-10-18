@@ -46,8 +46,9 @@ describe('ana sayfa prompt oluşturucu: araç adı -> ürün', () => {
     }
   });
 
-  it('görevi olmayan ya da katalogda olmayan araç ve prototip anahtarları null', () => {
-    assert.equal(promptProductId('ClickUp Brain (Project AI)'), null);
+  it('katalogda olmayan araç ve prototip anahtarları null', () => {
+    // ClickUp Brain eskiden hiçbir işe bağlı değildi (null dönerdi); project.management ile artık haritada.
+    assert.equal(promptProductId('ClickUp Brain (Project AI)'), 'clickup-brain-project-ai');
     assert.equal(promptProductId('Olmayan Araç'), null);
     assert.equal(promptProductId('toString'), null);
     assert.equal(promptProductId('__proto__'), null);
@@ -80,7 +81,7 @@ describe('prompt aracı seçimi (kart ve prompt kutusundaki düğmeler)', () => 
   it("varsayılan (auto): rehberi olan ilk önerilen araç; yoksa ilk araç eksik olarak", () => {
     assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['Jasper AI', 'Suno AI']), { productId: 'jasper-ai', toolName: 'Jasper AI' });
     assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['Olmayan Araç', 'Suno AI']), { productId: 'suno-ai', toolName: 'Suno AI' });
-    assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['ClickUp Brain (Project AI)', 'Olmayan Araç']), { missing: 'ClickUp Brain (Project AI)' });
+    assert.deepEqual(resolvePromptTarget(AUTO_TOOL, ['Olmayan Araç', 'Başka Olmayan Araç']), { missing: 'Olmayan Araç' });
     assert.equal(resolvePromptTarget(AUTO_TOOL, []), null);
   });
 });

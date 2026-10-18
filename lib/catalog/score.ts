@@ -6,6 +6,7 @@
 // biriktikçe payı düşer. Tarih her zaman ctx.now'dan okunur (Date.now yok).
 
 import { PRICE_STALE_AFTER_DAYS, hasFreeTier } from '../pricing';
+import { MIN_ARENA_MODELS, parentArenaKey } from './benchmarkKeys';
 import { matchesRule } from './currentModel';
 import type { BenchmarkSource, ExpertReview, Model, Product, Signal, Task } from './schema';
 import {
@@ -41,6 +42,11 @@ export interface ScoreContext {
   signals: Signal[];
   /** Epoch ms. */
   now: number;
+  /**
+   * false: ölçülemeyen alt kategori girdisi genel arenaya DÖNMEZ (ürün o girdiden benchmark'sız kalır).
+   * Varsayılan true. Yalnızca scripts/audit "ne olurdu" hesabı kapatır.
+   */
+  categoryFallback?: boolean;
 }
 
 export interface BenchmarkComponent {
@@ -94,16 +100,21 @@ export function ageDays(date: string, now: number): number {
 const round = (x: number, digits = 3) => Math.round(x * 10 ** digits) / 10 ** digits;
 const day = (d: string) => d.slice(0, 10);
 
+/** Bir arenada skoru olan modeller ve skorları. */
+function arenaScores(models: Model[], source: BenchmarkSource, key: string) {
+  return models
+    .map((m) => ({ m, s: m.scores.find((x) => x.source === source && x.key === key) }))
+    .filter((x): x is { m: Model; s: NonNullable<typeof x.s> } => x.s !== undefined);
+}
+
 /**
  * Bir arenada ürünün en iyi modelinin yüzdelik dilimi.
  * Yüzdelik = (altında kalan model + eşitlerin yarısı) / (toplam - 1).
- * Arenada tek model varsa karşılaştırma yapılamaz: null.
+ * Arenada MIN_ARENA_MODELS'ten az model varsa karşılaştırma yapılamaz: null.
  */
-function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, models: Model[]): BenchmarkComponent | null {
-  const arena = models
-    .map((m) => ({ m, s: m.scores.find((x) => x.source === source && x.key === key) }))
-    .filter((x): x is { m: Model; s: NonNullable<typeof x.s> } => x.s !== undefined);
-  if (arena.length < 2) return null;
+function measureInArena(product: Product, source: BenchmarkSource, key: string, models: Model[]): BenchmarkComponent | null {
+  const arena = arenaScores(models, source, key);
+  if (arena.length < MIN_ARENA_MODELS) return null;
 
   // Elle bağlanmış modeller varsa onlar; yoksa modelRule'a uyanlar (ROADMAP-v2:
   // model listesi elle tutulmaz, güncel model gece senkronundan kuralla bulunur —
@@ -131,14 +142,41 @@ function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, 
   };
 }
 
+/**
+ * Görevin bir benchmark girdisi için ürünün yüzdeliği.
+ *
+ * Alt kategori girdisi (`text/creative_writing`) ürün için ölçülemiyorsa üst (genel) arenaya
+ * (`text`) dönülür. İki durum var: (1) alt kategori arenasında yeterli model yok (gece senkronu
+ * henüz yazmadı ya da kategori bu koşuda alınamadı), (2) ürünün bağlı modellerinden hiçbiri o
+ * kategoride yok. Böylece alt kategori veri eksikliği yüzünden görev kanıtsız kalmaz ve ürün
+ * listeden sessizce düşmez. Hangi arenanın kullanıldığı `arena` alanında (ve kartta arena adı olarak)
+ * görünür; (2)'de aynı görevde bazı ürünler alt kategoriyle, biri genel arenayla ölçülmüş olabilir
+ * (ikisi de aynı model havuzunda yüzdeliktir, ama tam aynı ölçek değildir; kartta arena adı bunu gösterir).
+ * `fallback: false` bu dönüşü kapatır (denetim "ne olurdu" hesabı kayıp ürünü ayrıca raporlar).
+ */
+function arenaBenchmark(product: Product, source: BenchmarkSource, key: string, models: Model[], fallback = true): BenchmarkComponent | null {
+  const direct = measureInArena(product, source, key, models);
+  if (direct !== null || !fallback) return direct;
+  const parent = parentArenaKey(key);
+  return parent === null ? null : measureInArena(product, source, parent, models);
+}
+
 export function scoreProduct(product: Product, task: Task, ctx: ScoreContext): ScoreResult {
   const dates: string[] = [];
   const reasons: Reason[] = [];
 
   // --- B: benchmark (yoksa k_b = 0)
+  // Aynı arena iki girdiden gelebilir (iki alt kategori de genel arenaya dönerse): bir kez sayılır.
+  const seenArenas = new Set<string>();
   const benchmarks = task.benchmark
-    .map((b) => arenaBenchmark(product, b.source, b.key, ctx.models))
-    .filter((b): b is BenchmarkComponent => b !== null);
+    .map((b) => arenaBenchmark(product, b.source, b.key, ctx.models, ctx.categoryFallback !== false))
+    .filter((b): b is BenchmarkComponent => b !== null)
+    .filter((b) => {
+      const id = `${b.source}:${b.arena}`;
+      if (seenArenas.has(id)) return false;
+      seenArenas.add(id);
+      return true;
+    });
   const B = benchmarks.length > 0 ? benchmarks.reduce((a, b) => a + b.percentile, 0) / benchmarks.length : undefined;
   const kb = B === undefined ? 0 : K_BENCHMARK;
   for (const b of benchmarks) dates.push(day(b.fetchedAt));

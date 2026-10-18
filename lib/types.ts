@@ -34,9 +34,14 @@ export interface RecommendationTool {
   dataDate?: string | null
   /** Puana giren benchmark kaynakları (kaynak adı kartta görünür: lisans şartı). */
   sources?: BenchmarkSource[]
-  /** 'editor': kanıt yokken RouteAI editör seçimi (puansız); gerekçesi editorNote. */
-  basis?: 'evidence' | 'editor'
+  /**
+   * 'editor': kanıt yokken RouteAI editör seçimi (puansız); gerekçesi editorNote.
+   * 'unverified': kanıtı olmayan ürün (kullanıcı puanıyla listeye girdi); kartta "Doğrulanmadı".
+   */
+  basis?: 'evidence' | 'editor' | 'unverified'
   editorNote?: string
+  /** İş akışı adımlarında ürünün geldiği görev (oy bu görev için verilir); tek öneride recommendation.taskId kullanılır. */
+  taskId?: string
 }
 
 export interface WorkflowStep {
@@ -74,6 +79,13 @@ export interface SimpleRecommendation {
   relaxedConstraint?: string[]
   /** v3 editör seçimi varken görevdeki diğer araçlar (puansız, "doğrulanmadı"). */
   unverified?: RecommendationTool[]
+  /** v3: kullanıcı doğrudan bu ürünün adını yazdı; main o ürün (görevin birincisi olmayabilir: "RouteAI tavsiyesi" yazılmaz). */
+  searched?: boolean
+  /**
+   * v3 TAHMİNİ eşleşme: isteğe özel iş yok; araçlar en yakın işin puanına göre sıralı. Kartta açıkça yazılır,
+   * oy/"işini gördü mü?" kaydı yazılmaz; otherTasks düğmeleri seçilen işle aynı sorguyu yeniden arar.
+   */
+  approximate?: { unknownTerms?: string[]; otherTasks: { taskId: string; label: string }[] }
 }
 
 export interface WorkflowRecommendation {
@@ -85,7 +97,14 @@ export interface WorkflowRecommendation {
 /** v3: görev belirsiz — "Şunu mu demek istedin?" + görev düğmeleri. */
 export interface ClarifyRecommendation {
   type: 'clarify'
+  /** Boş olabilir (reason 'spelling'). */
   options: { taskId: string; label: string }[]
+  /** Yoksa klasik "hangi iş?" sorusu; ayrıntı için lib/recommendV3.ts RecommendV3Clarify. */
+  reason?: 'no_match' | 'unclear' | 'spelling'
+  /** Katalogda hiçbir yerde geçmeyen kelimeler (en çok 3). */
+  unknownTerms?: string[]
+  /** Yalnızca 'spelling': düzeltilmiş sorgu; düğmeye basılınca bu sorgu yeniden aranır. */
+  suggestion?: string
 }
 
 /** v3: görev bulundu ama kanıtlı ürün yok — dürüst boş durum, araçlar "doğrulanmadı". */
@@ -117,6 +136,7 @@ function itemTool(i: V3Item, locale: Locale): RecommendationTool {
     dataDate: i.dataDate,
     sources: i.sources,
     basis: i.basis,
+    ...(i.taskId ? { taskId: i.taskId } : {}),
     ...(i.editorNote ? { editorNote: i.editorNote[locale] } : {}),
   }
 }
@@ -137,6 +157,15 @@ export function apiResponseFromV3(result: RecommendV3Result, dict: Dictionary, l
         taskLabel: result.taskLabel[locale],
         main: itemTool(main, locale),
         alternatives: alternatives.map((i) => itemTool(i, locale)),
+        ...(result.searchedProductId && result.searchedProductId === main.product.id ? { searched: true } : {}),
+        ...(result.approximate
+          ? {
+              approximate: {
+                ...(result.approximate.unknownTerms?.length ? { unknownTerms: result.approximate.unknownTerms } : {}),
+                otherTasks: result.approximate.otherTasks.map((t) => ({ taskId: t.taskId, label: t.label[locale] })),
+              },
+            }
+          : {}),
         ...(result.relaxedConstraint?.length ? { relaxedConstraint: result.relaxedConstraint } : {}),
         ...(result.unverified?.length ? { unverified: result.unverified.map((p) => productTool(p, locale)) } : {}),
       }
@@ -148,6 +177,9 @@ export function apiResponseFromV3(result: RecommendV3Result, dict: Dictionary, l
         options: result.options
           .filter((o) => !seen.has(o.taskId) && seen.add(o.taskId))
           .map((o) => ({ taskId: o.taskId, label: o.label[locale] })),
+        ...(result.reason ? { reason: result.reason } : {}),
+        ...(result.unknownTerms?.length ? { unknownTerms: result.unknownTerms } : {}),
+        ...(result.suggestion ? { suggestion: result.suggestion } : {}),
       }
     }
     case 'no_evidence':

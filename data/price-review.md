@@ -1,6 +1,6 @@
 # Fiyat kontrol listesi
 
-Bu dosyayı `npm run price:review` üretir (2026-09-28). 56 aktif ürünün fiyatı doğrulanmamış (tarihsiz ya da 60 günden eski); kartlarda bu ürünler için tutar yerine "Fiyat doğrulanmadı" görünüyor.
+Bu dosyayı `npm run price:review` üretir (2026-10-18). 28 aktif ürünün fiyatı doğrulanmamış (tarihsiz ya da 60 günden eski); kartlarda bu ürünler için tutar yerine "Fiyat doğrulanmadı" görünüyor.
 
 Her ürün için fiyat sayfasını aç ve alanları doldur:
 - **model**: `free` (tamamen ücretsiz), `freemium` (ücretsiz planı var) ya da `paid` (sadece ücretli).
@@ -10,9 +10,19 @@ Her ürün için fiyat sayfasını aç ve alanları doldur:
 
 Sonra `npm run price:apply`. Sadece `model` ve `checkedAt` dolu olan ürünler uygulanır; boş bırakılan ürün değişmez.
 
-### Adcreative.ai (`adcreativeai`)
+### Apollo.io (`apollo-io`)
 
-Fiyat sayfası: (kayıtta yok — https://www.adcreative.ai)
+Fiyat sayfası: https://www.apollo.io/pricing
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Chatbase (`chatbase`)
+
+Fiyat sayfası: https://www.chatbase.co/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
@@ -20,9 +30,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### Anyword (Copy AI) (`anyword-copy-ai`)
+### Clay (`clay`)
 
-Fiyat sayfası: https://www.anyword.com/pricing
+Fiyat sayfası: https://www.clay.com/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
@@ -30,9 +40,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### Base44 (No-Code App Platform) (`base44-no-code-app-platform`)
+### Dia (`dia-browser`)
 
-Fiyat sayfası: https://base44.com/pricing
+Fiyat sayfası: https://www.diabrowser.com
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
@@ -40,9 +50,39 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### ClickUp Brain (Project AI) (`clickup-brain-project-ai`)
+### Duolingo (`duolingo`)
 
-Fiyat sayfası: https://clickup.com/brain/pricing
+Fiyat sayfası: https://www.duolingo.com
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Figma Make (`figma-make`)
+
+Fiyat sayfası: https://www.figma.com/pricing/
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Hyper3D Rodin (`hyper3d-rodin`)
+
+Fiyat sayfası: https://hyper3d.ai
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Instantly (`instantly`)
+
+Fiyat sayfası: https://instantly.ai/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
@@ -50,89 +90,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### Copy.ai (`copyai`)
+### Intercom Fin (`intercom-fin`)
 
-Fiyat sayfası: https://www.copy.ai/prices
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Fathom (Meeting Assistant) (`fathom-meeting-assistant`)
-
-Fiyat sayfası: https://www.fathom.ai/pricing
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Gemini (görsel) (`gemini-3-pro-image`)
-
-Fiyat sayfası: https://gemini.google/subscriptions/
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Grok (`grok-41`)
-
-Fiyat sayfası: https://grok.com/plans
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Grok Imagine (xAI) (`grok-imagine-v09-xai`)
-
-Fiyat sayfası: https://grok.com/plans
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Kling AI (`kling-ai-21`)
-
-Fiyat sayfası: https://app.klingai.com/global/membership/membership-plan
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Le Chat (Mistral) (`mistral-large-21`)
-
-Fiyat sayfası: https://mistral.ai/pricing/
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Luma Dream Machine (`luma-dream-machine-ray2`)
-
-Fiyat sayfası: https://lumalabs.ai/learning-hub/pricing
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Microsoft Copilot Pro (`microsoft-copilot-pro`)
-
-Fiyat sayfası: https://www.microsoft.com/en-us/microsoft-365-copilot/pricing/individuals
+Fiyat sayfası: https://www.intercom.com/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
@@ -140,69 +100,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### n8n AI Workflow Builder (`n8n-ai-workflow-builder`)
+### Khanmigo (`khanmigo`)
 
-Fiyat sayfası: https://n8n.io/pricing/
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### NotebookLM (`notebooklm-deep-research`)
-
-Fiyat sayfası: https://notebooklm.google/plans
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### OpenAI Atlas (AI Browser) (`openai-atlas-ai-browser`)
-
-Fiyat sayfası: (kayıtta yok — https://atlas.openai.com)
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### OpusClip (Video Repurposing) (`opusclip-video-repurposing`)
-
-Fiyat sayfası: https://www.opus.pro/pricing
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Replit Agent (`replit-agent`)
-
-Fiyat sayfası: https://replit.com/pricing
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Simplified (Content & Design) (`simplified-content-and-design`)
-
-Fiyat sayfası: https://simplified.com/pricing
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Synthesia (`synthesia-30`)
-
-Fiyat sayfası: https://www.synthesia.io/pricing
+Fiyat sayfası: https://www.khanmigo.ai
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
@@ -210,9 +110,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### Teal (Resume Builder AI) (`teal-resume-builder-ai`)
+### Ludo.ai (`ludo-ai`)
 
-Fiyat sayfası: https://www.tealhq.com/pricing
+Fiyat sayfası: https://ludo.ai/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
@@ -220,9 +120,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### Windsurf (Codeium) (`windsurf-codeium`)
+### monday.com (`monday-com`)
 
-Fiyat sayfası: https://windsurf.com/pricing
+Fiyat sayfası: https://monday.com/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
@@ -230,9 +130,19 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### World Labs Marble (`world-labs-marble`)
+### Motion (`motion`)
 
-Fiyat sayfası: https://marble.worldlabs.ai/pricing
+Fiyat sayfası: https://www.usemotion.com/pricing
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Notion AI (`notion-ai`)
+
+Fiyat sayfası: https://www.notion.com/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
@@ -240,330 +150,140 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 - checkedAt:
 - pricingUrl:
 
-### Writesonic (SEO Content) (`writesonic-seo-content`)
-
-Fiyat sayfası: https://writesonic.com/pricing
-Mevcut kayıt: freemium · tutar yok · kontrol: hiç
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Adobe Firefly (`adobe-firefly-image-4`)
-
-Fiyat sayfası: https://www.adobe.com/products/firefly/plans.html
-Mevcut kayıt: freemium · $9.99/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Canva AI (Magic Studio) (`canva-ai-magic-studio`)
-
-Fiyat sayfası: https://www.canva.com/en/pricing/
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### ChatGPT (`chatgpt-gpt-5`)
-
-Fiyat sayfası: https://chatgpt.com/pricing/
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### ChatGPT (görsel) (`chatgpt-gpt-4o-image`)
-
-Fiyat sayfası: https://chatgpt.com/pricing/
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Claude (`claude-ai-claude-4`)
-
-Fiyat sayfası: https://claude.com/pricing
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Claude Code (Anthropic) (`claude-code-anthropic`)
-
-Fiyat sayfası: https://claude.com/pricing
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Cursor (`cursor`)
-
-Fiyat sayfası: https://cursor.com/pricing
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### DALL-E (OpenAI) (`dall-e-3`)
-
-Fiyat sayfası: (kayıtta yok — https://openai.com/dall-e-3)
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### ElevenLabs (`elevenlabs`)
-
-Fiyat sayfası: https://elevenlabs.io/pricing
-Mevcut kayıt: freemium · $5/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Elicit AI (`elicit-ai`)
-
-Fiyat sayfası: https://elicit.com/pricing
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### FLUX (Black Forest Labs) (`flux1-pro`)
-
-Fiyat sayfası: (kayıtta yok — https://flux-ai.io)
-Mevcut kayıt: freemium · $7.99/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Gemini (`gemini-25-pro`)
-
-Fiyat sayfası: https://gemini.google/subscriptions/
-Mevcut kayıt: freemium · $19.99/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### GitHub Copilot (`github-copilot`)
-
-Fiyat sayfası: https://github.com/features/copilot/plans
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Google Imagen (`google-imagen-4`)
-
-Fiyat sayfası: (kayıtta yok — https://deepmind.google/technologies/imagen-4/)
-Mevcut kayıt: freemium · $0.035/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Google Veo (`google-veo-3`)
-
-Fiyat sayfası: (kayıtta yok — https://deepmind.google/technologies/veo/)
-Mevcut kayıt: freemium · $19.99/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Ideogram (`ideogram-20`)
-
-Fiyat sayfası: https://ideogram.ai/pricing
-Mevcut kayıt: freemium · $7/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Jasper AI (`jasper-ai`)
-
-Fiyat sayfası: https://www.jasper.ai/pricing
-Mevcut kayıt: paid · $39/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Leonardo AI (`leonardo-ai`)
-
-Fiyat sayfası: https://leonardo.ai/pricing
-Mevcut kayıt: freemium · $12/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Microsoft Power BI (`microsoft-power-bi`)
-
-Fiyat sayfası: https://www.microsoft.com/en-us/power-platform/products/power-bi/pricing
-Mevcut kayıt: freemium · $14/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Midjourney (`midjourney-v7`)
-
-Fiyat sayfası: https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans
-Mevcut kayıt: paid · $10/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Murf.ai (`murfai`)
-
-Fiyat sayfası: https://murf.ai/pricing
-Mevcut kayıt: freemium · $23/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Perplexity AI (`perplexity-ai`)
+### Perplexity Comet (`perplexity-comet`)
 
 Fiyat sayfası: https://www.perplexity.ai/hub/pricing
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:
 - checkedAt:
 - pricingUrl:
 
-### Sora (OpenAI) (`sora-2-openai`)
+### PixelLab (`pixellab`)
 
-Fiyat sayfası: (kayıtta yok — https://openai.com/sora)
-Mevcut kayıt: freemium · $20/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Stable Diffusion (`stable-diffusion-xl`)
-
-Fiyat sayfası: (kayıtta yok — https://stability.ai)
-Mevcut kayıt: free · Ücretsiz · kontrol: 2025-11-28
+Fiyat sayfası: https://www.pixellab.ai/pricing
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:
 - checkedAt:
 - pricingUrl:
 
-### Tableau (`tableau`)
+### Praktika (`praktika`)
 
-Fiyat sayfası: https://www.tableau.com/pricing
-Mevcut kayıt: paid · $15/ay · kontrol: 2025-11-28
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Beautiful.ai (`beautifulai`)
-
-Fiyat sayfası: https://www.beautiful.ai/pricing
-Mevcut kayıt: freemium · $12/ay · kontrol: 2025-12-31
+Fiyat sayfası: https://praktika.ai
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:
 - checkedAt:
 - pricingUrl:
 
-### Gamma AI (`gamma-ai`)
+### QuickBooks (`quickbooks`)
 
-Fiyat sayfası: https://gamma.app/pricing
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-12-31
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Pika Labs (`pika-labs`)
-
-Fiyat sayfası: https://pika.art/pricing
-Mevcut kayıt: freemium · $8/ay · kontrol: 2025-12-31
+Fiyat sayfası: https://quickbooks.intuit.com/pricing/
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:
 - checkedAt:
 - pricingUrl:
 
-### Runway (`runway-gen-3`)
+### Reclaim (`reclaim`)
 
-Fiyat sayfası: (kayıtta yok — https://runwayml.com)
-Mevcut kayıt: freemium · $12/ay · kontrol: 2025-12-31
-
-- model:
-- startingPrice:
-- checkedAt:
-- pricingUrl:
-
-### Suno AI (`suno-ai`)
-
-Fiyat sayfası: https://suno.com/pricing
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-12-31
+Fiyat sayfası: https://reclaim.ai/pricing
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:
 - checkedAt:
 - pricingUrl:
 
-### Tome (`tome`)
+### Reflect (`reflect`)
 
-Fiyat sayfası: (kayıtta yok — https://tome.app)
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-12-31
+Fiyat sayfası: https://reflect.app
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:
 - checkedAt:
 - pricingUrl:
 
-### Udio (`udio`)
+### Speak (`speak`)
 
-Fiyat sayfası: https://www.udio.com/pricing
-Mevcut kayıt: freemium · $10/ay · kontrol: 2025-12-31
+Fiyat sayfası: https://www.speak.com/
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Superhuman (`superhuman`)
+
+Fiyat sayfası: https://superhuman.com/pricing
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Surfer (`surfer-seo`)
+
+Fiyat sayfası: https://surferseo.com/pricing/
+Mevcut kayıt: paid · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Tidio (`tidio`)
+
+Fiyat sayfası: https://www.tidio.com/pricing/
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Tripo (`tripo`)
+
+Fiyat sayfası: https://www.tripo3d.ai/pricing
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Uizard (`uizard`)
+
+Fiyat sayfası: https://uizard.io/pricing/
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### v0 (`v0`)
+
+Fiyat sayfası: https://v0.app/pricing
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
+
+- model:
+- startingPrice:
+- checkedAt:
+- pricingUrl:
+
+### Zoho Books (`zoho-books`)
+
+Fiyat sayfası: https://www.zoho.com/us/books/pricing/
+Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
 - model:
 - startingPrice:

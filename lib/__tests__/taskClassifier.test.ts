@@ -30,12 +30,36 @@ describe('classifyTask: kural katmanı (allowLLM:false, ağ çağrısı yok)', (
     assert.ok(Array.isArray(r.alternatives));
   });
 
-  it('hiç eşleşme yoksa ya da belirsizse: clarify tam 3 taskId', async () => {
+  it('hiçbir görev anahtar kelimesi tutmazsa: ilk üç görevi UYDURMAZ; katalogla örtüşen görev yoksa boş liste + reason no_match', async () => {
     const r = await classifyTask('asdkfjaslkdfj qwerty 12345', { allowLLM: false });
     assert.ok('clarify' in r);
     if (!('clarify' in r)) return;
-    assert.strictEqual(r.clarify.length, 3);
+    assert.strictEqual(r.reason, 'no_match');
+    assert.deepStrictEqual(r.clarify, []);
+  });
+
+  it('puan 0 ama katalogla örtüşen kelime varsa: yalnızca örtüşen görevler sunulur (en çok 4, geçerli id)', async () => {
+    const r = await classifyTask('tamamen belirsiz ve anlaşılmaz bir cümle yazıyorum burada', { allowLLM: false });
+    assert.ok('clarify' in r);
+    if (!('clarify' in r)) return;
+    assert.strictEqual(r.reason, 'no_match');
+    assert.ok(r.clarify.length >= 1 && r.clarify.length <= 4, `seçenek sayısı: ${r.clarify.length}`);
     for (const id of r.clarify) assert.match(id, /^[a-z0-9]+\.[a-z0-9-]+$/);
+  });
+
+  it('UNDERSTANDING_GATE=off: eski davranış (puan 0 olsa da tasks.json sırasıyla tam 3 görev, reason yok)', async () => {
+    const before = process.env.UNDERSTANDING_GATE;
+    process.env.UNDERSTANDING_GATE = 'off';
+    try {
+      const r = await classifyTask('asdkfjaslkdfj qwerty 12345', { allowLLM: false });
+      assert.ok('clarify' in r);
+      if (!('clarify' in r)) return;
+      assert.strictEqual(r.clarify.length, 3);
+      assert.strictEqual(r.reason, undefined);
+    } finally {
+      if (before === undefined) delete process.env.UNDERSTANDING_GATE;
+      else process.env.UNDERSTANDING_GATE = before;
+    }
   });
 
   it('allowLLM:false iken LLM\'e hiç gidilmez: anahtarsız ortamda da hata fırlatmaz', async () => {

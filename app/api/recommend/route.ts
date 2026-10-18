@@ -3,6 +3,7 @@ import { formatWorkflowForApi } from "@/lib/workflow";
 import { generateExplanation, getLocalized, resolveLocale } from "@/lib/toolsService";
 import { recommendV1 } from "@/lib/recommendV1";
 import { recommendV3 } from "@/lib/recommendV3";
+import { kvPointsProvider } from "@/lib/points/store";
 import { recommendRequestSchema } from "@/lib/validations/recommend";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/lib/getClientIp";
@@ -65,7 +66,10 @@ export async function POST(req: NextRequest) {
     // (geri dönüş: Vercel'de RECOMMENDER=v1 + yeniden yayın); v1 kodu aşağıda aynen.
     // ============================================================
     if (process.env.RECOMMENDER !== 'v1') {
-      const result = await recommendV3(prompt, pricingFilter, { taskId });
+      // Gizli kullanıcı puanı (lib/points): öneri sırası 👍/👎 oylarından gelen puana göre.
+      // Geri dönüş: Vercel'de POINTS_RANKING=off + yeniden yayın (puansız eski sıralama).
+      const points = process.env.POINTS_RANKING === 'off' ? undefined : kvPointsProvider();
+      const result = await recommendV3(prompt, pricingFilter, { taskId, points });
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {

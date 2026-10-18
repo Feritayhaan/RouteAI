@@ -10,9 +10,10 @@ import type { PromptCard as PromptCardData, PromptQuestionCard as PromptQuestion
 import { format, type Dictionary, type Locale } from "@/lib/i18n"
 import { promptProductId } from "@/lib/promptBuilder/products"
 import type { WorkflowStep } from "@/lib/types"
+import { UnverifiedBadge } from "./Evidence"
 import PricingBadges from "./PricingBadges"
-import PromptCta from "./PromptCta"
 import PromptPanel from "./PromptPanel"
+import VoteButtons from "./VoteButtons"
 import { onToolOpen } from "./toolOpen"
 
 export type StepPromptCard = PromptCardData | PromptQuestionData
@@ -41,6 +42,10 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
   const stepGoal = prompt
     ? `${prompt.goal}\n\n${format(dict.workflow.stepGoal, { step: step.name, description: step.description })}`
     : ""
+  const voteLabels = { recommend: dict.feedback.recommend, dontRecommend: dict.feedback.dontRecommend }
+  // Oy, aracın o adımda geldiği göreve verilir. Araç yerine durum yazılan adımlarda (productId yok) oy yok.
+  const primaryTaskId = step.primary.taskId ?? step.taskId
+  const alternativeTaskId = step.alternative?.taskId ?? step.taskId
 
   return (
     <li className="rounded-xl border border-border/50 bg-card/50 overflow-hidden transition-colors hover:border-primary/30">
@@ -58,11 +63,6 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
           <span className="font-medium">{step.name}</span>
           <ArrowRight className="w-3.5 h-3.5 shrink-0 text-muted-foreground" aria-hidden />
           <span className="font-bold text-primary">{step.primary.toolName}</span>
-          {productId && !isExpanded && (
-            <span className="rounded-full border border-primary/30 bg-primary/5 px-1.5 py-0.5 text-[10px] font-medium text-primary">
-              ✨ {dict.workflow.promptAvailable}
-            </span>
-          )}
         </span>
         <ChevronDown
           className={`w-4 h-4 shrink-0 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`}
@@ -77,22 +77,28 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 space-y-1.5">
               <PricingBadges pricing={step.primary.pricing} pricingUrl={step.primary.pricingUrl} />
+              {step.primary.basis === "unverified" && <UnverifiedBadge dict={dict} />}
               {step.primary.description && (
                 <p className="text-xs text-foreground/80">{step.primary.description}</p>
               )}
             </div>
-            {step.primary.url && (
-              <a
-                href={step.primary.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => onToolOpen(step.primary, step.taskId)}
-                className="shrink-0 min-h-11 inline-flex items-center gap-1 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <ExternalLink className="w-3 h-3" aria-hidden />
-                {dict.workflow.open}
-              </a>
-            )}
+            <div className="shrink-0 flex items-center gap-1">
+              {primaryTaskId && step.primary.productId && (
+                <VoteButtons taskId={primaryTaskId} productId={step.primary.productId} toolName={step.primary.toolName} labels={voteLabels} />
+              )}
+              {step.primary.url && (
+                <a
+                  href={step.primary.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => onToolOpen(step.primary, step.taskId)}
+                  className="shrink-0 min-h-11 inline-flex items-center gap-1 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <ExternalLink className="w-3 h-3" aria-hidden />
+                  {dict.workflow.open}
+                </a>
+              )}
+            </div>
           </div>
 
           {step.alternative && (
@@ -112,6 +118,14 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
                 <span className="font-semibold text-foreground">{step.alternative.toolName}</span>
               )}
               <PricingBadges pricing={step.alternative.pricing} pricingUrl={step.alternative.pricingUrl} />
+              {step.alternative.basis === "unverified" && (
+                <span className="rounded-full border border-slate-500/30 bg-slate-500/15 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                  {dict.v3.unverified}
+                </span>
+              )}
+              {alternativeTaskId && step.alternative.productId && (
+                <VoteButtons taskId={alternativeTaskId} productId={step.alternative.productId} toolName={step.alternative.toolName} labels={voteLabels} />
+              )}
             </p>
           )}
 
@@ -128,26 +142,15 @@ export default function WorkflowStepCard({ step, isExpanded, onToggle, dict, pro
 
           {prompt && productId && (
             <div className="space-y-3">
-              {prompt.open ? (
-                <button
-                  type="button"
-                  onClick={prompt.onToggle}
-                  aria-pressed
-                  className="min-h-11 inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <Wand2 className="w-3.5 h-3.5" aria-hidden />
-                  {dict.workflow.hidePrompt}
-                </button>
-              ) : (
-                // Seçimsel: tıklanmadan prompt üretilmez ("Prompt da yaz" açıksa ilk adım kendiliğinden açılır)
-                <PromptCta
-                  compact
-                  label={format(dict.workflow.stepCta, { product: step.primary.toolName })}
-                  hint={format(dict.prompt.ctaHint, { product: step.primary.toolName })}
-                  query={prompt.goal}
-                  onClick={prompt.onToggle}
-                />
-              )}
+              <button
+                type="button"
+                onClick={prompt.onToggle}
+                aria-pressed={prompt.open}
+                className="min-h-11 inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Wand2 className="w-3.5 h-3.5" aria-hidden />
+                {prompt.open ? dict.workflow.hidePrompt : dict.workflow.writePrompt}
+              </button>
               {prompt.open && (
                 <PromptPanel
                   target={{ productId, toolName: step.primary.toolName }}
