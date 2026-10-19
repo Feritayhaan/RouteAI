@@ -1,0 +1,3999 @@
+{
+  "recommender": "v3",
+  "date": "2026-10-19",
+  "generatedAt": "2026-10-19T14:13:16.176Z",
+  "env": {
+    "openaiKey": true,
+    "catalog": "lib/tools-database.json",
+    "kv": "disabled",
+    "vectorSearch": "disabled"
+  },
+  "summary": {
+    "total": 158,
+    "evaluated": 158,
+    "skipped": 0,
+    "top1Hit": {
+      "hits": 115,
+      "n": 125,
+      "rate": 0.92
+    },
+    "top3Hit": {
+      "hits": 118,
+      "n": 125,
+      "rate": 0.944
+    },
+    "taskMatch": {
+      "hits": 151,
+      "n": 152,
+      "rate": 0.993
+    },
+    "clarifyRate": {
+      "hits": 6,
+      "n": 158,
+      "rate": 0.038
+    },
+    "clarifyOnNeeded": {
+      "hits": 6,
+      "n": 13,
+      "rate": 0.462
+    },
+    "clarifyOnClear": {
+      "hits": 0,
+      "n": 145,
+      "rate": 0
+    },
+    "avgLatencyMs": 295,
+    "avgTokens": null,
+    "confusedTasks": [
+      {
+        "pair": "docs.create -> career.resume",
+        "count": 1
+      }
+    ]
+  },
+  "rows": [
+    {
+      "id": "tr-01",
+      "lang": "tr",
+      "query": "sunum hazırla",
+      "expectedTask": "slides.create",
+      "needsClarification": false,
+      "task": "slides.create",
+      "tools": [
+        "Gamma AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 58,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-02",
+      "lang": "tr",
+      "query": "startup için pitch deck",
+      "expectedTask": "slides.create",
+      "needsClarification": false,
+      "task": "slides.create",
+      "tools": [
+        "Gamma AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-03",
+      "lang": "tr",
+      "query": "Instagram için reels videosu",
+      "expectedTask": "video.edit-short-social",
+      "needsClarification": true,
+      "task": "video.edit-short-social",
+      "tools": [
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-04",
+      "lang": "tr",
+      "query": "youtube videosu için altyazı",
+      "expectedTask": "video.subtitles",
+      "needsClarification": false,
+      "task": "video.subtitles",
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-05",
+      "lang": "tr",
+      "query": "python kodumda hata var",
+      "expectedTask": "code.debug",
+      "needsClarification": false,
+      "task": "code.debug",
+      "tools": [
+        "ChatGPT",
+        "Claude",
+        "Claude Code (Anthropic)",
+        "Gemini"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-06",
+      "lang": "tr",
+      "query": "ürün fotoğrafı arka plan kaldır",
+      "expectedTask": "image.background-remove",
+      "needsClarification": false,
+      "task": "image.background-remove",
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1118,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-07",
+      "lang": "tr",
+      "query": "freelancer olarak fatura şablonu",
+      "expectedTask": "docs.create",
+      "needsClarification": false,
+      "task": "docs.create",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-08",
+      "lang": "tr",
+      "query": "logo",
+      "expectedTask": "image.logo",
+      "needsClarification": false,
+      "task": "image.logo",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-09",
+      "lang": "tr",
+      "query": "görsel lazım",
+      "expectedTask": "image.generate",
+      "needsClarification": true,
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 1,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "image.generate",
+          "image.edit",
+          "image.logo",
+          "image.product-photo",
+          "image.background-remove",
+          "image.upscale"
+        ]
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-10",
+      "lang": "tr",
+      "query": "reklam için 10 saniyelik sinematik bir video üretmek istiyorum",
+      "expectedTask": "video.text-to-video",
+      "needsClarification": false,
+      "task": "video.text-to-video",
+      "tools": [
+        "Grok Imagine (xAI)",
+        "Google Veo",
+        "Runway",
+        "Kling AI",
+        "Luma Dream Machine"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-11",
+      "lang": "tr",
+      "query": "e-öğrenme videolarım için Türkçe profesyonel seslendirme lazım",
+      "expectedTask": "audio.tts-voiceover",
+      "needsClarification": false,
+      "task": "audio.tts-voiceover",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-12",
+      "lang": "tr",
+      "query": "reklam filmim için telifsiz fon müziği üretmek istiyorum",
+      "expectedTask": "music.generate",
+      "needsClarification": false,
+      "task": "music.generate",
+      "tools": [
+        "Suno AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-13",
+      "lang": "tr",
+      "query": "Zoom toplantılarımda otomatik not tutsun ve aksiyon maddelerini çıkarsın",
+      "expectedTask": "audio.meeting-notes",
+      "needsClarification": false,
+      "task": "audio.meeting-notes",
+      "tools": [
+        "Fathom (Meeting Assistant)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-14",
+      "lang": "tr",
+      "query": "blog yazısı",
+      "expectedTask": "text.write-longform",
+      "needsClarification": false,
+      "task": "text.write-longform",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 11,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-15",
+      "lang": "tr",
+      "query": "İngilizce kira sözleşmesini Türkçeye çevirmem gerekiyor",
+      "expectedTask": "text.translate",
+      "needsClarification": false,
+      "task": "text.translate",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 919,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-16",
+      "lang": "tr",
+      "query": "tezim için literatür taraması yapmam lazım",
+      "expectedTask": "research.academic",
+      "needsClarification": false,
+      "task": "research.academic",
+      "tools": [
+        "Perplexity AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-17",
+      "lang": "tr",
+      "query": "kod bilmiyorum ama restoranım için rezervasyon alan bir mobil uygulama yapmak istiyorum",
+      "expectedTask": "code.app-builder",
+      "needsClarification": false,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-18",
+      "lang": "tr",
+      "query": "Excel'deki satış verilerimi analiz edip hangi ürünün satışının düştüğünü bulmak istiyorum",
+      "expectedTask": "data.spreadsheet-analysis",
+      "needsClarification": false,
+      "task": "data.spreadsheet-analysis",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1242,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-19",
+      "lang": "tr",
+      "query": "YouTube kanalım için ses lazım",
+      "expectedTask": "audio.tts-voiceover",
+      "needsClarification": true,
+      "task": "audio.tts-voiceover",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-20",
+      "lang": "tr",
+      "query": "sosyal medya için içerik üretmem lazım",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": true,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-01",
+      "lang": "en",
+      "query": "make slides for my quarterly sales review meeting",
+      "expectedTask": "slides.create",
+      "needsClarification": false,
+      "task": "slides.create",
+      "tools": [
+        "Gamma AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1138,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-02",
+      "lang": "en",
+      "query": "I need a logo for my bakery with the shop name in it",
+      "expectedTask": "image.logo",
+      "needsClarification": false,
+      "task": "image.logo",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-03",
+      "lang": "en",
+      "query": "generate a photorealistic image of a lighthouse at sunset",
+      "expectedTask": "image.generate",
+      "needsClarification": false,
+      "task": "image.generate",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram",
+        "FLUX (Black Forest Labs)",
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-04",
+      "lang": "en",
+      "query": "text to video",
+      "expectedTask": "video.text-to-video",
+      "needsClarification": false,
+      "task": "video.text-to-video",
+      "tools": [
+        "Grok Imagine (xAI)",
+        "Google Veo",
+        "Runway",
+        "Kling AI",
+        "Luma Dream Machine"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-05",
+      "lang": "en",
+      "query": "video",
+      "expectedTask": "video.text-to-video",
+      "needsClarification": true,
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 1,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "video.text-to-video",
+          "video.image-to-video",
+          "video.edit-short-social",
+          "video.avatar-presenter",
+          "video.repurpose-clips",
+          "video.subtitles"
+        ]
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-06",
+      "lang": "en",
+      "query": "clone my voice so I can narrate my own audiobook",
+      "expectedTask": "audio.voice-clone",
+      "needsClarification": false,
+      "task": "audio.voice-clone",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-07",
+      "lang": "en",
+      "query": "make a song",
+      "expectedTask": "music.generate",
+      "needsClarification": false,
+      "task": "music.generate",
+      "tools": [
+        "Suno AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-08",
+      "lang": "en",
+      "query": "remove background noise and echo from my podcast recording",
+      "expectedTask": "audio.cleanup",
+      "needsClarification": false,
+      "task": "audio.cleanup",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-09",
+      "lang": "en",
+      "query": "write ad copy for a Facebook campaign selling running shoes",
+      "expectedTask": "text.marketing-copy",
+      "needsClarification": false,
+      "task": "text.marketing-copy",
+      "tools": [
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 975,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-10",
+      "lang": "en",
+      "query": "write a polite follow-up email to a client who hasn't paid their invoice yet",
+      "expectedTask": "text.email",
+      "needsClarification": false,
+      "task": "text.email",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 3209,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-11",
+      "lang": "en",
+      "query": "summarize a 60-page PDF report into one page of key findings",
+      "expectedTask": "text.summarize",
+      "needsClarification": false,
+      "task": "text.summarize",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1088,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-12",
+      "lang": "en",
+      "query": "help me with my thesis",
+      "expectedTask": "research.academic",
+      "needsClarification": true,
+      "task": "research.academic",
+      "tools": [
+        "Perplexity AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-13",
+      "lang": "en",
+      "query": "research the best CRM tools for a 10-person sales team and cite sources",
+      "expectedTask": "research.web",
+      "needsClarification": false,
+      "task": "research.web",
+      "tools": [
+        "ChatGPT",
+        "Grok",
+        "Perplexity AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-14",
+      "lang": "en",
+      "query": "AI autocomplete in VS Code",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-15",
+      "lang": "en",
+      "query": "I want to make a website",
+      "expectedTask": "code.website-builder",
+      "needsClarification": true,
+      "task": "code.website-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-16",
+      "lang": "en",
+      "query": "build an interactive sales dashboard from our CRM data",
+      "expectedTask": "data.dashboard",
+      "needsClarification": false,
+      "task": "data.dashboard",
+      "tools": [
+        "Microsoft Power BI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-17",
+      "lang": "en",
+      "query": "automatically send new Google Form responses to a Slack channel",
+      "expectedTask": "automation.workflow",
+      "needsClarification": false,
+      "task": "automation.workflow",
+      "tools": [
+        "n8n AI Workflow Builder"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1115,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-18",
+      "lang": "en",
+      "query": "I need something for my cafe's instagram",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": true,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-19",
+      "lang": "en",
+      "query": "AI for my small business marketing",
+      "expectedTask": "text.marketing-copy",
+      "needsClarification": true,
+      "task": "text.marketing-copy",
+      "tools": [
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-20",
+      "lang": "en",
+      "query": "create a 3D model of a chair for my indie game",
+      "expectedTask": "3d.generate",
+      "needsClarification": false,
+      "task": "3d.generate",
+      "tools": [
+        "World Labs Marble"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-21",
+      "lang": "tr",
+      "query": "bu paragrafı yeniden yaz, daha resmi olsun",
+      "expectedTask": "text.rewrite-edit",
+      "needsClarification": false,
+      "task": "text.rewrite-edit",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-21",
+      "lang": "en",
+      "query": "proofread this paragraph and fix the grammar",
+      "expectedTask": "text.rewrite-edit",
+      "needsClarification": false,
+      "task": "text.rewrite-edit",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-22",
+      "lang": "tr",
+      "query": "genel bir yapay zeka asistanıyla sohbet etmek istiyorum",
+      "expectedTask": "chat.general-assistant",
+      "needsClarification": false,
+      "task": "chat.general-assistant",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1101,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-22",
+      "lang": "en",
+      "query": "I just want a chatbot to talk to about random things",
+      "expectedTask": "chat.general-assistant",
+      "needsClarification": false,
+      "task": "chat.general-assistant",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-23",
+      "lang": "tr",
+      "query": "yüklediğim PDF hakkında sorular sormak istiyorum",
+      "expectedTask": "research.document-qa",
+      "needsClarification": false,
+      "task": "research.document-qa",
+      "tools": [
+        "Claude",
+        "ChatGPT",
+        "Gemini"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-23",
+      "lang": "en",
+      "query": "ask questions about a contract I uploaded",
+      "expectedTask": "research.document-qa",
+      "needsClarification": false,
+      "task": "research.document-qa",
+      "tools": [
+        "Claude",
+        "ChatGPT",
+        "Gemini"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 944,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-24",
+      "lang": "tr",
+      "query": "bu fotoğraftaki masayı sil, arkasındaki duvarı değiştir",
+      "expectedTask": "image.edit",
+      "needsClarification": false,
+      "task": "image.edit",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1470,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-24",
+      "lang": "en",
+      "query": "add a hat to the person in this photo",
+      "expectedTask": "image.edit",
+      "needsClarification": false,
+      "task": "image.edit",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1150,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-25",
+      "lang": "tr",
+      "query": "online mağazam için ayakkabı ürün fotoğrafı çekmem lazım",
+      "expectedTask": "image.product-photo",
+      "needsClarification": false,
+      "task": "image.product-photo",
+      "tools": [
+        "ChatGPT (görsel)",
+        "FLUX (Black Forest Labs)",
+        "DALL-E (OpenAI)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-25",
+      "lang": "en",
+      "query": "create a clean studio product shot of my sneaker for the online store",
+      "expectedTask": "image.product-photo",
+      "needsClarification": false,
+      "task": "image.product-photo",
+      "tools": [
+        "ChatGPT (görsel)",
+        "FLUX (Black Forest Labs)",
+        "DALL-E (OpenAI)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1082,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-26",
+      "lang": "tr",
+      "query": "eski bir fotoğrafın çözünürlüğünü artırmak istiyorum",
+      "expectedTask": "image.upscale",
+      "needsClarification": false,
+      "task": "image.upscale",
+      "tools": [
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-26",
+      "lang": "en",
+      "query": "upscale this low resolution image to 4k",
+      "expectedTask": "image.upscale",
+      "needsClarification": false,
+      "task": "image.upscale",
+      "tools": [
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 979,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-27",
+      "lang": "tr",
+      "query": "elimdeki bir fotoğrafı canlandırıp kısa bir videoya çevirmek istiyorum",
+      "expectedTask": "video.image-to-video",
+      "needsClarification": false,
+      "task": "video.image-to-video",
+      "tools": [
+        "Grok Imagine (xAI)",
+        "Google Veo",
+        "Kling AI",
+        "Luma Dream Machine",
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-27",
+      "lang": "en",
+      "query": "animate this still photo into a short video clip",
+      "expectedTask": "video.image-to-video",
+      "needsClarification": false,
+      "task": "video.image-to-video",
+      "tools": [
+        "Grok Imagine (xAI)",
+        "Google Veo",
+        "Kling AI",
+        "Luma Dream Machine",
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1093,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-28",
+      "lang": "tr",
+      "query": "eğitim videom için metni okuyan bir yapay zeka avatarı istiyorum",
+      "expectedTask": "video.avatar-presenter",
+      "needsClarification": false,
+      "task": "video.avatar-presenter",
+      "tools": [
+        "Synthesia"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-28",
+      "lang": "en",
+      "query": "I want an ai avatar to present my training script on camera",
+      "expectedTask": "video.avatar-presenter",
+      "needsClarification": false,
+      "task": "video.avatar-presenter",
+      "tools": [
+        "Synthesia"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-29",
+      "lang": "tr",
+      "query": "bir saatlik podcast kaydımdan sosyal medyaya uygun kısa klipler çıkarmam lazım",
+      "expectedTask": "video.repurpose-clips",
+      "needsClarification": false,
+      "task": "video.repurpose-clips",
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-29",
+      "lang": "en",
+      "query": "turn my hour-long youtube video into short clips for tiktok",
+      "expectedTask": "video.repurpose-clips",
+      "needsClarification": false,
+      "task": "video.repurpose-clips",
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-30",
+      "lang": "tr",
+      "query": "bir ses kaydındaki konuşmayı yazıya dökmem gerekiyor",
+      "expectedTask": "audio.transcribe",
+      "needsClarification": false,
+      "task": "audio.transcribe",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-30",
+      "lang": "en",
+      "query": "transcribe this interview recording into text",
+      "expectedTask": "audio.transcribe",
+      "needsClarification": false,
+      "task": "audio.transcribe",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-31",
+      "lang": "tr",
+      "query": "terminalden çalışıp bütün kod tabanımı düzenleyebilen bir yapay zeka ajanı istiyorum",
+      "expectedTask": "code.agent-cli",
+      "needsClarification": false,
+      "task": "code.agent-cli",
+      "tools": [
+        "Claude Code (Anthropic)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-31",
+      "lang": "en",
+      "query": "I want an autonomous coding agent that runs in my terminal and edits my repo",
+      "expectedTask": "code.agent-cli",
+      "needsClarification": false,
+      "task": "code.agent-cli",
+      "tools": [
+        "Claude Code (Anthropic)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-32",
+      "lang": "tr",
+      "query": "blog için yazı yazdır",
+      "expectedTask": "text.write-longform",
+      "needsClarification": false,
+      "task": "text.write-longform",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-32",
+      "lang": "en",
+      "query": "write a long article about remote work trends",
+      "expectedTask": "text.write-longform",
+      "needsClarification": false,
+      "task": "text.write-longform",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1003,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-33",
+      "lang": "tr",
+      "query": "write email",
+      "expectedTask": "text.email",
+      "needsClarification": false,
+      "task": "text.email",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-33",
+      "lang": "en",
+      "query": "draft a short thank-you email to a job interviewer",
+      "expectedTask": "text.email",
+      "needsClarification": false,
+      "task": "text.email",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 926,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-34",
+      "lang": "tr",
+      "query": "bu toplantı tutanağını tek paragrafta özetle",
+      "expectedTask": "text.summarize",
+      "needsClarification": false,
+      "task": "text.summarize",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1109,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-34",
+      "lang": "en",
+      "query": "give me a one-paragraph summary of this 40-page contract",
+      "expectedTask": "text.summarize",
+      "needsClarification": false,
+      "task": "text.summarize",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 948,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-35",
+      "lang": "tr",
+      "query": "bu menüyü Almancaya çevirmem lazım",
+      "expectedTask": "text.translate",
+      "needsClarification": false,
+      "task": "text.translate",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-35",
+      "lang": "en",
+      "query": "translate this product manual from english to spanish",
+      "expectedTask": "text.translate",
+      "needsClarification": false,
+      "task": "text.translate",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1002,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-36",
+      "lang": "tr",
+      "query": "İstanbul'daki en iyi kahve makinesi markalarını kaynak göstererek araştır",
+      "expectedTask": "research.web",
+      "needsClarification": false,
+      "task": "research.web",
+      "tools": [
+        "ChatGPT",
+        "Grok",
+        "Perplexity AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 951,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-36",
+      "lang": "en",
+      "query": "research the top project management tools for startups and cite your sources",
+      "expectedTask": "research.web",
+      "needsClarification": false,
+      "task": "research.web",
+      "tools": [
+        "ChatGPT",
+        "Grok",
+        "Perplexity AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1874,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-37",
+      "lang": "tr",
+      "query": "cv hazırla",
+      "expectedTask": "docs.create",
+      "needsClarification": false,
+      "task": "docs.create",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-37",
+      "lang": "en",
+      "query": "help me build a resume for a marketing job",
+      "expectedTask": "docs.create",
+      "needsClarification": false,
+      "task": "career.resume",
+      "tools": [
+        "Rezi"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": false,
+      "latencyMs": 1105,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-38",
+      "lang": "tr",
+      "query": "arka plan kaldır",
+      "expectedTask": "image.background-remove",
+      "needsClarification": false,
+      "task": "image.background-remove",
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-38",
+      "lang": "en",
+      "query": "remove the background from this headshot",
+      "expectedTask": "image.background-remove",
+      "needsClarification": false,
+      "task": "image.background-remove",
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-39",
+      "lang": "tr",
+      "query": "instagram reels için elimdeki ham çekimi düzenlemem lazım",
+      "expectedTask": "video.edit-short-social",
+      "needsClarification": false,
+      "task": "video.edit-short-social",
+      "tools": [
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 937,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-39",
+      "lang": "en",
+      "query": "edit my raw footage into a tiktok video with captions",
+      "expectedTask": "video.edit-short-social",
+      "needsClarification": false,
+      "task": "video.edit-short-social",
+      "tools": [
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 977,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-40",
+      "lang": "tr",
+      "query": "İngilizce videoma Türkçe altyazı eklemek istiyorum",
+      "expectedTask": "video.subtitles",
+      "needsClarification": false,
+      "task": "video.subtitles",
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-40",
+      "lang": "en",
+      "query": "auto-generate captions for my youtube video",
+      "expectedTask": "video.subtitles",
+      "needsClarification": false,
+      "task": "video.subtitles",
+      "tools": [
+        "OpusClip (Video Repurposing)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-41",
+      "lang": "tr",
+      "query": "kendi sesimin klonunu çıkarıp sesli kitabımı onunla seslendirmek istiyorum",
+      "expectedTask": "audio.voice-clone",
+      "needsClarification": false,
+      "task": "audio.voice-clone",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 974,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-41",
+      "lang": "en",
+      "query": "make a synthetic copy of my own voice for future narration",
+      "expectedTask": "audio.voice-clone",
+      "needsClarification": false,
+      "task": "audio.voice-clone",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1009,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-42",
+      "lang": "tr",
+      "query": "podcast kaydımdaki arka plan gürültüsünü ve yankıyı temizlemem lazım",
+      "expectedTask": "audio.cleanup",
+      "needsClarification": false,
+      "task": "audio.cleanup",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-42",
+      "lang": "en",
+      "query": "clean up the hiss and echo in this voice recording",
+      "expectedTask": "audio.cleanup",
+      "needsClarification": false,
+      "task": "audio.cleanup",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-43",
+      "lang": "tr",
+      "query": "toplantı notu",
+      "expectedTask": "audio.meeting-notes",
+      "needsClarification": false,
+      "task": "audio.meeting-notes",
+      "tools": [
+        "Fathom (Meeting Assistant)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-43",
+      "lang": "en",
+      "query": "record my weekly standup and give me the action items",
+      "expectedTask": "audio.meeting-notes",
+      "needsClarification": false,
+      "task": "audio.meeting-notes",
+      "tools": [
+        "Fathom (Meeting Assistant)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-44",
+      "lang": "tr",
+      "query": "VS Code içinde kod tamamlayan bir yapay zeka eklentisi istiyorum",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-44",
+      "lang": "en",
+      "query": "AI autocomplete in VS Code",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-45",
+      "lang": "tr",
+      "query": "JavaScript kodum sürekli undefined hatası veriyor, bulamıyorum",
+      "expectedTask": "code.debug",
+      "needsClarification": false,
+      "task": "code.debug",
+      "tools": [
+        "ChatGPT",
+        "Claude",
+        "Claude Code (Anthropic)",
+        "Gemini"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1151,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-45",
+      "lang": "en",
+      "query": "why is my react component re-rendering infinitely, help me fix it",
+      "expectedTask": "code.debug",
+      "needsClarification": false,
+      "task": "code.debug",
+      "tools": [
+        "ChatGPT",
+        "Claude",
+        "Claude Code (Anthropic)",
+        "Gemini"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1758,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-46",
+      "lang": "tr",
+      "query": "kod yazmayı bilmiyorum ama küçük işletmem için stok takip uygulaması yapmak istiyorum",
+      "expectedTask": "code.app-builder",
+      "needsClarification": false,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-46",
+      "lang": "en",
+      "query": "build a simple inventory tracking app without writing any code",
+      "expectedTask": "code.app-builder",
+      "needsClarification": false,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1212,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-47",
+      "lang": "tr",
+      "query": "web sitesi yapmak istiyorum",
+      "expectedTask": "code.website-builder",
+      "needsClarification": false,
+      "task": "code.website-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-47",
+      "lang": "en",
+      "query": "I want to make a website for my photography portfolio",
+      "expectedTask": "code.website-builder",
+      "needsClarification": false,
+      "task": "code.website-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-48",
+      "lang": "tr",
+      "query": "son 3 aylık satış tablomu analiz edip trend çıkarır mısın",
+      "expectedTask": "data.spreadsheet-analysis",
+      "needsClarification": false,
+      "task": "data.spreadsheet-analysis",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 963,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-48",
+      "lang": "en",
+      "query": "analyze this csv of customer churn and tell me the main drivers",
+      "expectedTask": "data.spreadsheet-analysis",
+      "needsClarification": false,
+      "task": "data.spreadsheet-analysis",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1004,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-49",
+      "lang": "tr",
+      "query": "satış ekibim için canlı güncellenen bir dashboard hazırlamak istiyorum",
+      "expectedTask": "data.dashboard",
+      "needsClarification": false,
+      "task": "data.dashboard",
+      "tools": [
+        "Microsoft Power BI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1635,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-49",
+      "lang": "en",
+      "query": "build an executive dashboard that pulls live data from our database",
+      "expectedTask": "data.dashboard",
+      "needsClarification": false,
+      "task": "data.dashboard",
+      "tools": [
+        "Microsoft Power BI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 1105,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-50",
+      "lang": "tr",
+      "query": "yeni bir müşteri formu dolduğunda otomatik olarak CRM'ime eklensin istiyorum",
+      "expectedTask": "automation.workflow",
+      "needsClarification": false,
+      "task": "automation.workflow",
+      "tools": [
+        "n8n AI Workflow Builder"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 848,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-50",
+      "lang": "en",
+      "query": "automatically send new Stripe payments to a Google Sheet",
+      "expectedTask": "automation.workflow",
+      "needsClarification": false,
+      "task": "automation.workflow",
+      "tools": [
+        "n8n AI Workflow Builder"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 929,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "tr-51",
+      "lang": "tr",
+      "query": "bahçe için bir 3D bank modeli oluşturmak istiyorum",
+      "expectedTask": "3d.generate",
+      "needsClarification": false,
+      "task": "3d.generate",
+      "tools": [
+        "World Labs Marble"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 927,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "llm",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-51",
+      "lang": "en",
+      "query": "generate a 3d model of a lamp for my game asset library",
+      "expectedTask": "3d.generate",
+      "needsClarification": false,
+      "task": "3d.generate",
+      "tools": [
+        "World Labs Marble"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-52",
+      "lang": "tr",
+      "query": "podcast kapağı",
+      "expectedTask": "image.generate",
+      "needsClarification": false,
+      "task": "image.generate",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram",
+        "FLUX (Black Forest Labs)",
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-53",
+      "lang": "tr",
+      "query": "podcast için kapak görseli istiyorum",
+      "expectedTask": "image.generate",
+      "needsClarification": false,
+      "task": "image.generate",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram",
+        "FLUX (Black Forest Labs)",
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-52",
+      "lang": "en",
+      "query": "cover art for my podcast",
+      "expectedTask": "image.generate",
+      "needsClarification": false,
+      "task": "image.generate",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram",
+        "FLUX (Black Forest Labs)",
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-54",
+      "lang": "tr",
+      "query": "e-kitabım için kapak tasarlamak istiyorum",
+      "expectedTask": "image.generate",
+      "needsClarification": false,
+      "task": "image.generate",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram",
+        "FLUX (Black Forest Labs)",
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-55",
+      "lang": "tr",
+      "query": "youtube kanalım için video senaryosu yazmam lazım",
+      "expectedTask": "text.write-longform",
+      "needsClarification": false,
+      "task": "text.write-longform",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 11,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-56",
+      "lang": "tr",
+      "query": "müzik albümüm için kapak görseli lazım",
+      "expectedTask": "image.generate",
+      "needsClarification": false,
+      "task": "image.generate",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram",
+        "FLUX (Black Forest Labs)",
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 10,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-57",
+      "lang": "tr",
+      "query": "bir şeyler yapmak istiyorum ama ne yapacağımı bilmiyorum",
+      "expectedTask": "chat.general-assistant",
+      "needsClarification": true,
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 1542,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "chat.general-assistant",
+          "text.write-longform",
+          "text.marketing-copy",
+          "design.social-graphic"
+        ]
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-53",
+      "lang": "en",
+      "query": "help me with content for my business",
+      "expectedTask": "text.marketing-copy",
+      "needsClarification": true,
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 0,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "text.write-longform",
+          "text.marketing-copy",
+          "design.social-graphic",
+          "video.edit-short-social"
+        ]
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-58",
+      "lang": "tr",
+      "query": "işim için yapay zeka aracı lazım",
+      "expectedTask": "chat.general-assistant",
+      "needsClarification": true,
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 1121,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "chat.general-assistant",
+          "automation.workflow",
+          "research.web",
+          "productivity.notes"
+        ]
+      },
+      "llmCalls": 1
+    },
+    {
+      "id": "en-54",
+      "lang": "en",
+      "query": "I need content for my brand",
+      "expectedTask": "text.marketing-copy",
+      "needsClarification": true,
+      "task": null,
+      "tools": [],
+      "clarification": true,
+      "skipped": null,
+      "top1Hit": false,
+      "top3Hit": false,
+      "taskMatch": null,
+      "latencyMs": 1,
+      "tokens": null,
+      "detail": {
+        "kind": "clarify",
+        "options": [
+          "text.write-longform",
+          "text.marketing-copy",
+          "design.social-graphic",
+          "video.edit-short-social"
+        ]
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-59",
+      "lang": "tr",
+      "query": "C# programı yapmak istiyorum",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-60",
+      "lang": "tr",
+      "query": "discord botu yapmak istiyorum",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-61",
+      "lang": "tr",
+      "query": "metni sese çevir",
+      "expectedTask": "audio.tts-voiceover",
+      "needsClarification": false,
+      "task": "audio.tts-voiceover",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-62",
+      "lang": "tr",
+      "query": "youtube thumbnail yap",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": false,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-63",
+      "lang": "tr",
+      "query": "podcast sesini temizle",
+      "expectedTask": "audio.cleanup",
+      "needsClarification": false,
+      "task": "audio.cleanup",
+      "tools": [
+        "ElevenLabs"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-64",
+      "lang": "tr",
+      "query": "instagram gönderisi için açıklama yaz",
+      "expectedTask": "text.marketing-copy",
+      "needsClarification": false,
+      "task": "text.marketing-copy",
+      "tools": [
+        "Claude",
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-65",
+      "lang": "tr",
+      "query": "powerpoint yap",
+      "expectedTask": "slides.create",
+      "needsClarification": false,
+      "task": "slides.create",
+      "tools": [
+        "Gamma AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 5,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-66",
+      "lang": "tr",
+      "query": "fotoğrafın arka planını sil",
+      "expectedTask": "image.background-remove",
+      "needsClarification": false,
+      "task": "image.background-remove",
+      "tools": [
+        "Canva AI (Magic Studio)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-67",
+      "lang": "tr",
+      "query": "afiş tasarlamak istiyorum",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": false,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-68",
+      "lang": "tr",
+      "query": "dilekçe yazmak istiyorum",
+      "expectedTask": "docs.create",
+      "needsClarification": false,
+      "task": "docs.create",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-69",
+      "lang": "tr",
+      "query": "matematik sorusu çöz",
+      "expectedTask": "chat.general-assistant",
+      "needsClarification": false,
+      "task": "chat.general-assistant",
+      "tools": [
+        "Gemini",
+        "Claude",
+        "ChatGPT",
+        "Grok",
+        "Le Chat (Mistral)"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-70",
+      "lang": "tr",
+      "query": "eski fotoğrafı netleştir",
+      "expectedTask": "image.upscale",
+      "needsClarification": false,
+      "task": "image.upscale",
+      "tools": [
+        "Leonardo AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-71",
+      "lang": "tr",
+      "query": "fotoğrafı hareketlendir",
+      "expectedTask": "video.image-to-video",
+      "needsClarification": false,
+      "task": "video.image-to-video",
+      "tools": [
+        "Grok Imagine (xAI)",
+        "Google Veo",
+        "Kling AI",
+        "Luma Dream Machine",
+        "Runway"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-55",
+      "lang": "en",
+      "query": "write python code",
+      "expectedTask": "code.assistant-ide",
+      "needsClarification": false,
+      "task": "code.assistant-ide",
+      "tools": [
+        "Cursor"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-56",
+      "lang": "en",
+      "query": "make a youtube thumbnail",
+      "expectedTask": "design.social-graphic",
+      "needsClarification": false,
+      "task": "design.social-graphic",
+      "tools": [
+        "ChatGPT (görsel)",
+        "Gemini (görsel)",
+        "Ideogram"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-57",
+      "lang": "en",
+      "query": "i want to make an app",
+      "expectedTask": "code.app-builder",
+      "needsClarification": false,
+      "task": "code.app-builder",
+      "tools": [
+        "Replit Agent"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": true,
+      "top3Hit": true,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-72",
+      "lang": "tr",
+      "query": "unity ile oyun yapmak istiyorum",
+      "expectedTask": "game.dev",
+      "needsClarification": false,
+      "task": "game.dev",
+      "tools": [
+        "Rosebud AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-58",
+      "lang": "en",
+      "query": "help me make a game in godot",
+      "expectedTask": "game.dev",
+      "needsClarification": false,
+      "task": "game.dev",
+      "tools": [
+        "Rosebud AI"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-73",
+      "lang": "tr",
+      "query": "oyunum için piksel sanat karakter sprite lazım",
+      "expectedTask": "game.asset-art",
+      "needsClarification": false,
+      "task": "game.asset-art",
+      "tools": [
+        "Scenario"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-59",
+      "lang": "en",
+      "query": "generate 2d game assets and sprite sheets",
+      "expectedTask": "game.asset-art",
+      "needsClarification": false,
+      "task": "game.asset-art",
+      "tools": [
+        "Scenario"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-74",
+      "lang": "tr",
+      "query": "mobil uygulamam için arayüz tasarlamak istiyorum",
+      "expectedTask": "design.ui-prototype",
+      "needsClarification": false,
+      "task": "design.ui-prototype",
+      "tools": [
+        "Figma Make"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-60",
+      "lang": "en",
+      "query": "I need a wireframe and ui prototype for my app",
+      "expectedTask": "design.ui-prototype",
+      "needsClarification": false,
+      "task": "design.ui-prototype",
+      "tools": [
+        "Figma Make"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-75",
+      "lang": "tr",
+      "query": "b2b satış için potansiyel müşteri listesi çıkar",
+      "expectedTask": "sales.prospecting",
+      "needsClarification": false,
+      "task": "sales.prospecting",
+      "tools": [
+        "Apollo.io"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-61",
+      "lang": "en",
+      "query": "find leads for cold outreach to saas founders",
+      "expectedTask": "sales.prospecting",
+      "needsClarification": false,
+      "task": "sales.prospecting",
+      "tools": [
+        "Apollo.io"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-76",
+      "lang": "tr",
+      "query": "web sitem için müşteri destek botu kurmak istiyorum",
+      "expectedTask": "support.chatbot",
+      "needsClarification": false,
+      "task": "support.chatbot",
+      "tools": [
+        "Tidio"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-62",
+      "lang": "en",
+      "query": "I want an ai support agent that answers customer questions on my site",
+      "expectedTask": "support.chatbot",
+      "needsClarification": false,
+      "task": "support.chatbot",
+      "tools": [
+        "Tidio"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-77",
+      "lang": "tr",
+      "query": "küçük işletmem için muhasebe ve gider takibi",
+      "expectedTask": "finance.bookkeeping",
+      "needsClarification": false,
+      "task": "finance.bookkeeping",
+      "tools": [
+        "QuickBooks"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-63",
+      "lang": "en",
+      "query": "bookkeeping software for my small business expenses",
+      "expectedTask": "finance.bookkeeping",
+      "needsClarification": false,
+      "task": "finance.bookkeeping",
+      "tools": [
+        "QuickBooks"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-78",
+      "lang": "tr",
+      "query": "blog yazılarım için seo anahtar kelime araştırması",
+      "expectedTask": "marketing.seo",
+      "needsClarification": false,
+      "task": "marketing.seo",
+      "tools": [
+        "Surfer"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-64",
+      "lang": "en",
+      "query": "optimize my article for seo and rank on google",
+      "expectedTask": "marketing.seo",
+      "needsClarification": false,
+      "task": "marketing.seo",
+      "tools": [
+        "Surfer"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-79",
+      "lang": "tr",
+      "query": "ekibim için proje yönetimi ve görev takibi aracı",
+      "expectedTask": "project.management",
+      "needsClarification": false,
+      "task": "project.management",
+      "tools": [
+        "Asana"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-65",
+      "lang": "en",
+      "query": "a tool for project management and tracking team tasks",
+      "expectedTask": "project.management",
+      "needsClarification": false,
+      "task": "project.management",
+      "tools": [
+        "Asana"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-80",
+      "lang": "tr",
+      "query": "bana matematiği adım adım öğretecek yapay zeka öğretmen",
+      "expectedTask": "education.tutor",
+      "needsClarification": false,
+      "task": "education.tutor",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-66",
+      "lang": "en",
+      "query": "an ai tutor to help me study for my exam",
+      "expectedTask": "education.tutor",
+      "needsClarification": false,
+      "task": "education.tutor",
+      "tools": [
+        "ChatGPT"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-81",
+      "lang": "tr",
+      "query": "ingilizce konuşma pratiği yapmak istiyorum",
+      "expectedTask": "education.language-learning",
+      "needsClarification": false,
+      "task": "education.language-learning",
+      "tools": [
+        "Speak"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-67",
+      "lang": "en",
+      "query": "I want to learn spanish and practice speaking",
+      "expectedTask": "education.language-learning",
+      "needsClarification": false,
+      "task": "education.language-learning",
+      "tools": [
+        "Speak"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-82",
+      "lang": "tr",
+      "query": "yapay zeka tarayıcı ile sekmelerimle sohbet etmek istiyorum",
+      "expectedTask": "agent.browser",
+      "needsClarification": false,
+      "task": "agent.browser",
+      "tools": [
+        "Dia"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-68",
+      "lang": "en",
+      "query": "an ai browser that can browse the web for me",
+      "expectedTask": "agent.browser",
+      "needsClarification": false,
+      "task": "agent.browser",
+      "tools": [
+        "Dia"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-83",
+      "lang": "tr",
+      "query": "gelen kutumu düzenleyen e-posta asistanı",
+      "expectedTask": "productivity.inbox",
+      "needsClarification": false,
+      "task": "productivity.inbox",
+      "tools": [
+        "Fyxer"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-69",
+      "lang": "en",
+      "query": "an email assistant to manage my inbox and draft replies",
+      "expectedTask": "productivity.inbox",
+      "needsClarification": false,
+      "task": "productivity.inbox",
+      "tools": [
+        "Fyxer"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-84",
+      "lang": "tr",
+      "query": "günümü planla, görevlerimi takvime yerleştir",
+      "expectedTask": "productivity.planning",
+      "needsClarification": false,
+      "task": "productivity.planning",
+      "tools": [
+        "Reclaim"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-70",
+      "lang": "en",
+      "query": "ai calendar assistant to plan my day",
+      "expectedTask": "productivity.planning",
+      "needsClarification": false,
+      "task": "productivity.planning",
+      "tools": [
+        "Reclaim"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-85",
+      "lang": "tr",
+      "query": "notlarım arasında arama yapabileceğim not uygulaması",
+      "expectedTask": "productivity.notes",
+      "needsClarification": false,
+      "task": "productivity.notes",
+      "tools": [
+        "Mem"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 8,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-71",
+      "lang": "en",
+      "query": "a notes app that works like a second brain",
+      "expectedTask": "productivity.notes",
+      "needsClarification": false,
+      "task": "productivity.notes",
+      "tools": [
+        "Mem"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 6,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "tr-86",
+      "lang": "tr",
+      "query": "iş ilanına göre özgeçmişimi geliştir, ats uyumlu olsun",
+      "expectedTask": "career.resume",
+      "needsClarification": false,
+      "task": "career.resume",
+      "tools": [
+        "Rezi"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 9,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    },
+    {
+      "id": "en-72",
+      "lang": "en",
+      "query": "tailor my resume to a job posting and make it ats-friendly",
+      "expectedTask": "career.resume",
+      "needsClarification": false,
+      "task": "career.resume",
+      "tools": [
+        "Rezi"
+      ],
+      "clarification": false,
+      "skipped": null,
+      "top1Hit": null,
+      "top3Hit": null,
+      "taskMatch": true,
+      "latencyMs": 7,
+      "tokens": null,
+      "detail": {
+        "kind": "recommendation",
+        "taskSource": "rules",
+        "relaxedConstraint": null
+      },
+      "llmCalls": 0
+    }
+  ]
+}

@@ -255,3 +255,7 @@ Bu seçimler öznel bir karardır; benim koyduğum ölçüt: (1) aracın resmi s
 3. **game.dev → Rosebud AI:** "unity ile oyun yapmak istiyorum" gibi bir sorguda ana araç Unity'ye özel değil (Rosebud kodsuz, tarayıcıda). Unity AI ve Bezi "Diğer araçlar" altında. Unity odaklı sorgular için Unity AI daha uygun olabilir; karar senin.
 4. **3d.generate:** Bu işin mevcut seçimi World Labs Marble (sahne/dünya üretir, tek nesne değil). Artık Meshy, Tripo ve Hyper3D Rodin (tek 3D nesne) de katalogda; seçimi değiştirmek istersen `data/editor-picks.json`'daki 3d.generate satırı. Bu turda dokunulmadı.
 5. **Ekranda hâlâ "henüz doğrulanmadı" yazan yerler:** Seçilmeyen araçların başlığı "Diğer araçlar (henüz doğrulanmadı)"; eski işlerle aynı metin, değiştirilmedi.
+
+## Cümle seti (`evals/sentences.jsonl`) — TASLAK, Ferit onaylamalı (2026-10-19)
+
+126 günlük cümle (65 `dev`, 61 `heldout`). `expectedTask`, `acceptableTasks` ve `needsClarification` değerlerini Claude yazdı; hiçbiri başka bir kaynaktan doğrulanmadı. Ferit'ten istenen: (1) her cümlenin beklenen görevi doğru mu, (2) "kabul edilir" ikinci görevler makul mu, (3) belirsiz saydığımız 4 cümle gerçekten belirsiz mi. `heldout` satırlarını ayar yaparken tek tek incelemeyin; ayar gerekiyorsa yeni cümleler ekleyip onları bekletin. Ölçüm: `npm run eval:sentences`. Kural katmanı bu cümlelerin hiçbirinde yanlış göreve özgüvenle gitmemeli (`sentenceEvidence.test.ts` kilitler); etiket hatalıysa bu test yanlış alarm verebilir.

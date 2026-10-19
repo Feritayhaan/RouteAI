@@ -3151,10 +3151,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 15,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3184,10 +3184,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 12,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3250,10 +3250,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3283,10 +3283,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 24,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3316,10 +3316,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 90,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3349,10 +3349,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 19,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3382,10 +3382,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3415,10 +3415,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 65,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3448,10 +3448,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 185,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3481,10 +3481,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 47,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3514,10 +3514,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 19,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3547,10 +3547,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 29,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3580,10 +3580,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 40,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3613,10 +3613,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 39,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3679,10 +3679,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 20,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3712,10 +3712,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 95,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3811,10 +3811,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 9,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3844,10 +3844,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 4,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3943,10 +3943,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 84,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -3976,10 +3976,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 8,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -4009,10 +4009,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 17,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -4041,10 +4041,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 10,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -4106,10 +4106,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 30,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -4204,10 +4204,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 12,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -4237,10 +4237,10 @@
       "free": false,
       "freemium": false,
       "paidOnly": true,
-      "startingPrice": null,
+      "startingPrice": 19,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",
@@ -4303,10 +4303,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 12,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-18"
     },
     "access": [],
     "status": "active",

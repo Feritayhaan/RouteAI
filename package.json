@@ -16,6 +16,7 @@
     "sync:models": "node --loader ./lib/__tests__/ts-loader.mjs scripts/sync-models.mjs",
     "audit:catalog": "node --no-warnings --loader ./lib/__tests__/ts-loader.mjs scripts/audit-catalog.mjs",
     "check:capabilities": "node --no-warnings --loader ./lib/__tests__/ts-loader.mjs scripts/check-capabilities.mjs",
+    "eval:sentences": "node --no-warnings --loader ./lib/__tests__/ts-loader.mjs evals/sentences.mjs",
     "eval:simulate": "node --loader ./lib/__tests__/ts-loader.mjs evals/simulate.mjs",
     "build:guides": "node --loader ./lib/__tests__/ts-loader.mjs scripts/build-guides.mjs",
     "prebuild": "npm run build:guides",
