@@ -4372,7 +4372,7 @@
       "startingPrice": null,
       "currency": "USD",
       "priceStatus": "unknown",
-      "priceCheckedAt": "2026-10-18"
+      "priceCheckedAt": null
     },
     "access": [],
     "status": "active",
