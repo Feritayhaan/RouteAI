@@ -3,7 +3,10 @@
 // İki kademe:
 //  1. Kural tabanlı (LLM çağrısı yok): tasks.json'daki keywords.{tr,en} ile
 //     hasTerm eşleşmesi. En iyi aday ikinciyi açık farkla (RULE_MARGIN)
-//     geçiyorsa sonuç budur.
+//     geçiyorsa VE görev cümlenin özünü açıklıyorsa (lib/intent/sentenceEvidence.ts:
+//     en az iki ayrı anahtar kelime ya da görevin açıklayamadığı anlamlı kelime ≤ 3) sonuç budur. Uzun bir cümlede tek bir
+//     yan kelime ("hikaye", "fatura", "excel") kararı veremez: o cümle bütün olarak LLM'e gider.
+//     Kapatma: SENTENCE_GATE=off (eski davranış: tek anahtar kelime yeter).
 //  2. Belirsizse ya da hiç eşleşme yoksa ve allowLLM true: OpenAI json_schema
 //     strict, taskId enum = tasks.json'daki 40 görev. Aynı çağrıda fiyat ve
 //     dil kısıtı da istenir (recommendV3 ikinci bir çağrı yapmasın).
@@ -35,6 +38,7 @@ import { hasTerm } from '../text';
 import { loadCatalog } from '../catalog/index';
 import type { Task } from '../catalog/schema';
 import { extractConstraints } from './parser';
+import { ruleEvidence } from './sentenceEvidence';
 import { getCachedTask, setCachedTask } from './taskCache';
 import { relatedTasks, understandingEnabled } from './understanding';
 
@@ -114,8 +118,16 @@ const MAX_CANDIDATES = 4;
  * katalogla gerçekten örtüşen görevler sunulur (UNDERSTANDING_GATE=off: eski davranış).
  */
 function ruleFallback(query: string, scores: RuleScore[], catalog: ReturnType<typeof loadCatalog>): TaskClarify {
-  if (scores[0].score > 0 || !understandingEnabled()) return { clarify: top3(scores) };
+  if (!understandingEnabled()) return { clarify: top3(scores) };
   const offerable = (id: string) => (catalog.productsByTask.get(id) ?? []).length > 0;
+  if (scores[0].score > 0) {
+    // Anahtar kelimesi tutan görevler önce; kalan yerler cümlenin sözcük örtüşmesiyle dolar (tasks.json sırasıyla değil).
+    // Kapı (sentenceEvidence) artık tek kelimeli eşleşmeleri de buraya bırakıyor: ilk 3'te cümleye uyan görevler olmalı.
+    const picked = scores.filter((s) => s.score > 0).map((s) => s.taskId);
+    for (const r of relatedTasks(query, catalog, MAX_CANDIDATES)) if (offerable(r.taskId) && !picked.includes(r.taskId)) picked.push(r.taskId);
+    for (const s of scores) if (picked.length < 3 && !picked.includes(s.taskId)) picked.push(s.taskId);
+    return { clarify: picked.slice(0, 3) };
+  }
   const related = relatedTasks(query, catalog, MAX_CANDIDATES).map((r) => r.taskId).filter(offerable);
   return { clarify: related, reason: 'no_match' };
 }
@@ -141,7 +153,7 @@ const PRICING_VALUES = ['free', 'freemium', 'paid', 'unspecified'] as const;
 
 function systemPrompt(tasks: Task[]): string {
   const list = tasks.map((t) => `- ${t.id}: ${t.label.en} — ${t.description.en}`).join('\n');
-  return `You are RouteAI's task classifier. Assign the user's request to EXACTLY ONE of the following tasks (pick the single closest match, even if imperfect):\n${list}\n\nAlso extract, ONLY if the user explicitly stated it:\n- pricing: "free" (must be free), "freemium" (has a free tier), "paid" (willing to pay) — "unspecified" if not stated.\n- language: the ISO 639-1 code of the language the user wrote in (e.g. "tr", "en").\n\nAmbiguity — set needsClarification:\n- true ONLY when the request is so open that recommending any single task would be a guess: it names just a broad area or goal ("something for my business", "help with content") or fits several different tasks about equally, and the user did not say what they want to make or do.\n- false whenever one task clearly fits, even if details such as style, length, audience or tool are missing.\nFit — set fit honestly, it is NOT the same as confidence:\n- "exact": one task directly does what the user wants to make or do.\n- "partial": the closest task is only adjacent or covers part of the request — typically the user names a specific engine, platform, domain or niche that no task is actually about, so the tools of that task would not really solve it.\n- "none": no task fits at all.\nWhen needsClarification is true OR fit is not "exact", list the 2-4 closest task ids in candidates, ordered by how much their tools could genuinely help with the request (most helpful first; the first one should be your taskId). Otherwise candidates must be an empty array. taskId is always your single best guess.\nBe concise.`;
+  return `You are RouteAI's task classifier. Assign the user's request to EXACTLY ONE of the following tasks (pick the single closest match, even if imperfect):\n${list}\n\nRead the WHOLE message and decide what the user wants to end up with (the outcome), not which single word appears in it. People usually describe the goal in everyday words without naming a tool or a task type ("something memorable for my shop sign" means a logo). A word that only names the topic or the input does not choose the task: in "make a song from my diary entries" the task is music, not writing; in "put my sales numbers on a live screen for the team" it is a dashboard, not spreadsheet analysis.\n\nAlso extract, ONLY if the user explicitly stated it:\n- pricing: "free" (must be free), "freemium" (has a free tier), "paid" (willing to pay) — "unspecified" if not stated.\n- language: the ISO 639-1 code of the language the user wrote in (e.g. "tr", "en").\n\nAmbiguity — set needsClarification:\n- true ONLY when the request is so open that recommending any single task would be a guess: it names just a broad area or goal ("something for my business", "help with content") or fits several different tasks about equally, and the user did not say what they want to make or do.\n- false whenever one task clearly fits, even if details such as style, length, audience or tool are missing.\nFit — set fit honestly, it is NOT the same as confidence:\n- "exact": one task directly does what the user wants to make or do.\n- "partial": the closest task is only adjacent or covers part of the request — typically the user names a specific engine, platform, domain or niche that no task is actually about, so the tools of that task would not really solve it.\n- "none": no task fits at all.\nWhen needsClarification is true OR fit is not "exact", list the 2-4 closest task ids in candidates, ordered by how much their tools could genuinely help with the request (most helpful first; the first one should be your taskId). Otherwise candidates must be an empty array. taskId is always your single best guess.\nBe concise.`;
 }
 
 /** Kapatma anahtarı: AMBIGUITY_CLARIFY=off iken LLM "belirsiz" dese de tek görev seçilir (eski davranış). */
@@ -282,7 +294,9 @@ export async function classifyTask(query: string, options: ClassifyTaskOptions =
   const scores = scoreTasks(query, tasks);
   const [best, second] = scores;
   const margin = best.score - (second?.score ?? 0);
-  const ruleConfident = best.score > 0 && margin >= RULE_MARGIN;
+  // Anahtar kelime farkı yetmez: eşleşen kelimeler cümlenin özünü de açıklamalı (tek yan kelime LLM'i atlatamaz).
+  const bestTask = tasks.find((t) => t.id === best.taskId);
+  const ruleConfident = best.score > 0 && margin >= RULE_MARGIN && (!bestTask || ruleEvidence(query, bestTask, catalog).explains);
   const ruleConstraints = pickPriceLang(extractConstraints(query));
 
   let result: TaskClassification | TaskClarify;

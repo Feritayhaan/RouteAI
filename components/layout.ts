@@ -1,7 +1,8 @@
 // Cihaza göre düzen sınıfları (ana sayfa ve iş akışı ortak kullanır).
 
 /**
- * Yan yana düzende sağ sütun (lg ve üstü): sayfa kayarken yanında durur, uzunsa
- * kendi içinde kayar. lg:p-1 lg:-m-1: kaydırma kutusu gölgeyi ve odak halkasını kesmesin.
+ * Yan yana düzende sağ sütun (lg ve üstü). İç kaydırma çubuğu ve yapışkanlık YOK: sütun içeriği kadar uzar,
+ * sayfa tek kaydırmayla gezilir (yapışkan panel ekrandan uzunsa alt kısmı görünmez olurdu).
+ * lg:min-w-0: ızgara öğesi uzun içerikle sütunu genişletip yatay taşma yapmasın (eskiden overflow bunu sağlıyordu).
  */
-export const sidePanel = "lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:overflow-y-auto lg:overscroll-contain lg:p-1 lg:-m-1"
+export const sidePanel = "lg:min-w-0"

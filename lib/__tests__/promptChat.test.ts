@@ -495,6 +495,25 @@ describe('sohbet: arayüz', () => {
     assert.match(src, /role="log"/, 'ekran okuyucu için sohbet günlüğü');
   });
 
+  it('"Sohbetle düzenle" prompt kartının altında KOPUK ayrı bir kart (içinde bir bölüm değil)', () => {
+    // Kendi çerçevesi, gölgesi ve boşluğu var; prompt kartının içindeki eski ayırıcı çizgi (border-t) yok.
+    assert.match(src, /<section aria-labelledby=\{chatTitleId\} className="[^"]*rounded-2xl border border-border bg-card[^"]*shadow-sm[^"]*"/);
+    assert.doesNotMatch(src, /<section[^>]*border-t/);
+    // İki kardeş kart: prompt kartı (aria-busy) kapanır, hemen ardından sohbet kartı gelir; ikisini bir sarmalayıcı boşlukla ayırır.
+    assert.match(src, /return \(\n    <div className="space-y-3">\n      <div className="[^"]*rounded-2xl border border-border bg-card[^"]*" aria-busy=\{loading\}>/);
+    assert.match(src, /\n      <\/div>\n\n      <section aria-labelledby=\{chatTitleId\}/, 'prompt kartı sohbetten ÖNCE kapanır');
+  });
+
+  it('prompt üretimi bölümünde kaydırma çubuğu yok: prompt kutusu, sohbet listesi ve yan panel içeriği kadar uzar', () => {
+    assert.doesNotMatch(src, /overflow-(y-|x-)?(auto|scroll)|max-h-/, 'PromptCard içinde iç kaydırma kutusu yok');
+    assert.doesNotMatch(src, /scrollTop|logRef/, 'sohbet listesini kaydıran kod da kalktı');
+    const layout = readFileSync('components/layout.ts', 'utf8');
+    const side = /export const sidePanel = "([^"]*)"/.exec(layout)?.[1] ?? '';
+    assert.ok(side.length > 0);
+    assert.doesNotMatch(side, /overflow|max-h|sticky|overscroll/, 'yan panel kaydırmaz ve yapışmaz (yapışkan panel ekrandan uzunsa alt kısmı görünmez olurdu)');
+    assert.match(side, /min-w-0/, 'ızgara öğesi uzun içerikle sütunu genişletmesin');
+  });
+
   it('sohbet metinleri iki dilde dolu', async () => {
     const { tr } = await import('../i18n/tr');
     const { en } = await import('../i18n/en');

@@ -36,6 +36,8 @@ import { matchesPricingFilter, type PricingFilter } from './pricing';
 import { START_POINTS, rankByPoints } from './points/points';
 import type { PointsProvider } from './points/store';
 import { findMatchingTemplate, MAX_WORKFLOW_STEPS } from './workflow/workflowTemplates';
+import { sentenceGateEnabled } from './intent/sentenceEvidence';
+import { hasTerm } from './text';
 import type { WorkflowStepTemplate } from './workflow/workflowTypes';
 
 // ------------------------------------------------------------------
@@ -541,7 +543,9 @@ export async function recommendV3(query: string, pricingFilter: PricingFilter = 
     const rules = await classifyTask(query, { allowLLM: false, useCache: false });
     if ('clarify' in rules) {
       const template = findMatchingTemplate(query);
-      if (template) {
+      // Şablon yalnızca tetikleyici İFADESİ cümlede geçiyorsa seçilir: kısmi kelime puanı (0,15) tek başına yetmez
+      // ("markamın etkinlik davetini ... kart" -> "marka" -> marka kimliği iş akışı). SENTENCE_GATE=off: eski davranış.
+      if (template && (!sentenceGateEnabled() || template.triggers.some((t) => hasTerm(query, t)))) {
         const steps = await Promise.all(template.steps.slice(0, MAX_WORKFLOW_STEPS).map((step) => recommendForStep(step, env)));
         return { kind: 'workflow', templateId: template.id, templateName: template.name, steps };
       }

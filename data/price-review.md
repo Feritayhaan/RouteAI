@@ -15,9 +15,9 @@ Sonra `npm run price:apply`. Sadece `model` ve `checkedAt` dolu olan ürünler u
 Fiyat sayfası: https://www.apollo.io/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium 
+- startingPrice: 65
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Chatbase (`chatbase`)
@@ -25,9 +25,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.chatbase.co/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 40
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Clay (`clay`)
@@ -35,9 +35,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.clay.com/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 185
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Dia (`dia-browser`)
@@ -45,9 +45,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.diabrowser.com
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 10
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Duolingo (`duolingo`)
@@ -55,8 +55,8 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.duolingo.com
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
+- model: freemium
+- startingPrice: 
 - checkedAt:
 - pricingUrl:
 
@@ -65,9 +65,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.figma.com/pricing/
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 20
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Hyper3D Rodin (`hyper3d-rodin`)
@@ -75,9 +75,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://hyper3d.ai
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium 
+- startingPrice: 24
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Instantly (`instantly`)
@@ -85,9 +85,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://instantly.ai/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 47
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Intercom Fin (`intercom-fin`)
@@ -95,9 +95,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.intercom.com/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 19
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Khanmigo (`khanmigo`)
@@ -105,9 +105,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.khanmigo.ai
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 4 
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Ludo.ai (`ludo-ai`)
@@ -115,9 +115,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://ludo.ai/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 15
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### monday.com (`monday-com`)
@@ -125,9 +125,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://monday.com/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 9
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Motion (`motion`)
@@ -135,19 +135,19 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.usemotion.com/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 19
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Notion AI (`notion-ai`)
 
-Fiyat sayfası: https://www.notion.com/pricing
+Fiyat sayfası: https://www.no   tion.com/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 12
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Perplexity Comet (`perplexity-comet`)
@@ -155,9 +155,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.perplexity.ai/hub/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 17
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### PixelLab (`pixellab`)
@@ -165,9 +165,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.pixellab.ai/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 12
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Praktika (`praktika`)
@@ -175,9 +175,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://praktika.ai
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 8 
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### QuickBooks (`quickbooks`)
@@ -185,9 +185,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://quickbooks.intuit.com/pricing/
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 39
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Reclaim (`reclaim`)
@@ -195,9 +195,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://reclaim.ai/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium 
+- startingPrice: 12 
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Reflect (`reflect`)
@@ -205,9 +205,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://reflect.app
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
+- model: freemium
 - startingPrice:
-- checkedAt:
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Speak (`speak`)
@@ -215,9 +215,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.speak.com/
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 84
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Superhuman (`superhuman`)
@@ -225,9 +225,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://superhuman.com/pricing
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 30
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Surfer (`surfer-seo`)
@@ -235,9 +235,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://surferseo.com/pricing/
 Mevcut kayıt: paid · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: paid
+- startingPrice: 95
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Tidio (`tidio`)
@@ -245,9 +245,9 @@ Mevcut kayıt: paid · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.tidio.com/pricing/
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 29
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Tripo (`tripo`)
@@ -255,9 +255,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.tripo3d.ai/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 20
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Uizard (`uizard`)
@@ -265,9 +265,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://uizard.io/pricing/
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 19
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### v0 (`v0`)
@@ -275,9 +275,9 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://v0.app/pricing
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 90
+- checkedAt: 2026-10-18
 - pricingUrl:
 
 ### Zoho Books (`zoho-books`)
@@ -285,8 +285,8 @@ Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 Fiyat sayfası: https://www.zoho.com/us/books/pricing/
 Mevcut kayıt: freemium · tutar yok · kontrol: hiç
 
-- model:
-- startingPrice:
-- checkedAt:
+- model: freemium
+- startingPrice: 20
+- checkedAt: 2026-10-18
 - pricingUrl:
 
