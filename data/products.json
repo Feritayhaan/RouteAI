@@ -3316,10 +3316,10 @@
       "free": false,
       "freemium": true,
       "paidOnly": false,
-      "startingPrice": null,
+      "startingPrice": 30,
       "currency": "USD",
-      "priceStatus": "unknown",
-      "priceCheckedAt": null
+      "priceStatus": "verified",
+      "priceCheckedAt": "2026-10-19"
     },
     "access": [],
     "status": "active",
