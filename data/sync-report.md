@@ -5,20 +5,21 @@ Durum: data/models.json güncellendi
 ## Karar: başarılı
 
 - Artificial Analysis: anahtar tanımlı değil, atlandı (hata sayılmadı).
-- Kısmi hata: 1 hata; beklenen kaynakların hepsinden veri geldi.
-- Tazelenemeyen arena (6): lmarena:text, lmarena:text/creative_writing, lmarena:text/longer_query, lmarena:text/instruction_following, lmarena:text/non_english, lmarena:text/multi_turn — eski skorları korundu, güncellenmedi.
+- Kısmi hata: 2 hata; beklenen kaynakların hepsinden veri geldi.
+- Tazelenemeyen arena (7): lmarena:text, lmarena:text/creative_writing, lmarena:text/longer_query, lmarena:text/instruction_following, lmarena:text/non_english, lmarena:text/multi_turn, lmarena:search — eski skorları korundu, güncellenmedi.
 
 ## Kaynaklar
 
 - Artificial Analysis: başarısız / atlandı — eski veri korundu
-- LMArena: 2026-10-19
+- LMArena: 2026-10-20
 - Artificial Analysis: AA_API_KEY yok, atlandı (eski veri korunur)
 
-Toplam model: 650 (Artificial Analysis: 0, LMArena: 650, iki kaynakta: 0)
+Toplam model: 653 (Artificial Analysis: 0, LMArena: 653, iki kaynakta: 0)
 
 ## Hatalar
 
-- LMArena text offset=6900: HTTP 429
+- LMArena text offset=3200: HTTP 429
+- LMArena search offset=0: HTTP 501
 
 ## Tazelenemeyen arenalar (eski skorlar korundu)
 
@@ -28,14 +29,15 @@ Toplam model: 650 (Artificial Analysis: 0, LMArena: 650, iki kaynakta: 0)
 - lmarena:text/instruction_following: bu koşuda alınamadı; eski skorlar eski tarihiyle kaldı (bayatlar).
 - lmarena:text/non_english: bu koşuda alınamadı; eski skorlar eski tarihiyle kaldı (bayatlar).
 - lmarena:text/multi_turn: bu koşuda alınamadı; eski skorlar eski tarihiyle kaldı (bayatlar).
+- lmarena:search: bu koşuda alınamadı; eski skorlar eski tarihiyle kaldı (bayatlar).
 
 ## Yeni modeller
 
-13: deepseek-v4-1-flash-20261017-max, deepseek-v4-1-flash-20260910-max, muse-spark-open-max, seed2-1-pro-preview, claude-opus-4-5-high-32k-20251101, deepseek-v4-pro-preview-high, beam-1-0-501b-a23b, deepseek-v4-flash-preview-high, claude-sonnet-4-5-high-32k-20250929, gemini-3-flash-minimal, grok-4-20-beta-reasoning-0309, solar-pro-4, hy3-preview
+3: muse-wonder-full-max, minimax-m3-1-flash, nvidia-nemotron-3-5-super-vl-120b-a12b-nvfp4
 
 ## Kaybolan modeller
 
-seed-2-1-pro-preview
+- yok
 
 ## Olası eşleşmeler (alias adayı — data/model-aliases.json'a sadece eminsen ekle)
 
@@ -43,14 +45,12 @@ seed-2-1-pro-preview
 
 ## Uyarılar
 
-- gpt-5-3-codex-codex-harness: lmarena:webdev iki kez geldi (1406.6671164991271 / 1371.2889538100144); yüksek olan tutuldu
+- gpt-5-3-codex-codex-harness: lmarena:webdev iki kez geldi (1406.558302135507 / 1371.1598200361295); yüksek olan tutuldu
 
 ## Alan eşlemesi (doğrula)
 
 - LMArena webdev: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena webdev: kategori 'overall' (145/626 satır)
-- LMArena search: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena search: kategori 'overall' (42/42 satır)
+- LMArena webdev: kategori 'overall' (148/639 satır)
 - LMArena document: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena document: kategori 'overall' (44/44 satır)
 - LMArena text_to_image: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
@@ -69,8 +69,7 @@ seed-2-1-pro-preview
 
 ## LMArena kategorileri (kaynakta görülenler)
 
-- webdev: 5 kategori — image_to_webdev (63), overall (145), webdev (145), webdev-html (144), webdev-react (129)
-- search: 1 kategori — overall (42)
+- webdev: 5 kategori — image_to_webdev (64), overall (148), webdev (148), webdev-html (147), webdev-react (132)
 - document: 1 kategori — overall (44)
 - text_to_image: 11 kategori — 3d_modeling (82), art (82), cartoon (82), chinese (8), commercial_design (82), english (8), overall (82), photorealistic (82), portraits (82), russian (8), text_rendering (82)
 - image_edit: 2 kategori — multi_image_edit (44), overall (59)
@@ -82,7 +81,6 @@ seed-2-1-pro-preview
 
 - LMArena configs: agent/latest, agent/full, agent_bash_recovery_steps/latest, agent_bash_recovery_steps/full, agent_bash_reliability/latest, agent_bash_reliability/full, agent_bash_reliability_no_prereq/latest, agent_bash_reliability_no_prereq/full, agent_praise_complaint/latest, agent_praise_complaint/full, agent_steerability/latest, agent_steerability/full, agent_task_outcome_explicit/latest, agent_task_outcome_explicit/full, agent_tool_hallucination/latest, agent_tool_hallucination/full, document/latest, document/full, document_style_control/latest, document_style_control/full, image_edit/latest, image_edit/full, image_to_video/latest, image_to_video/full, search/latest, search/full, search_factuality/latest, search_factuality/full, search_style_control/latest, search_style_control/full, text/latest, text/full, text_factuality/latest, text_factuality/full, text_style_control/latest, text_style_control/full, text_to_image/latest, text_to_image/full, text_to_video/latest, text_to_video/full, video_edit/latest, video_edit/full, vision/latest, vision/full, vision_style_control/latest, vision_style_control/full, webdev/latest, webdev/full
 - LMArena webdev: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
-- LMArena search: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena document: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena text_to_image: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
 - LMArena image_edit: model_name, organization, license, rating, rating_lower, rating_upper, variance, vote_count, rank, category, leaderboard_publish_date
@@ -105,18 +103,18 @@ Kaynak ve lisans: skorlar Artificial Analysis (artificialanalysis.ai) ve LMArena
 | Leonardo AI | lucid-origin | — | lmarena, 2026-10-19 |
 | Ideogram | ideogram-4.0-quality | — | lmarena, 2026-10-19 |
 | ChatGPT | gpt-5.6-sol-xhigh | — | lmarena, 2026-10-19 |
-| Claude | claude-opus-5-high | — | lmarena, 2026-10-19 |
-| Gemini | gemini-4-argon-high | — | lmarena, 2026-10-19 |
-| Claude Code (Anthropic) | claude-opus-5-high | — | lmarena, 2026-10-19 |
+| Claude | claude-opus-5-high | — | lmarena, 2026-10-20 |
+| Gemini | gemini-4-argon-high | — | lmarena, 2026-10-20 |
+| Claude Code (Anthropic) | claude-opus-5-high | — | lmarena, 2026-10-20 |
 | ElevenLabs | (eşleşen model yok) | — | — |
 | Murf.ai | (eşleşen model yok) | — | — |
 | Google Veo | veo-3.1-audio | — | lmarena, 2026-10-19 |
 | Perplexity AI | ppl-sonar-reasoning-pro-high | — | lmarena, 2026-10-16 |
 | Runway | runway-gen4-aleph | — | lmarena, 2026-10-19 |
 | Pika Labs | pika-v2.2 | — | lmarena, 2026-10-19 |
-| Grok | grok-4.5 | — | lmarena, 2026-10-19 |
+| Grok | grok-4.5 | — | lmarena, 2026-10-20 |
 | Kling AI | kling-o3-pro | — | lmarena, 2026-10-19 |
 | Luma Dream Machine | ray-3 | — | lmarena, 2026-10-19 |
 | Gemini (görsel) | gemini-nano-banana-2.1 | — | lmarena, 2026-10-19 |
-| Le Chat (Mistral) | mistral-large-4 | — | lmarena, 2026-10-19 |
+| Le Chat (Mistral) | mistral-large-4 | — | lmarena, 2026-10-20 |
 | Grok Imagine (xAI) | grok-imagine-video-1.5-agent | — | lmarena, 2026-10-19 |
