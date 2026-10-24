@@ -11,14 +11,14 @@ Durum: data/models.json güncellendi
 ## Kaynaklar
 
 - Artificial Analysis: başarısız / atlandı — eski veri korundu
-- LMArena: 2026-10-23
+- LMArena: 2026-10-24
 - Artificial Analysis: AA_API_KEY yok, atlandı (eski veri korunur)
 
-Toplam model: 653 (Artificial Analysis: 0, LMArena: 653, iki kaynakta: 0)
+Toplam model: 654 (Artificial Analysis: 0, LMArena: 654, iki kaynakta: 0)
 
 ## Hatalar
 
-- LMArena text offset=3000: HTTP 429
+- LMArena text offset=5900: HTTP 429
 
 ## Tazelenemeyen arenalar (eski skorlar korundu)
 
@@ -31,7 +31,7 @@ Toplam model: 653 (Artificial Analysis: 0, LMArena: 653, iki kaynakta: 0)
 
 ## Yeni modeller
 
-1: spark-x2-6
+1: kimi-k3-1-pro-max
 
 ## Kaybolan modeller
 
@@ -43,12 +43,12 @@ Toplam model: 653 (Artificial Analysis: 0, LMArena: 653, iki kaynakta: 0)
 
 ## Uyarılar
 
-- gpt-5-3-codex-codex-harness: lmarena:webdev iki kez geldi (1406.5840597819574 / 1370.6369966607529); yüksek olan tutuldu
+- gpt-5-3-codex-codex-harness: lmarena:webdev iki kez geldi (1406.5768217377024 / 1370.5217081562223); yüksek olan tutuldu
 
 ## Alan eşlemesi (doğrula)
 
 - LMArena webdev: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
-- LMArena webdev: kategori 'overall' (149/643 satır)
+- LMArena webdev: kategori 'overall' (150/647 satır)
 - LMArena search: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
 - LMArena search: kategori 'overall' (42/42 satır)
 - LMArena document: name=model_name, organization=organization, score=rating, ciLow=rating_lower, ciHigh=rating_upper, votes=vote_count, rank=rank, releaseDate=—, category=category
@@ -69,7 +69,7 @@ Toplam model: 653 (Artificial Analysis: 0, LMArena: 653, iki kaynakta: 0)
 
 ## LMArena kategorileri (kaynakta görülenler)
 
-- webdev: 5 kategori — image_to_webdev (64), overall (149), webdev (149), webdev-html (148), webdev-react (133)
+- webdev: 5 kategori — image_to_webdev (64), overall (150), webdev (150), webdev-html (149), webdev-react (134)
 - search: 1 kategori — overall (42)
 - document: 1 kategori — overall (44)
 - text_to_image: 11 kategori — 3d_modeling (82), art (82), cartoon (82), chinese (8), commercial_design (82), english (8), overall (82), photorealistic (82), portraits (82), russian (8), text_rendering (82)
@@ -105,18 +105,18 @@ Kaynak ve lisans: skorlar Artificial Analysis (artificialanalysis.ai) ve LMArena
 | Leonardo AI | lucid-origin | — | lmarena, 2026-10-19 |
 | Ideogram | ideogram-4.0-quality | — | lmarena, 2026-10-19 |
 | ChatGPT | gpt-5.6-sol-xhigh | — | lmarena, 2026-10-23 |
-| Claude | claude-opus-5-high | — | lmarena, 2026-10-23 |
-| Gemini | gemini-4-argon-high | — | lmarena, 2026-10-23 |
-| Claude Code (Anthropic) | claude-opus-5-high | — | lmarena, 2026-10-23 |
+| Claude | claude-opus-5-high | — | lmarena, 2026-10-24 |
+| Gemini | gemini-4-argon-high | — | lmarena, 2026-10-24 |
+| Claude Code (Anthropic) | claude-opus-5-high | — | lmarena, 2026-10-24 |
 | ElevenLabs | (eşleşen model yok) | — | — |
 | Murf.ai | (eşleşen model yok) | — | — |
 | Google Veo | veo-3.1-audio | — | lmarena, 2026-10-23 |
 | Perplexity AI | ppl-sonar-reasoning-pro-high | — | lmarena, 2026-10-23 |
 | Runway | runway-gen4-aleph | — | lmarena, 2026-10-19 |
 | Pika Labs | pika-v2.2 | — | lmarena, 2026-10-23 |
-| Grok | grok-4.5 | — | lmarena, 2026-10-23 |
+| Grok | grok-4.5 | — | lmarena, 2026-10-24 |
 | Kling AI | kling-o3-pro | — | lmarena, 2026-10-19 |
 | Luma Dream Machine | ray-3 | — | lmarena, 2026-10-23 |
 | Gemini (görsel) | gemini-nano-banana-2.1 | — | lmarena, 2026-10-21 |
-| Le Chat (Mistral) | mistral-large-4 | — | lmarena, 2026-10-23 |
+| Le Chat (Mistral) | mistral-large-4 | — | lmarena, 2026-10-24 |
 | Grok Imagine (xAI) | grok-imagine-video-1.5-agent | — | lmarena, 2026-10-19 |
